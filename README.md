@@ -10,18 +10,18 @@ This project require npm 4+.
 
 Run following command in `terminal`.
 
->npm install
+    npm install
 
->npm test
+    npm test
 
 ## Running the server
 
 Run following command in `terminal`.
 
->$ node sugarizer.js
+    node sugarizer.js
 
 Then navigate to `http://localhost:8080`
 
 ## License
 
-This project is licensed under `MIT` License. See LICENSE for full license text.
+This project is licensed under `Apache` License. See LICENSE for full license text.
