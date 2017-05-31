@@ -2,7 +2,7 @@
 
 Repository for Sugarizer Server Backend.
 
-## Features
+## Requirements
 
 This project require npm 4+.
 
