@@ -8,6 +8,10 @@
 		"ini": "1.1.x",
 		"mongodb": "1.4.x",
 		"websocket": "1.0.x",
+		"mocha": "3.4.x",
 		"http": "0.0.x"
+	},
+	"scripts":{
+		"test" : "mocha app/test/ --delay"
 	}
 }
