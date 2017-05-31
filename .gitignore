@@ -1,0 +1,5 @@
+# ignore node modules
+node_modules
+
+# ignore docs folder for now
+docs
