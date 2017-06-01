@@ -2,11 +2,11 @@
 
 var mongo = require('mongodb'),
 	journal = require('./journal');
- 
+
 var Server = mongo.Server,
 	Db = mongo.Db,
 	BSON = mongo.BSONPure;
- 
+
 var server;
 var db;
 
@@ -14,10 +14,10 @@ var usersCollection;
 
 // Init database
 exports.init = function(settings, callback) {
-	usersCollection = settings.collections.users; 
+	usersCollection = settings.collections.users;
 	server = new Server(settings.database.server, settings.database.port, {auto_reconnect: true});
 	db = new Db(settings.database.name, server, {w:1});
-	 
+
 	db.open(function(err, db) {
 		if(err) {
 		}
@@ -45,7 +45,7 @@ exports.init = function(settings, callback) {
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "name": "Lionel", 
+ *       "name": "Lionel",
  *       "color": {
  *         "stroke": "#A700FF",
  *         "fill": "#FF8F00"
@@ -95,7 +95,7 @@ exports.findById = function(req, res) {
  *     HTTP/1.1 200 OK
  *     [
  *       {
- *         "name": "Walter", 
+ *         "name": "Walter",
  *         "color": {
  *           "stroke": "#005FE4",
  *           "fill": "#FF2B34"
@@ -122,7 +122,7 @@ exports.findById = function(req, res) {
  *         "_id": "536dd30aadcd557f2a9d648b"
  *      },
  *      {
- *         "name": "Martin", 
+ *         "name": "Martin",
  *         "color": {
  *           "stroke": "#8BFF7A",
  *           "fill": "#FF8F00"
@@ -170,14 +170,14 @@ exports.findAll = function(req, res) {
  * @apiSuccess {String} color.strike Buddy strike color
  * @apiSuccess {String} color.file Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
- * @apiSuccess {String} language Language setting of the user 
+ * @apiSuccess {String} language Language setting of the user
  * @apiSuccess {String} private_journal Id of the private journal on the server
  * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "name": "Sameer", 
+ *       "name": "Sameer",
  *       "color": {
  *         "stroke": "#00A0FF",
  *         "fill": "#00B20D"
@@ -219,28 +219,28 @@ exports.addUser = function(req, res) {
 		});
 	});
 }
- 
+
 /**
  * @api {put} /users/ Update user
  * @apiName UpdateUser
  * @apiDescription Update an user. Return the user updated.
  * @apiGroup Users
  * @apiVersion 0.6.0
- 
+
  * @apiSuccess {String} _id Unique user id
  * @apiSuccess {String} name User name
  * @apiSuccess {Object} color Buddy color
  * @apiSuccess {String} color.strike Buddy strike color
  * @apiSuccess {String} color.file Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
- * @apiSuccess {String} language Language setting of the user 
+ * @apiSuccess {String} language Language setting of the user
  * @apiSuccess {String} private_journal Id of the private journal on the server
  * @apiSuccess {String} shared_journal Id of the shared journal on the server
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "name": "Sameer", 
+ *       "name": "Sameer",
  *       "color": {
  *         "stroke": "#00A0FF",
  *         "fill": "#00B20D"
@@ -281,7 +281,7 @@ exports.updateUser = function(req, res) {
 		});
 	});
 }
- 
+
 // Remove user
 exports.removeUser = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.uid)) {

@@ -13,7 +13,7 @@ exports.load = function(settings, callback) {
 	var templateDirName = settings.activities.template_directory_name;
 	var activityInfoPath = settings.activities.activity_info_path;
 	var favorites = settings.activities.favorites ? settings.activities.favorites.split(',') : [];
-	
+
 	// Read activities directory
 	fs.readdir(activitiesPath, function(err, files) {
 		if (err) throw err;
@@ -28,10 +28,10 @@ exports.load = function(settings, callback) {
 					if (stats.isDirectory()) {
 						// Read the activity.info file
 						var stream = fs.createReadStream(activitiesPath+path.sep+file+path.sep+activityInfoPath, {encoding:'utf8'});
-						stream.on('data', function(content) {						
+						stream.on('data', function(content) {
 							// Parse the file as an .INI file
 							var info = ini.parse(content);
-							
+
 							// Check if activity is favorite
 							var favorite = false;
 							var index = favorites.length+1;
@@ -41,7 +41,7 @@ exports.load = function(settings, callback) {
 									index = i;
 								}
 							}
-							
+
 							// Return the activity
 							activities.push({
 								"id":info.Activity.bundle_id,
@@ -66,8 +66,8 @@ exports.load = function(settings, callback) {
 								callback = null;
 							}
 						});
-						stream.on('error', function(err) {					
-							throw err;							
+						stream.on('error', function(err) {
+							throw err;
 						});
 					}
 				});
@@ -79,7 +79,7 @@ exports.load = function(settings, callback) {
 /**
  * @api {get} /activities/ Get all activities
  * @apiName GetAllActivities
- * @apiDescription Retrieve all activities installed on the server. 
+ * @apiDescription Retrieve all activities installed on the server.
  * @apiGroup Activities
  * @apiVersion 0.6.0
  *
@@ -111,7 +111,12 @@ exports.load = function(settings, callback) {
  *     ]
  **/
 exports.findAll = function(req, res) {
-	res.send(activities);
+
+  //process results based on filters and fields
+  activities = process_results(req.query, activities);
+
+  //return
+  res.send(activities);
 };
 
 /**
@@ -155,3 +160,24 @@ exports.findById = function(req, res) {
 	}
 	res.send();
 };
+
+
+//private function @TODO
+function process_results(query, activities) {
+    //parse query first
+    var opt = {};
+    opt.name = query.name || {};
+    opt.version = query.version || {};
+    opt.favorite = query.favorite || {};
+
+    for (var i = 0 ; i < activities.length ; i++) {
+      if(query.name){
+
+      }
+  		var activity = activities[i];
+  		if (activity.id == id) {
+  			res.send(activity);
+  			return;
+  		}
+  	}
+}
