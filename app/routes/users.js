@@ -150,12 +150,66 @@ exports.findById = function(req, res) {
  *     ]
  **/
 exports.findAll = function(req, res) {
-	db.collection(usersCollection, function(err, collection) {
-		collection.find().toArray(function(err, items) {
-			res.send(items);
-		});
+
+	//prepare condition
+	var query = {};
+	query = addQuery('name', req.query, query);
+	query = addQuery('language', req.query, query);
+	query = addQuery('role', req.query, query, 'student');
+
+	// add filter and pagination
+	var options = getOptions(req, "+name");
+
+	//return data
+	exports.getAllUsers(query, options, function(users){
+		res.send(users);
 	});
 };
+
+
+//get all users
+exports.getAllUsers = function(query, options, callback) {
+	//get data
+	db.collection(usersCollection, function(err, collection) {
+		collection.find(query).toArray(function(err, users) {
+			callback(users);
+		});
+	});
+}
+
+//private function for filtering and sorting
+function addQuery(filter, params, query, default_val) {
+
+	//check default case
+	query = query || {};
+
+	//validate
+	if(typeof params[filter] != "undefined"){
+			query[filter] = {$regex : new RegExp("^" + params[filter] + "$", "i") };
+	}else{
+		//default case
+		if(typeof default_val != "undefined"){
+			query[filter] = default_val;
+		}
+	}
+
+	//return
+	return query ;
+}
+
+function getOptions(req, def_sort) {
+
+	//prepare options
+	var sort_val = req.query.sort || def_sort;
+	var sort_type = sort_val.indexOf("-") == 0 ? 'desc' : 'asc';
+	var options = {
+	    "limit": req.query.limit || 20,
+	    "skip": req.query.offset || 0,
+	    "sort": [[sort_val.substring(1), sort_type]]
+	}
+	//return
+	return options;
+}
 
 /**
  * @api {post} /users/ Add user
@@ -202,22 +256,53 @@ exports.findAll = function(req, res) {
  *    }
  **/
 exports.addUser = function(req, res) {
+
+	//parse user details
 	var user = JSON.parse(req.body.user);
-	db.collection(usersCollection, function (err, collection) {
-		// Create a new journal
-		journal.createJournal(function(err, result) {
-			// Create the new user
-			user.private_journal = result[0]._id;
-			user.shared_journal = journal.getShared()._id;
-			collection.insert(user, {safe:true}, function(err, result) {
-				if (err) {
-					res.send({'error':'An error has occurred'});
-				} else {
-					res.send(result[0]);
-				}
+
+	//add timestamp & language
+	user.timestamp = +new Date();
+	user.role = user.role || 'student';
+
+	//validation for fields [password, name]
+	if(!user.password || !user.name){
+		res.status(401);
+		res.send({
+			"message": "Invalid user object!"
+		});
+	}
+
+	//create user based on role
+	if(user.role == 'admin'){
+		db.collection(usersCollection, function (err, collection) {
+				collection.insert(user, {safe:true}, function(err, result) {
+					if (err) {
+						res.status(500);
+						res.send({'error':'An error has occurred'});
+					} else {
+						res.send(result[0]);
+					}
+				});
+		});
+	}else{
+		//for student
+		db.collection(usersCollection, function (err, collection) {
+			// Create a new journal
+			journal.createJournal(function(err, result) {
+				// add journal to the new user
+				user.private_journal = result[0]._id;
+				user.shared_journal = journal.getShared()._id;
+				collection.insert(user, {safe:true}, function(err, result) {
+					if (err) {
+						res.status(500);
+						res.send({'error':'An error has occurred'});
+					} else {
+						res.send(result[0]);
+					}
+				});
 			});
 		});
-	});
+	}
 }
 
 /**
@@ -271,6 +356,9 @@ exports.updateUser = function(req, res) {
 	}
 	var uid = req.params.uid;
 	var user = JSON.parse(req.body.user);
+
+	//check for unique user validation @TODO ask lionel about it
+
 	db.collection(usersCollection, function(err, collection) {
 		collection.update({'_id':new BSON.ObjectID(uid)}, {$set: user}, {safe:true}, function(err, result) {
 			if (err) {

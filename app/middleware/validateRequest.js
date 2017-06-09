@@ -1,10 +1,10 @@
 var jwt = require('jwt-simple');
-var validateUser = require('../routes/auth').validateUser;
+var users = require('../routes/auth');
 
 module.exports = function(req, res, next) {
 
   var token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'];
-  var key = (req.body && req.body.x_key) || (req.query && req.query.x_key) || req.headers['x-key'];
+  var key = (req.body && req.body.x_key) || (req.query && req.query.x_key) || req.headers['x-key']; //key is unique name of the user
 
   if (token || key) {
     try {
@@ -12,51 +12,37 @@ module.exports = function(req, res, next) {
 
       if (decoded.exp <= Date.now()) {
         res.status(400);
-        res.json({
-          "status": 400,
+        res.send({
           "message": "Token Expired"
         });
-        return;
       }
 
       // Authorize the user to see if s/he can access our resources
-      var dbUser = validateUser(key); // The key would be the logged in user's username
-      if (dbUser) {
-
-        if ((req.url.indexOf('admin') >= 0 && dbUser.role == 'admin') || (req.url.indexOf('admin') < 0 && req.url.indexOf('/api/v1/') >= 0)) {
-          next(); // To move to next middleware
+      // The key would be the logged in user's username
+      users.validateUser(key, function(user){
+        if (user) {
+          //send to the next middleware
+          next();
         } else {
-          res.status(403);
-          res.json({
-            "status": 403,
-            "message": "Not Authorized"
+          // No user with this name exists, respond back with a 401
+          res.status(401);
+          res.send({
+            "message": "Invalid User"
           });
-          return;
         }
-      } else {
-        // No user with this name exists, respond back with a 401
-        res.status(401);
-        res.json({
-          "status": 401,
-          "message": "Invalid User"
-        });
-        return;
-      }
+      });
 
     } catch (err) {
       res.status(500);
-      res.json({
-        "status": 500,
+      res.send({
         "message": "Oops something went wrong",
         "error": err
       });
     }
   } else {
     res.status(401);
-    res.json({
-      "status": 401,
+    res.send({
       "message": "Invalid Token or Key"
     });
-    return;
   }
 };

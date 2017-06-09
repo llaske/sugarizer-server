@@ -113,10 +113,7 @@ exports.load = function(settings, callback) {
 exports.findAll = function(req, res) {
 
   //process results based on filters and fields
-  activities = process_results(req.query, activities);
-
-  //return
-  res.send(activities);
+  res.send(process_results(req, activities));
 };
 
 /**
@@ -150,9 +147,14 @@ exports.findAll = function(req, res) {
  *     }
  **/
 exports.findById = function(req, res) {
+
+  //process results based on filters and fields
+  data = process_results(req, activities);
+
+  //find by id
 	var id = req.params.id;
-	for (var i = 0 ; i < activities.length ; i++) {
-		var activity = activities[i];
+	for (var i = 0 ; i < data.length ; i++) {
+		var activity = data[i];
 		if (activity.id == id) {
 			res.send(activity);
 			return;
@@ -161,23 +163,88 @@ exports.findById = function(req, res) {
 	res.send();
 };
 
+//private function for filtering and sorting
+function addOptions(field, params, options, default_val) {
 
-//private function @TODO
-function process_results(query, activities) {
-    //parse query first
+	//validate
+	if(typeof params[field] != "undefined" && params[field] != ""){
+			options[field] = params[field];
+	}else{
+		//default case
+		if(typeof default_val != "undefined"){
+			options[field] = default_val;
+		}
+	}
+
+	//return
+	return options;
+}
+
+//private function for filtering activities
+function process_results(req, activities) {
+
+    //duplicate activities
+    activities2 = [];
+
+    //add options first for filtering
     var opt = {};
-    opt.name = query.name || {};
-    opt.version = query.version || {};
-    opt.favorite = query.favorite || {};
+    opt = addOptions('name', req.query, opt);
+    opt = addOptions('favorite', req.query, opt);
 
-    for (var i = 0 ; i < activities.length ; i++) {
-      if(query.name){
+    //required fields; by default all
+    var keys = [];
+    for(var k in activities[0]) keys.push(k);
+    opt = addOptions('fields', req.query, opt, keys.join(','));
+    opt.fields = opt.fields.split(',');
 
+    //add sort logic
+  	var sort_val = req.query.sort || '+index';
+  	var sort_type = sort_val.indexOf("-") == 0 ? 'desc' : 'asc';
+    opt.sort = [sort_val.substring(1), sort_type];
+
+    //filter now
+    activities.forEach(function(activity, key){
+
+      //flag
+      isValid = true;
+
+      //filtering by name
+      if(opt.name){
+        if(opt.name.toLowerCase().trim() != activity.name.toLowerCase().trim()){
+          isValid = false;
+        }
       }
-  		var activity = activities[i];
-  		if (activity.id == id) {
-  			res.send(activity);
-  			return;
-  		}
-  	}
+
+      //filtering by favorite
+      if(opt.favorite){
+        if(opt.favorite != activity.favorite){
+          isValid = false;
+        }
+      }
+
+      //now push in new array
+      if(isValid){
+        activities2.push(JSON.parse(JSON.stringify(activity)));
+      }
+    });
+
+    //remove extra fields
+    for (var i = 0 ; i < activities2.length ; i++) {
+      for(var k in activities2[i]){
+        if(opt.fields.indexOf(k) == -1){
+          delete (activities2[i][k]);
+        }
+      }
+    }
+
+    //sort results
+    activities2.sort(function(a, b) {
+      var ret = opt.sort[1] == "asc" ? 1 : -1;
+      if(a[opt.sort[0]] < b[opt.sort[0]]) return -1 * ret;
+      if(a[opt.sort[0]] > b[opt.sort[0]]) return 1 * ret;
+      return 0;
+    });
+
+    //return
+    return activities2;
 }

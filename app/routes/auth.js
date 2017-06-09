@@ -1,56 +1,58 @@
 
-var jwt = require('jwt-simple');
+var jwt = require('jwt-simple'),
+    users = require('./users.js');
 
 exports.login = function(req, res) {
 
   //parse response
   var user = JSON.parse(req.body.user);
-  var username = user.username || '';
+  var name = user.name || '';
   var password = user.password || '';
+  var role = user.role || 'student';
+  var query = {
+    'name' : {$regex : new RegExp("^" + name + "$", "i") },
+    'password' : {$regex : new RegExp("^" + password + "$", "i") },
+    'role' : {$regex : new RegExp("^" + role + "$", "i") }
+  };
 
-  // Fire a query to your DB and check if the credentials are valid
-  var dbUserObj = exports.validate(username, password);
+  //find user by name
+  users.getAllUsers(query, {}, function(users){
 
-  if (dbUserObj) {
-    // If authentication is success, we will generate a token and dispatch it to the client
-    res.json(genToken(dbUserObj));
+    if(users.length > 0){
 
-  } else {
-    res.status(401);
-    res.json({
-      "status": 401,
-      "message": "Invalid credentials"
-    });
+      //take the first user incase of multple matches
+      user = users[0];
+
+      // If authentication is success, we will generate a token and dispatch it to the client
+      res.send(genToken(user));
+
+    }else{
+      res.status(401);
+      res.send({
+        "message": "Invalid credentials"
+      });
+    }
     return;
-  }
+  });
 };
 
-exports.validate = function(username, password) {
+exports.signup = function(req, res) {
 
-  // blank check
-  if (username == '' || password == '') {
-    return false;
-  }
-
-  // spoofing the DB response for simplicity
-  var dbUserObj = { // spoofing a userobject from the DB.
-    name: 'arvind',
-    role: 'admin',
-    username: 'arvind@myapp.com'
-  };
-
-  return dbUserObj;
+  //insert the user using the same logic but without auth
+  users.addUser(req, res);
 };
 
-exports.validateUser = function(username) {
-  // spoofing the DB response for simplicity
-  var dbUserObj = { // spoofing a userobject from the DB.
-    name: 'arvind',
-    role: 'admin',
-    username: 'arvind@myapp.com'
-  };
+exports.validateUser = function(name, callback) {
 
-  return dbUserObj;
+  //parse response
+  var query = {'name' : {$regex : new RegExp("^" + name + "$", "i") }};
+  users.getAllUsers(query, {}, function(users){
+    if(users.length > 0){
+      callback(users[0]);
+    }else{
+      callback(false);
+    }
+  });
 };
 
 // private method

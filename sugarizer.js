@@ -6,6 +6,7 @@ var express = require('express'),
 	journal = require('./app/routes/journal'),
 	users = require('./app/routes/users'),
 	auth = require('./app/routes/auth'),
+	stats = require('./app/routes/stats'),
 	validate = require('./app/middleware/validateRequest'),
 	presence = require('./app/middleware/presence');
 
@@ -35,12 +36,13 @@ settings.load(function(ini) {
 	journal.init(ini);
 	users.init(ini);
 	presence.init(ini);
+	stats.init(ini);
 
 	/*
 	 * Routes that can be accessed by any one
 	 */
 	app.post('/login', auth.login);
-	// app.post('/signup', auth.signup);
+	app.post('/signup', auth.signup);
 
 	// Register activities list API
 	app.get("/api/v1/activities", activities.findAll);
@@ -51,6 +53,10 @@ settings.load(function(ini) {
 	app.get("/api/v1/users/:uid", users.findById);
 	app.post("/api/v1/users", users.addUser);
 	app.put("/api/v1/users/:uid", users.updateUser);
+
+	// Register stats API
+	app.get("/api/v1/stats", stats.findAll);
+	app.post("/api/v1/stats", stats.addStats);
 
 	// Register journal API
 	app.get("/api/v1/journal/shared", journal.findSharedJournal);
@@ -68,7 +74,8 @@ settings.load(function(ini) {
 		res.status(404);
 		res.json({
 			"status": 404,
-			"message": "Route Not Found!"
+			"message": "Route Not Found!",
+			"url": req.protocol + '://' + req.get('host') + req.originalUrl
 		});
 		return;
 	});
