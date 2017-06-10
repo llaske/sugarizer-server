@@ -99,7 +99,7 @@ exports.addJournal = function(req, res) {
 }
 
 /**
- * @api {get} /journal/shared Get shared journal 
+ * @api {get} /journal/shared Get shared journal
  * @apiName GetSharedJournal
  * @apiDescription Retrieve id of the shared journal on the server. On the server, there is only one journal shared by all users.
  * @apiGroup Journal

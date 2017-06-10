@@ -3,3 +3,8 @@ node_modules
 
 # ignore docs folder for now
 docs
+
+# ignore test_bkp folder for now
+test_bkp
+
+sugarizer.js_bkp

@@ -7,11 +7,16 @@
 		"express": "3.x",
 		"ini": "1.1.x",
 		"mongodb": "1.4.x",
+		"bson": "1.0.x",
 		"websocket": "1.0.x",
     "jwt-simple": "^0.2.0",
-		"mocha": "3.4.x",
 		"http": "0.0.x"
 	},
+	"devDependencies": {
+    "chai": "*",
+    "chai-http": "*",
+		"mocha": "*"
+  },
 	"scripts":{
 		"test" : "mocha app/test/ --delay",
 		"run" : "node sugarizer.js"

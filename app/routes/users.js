@@ -15,12 +15,15 @@ var usersCollection;
 // Init database
 exports.init = function(settings, callback) {
 	usersCollection = settings.collections.users;
-	server = new Server(settings.database.server, settings.database.port, {auto_reconnect: true});
-	db = new Db(settings.database.name, server, {w:1});
+	server = new Server(settings.database.server, settings.database.port, {
+		auto_reconnect: true
+	});
+	db = new Db(settings.database.name, server, {
+		w: 1
+	});
 
 	db.open(function(err, db) {
-		if(err) {
-		}
+		if (err) {}
 		if (callback) callback();
 	});
 }
@@ -76,7 +79,9 @@ exports.findById = function(req, res) {
 		return;
 	}
 	db.collection(usersCollection, function(err, collection) {
-		collection.findOne({'_id':new BSON.ObjectID(req.params.uid)}, function(err, item) {
+		collection.findOne({
+			'_id': new BSON.ObjectID(req.params.uid)
+		}, function(err, item) {
 			res.send(item);
 		});
 	});
@@ -161,7 +166,7 @@ exports.findAll = function(req, res) {
 	var options = getOptions(req, "+name");
 
 	//return data
-	exports.getAllUsers(query, options, function(users){
+	exports.getAllUsers(query, options, function(users) {
 		res.send(users);
 	});
 };
@@ -169,6 +174,7 @@ exports.findAll = function(req, res) {
 
 //get all users
 exports.getAllUsers = function(query, options, callback) {
+
 	//get data
 	db.collection(usersCollection, function(err, collection) {
 		collection.find(query).toArray(function(err, users) {
@@ -184,28 +190,32 @@ function addQuery(filter, params, query, default_val) {
 	query = query || {};
 
 	//validate
-	if(typeof params[filter] != "undefined"){
-			query[filter] = {$regex : new RegExp("^" + params[filter] + "$", "i") };
-	}else{
+	if (typeof params[filter] != "undefined") {
+		query[filter] = {
+			$regex: new RegExp("^" + params[filter] + "$", "i")
+		};
+	} else {
 		//default case
-		if(typeof default_val != "undefined"){
+		if (typeof default_val != "undefined") {
 			query[filter] = default_val;
 		}
 	}
 
 	//return
-	return query ;
+	return query;
 }
 
 function getOptions(req, def_sort) {
 
 	//prepare options
-	var sort_val = req.query.sort || def_sort;
+	var sort_val = req.query.sort.toString() || def_sort;
 	var sort_type = sort_val.indexOf("-") == 0 ? 'desc' : 'asc';
 	var options = {
-	    "limit": req.query.limit || 20,
-	    "skip": req.query.offset || 0,
-	    "sort": [[sort_val.substring(1), sort_type]]
+		"limit": req.query.limit || 20,
+		"skip": req.query.offset || 0,
+		"sort": [
+			[sort_val.substring(1), sort_type]
+		]
 	}
 	//return
 	return options;
@@ -265,7 +275,7 @@ exports.addUser = function(req, res) {
 	user.role = user.role || 'student';
 
 	//validation for fields [password, name]
-	if(!user.password || !user.name){
+	if (!user.password || !user.name) {
 		res.status(401);
 		res.send({
 			"message": "Invalid user object!"
@@ -273,29 +283,37 @@ exports.addUser = function(req, res) {
 	}
 
 	//create user based on role
-	if(user.role == 'admin'){
-		db.collection(usersCollection, function (err, collection) {
-				collection.insert(user, {safe:true}, function(err, result) {
-					if (err) {
-						res.status(500);
-						res.send({'error':'An error has occurred'});
-					} else {
-						res.send(result[0]);
-					}
-				});
+	if (user.role == 'admin') {
+		db.collection(usersCollection, function(err, collection) {
+			collection.insert(user, {
+				safe: true
+			}, function(err, result) {
+				if (err) {
+					res.status(500);
+					res.send({
+						'error': 'An error has occurred'
+					});
+				} else {
+					res.send(result[0]);
+				}
+			});
 		});
-	}else{
+	} else {
 		//for student
-		db.collection(usersCollection, function (err, collection) {
+		db.collection(usersCollection, function(err, collection) {
 			// Create a new journal
 			journal.createJournal(function(err, result) {
 				// add journal to the new user
 				user.private_journal = result[0]._id;
 				user.shared_journal = journal.getShared()._id;
-				collection.insert(user, {safe:true}, function(err, result) {
+				collection.insert(user, {
+					safe: true
+				}, function(err, result) {
 					if (err) {
 						res.status(500);
-						res.send({'error':'An error has occurred'});
+						res.send({
+							'error': 'An error has occurred'
+						});
 					} else {
 						res.send(result[0]);
 					}
@@ -360,9 +378,18 @@ exports.updateUser = function(req, res) {
 	//check for unique user validation @TODO ask lionel about it
 
 	db.collection(usersCollection, function(err, collection) {
-		collection.update({'_id':new BSON.ObjectID(uid)}, {$set: user}, {safe:true}, function(err, result) {
+		collection.update({
+			'_id': new BSON.ObjectID(uid)
+		}, {
+			$set: user
+		}, {
+			safe: true
+		}, function(err, result) {
 			if (err) {
-				res.send({'error':'An error has occurred'});
+				res.status(500);
+				res.send({
+					'error': 'An error has occurred'
+				});
 			} else {
 				res.send(user);
 			}
@@ -378,9 +405,14 @@ exports.removeUser = function(req, res) {
 	}
 	var uid = req.params.uid;
 	db.collection(usersCollection, function(err, collection) {
-		collection.remove({'_id':new BSON.ObjectID(uid)}, function(err, result) {
+		collection.remove({
+			'_id': new BSON.ObjectID(uid)
+		}, function(err, result) {
 			if (err) {
-				res.send({'error':'An error has occurred'});
+				res.status(500);
+				res.send({
+					'error': 'An error has occurred'
+				});
 			} else {
 				res.send(req.params.uid);
 			}
