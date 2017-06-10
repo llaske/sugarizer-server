@@ -67,13 +67,13 @@ describe('Activities', function() {
 					for (var i = 0; i < res.body.length; i++) {
 
 						res.body[i].should.be.a('object');
-						res.body[i].should.have.property('id');
-						res.body[i].should.have.property('name');
-						res.body[i].should.have.property('version');
-						res.body[i].should.have.property('directory');
-						res.body[i].should.have.property('favorite');
-						res.body[i].should.have.property('activityId');
-						res.body[i].should.have.property('index');
+						res.body[i].should.have.property('id').not.eql(undefined);
+						res.body[i].should.have.property('name').not.eql(undefined);
+						res.body[i].should.have.property('version').not.eql(undefined);
+						res.body[i].should.have.property('directory').not.eql(undefined);
+						res.body[i].should.have.property('favorite').not.eql(undefined);
+						res.body[i].should.have.property('activityId').eql(null);
+						res.body[i].should.have.property('index').not.eql(undefined);
 					}
 					done();
 				});
@@ -109,9 +109,28 @@ describe('Activities', function() {
 					done();
 				});
 		});
+
+		it('it should return right activity on existing id', (done) => {
+
+			chai.request(server)
+				.get('/api/v1/activities/' + 'org.olpcfrance.PaintActivity')
+				.set('x-access-token', testUser.token)
+				.set('x-key', testUser.user.name)
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.have.property('id').eql('org.olpcfrance.PaintActivity');;
+					res.body.should.have.property('name').not.eql(undefined);
+					res.body.should.have.property('version').not.eql(undefined);
+					res.body.should.have.property('directory').not.eql(undefined);
+					res.body.should.have.property('favorite').not.eql(undefined);
+					res.body.should.have.property('activityId').eql(null);
+					res.body.should.have.property('index').not.eql(undefined);
+					done();
+				});
+		});
 	})
 
-	//delete user access key
+	//delete fake user access key
 	after((done) => {
 
 		chai.request(server)
