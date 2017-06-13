@@ -8,7 +8,9 @@ var chaiHttp = require('chai-http');
 var should = chai.should();
 
 //fake user for testing auth
-var testUser;
+var fakeUser = {
+	"user": '{"name":"TarunFake","password":"pokemon","role":"admin"}'
+};
 
 //init server
 chai.use(chaiHttp);
@@ -18,24 +20,20 @@ describe('Activities', function() {
 	//create & login user and store access key
 	before((done) => {
 
-		var user = {
-			"user": '{"name":"TarunFake","password":"pokemon","role":"admin"}'
-		};
-
 		//delay for db connection for establish
 		setTimeout(function() {
 			chai.request(server)
 				.post('/signup')
-				.send(user)
+				.send(fakeUser)
 				.end((err, res) => {
 
 					//login user
 					chai.request(server)
 						.post('/login')
-						.send(user)
+						.send(fakeUser)
 						.end((err, res) => {
 							//store user data
-							testUser = res.body;
+							fakeUser = res.body;
 							done();
 						});
 				});
@@ -47,8 +45,8 @@ describe('Activities', function() {
 
 			chai.request(server)
 				.get('/api/v1/activities')
-				.set('x-access-token', testUser.token)
-				.set('x-key', testUser.user.name)
+				.set('x-access-token', fakeUser.token)
+				.set('x-key', fakeUser.user.name)
 				.end((err, res) => {
 					res.should.have.status(200);
 					res.body.should.be.a('array');
@@ -60,8 +58,8 @@ describe('Activities', function() {
 		it('it should return all fields', (done) => {
 			chai.request(server)
 				.get('/api/v1/activities')
-				.set('x-access-token', testUser.token)
-				.set('x-key', testUser.user.name)
+				.set('x-access-token', fakeUser.token)
+				.set('x-key', fakeUser.user.name)
 				.end((err, res) => {
 					res.should.have.status(200);
 					for (var i = 0; i < res.body.length; i++) {
@@ -85,8 +83,8 @@ describe('Activities', function() {
 				.query({
 					favorite: "true"
 				})
-				.set('x-access-token', testUser.token)
-				.set('x-key', testUser.user.name)
+				.set('x-access-token', fakeUser.token)
+				.set('x-key', fakeUser.user.name)
 				.end((err, res) => {
 					res.should.have.status(200);
 					res.body.should.be.a('array');
@@ -102,8 +100,8 @@ describe('Activities', function() {
 					sort: "-name",
 					fields: 'id,name'
 				})
-				.set('x-access-token', testUser.token)
-				.set('x-key', testUser.user.name)
+				.set('x-access-token', fakeUser.token)
+				.set('x-key', fakeUser.user.name)
 				.end((err, res) => {
 					res.should.have.status(200);
 					for (var i = 0; i < res.body.length - 1; i++) {
@@ -122,8 +120,8 @@ describe('Activities', function() {
 					name: "Paint",
 					fields: 'id,name'
 				})
-				.set('x-access-token', testUser.token)
-				.set('x-key', testUser.user.name)
+				.set('x-access-token', fakeUser.token)
+				.set('x-key', fakeUser.user.name)
 				.end((err, res) => {
 					res.should.have.status(200);
 					res.body[0].should.have.property('id').eql('org.olpcfrance.PaintActivity');
@@ -143,8 +141,8 @@ describe('Activities', function() {
 
 			chai.request(server)
 				.get('/api/v1/activities/' + 'xxx')
-				.set('x-access-token', testUser.token)
-				.set('x-key', testUser.user.name)
+				.set('x-access-token', fakeUser.token)
+				.set('x-key', fakeUser.user.name)
 				.end((err, res) => {
 					res.should.have.status(200);
 					res.body.should.be.eql({});
@@ -156,8 +154,8 @@ describe('Activities', function() {
 
 			chai.request(server)
 				.get('/api/v1/activities/' + 'org.olpcfrance.PaintActivity')
-				.set('x-access-token', testUser.token)
-				.set('x-key', testUser.user.name)
+				.set('x-access-token', fakeUser.token)
+				.set('x-key', fakeUser.user.name)
 				.end((err, res) => {
 					res.should.have.status(200);
 					res.body.should.have.property('id').eql('org.olpcfrance.PaintActivity');;
@@ -178,8 +176,8 @@ describe('Activities', function() {
 				.query({
 					fields: 'id,name'
 				})
-				.set('x-access-token', testUser.token)
-				.set('x-key', testUser.user.name)
+				.set('x-access-token', fakeUser.token)
+				.set('x-key', fakeUser.user.name)
 				.end((err, res) => {
 					res.should.have.status(200);
 					res.body.should.have.property('id').eql('org.olpcfrance.PaintActivity');;
@@ -198,10 +196,11 @@ describe('Activities', function() {
 	after((done) => {
 
 		chai.request(server)
-			.delete('/api/v1/users/' + testUser.user._id)
-			.set('x-access-token', testUser.token)
-			.set('x-key', testUser.user.name)
+			.delete('/api/v1/users/' + fakeUser.user._id)
+			.set('x-access-token', fakeUser.token)
+			.set('x-key', fakeUser.user.name)
 			.end((err, res) => {
+				res.should.have.status(200);
 				done();
 			});
 	});
