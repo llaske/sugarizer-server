@@ -375,26 +375,54 @@ exports.updateUser = function(req, res) {
 	var uid = req.params.uid;
 	var user = JSON.parse(req.body.user);
 
-	//check for unique user validation @TODO ask lionel about it
+	// validate on the basis of user's role
+	if (req.query.role == 'student') {
+		if (req.user._id != uid) {
+			res.status(401);
+			res.send({
+				'error': 'You don\'t have permission to perform this action'
+			});
+			return;
+		}
+	}
 
+	//check for unique user name validation
 	db.collection(usersCollection, function(err, collection) {
-		collection.update({
-			'_id': new BSON.ObjectID(uid)
-		}, {
-			$set: user
-		}, {
-			safe: true
-		}, function(err, result) {
-			if (err) {
-				res.status(500);
-				res.send({
-					'error': 'An error has occurred'
+		collection.findAll({
+			'_id': {
+				$ne: new BSON.ObjectID(uid)
+			},
+			'name': new RegExp("^" + user.name + "$", "i")
+		}, function(err, item) {
+			if (item.length == 0) {
+				db.collection(usersCollection, function(err, collection) {
+					collection.update({
+						'_id': new BSON.ObjectID(uid)
+					}, {
+						$set: user
+					}, {
+						safe: true
+					}, function(err, result) {
+						if (err) {
+							res.status(500);
+							res.send({
+								'error': 'An error has occurred'
+							});
+						} else {
+							res.send(user);
+						}
+					});
 				});
 			} else {
-				res.send(user);
+				res.status(401);
+				res.send({
+					'error': 'User with same name already exist'
+				});
 			}
 		});
 	});
+
+
 }
 
 // Remove user
@@ -403,6 +431,18 @@ exports.removeUser = function(req, res) {
 		res.send();
 		return;
 	}
+
+	// validate on the basis of user's role
+	if (req.query.role == 'student') {
+		if (req.user._id != uid) {
+			res.status(401);
+			res.send({
+				'error': 'You don\'t have permission to perform this action'
+			});
+			return;
+		}
+	}
+	//delete user from db
 	var uid = req.params.uid;
 	db.collection(usersCollection, function(err, collection) {
 		collection.remove({
