@@ -75,7 +75,10 @@ exports.init = function(settings, callback) {
  **/
 exports.findById = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.uid)) {
-		res.send();
+		res.status(401);
+		res.send({
+			'error': 'Invalid user id'
+		});
 		return;
 	}
 	db.collection(usersCollection, function(err, collection) {
@@ -161,6 +164,7 @@ exports.findAll = function(req, res) {
 	query = addQuery('name', req.query, query);
 	query = addQuery('language', req.query, query);
 	query = addQuery('role', req.query, query, 'student');
+	query = addQuery('q', req.query, query)
 
 	// add filter and pagination
 	var options = getOptions(req, "+name");
@@ -190,10 +194,17 @@ function addQuery(filter, params, query, default_val) {
 	query = query || {};
 
 	//validate
-	if (typeof params[filter] != "undefined") {
-		query[filter] = {
-			$regex: new RegExp("^" + params[filter] + "$", "i")
-		};
+	if (typeof params[filter] != "undefined" && typeof params[filter] === "string") {
+
+		if (filter == 'q') {
+			query['name'] = {
+				$regex: new RegExp(params[filter], "i")
+			};
+		} else {
+			query[filter] = {
+				$regex: new RegExp("^" + params[filter] + "$", "i")
+			};
+		}
 	} else {
 		//default case
 		if (typeof default_val != "undefined") {
@@ -208,7 +219,7 @@ function addQuery(filter, params, query, default_val) {
 function getOptions(req, def_sort) {
 
 	//prepare options
-	var sort_val = req.query.sort.toString() || def_sort;
+	var sort_val = (req.query.sort && typeof req.query.sort === "string") || def_sort;
 	var sort_type = sort_val.indexOf("-") == 0 ? 'desc' : 'asc';
 	var options = {
 		"limit": req.query.limit || 20,
@@ -282,45 +293,58 @@ exports.addUser = function(req, res) {
 		});
 	}
 
-	//create user based on role
-	if (user.role == 'admin') {
-		db.collection(usersCollection, function(err, collection) {
-			collection.insert(user, {
-				safe: true
-			}, function(err, result) {
-				if (err) {
-					res.status(500);
-					res.send({
-						'error': 'An error has occurred'
+	//check if user already exist
+	exports.getAllUsers({
+		'name': new RegExp("^" + user.name + "$", "i")
+	}, {}, function(item) {
+		if (item.length == 0) {
+			//create user based on role
+			if (user.role == 'admin') {
+				db.collection(usersCollection, function(err, collection) {
+					collection.insert(user, {
+						safe: true
+					}, function(err, result) {
+						if (err) {
+							res.status(500);
+							res.send({
+								'error': 'An error has occurred'
+							});
+						} else {
+							res.send(result[0]);
+						}
 					});
-				} else {
-					res.send(result[0]);
-				}
-			});
-		});
-	} else {
-		//for student
-		db.collection(usersCollection, function(err, collection) {
-			// Create a new journal
-			journal.createJournal(function(err, result) {
-				// add journal to the new user
-				user.private_journal = result[0]._id;
-				user.shared_journal = journal.getShared()._id;
-				collection.insert(user, {
-					safe: true
-				}, function(err, result) {
-					if (err) {
-						res.status(500);
-						res.send({
-							'error': 'An error has occurred'
-						});
-					} else {
-						res.send(result[0]);
-					}
 				});
+			} else {
+				//for student
+				db.collection(usersCollection, function(err, collection) {
+					// Create a new journal
+					journal.createJournal(function(err, result) {
+						// add journal to the new user
+						user.private_journal = result[0]._id;
+						user.shared_journal = journal.getShared()._id;
+						collection.insert(user, {
+							safe: true
+						}, function(err, result) {
+							if (err) {
+								res.status(500);
+								res.send({
+									'error': 'An error has occurred'
+								});
+							} else {
+								res.send(result[0]);
+							}
+						});
+					});
+				});
+			}
+
+		} else {
+			res.status(401);
+			res.send({
+				'error': 'User with same name already exist'
 			});
-		});
-	}
+		}
+	});
 }
 
 /**
@@ -369,7 +393,10 @@ exports.addUser = function(req, res) {
  **/
 exports.updateUser = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.uid)) {
-		res.send();
+		res.status(401);
+		res.send({
+			'error': 'Invalid user id'
+		});
 		return;
 	}
 	var uid = req.params.uid;
@@ -386,33 +413,19 @@ exports.updateUser = function(req, res) {
 		}
 	}
 
-	//check for unique user name validation
-	db.collection(usersCollection, function(err, collection) {
-		collection.findAll({
+	//do not update name if already exist
+	if (typeof user.name !== 'undefined') {
+		//check for unique user name validation
+		exports.getAllUsers({
 			'_id': {
 				$ne: new BSON.ObjectID(uid)
 			},
 			'name': new RegExp("^" + user.name + "$", "i")
-		}, function(err, item) {
+		}, {}, function(item) {
 			if (item.length == 0) {
-				db.collection(usersCollection, function(err, collection) {
-					collection.update({
-						'_id': new BSON.ObjectID(uid)
-					}, {
-						$set: user
-					}, {
-						safe: true
-					}, function(err, result) {
-						if (err) {
-							res.status(500);
-							res.send({
-								'error': 'An error has occurred'
-							});
-						} else {
-							res.send(user);
-						}
-					});
-				});
+
+				//update user
+				updateUser(uid, user, res);
 			} else {
 				res.status(401);
 				res.send({
@@ -420,15 +433,48 @@ exports.updateUser = function(req, res) {
 				});
 			}
 		});
+	} else {
+		//update user
+		updateUser(uid, user, res);
+	}
+}
+
+//private function to update user
+function updateUser(uid, user, res) {
+	db.collection(usersCollection, function(err, collection) {
+		collection.update({
+			'_id': new BSON.ObjectID(uid)
+		}, {
+			$set: user
+		}, {
+			safe: true
+		}, function(err, result) {
+			if (err) {
+				res.status(500);
+				res.send({
+					'error': 'An error has occurred'
+				});
+			} else {
+				if (result) {
+					res.send(user);
+				} else {
+					res.status(401);
+					res.send({
+						'error': 'Inexisting user id'
+					});
+				}
+			}
+		});
 	});
-
-
 }
 
 // Remove user
 exports.removeUser = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.uid)) {
-		res.send();
+		res.status(401);
+		res.send({
+			'error': 'Invalid user id'
+		});
 		return;
 	}
 
@@ -454,7 +500,14 @@ exports.removeUser = function(req, res) {
 					'error': 'An error has occurred'
 				});
 			} else {
-				res.send(req.params.uid);
+				if (result) {
+					res.send();
+				} else {
+					res.status(401);
+					res.send({
+						'error': 'Inexisting user id'
+					});
+				}
 			}
 		});
 	});
