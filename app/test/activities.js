@@ -94,6 +94,48 @@ describe('Activities', function() {
 					done();
 				});
 		});
+
+		it('it should return all activities in descending order of "name" with fields [id,name]', (done) => {
+			chai.request(server)
+				.get('/api/v1/activities')
+				.query({
+					sort: "-name",
+					fields: 'id,name'
+				})
+				.set('x-access-token', testUser.token)
+				.set('x-key', testUser.user.name)
+				.end((err, res) => {
+					res.should.have.status(200);
+					for (var i = 0; i < res.body.length - 1; i++) {
+						if (res.body[i].name < res.body[i + 1].name > 0) {
+							throw new Error("Not in descending order");
+						}
+					}
+					done();
+				});
+		});
+
+		it('it should return right activity with name "Paint" and fields [id,name]', (done) => {
+			chai.request(server)
+				.get('/api/v1/activities')
+				.query({
+					name: "Paint",
+					fields: 'id,name'
+				})
+				.set('x-access-token', testUser.token)
+				.set('x-key', testUser.user.name)
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body[0].should.have.property('id').eql('org.olpcfrance.PaintActivity');
+					res.body[0].should.have.property('name').not.eql(undefined);
+					res.body[0].should.not.have.property('version');
+					res.body[0].should.not.have.property('directory');
+					res.body[0].should.not.have.property('favorite');
+					res.body[0].should.not.have.property('activityId');
+					res.body[0].should.not.have.property('index');
+					done();
+				});
+		});
 	});
 
 	describe('/GET/:id activities', () => {
@@ -125,6 +167,28 @@ describe('Activities', function() {
 					res.body.should.have.property('favorite').not.eql(undefined);
 					res.body.should.have.property('activityId').eql(null);
 					res.body.should.have.property('index').not.eql(undefined);
+					done();
+				});
+		});
+
+		it('it should return right activity with fields [id,name]', (done) => {
+
+			chai.request(server)
+				.get('/api/v1/activities/' + 'org.olpcfrance.PaintActivity')
+				.query({
+					fields: 'id,name'
+				})
+				.set('x-access-token', testUser.token)
+				.set('x-key', testUser.user.name)
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.have.property('id').eql('org.olpcfrance.PaintActivity');;
+					res.body.should.have.property('name').not.eql(undefined);
+					res.body.should.not.have.property('version');
+					res.body.should.not.have.property('directory');
+					res.body.should.not.have.property('favorite');
+					res.body.should.not.have.property('activityId');
+					res.body.should.not.have.property('index');
 					done();
 				});
 		});
