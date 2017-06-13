@@ -167,24 +167,95 @@ exports.findAll = function(req, res) {
 	query = addQuery('q', req.query, query)
 
 	// add filter and pagination
-	var options = getOptions(req, "+name");
+	db.collection(usersCollection, function(err, collection) {
 
-	//return data
-	exports.getAllUsers(query, options, function(users) {
-		res.send(users);
+		//count data
+		collection.count(query, function(err, count) {
+
+			//form params
+			var params = JSON.parse(JSON.stringify(req.query));
+			var route = req.route.path;
+
+			//form
+			var options = getOptions(req, count, "+name");
+
+			//get data
+			exports.getAllUsers(query, options, function(users) {
+
+				//add pagination
+				var data = {
+					'users': users,
+					'offset': options.skip,
+					'limit': options.limit,
+					'total': options.total,
+					'sort': (options.sort[0][0] + '(' + options.sort[0][1] + ')'),
+					'links': {
+						'prev_page': ((options.skip - options.limit) > 0) ? formPaginatedUrl(route, params, (options.skip - options.limit), options.limit) : undefined,
+						'next_page': ((options.skip + options.limit) < options.total) ? formPaginatedUrl(route, params, (options.skip + options.limit), options.limit) : undefined,
+					},
+				}
+
+				// Return
+				res.send(data);
+			});
+		})
 	});
 };
 
+//form query params
+function formPaginatedUrl(route, params, offset, limit) {
+	//set params
+	params.offset = offset;
+	params.limit = limit;
+	var str = [];
+	for (var p in params)
+		if (params.hasOwnProperty(p)) {
+			str.push(encodeURIComponent(p) + "=" + encodeURIComponent(params[p]));
+		}
+	return route + '?' + str.join("&");
+}
 
 //get all users
 exports.getAllUsers = function(query, options, callback) {
 
 	//get data
 	db.collection(usersCollection, function(err, collection) {
-		collection.find(query).toArray(function(err, users) {
+
+		//get users
+		var users = collection.find(query);
+
+		//skip sort limit
+		if (options.sort) users.sort(options.sort);
+		if (options.skip) users.skip(options.skip);
+		if (options.limit) users.limit(options.limit);
+
+		//return
+		users.toArray(function(err, users) {
 			callback(users);
 		});
 	});
+}
+
+function getOptions(req, count, def_sort) {
+
+	//prepare options
+	var sort_val = (req.query.sort && typeof req.query.sort === "string") || def_sort;
+	var sort_type = sort_val.indexOf("-") == 0 ? 'desc' : 'asc';
+	var options = {
+		sort: [
+			[sort_val.substring(1), sort_type]
+		],
+		skip: req.query.offset || 0,
+		total: count,
+		limit: req.query.limit || 10
+	}
+
+	//cast to int
+	options.skip = parseInt(options.skip);
+	options.limit = parseInt(options.limit);
+
+	//return
+	return options;
 }
 
 //private function for filtering and sorting
@@ -216,21 +287,6 @@ function addQuery(filter, params, query, default_val) {
 	return query;
 }
 
-function getOptions(req, def_sort) {
-
-	//prepare options
-	var sort_val = (req.query.sort && typeof req.query.sort === "string") || def_sort;
-	var sort_type = sort_val.indexOf("-") == 0 ? 'desc' : 'asc';
-	var options = {
-		"limit": req.query.limit || 20,
-		"skip": req.query.offset || 0,
-		"sort": [
-			[sort_val.substring(1), sort_type]
-		]
-	}
-	//return
-	return options;
-}
 
 /**
  * @api {post} /users/ Add user

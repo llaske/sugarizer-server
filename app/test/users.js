@@ -148,8 +148,8 @@ describe('users', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.should.be.a('array');
-					res.body.length.should.be.above(0);
+					res.body.users.should.be.a('array');
+					res.body.users.length.should.be.above(0);
 					done();
 				});
 		});
@@ -165,13 +165,13 @@ describe('users', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					for (var i = 0; i < res.body.length; i++) {
+					for (var i = 0; i < res.body.users.length; i++) {
 
-						res.body[i].should.be.a('object');
-						res.body[i].should.have.property('_id').not.eql(undefined);
-						res.body[i].should.have.property('name').not.eql(undefined);
-						res.body[i].should.have.property('role').eql('admin');
-						res.body[i].should.have.property('password').not.eql(undefined);
+						res.body.users[i].should.be.a('object');
+						res.body.users[i].should.have.property('_id').not.eql(undefined);
+						res.body.users[i].should.have.property('name').not.eql(undefined);
+						res.body.users[i].should.have.property('role').eql('admin');
+						res.body.users[i].should.have.property('password').not.eql(undefined);
 					}
 					done();
 				});
@@ -188,17 +188,17 @@ describe('users', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					for (var i = 0; i < res.body.length; i++) {
+					for (var i = 0; i < res.body.users.length; i++) {
 
-						res.body[i].should.be.a('object');
-						res.body[i].should.have.property('_id').not.eql(undefined);
-						res.body[i].should.have.property('name').not.eql(undefined);
-						res.body[i].should.have.property('role').eql('student');
-						res.body[i].should.have.property('password').not.eql(undefined);
-						res.body[i].should.have.property('color').not.eql(undefined);
-						res.body[i].should.have.property('language').not.eql(undefined);
-						res.body[i].should.have.property('shared_journal').not.eql(undefined);
-						res.body[i].should.have.property('private_journal').not.eql(undefined);
+						res.body.users[i].should.be.a('object');
+						res.body.users[i].should.have.property('_id').not.eql(undefined);
+						res.body.users[i].should.have.property('name').not.eql(undefined);
+						res.body.users[i].should.have.property('role').eql('student');
+						res.body.users[i].should.have.property('password').not.eql(undefined);
+						res.body.users[i].should.have.property('color').not.eql(undefined);
+						res.body.users[i].should.have.property('language').not.eql(undefined);
+						res.body.users[i].should.have.property('shared_journal').not.eql(undefined);
+						res.body.users[i].should.have.property('private_journal').not.eql(undefined);
 					}
 					done();
 				});
@@ -215,14 +215,14 @@ describe('users', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					for (var i = 0; i < res.body.length; i++) {
+					for (var i = 0; i < res.body.users.length; i++) {
 
-						res.body[i].should.be.a('object');
-						res.body[i].should.have.property('_id').eql(fakeUser.student._id);
-						res.body[i].should.have.property('name').eql("Sugarizer");
-						res.body[i].should.have.property('role').eql('student');
-						res.body[i].should.have.property('password').eql("pass");
-						res.body[i].should.have.property('language').eql("fr");
+						res.body.users[i].should.be.a('object');
+						res.body.users[i].should.have.property('_id').eql(fakeUser.student._id);
+						res.body.users[i].should.have.property('name').eql("Sugarizer");
+						res.body.users[i].should.have.property('role').eql('student');
+						res.body.users[i].should.have.property('password').eql("pass");
+						res.body.users[i].should.have.property('language').eql("fr");
 					}
 					done();
 				});
