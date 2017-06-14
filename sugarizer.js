@@ -61,11 +61,7 @@ app.post("/api/v1/stats", stats.addStats);
 // Register journal API
 app.get("/api/v1/journal/shared", journal.findSharedJournal);
 app.get("/api/v1/journal/:jid", journal.findJournalContent);
-app.get("/api/v1/journal/:jid/filter/:aid", journal.findJournalContent);
-app.get("/api/v1/journal/:jid/field/:field", journal.findJournalContent);
-app.get("/api/v1/journal/:jid/filter/:aid/field/:field", journal.findJournalContent);
 app.post("/api/v1/journal/:jid", journal.addEntryInJournal);
-app.get("/api/v1/journal/:jid/:oid", journal.getEntryInJournal);
 app.put("/api/v1/journal/:jid/:oid", journal.updateEntryInJournal);
 app.delete("/api/v1/journal/:jid/:oid", journal.removeEntryInJournal);
 

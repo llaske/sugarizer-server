@@ -18,18 +18,29 @@ var shared = null;
 // Init database
 exports.init = function(settings, callback) {
 	journalCollection = settings.collections.journal;
-	server = new Server(settings.database.server, settings.database.port, {auto_reconnect: true});
-	db = new Db(settings.database.name, server, {w:1});
+	server = new Server(settings.database.server, settings.database.port, {
+		auto_reconnect: true
+	});
+	db = new Db(settings.database.name, server, {
+		w: 1
+	});
 
 	// Open the journal collection
 	db.open(function(err, db) {
-		if(!err) {
+		if (!err) {
 			db.collection(journalCollection, function(err, collection) {
 				// Get the shared journal collection
-				collection.findOne({'shared':true}, function(err, item) {
+				collection.findOne({
+					'shared': true
+				}, function(err, item) {
 					// Not found, create one
 					if (!err && item == null) {
-						collection.insert({content:[], shared: true}, {safe:true}, function(err, result) {
+						collection.insert({
+							content: [],
+							shared: true
+						}, {
+							safe: true
+						}, function(err, result) {
 							shared = result[0];
 						});
 					}
@@ -53,8 +64,13 @@ exports.getShared = function() {
 
 // Create a new journal
 exports.createJournal = function(callback) {
-	db.collection(journalCollection, function (err, collection) {
-		collection.insert({content:[], shared: false}, {safe:true}, callback)
+	db.collection(journalCollection, function(err, collection) {
+		collection.insert({
+			content: [],
+			shared: false
+		}, {
+			safe: true
+		}, callback)
 	});
 }
 
@@ -66,9 +82,13 @@ exports.removeJournal = function(req, res) {
 	}
 	var jid = req.params.jid;
 	db.collection(journalCollection, function(err, collection) {
-		collection.remove({'_id':new BSON.ObjectID(jid)}, function(err, result) {
+		collection.remove({
+			'_id': new BSON.ObjectID(jid)
+		}, function(err, result) {
 			if (err) {
-				res.send({'error':'An error has occurred'});
+				res.send({
+					'error': 'An error has occurred'
+				});
 			} else {
 				res.send(req.params.jid);
 			}
@@ -91,7 +111,9 @@ exports.findAll = function(req, res) {
 exports.addJournal = function(req, res) {
 	exports.createJournal(function(err, result) {
 		if (err) {
-			res.send({'error':'An error has occurred'});
+			res.send({
+				'error': 'An error has occurred'
+			});
 		} else {
 			res.send(result[0]);
 		}
@@ -114,7 +136,9 @@ exports.addJournal = function(req, res) {
  *     }
  **/
 exports.findSharedJournal = function(req, res) {
-	res.send({_id: shared._id});
+	res.send({
+		_id: shared._id
+	});
 }
 
 /**
@@ -173,130 +197,149 @@ exports.findSharedJournal = function(req, res) {
  *     ]
  **/
 exports.findJournalContent = function(req, res) {
+
+	//validate journal  id
 	if (!BSON.ObjectID.isValid(req.params.jid)) {
-		res.send();
+		res.status(401);
+		res.send({
+			'error': 'Invalid journal id'
+		});
 		return;
 	}
-	var jid = req.params.jid;
-	var aid = req.params.aid;
-	var field = req.params.field;
-	var filter = {_id:new BSON.ObjectID(jid)};
-	db.collection(journalCollection, function(err, collection) {
-		collection.findOne(filter, function(err, item) {
-			if (item == null) {
-				res.send(item);
-			} else {
-				var entries = item.content;
-				var results = [];
-				for (var i = 0 ; i < entries.length ; i++) {
-					var entry = entries[i];
 
-					// Filter by activity type
-					if (aid !== undefined && entry.metadata.activity != aid) {
-						continue;
-					}
-
-					// Limit fields
-					if (field !== undefined) {
-						var newentry = {};
-						for(var key in entry) {
-							if (key == field || key == "objectId") {
-								newentry[key] = entry[key];
-							}
-						}
-						entry = newentry;
-					}
-
-					results.push(entry);
-				}
-				entries = results;
-
-				// Sort by descending date
-				res.send(entries.sort(function(e0, e1) {
-					if (e0.metadata && e1.metadata) {
-						return parseInt(e1.metadata.timestamp) - parseInt(e0.metadata.timestamp);
-					} else if (e0.timestamp && e0.timestamp) {
-						return parseInt(e1.timestamp) - parseInt(e0.timestamp);
-					}
-					return 0;
-				}));
-			}
-		});
-	});
-};
-
-/**
- * @api {get} /Journal/:jid/:oid Get entry
- * @apiName GetEntry
- * @apiDescription Get an entry in a journal.
- * @apiGroup Journal
- * @apiVersion 0.6.0
- *
- * @apiParam {String} jid Unique id of the journal to get
- * @apiParam {String} oid Unique id of the entry to get
- *
- * @apiSuccess {String} objectId Unique id of the entry in the journal
- * @apiSuccess {Object} metadata Metadata of the entries, i.e. characteristics of the entry
- * @apiSuccess {String} metadata.title Title of the entry
- * @apiSuccess {String} metadata.title_set_by_user 0 is the title has been changed by user, 1 if it's the original one (usually activity name)
- * @apiSuccess {String} metadata.activity Activity unique ID used
- * @apiSuccess {String} metadata.activity_id ID of the activity instance
- * @apiSuccess {Number} metadata.creation_time Timestamp, creation time of the entry
- * @apiSuccess {Number} metadata.timestamp Timestamp, last time the instance was updated
- * @apiSuccess {Number} metadata.file_size Here for Sugar compatibility, always set to 0
- * @apiSuccess {String} metadata.name User name of the entry creator
- * @apiSuccess {Object} metadata.color Buddy color of the entry creator
- * @apiSuccess {String} metadata.color.strike Buddy strike color of the entry creator
- * @apiSuccess {String} metadata.color.file Buddy fill color of the entry creator
- * @apiSuccess {String} text Text of the entries, i.e. storage value of the entry. It depends of the entry type
- *
- * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "metadata": {
- *         "title": "Read me now !",
- *         "title_set_by_user": "0",
- *         "activity": "org.sugarlabs.Markdown",
- *         "activity_id": "caa97e48-d33c-470a-99e9-495ff02afe01",
- *         "creation_time": ​1423341000747,
- *         "timestamp": ​1423341066120,
- *         "file_size": ​0,
- *         "buddy_name": "Lionel",
- *         "buddy_color": {
- *           "stroke": "#005FE4",
- *           "fill": "#FF2B34"
- *         }
- *       },
- *       "text": "\"# Hello Sugarizer user !\\n\\nWelcome to the Sugarizer server cloud storage. You could put everything that you need to share.\\n\\n\"",
- *       "objectId": "4837240f-bf78-4d22-b936-3db96880f0a0"
- *    }
- **/
-exports.getEntryInJournal = function(req, res) {
-	// Get parameter
-	if (!BSON.ObjectID.isValid(req.params.jid)) {
-		res.send();
-		return;
+	// validate on the basis of user's role
+	if (req.user.role == 'student') {
+		if (req.user._id != uid) {
+			res.status(401);
+			res.send({
+				'error': 'You don\'t have permission to perform this action'
+			});
+			return;
+		}
 	}
-	var jid = req.params.jid;
-	var oid = req.params.oid;
 
-	// Look for existing entry with the same objectId
-	var filter = {'_id':new BSON.ObjectID(jid), 'content.objectId': oid};
+	//get options
+	var options = getOptions(req);
+
+	//get data
 	db.collection(journalCollection, function(err, collection) {
-		collection.findOne(filter, function(err, item) {
-			if (item == null) {
-				res.send();
-			} else {
-				for (var i = 0 ; i < item.content.length ; i++) {
-					if (item.content[i].objectId == oid) {
-						res.send(item.content[i]);
-						return;
-					}
-				}
-				res.send();
+		collection.aggregate(options, function(err, items) {
+
+			//define var
+			var params = JSON.parse(JSON.stringify(req.query));
+			var route = req.route.path;
+			var skip = parseInt(req.query.offset || 0);
+			var limit = parseInt(req.query.limit || 10);
+			var total = items.length;
+
+			//apply pagination
+			items = items.slice(skip, (skip + limit));
+
+			//add pagination
+			var data = {
+				'entries': items,
+				'offset': skip,
+				'limit': limit,
+				'total': total,
+				'links': {
+					'prev_page': ((skip - limit) >= 0) ? formPaginatedUrl(route, params, (skip - limit), limit) : undefined,
+					'next_page': ((skip + limit) < total) ? formPaginatedUrl(route, params, (skip + limit), limit) : undefined,
+				},
 			}
+
+			// Return
+			res.send(data);
 		});
 	});
+}
+
+//form query params
+function formPaginatedUrl(route, params, offset, limit) {
+	//set params
+	params.offset = offset;
+	params.limit = limit;
+	var str = [];
+	for (var p in params)
+		if (params.hasOwnProperty(p)) {
+			str.push(encodeURIComponent(p) + "=" + encodeURIComponent(params[p]));
+		}
+	return route + '?' + str.join("&");
+}
+
+//form options
+function getOptions(req) {
+
+	//form object with journal id
+	var options = [{
+		$match: {
+			'_id': new BSON.ObjectID(req.params.jid)
+		}
+	}];
+
+	//unwind data
+	options.push({
+		$unwind: '$content'
+	});
+
+	//add filter based on aid,uid,oid
+	if (req.query.aid) {
+		options.push({
+			$match: {
+				'content.metadata.activity': req.query.aid
+			}
+		});
+	}
+	if (req.query.uid) {
+		options.push({
+			$match: {
+				'content.metadata.user_id': req.query.uid
+			}
+		});
+	}
+	if (req.query.oid) {
+		options.push({
+			$match: {
+				'content.objectId': req.query.oid
+			}
+		});
+	}
+
+	//project data
+	if (req.query.fields) {
+
+		//get fields
+		var fields = req.query.fields.toLowerCase().split(',');
+		var qry = {
+			'objectId': '$content.objectId'
+		};
+
+		//based on condition
+		if (fields.indexOf('metadata') > -1) qry.metadata = '$content.metadata';
+		if (fields.indexOf('text') > -1) qry.text = '$content.text';
+		options.push({
+			$project: qry
+		});
+	} else {
+		options.push({
+			$project: {
+				'metadata': '$content.metadata',
+				'objectId': '$content.objectId',
+				'_id': 0
+			}
+		});
+	}
+
+	//sorting
+	var sort_val = (typeof req.query.sort === "string" ? req.query.sort : '+timestamp');
+	var sort_type = sort_val.indexOf("-") == 0 ? -1 : 1;
+	var sort = {};
+	sort['metadata.' + sort_val.substring(1).toLowerCase()] = sort_type;
+	options.push({
+		$sort: sort
+	});
+
+	//return
+	return options;
 }
 
 /**
@@ -354,16 +397,29 @@ exports.addEntryInJournal = function(req, res) {
 	var journal = JSON.parse(req.body.journal);
 
 	// Look for existing entry with the same objectId
-	var filter = {'_id':new BSON.ObjectID(jid), 'content.objectId': journal.objectId};
+	var filter = {
+		'_id': new BSON.ObjectID(jid),
+		'content.objectId': journal.objectId
+	};
 	db.collection(journalCollection, function(err, collection) {
 		collection.findOne(filter, function(err, item) {
 			if (item == null) {
 				// Add a new entry
-				var newcontent = {$push: {content: journal}};
+				var newcontent = {
+					$push: {
+						content: journal
+					}
+				};
 				db.collection(journalCollection, function(err, collection) {
-					collection.update({'_id':new BSON.ObjectID(jid)}, newcontent, {safe:true}, function(err, result) {
+					collection.update({
+						'_id': new BSON.ObjectID(jid)
+					}, newcontent, {
+						safe: true
+					}, function(err, result) {
 						if (err) {
-							res.send({'error':'An error has occurred'});
+							res.send({
+								'error': 'An error has occurred'
+							});
 						} else {
 							res.send(newcontent);
 						}
@@ -433,11 +489,23 @@ exports.updateEntryInJournal = function(req, res) {
 	var oid = req.params.oid;
 
 	// Delete the entry
-	var deletecontent = {$pull: {content: {objectId: oid}}};
+	var deletecontent = {
+		$pull: {
+			content: {
+				objectId: oid
+			}
+		}
+	};
 	db.collection(journalCollection, function(err, collection) {
-		collection.update({'_id':new BSON.ObjectID(jid)}, deletecontent, {safe:true}, function(err, result) {
+		collection.update({
+			'_id': new BSON.ObjectID(jid)
+		}, deletecontent, {
+			safe: true
+		}, function(err, result) {
 			if (err) {
-				res.send({'error':'An error has occurred'});
+				res.send({
+					'error': 'An error has occurred'
+				});
 			} else {
 				// Add the updated entry
 				exports.addEntryInJournal(req, res);
@@ -477,11 +545,23 @@ exports.removeEntryInJournal = function(req, res) {
 	}
 	var jid = req.params.jid;
 	var oid = req.params.oid;
-	var deletecontent = {$pull: {content: {objectId: oid}}};
+	var deletecontent = {
+		$pull: {
+			content: {
+				objectId: oid
+			}
+		}
+	};
 	db.collection(journalCollection, function(err, collection) {
-		collection.update({'_id':new BSON.ObjectID(jid)}, deletecontent, {safe:true}, function(err, result) {
+		collection.update({
+			'_id': new BSON.ObjectID(jid)
+		}, deletecontent, {
+			safe: true
+		}, function(err, result) {
 			if (err) {
-				res.send({'error':'An error has occurred'});
+				res.send({
+					'error': 'An error has occurred'
+				});
 			} else {
 				res.send(deletecontent);
 			}
@@ -541,7 +621,7 @@ exports.removeEntryInJournal = function(req, res) {
  *       ...
  *     ]
  **/
- /**
+/**
  * @api {get} /journal/:jid/filter/:aid Get journal entries filtered
  * @apiName GetJournalContentFilter
  * @apiDescription Retrieve content of a journal filtered by activity. Result include both metadata and text.
@@ -597,7 +677,7 @@ exports.removeEntryInJournal = function(req, res) {
  *       }
  *     ]
  **/
-  /**
+/**
  * @api {get} /journal/:jid/filter/:aid/field/:field Get journal entries filtered field
  * @apiName GetJournalContentFilterField
  * @apiDescription Retrieve content of a journal filtered by activity. Results include only value for the field you asked an the objectId field

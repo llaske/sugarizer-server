@@ -172,11 +172,9 @@ exports.findAll = function(req, res) {
 		//count data
 		collection.count(query, function(err, count) {
 
-			//form params
+			//define var
 			var params = JSON.parse(JSON.stringify(req.query));
 			var route = req.route.path;
-
-			//form
 			var options = getOptions(req, count, "+name");
 
 			//get data
@@ -190,7 +188,7 @@ exports.findAll = function(req, res) {
 					'total': options.total,
 					'sort': (options.sort[0][0] + '(' + options.sort[0][1] + ')'),
 					'links': {
-						'prev_page': ((options.skip - options.limit) > 0) ? formPaginatedUrl(route, params, (options.skip - options.limit), options.limit) : undefined,
+						'prev_page': ((options.skip - options.limit) >= 0) ? formPaginatedUrl(route, params, (options.skip - options.limit), options.limit) : undefined,
 						'next_page': ((options.skip + options.limit) < options.total) ? formPaginatedUrl(route, params, (options.skip + options.limit), options.limit) : undefined,
 					},
 				}
@@ -239,7 +237,7 @@ exports.getAllUsers = function(query, options, callback) {
 function getOptions(req, count, def_sort) {
 
 	//prepare options
-	var sort_val = (req.query.sort && typeof req.query.sort === "string") || def_sort;
+	var sort_val = (typeof req.query.sort === "string" ? req.query.sort : def_sort);
 	var sort_type = sort_val.indexOf("-") == 0 ? 'desc' : 'asc';
 	var options = {
 		sort: [
@@ -459,7 +457,7 @@ exports.updateUser = function(req, res) {
 	var user = JSON.parse(req.body.user);
 
 	// validate on the basis of user's role
-	if (req.query.role == 'student') {
+	if (req.user.role == 'student') {
 		if (req.user._id != uid) {
 			res.status(401);
 			res.send({
@@ -535,7 +533,7 @@ exports.removeUser = function(req, res) {
 	}
 
 	// validate on the basis of user's role
-	if (req.query.role == 'student') {
+	if (req.user.role == 'student') {
 		if (req.user._id != uid) {
 			res.status(401);
 			res.send({

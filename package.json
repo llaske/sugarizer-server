@@ -18,7 +18,7 @@
 		"mocha": "*"
   },
 	"scripts":{
-		"test" : "mocha app/test/ --delay",
-		"run" : "node sugarizer.js"
+		"test" : "mocha app/test/",
+		"run" : "nodemon sugarizer.js"
 	}
 }
