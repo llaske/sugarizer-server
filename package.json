@@ -19,6 +19,6 @@
   },
 	"scripts":{
 		"test" : "mocha app/test/",
-		"run" : "nodemon sugarizer.js"
+		"run" : "node sugarizer.js"
 	}
 }

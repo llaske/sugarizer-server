@@ -23,11 +23,7 @@ app.configure(function() {
 var confFile = process.env.NODE_ENV;
 var ini = settings.load(confFile);
 
-/**
- * Only the requests that start with /api/v1/* will be checked for the token.
- * Any URL's that do not follow the below pattern should be avoided unless you
- * are sure that authentication is not needed
- */
+//Only the requests that start with /api/v1/* will be checked for the token.
 app.all('/api/v1/*', [validate]);
 
 // Init modules
@@ -62,8 +58,8 @@ app.post("/api/v1/stats", stats.addStats);
 app.get("/api/v1/journal/shared", journal.findSharedJournal);
 app.get("/api/v1/journal/:jid", journal.findJournalContent);
 app.post("/api/v1/journal/:jid", journal.addEntryInJournal);
-app.put("/api/v1/journal/:jid/:oid", journal.updateEntryInJournal);
-app.delete("/api/v1/journal/:jid/:oid", journal.removeEntryInJournal);
+app.put("/api/v1/journal/:jid", journal.updateEntryInJournal);
+app.delete("/api/v1/journal/:jid", journal.removeEntryInJournal);
 
 // If no route is matched by now, it must be a 404
 app.use(function(req, res, next) {

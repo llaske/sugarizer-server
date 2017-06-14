@@ -86,6 +86,7 @@ exports.removeJournal = function(req, res) {
 			'_id': new BSON.ObjectID(jid)
 		}, function(err, result) {
 			if (err) {
+				res.status(401);
 				res.send({
 					'error': 'An error has occurred'
 				});
@@ -111,6 +112,7 @@ exports.findAll = function(req, res) {
 exports.addJournal = function(req, res) {
 	exports.createJournal(function(err, result) {
 		if (err) {
+			res.status(401);
 			res.send({
 				'error': 'An error has occurred'
 			});
@@ -417,6 +419,8 @@ exports.addEntryInJournal = function(req, res) {
 						safe: true
 					}, function(err, result) {
 						if (err) {
+
+							res.status(401);
 							res.send({
 								'error': 'An error has occurred'
 							});
@@ -486,7 +490,7 @@ exports.updateEntryInJournal = function(req, res) {
 		return;
 	}
 	var jid = req.params.jid;
-	var oid = req.params.oid;
+	var oid = req.query.oid;
 
 	// Delete the entry
 	var deletecontent = {
@@ -503,6 +507,7 @@ exports.updateEntryInJournal = function(req, res) {
 			safe: true
 		}, function(err, result) {
 			if (err) {
+				res.status(401);
 				res.send({
 					'error': 'An error has occurred'
 				});
@@ -544,7 +549,7 @@ exports.removeEntryInJournal = function(req, res) {
 		return;
 	}
 	var jid = req.params.jid;
-	var oid = req.params.oid;
+	var oid = req.query.oid;
 	var deletecontent = {
 		$pull: {
 			content: {
@@ -559,6 +564,7 @@ exports.removeEntryInJournal = function(req, res) {
 			safe: true
 		}, function(err, result) {
 			if (err) {
+				res.status(401);
 				res.send({
 					'error': 'An error has occurred'
 				});

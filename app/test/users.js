@@ -16,7 +16,7 @@ var fakeUser = {
 //init server
 chai.use(chaiHttp);
 
-describe('users', function() {
+describe('Users', function() {
 
 	//create & login user and store access key
 	before((done) => {
