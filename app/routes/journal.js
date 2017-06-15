@@ -214,10 +214,10 @@ exports.findJournalContent = function(req, res) {
 
 	// validate on the basis of user's role
 	if (req.user.role == 'student') {
-		if (req.user._id != uid) {
+		if ([req.user.private_journal, req.user.shared_journal].indexOf(req.params.jid) == -1) {
 			res.status(401);
 			res.send({
-				'error': 'You don\'t have permission to perform this action'
+				'error': 'You don\'t have permission to access this journal'
 			});
 			return;
 		}
@@ -230,6 +230,14 @@ exports.findJournalContent = function(req, res) {
 	db.collection(journalCollection, function(err, collection) {
 		collection.aggregate(options, function(err, items) {
 
+			//check for errors
+			if (err) {
+				res.status(500);
+				res.send({
+					'error': err
+				});
+			}
+
 			//define var
 			var params = JSON.parse(JSON.stringify(req.query));
 			var route = req.route.path;
@@ -239,6 +247,8 @@ exports.findJournalContent = function(req, res) {
 
 			//apply pagination
 			items = items.slice(skip, (skip + limit));
+
+			//@TODO join of user with user and remove buddy_name field
 
 			//add pagination
 			var data = {
