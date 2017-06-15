@@ -8,7 +8,9 @@ var chaiHttp = require('chai-http');
 var should = chai.should();
 
 //fake user for testing auth
-var testUser;
+var fakeUser = {
+	'student': '{"name":"Sugarizer1","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"pass","language":"fr"}'
+}
 
 //init server
 chai.use(chaiHttp);
@@ -18,77 +20,145 @@ describe('Stats', function() {
 	//create & login user and store access key
 	before((done) => {
 
-		var user = {
-			"user": '{"name":"TarunFake","password":"pokemon","role":"admin"}'
-		};
-
 		//delay for db connection for establish
 		setTimeout(function() {
 			chai.request(server)
 				.post('/signup')
-				.send(user)
+				.send({
+					"user": fakeUser.student
+				})
 				.end((err, res) => {
 
 					//login user
 					chai.request(server)
 						.post('/login')
-						.send(user)
+						.send({
+							"user": fakeUser.student
+						})
 						.end((err, res) => {
 							//store user data
-							testUser = res.body;
+							fakeUser.student = res.body;
 							done();
 						});
 				});
 		}, 300);
 	});
 
-	// describe('/GET stats', () => {
-	// 	it('it should return all the stats', (done) => {
-	//
-	// 		chai.request(server)
-	// 			.get('/api/v1/stats')
-	// 			.set('x-access-token', testUser.token)
-	// 			.set('x-key', testUser.user.name)
-	// 			.end((err, res) => {
-	// 				res.should.have.status(200);
-	// 				res.body.should.be.a('array');
-	// 				res.body.length.should.be.eql(28);
-	// 				done();
-	// 			});
-	// 	});
-	//
-	// 	it('it should return all fields', (done) => {
-	// 		chai.request(server)
-	// 			.get('/api/v1/stats')
-	// 			.set('x-access-token', testUser.token)
-	// 			.set('x-key', testUser.user.name)
-	// 			.end((err, res) => {
-	// 				res.should.have.status(200);
-	// 				for (var i = 0; i < res.body.length; i++) {
-	//
-	// 					res.body[i].should.be.a('object');
-	// 					res.body[i].should.have.property('id').not.eql(undefined);
-	// 					res.body[i].should.have.property('name').not.eql(undefined);
-	// 					res.body[i].should.have.property('version').not.eql(undefined);
-	// 					res.body[i].should.have.property('directory').not.eql(undefined);
-	// 					res.body[i].should.have.property('favorite').not.eql(undefined);
-	// 					res.body[i].should.have.property('activityId').eql(null);
-	// 					res.body[i].should.have.property('index').not.eql(undefined);
-	// 				}
-	// 				done();
-	// 			});
-	// 	});
-	// });
+	describe('/POST stats', () => {
+		it('it should insert stats', (done) => {
 
-	//delete fake user access key
+			chai.request(server)
+				.post('/api/v1/stats/')
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user.name)
+				.send({
+					"stats": getLogs(10)
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					done();
+				});
+		});
+	});
+
+	describe('/GET stats', () => {
+		it('it should return all stats for the user', (done) => {
+
+			chai.request(server)
+				.get('/api/v1/stats/')
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user.name)
+				.query({
+					"user_id": fakeUser.student.user._id
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.length.should.be.eql(10);
+					done();
+				});
+		});
+
+		it('it should return fields for the stats', (done) => {
+
+			chai.request(server)
+				.get('/api/v1/stats/')
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user.name)
+				.query({
+					"user_id": fakeUser.student.user._id
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					for (var i = 0; i < res.body.length; i++) {
+						res.body[i].should.have.property('user_id').eql(fakeUser.student.user._id);
+						res.body[i].should.have.property('user_agent').not.eql(undefined);
+						res.body[i].should.have.property('user_ip').not.eql(undefined);
+						res.body[i].should.have.property('client_type').not.eql(undefined);
+						res.body[i].should.have.property('referrer').not.eql(undefined);
+						res.body[i].should.have.property('event_object').not.eql(undefined);
+						res.body[i].should.have.property('event_action').not.eql(undefined);
+						res.body[i].should.have.property('event_label').not.eql(undefined);
+						res.body[i].should.have.property('event_value').not.eql(undefined);
+					}
+					done();
+				});
+		});
+	});
+
+	describe('/DELETE stats', () => {
+		it('it should delete all stats for the user', (done) => {
+
+			chai.request(server)
+				.delete('/api/v1/stats/')
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user.name)
+				.query({
+					"user_id": fakeUser.student.user._id
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					done();
+				});
+		});
+	});
+
+	//delete fake user
 	after((done) => {
 
 		chai.request(server)
-			.delete('/api/v1/users/' + testUser.user._id)
-			.set('x-access-token', testUser.token)
-			.set('x-key', testUser.user.name)
+			.delete('/api/v1/users/' + fakeUser.student.user._id)
+			.set('x-access-token', fakeUser.student.token)
+			.set('x-key', fakeUser.student.user.name)
 			.end((err, res) => {
+				res.should.have.status(200);
 				done();
 			});
 	});
 });
+
+//private function to generate fae logs
+function getLogs(num) {
+	var fakeLogs = [];
+	var sampleLog = {
+		"user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+		"user_ip": "122.34.42.165",
+		"client_type": "mobile",
+		"referrer": "sugarizer",
+		"event_object": "home_view",
+		"event_action": "search",
+		"event_label": "q=stopwatch",
+		"event_value": "null"
+	}
+
+	//add uid of the user
+	sampleLog.user_id = fakeUser.student.user._id;
+
+	//append logs
+	for (var i = 0; i < num; i++) {
+		sampleLog.timestamp = +new Date();
+		fakeLogs.push(sampleLog);
+	}
+
+	//retuen
+	return JSON.stringify(fakeLogs);
+}

@@ -77,7 +77,10 @@ exports.createJournal = function(callback) {
 // Remove a journal
 exports.removeJournal = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.jid)) {
-		res.send();
+		res.status(401);
+		res.send({
+			'error': 'Invalid journal id'
+		});
 		return;
 	}
 	var jid = req.params.jid;
@@ -392,7 +395,10 @@ function getOptions(req) {
 exports.addEntryInJournal = function(req, res) {
 	// Get parameter
 	if (!BSON.ObjectID.isValid(req.params.jid)) {
-		res.send();
+		res.status(401);
+		res.send({
+			'error': 'Invalid journal id'
+		});
 		return;
 	}
 	var jid = req.params.jid;
@@ -486,7 +492,10 @@ exports.addEntryInJournal = function(req, res) {
  **/
 exports.updateEntryInJournal = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.jid)) {
-		res.send();
+		res.status(401);
+		res.send({
+			'error': 'Invalid journal id'
+		});
 		return;
 	}
 	var jid = req.params.jid;
@@ -545,7 +554,10 @@ exports.updateEntryInJournal = function(req, res) {
  **/
 exports.removeEntryInJournal = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.jid)) {
-		res.send();
+		res.status(401);
+		res.send({
+			'error': 'Invalid journal id'
+		});
 		return;
 	}
 	var jid = req.params.jid;

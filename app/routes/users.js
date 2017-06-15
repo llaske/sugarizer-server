@@ -534,7 +534,7 @@ exports.removeUser = function(req, res) {
 
 	// validate on the basis of user's role
 	if (req.user.role == 'student') {
-		if (req.user._id != uid) {
+		if (req.user._id != req.params.uid) {
 			res.status(401);
 			res.send({
 				'error': 'You don\'t have permission to perform this action'

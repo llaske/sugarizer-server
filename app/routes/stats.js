@@ -32,10 +32,8 @@ exports.addStats = function(req, res) {
 	//parse user details
 	var stats = JSON.parse(req.body.stats);
 
-	// @TODO solve insertMany issue by updating mongodb
-
 	db.collection(statsCollection, function(err, collection) {
-		collection.insertMany(stats, {
+		collection.insert(stats, {
 			safe: true
 		}, function(err, result) {
 			if (err) {
@@ -44,7 +42,34 @@ exports.addStats = function(req, res) {
 					'error': 'An error has occurred'
 				});
 			} else {
-				res.send(result[0]);
+				res.send(result);
+			}
+		});
+	});
+}
+
+exports.deleteStats = function(req, res) {
+
+	//validate
+	if (!req.query.user_id) {
+		res.status(401);
+		res.send({
+			'error': 'Invalid user id'
+		});
+		return;
+	}
+
+	db.collection(statsCollection, function(err, collection) {
+		collection.remove({
+			'user_id': req.query.user_id
+		}, function(err, result) {
+			if (err) {
+				res.status(500);
+				res.send({
+					'error': 'An error has occurred'
+				});
+			} else {
+				res.send();
 			}
 		});
 	});
@@ -53,15 +78,22 @@ exports.addStats = function(req, res) {
 
 exports.findAll = function(req, res) {
 
+	//form query
+	var query = {};
+	query = addQuery('user_id', req.query, query);
+	query = addQuery('object', req.query, query);
+	query = addQuery('action', req.query, query);
+
+	//get options
+	var options = getOptions(req, '+timestamp');
+
 	//get data
 	db.collection(statsCollection, function(err, collection) {
-		collection.find().toArray(function(err, data) {
+		collection.find(query, {}, options).toArray(function(err, data) {
 			res.send(data);
 		});
 	});
 };
-
-
 
 function getOptions(req, def_sort) {
 
@@ -85,10 +117,8 @@ function addQuery(filter, params, query, default_val) {
 	//validate
 	if (typeof params[filter] != "undefined" && typeof params[filter] === "string") {
 
-		if (filter == 'q') {
-			query['name'] = {
-				$regex: new RegExp(params[filter], "i")
-			};
+		if (filter == 'user_id') {
+			query[filter] = params[filter];
 		} else {
 			query[filter] = {
 				$regex: new RegExp("^" + params[filter] + "$", "i")

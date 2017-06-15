@@ -53,6 +53,7 @@ app.delete("/api/v1/users/:uid", users.removeUser);
 // Register stats API
 app.get("/api/v1/stats", stats.findAll);
 app.post("/api/v1/stats", stats.addStats);
+app.delete("/api/v1/stats", stats.deleteStats);
 
 // Register journal API
 app.get("/api/v1/journal/shared", journal.findSharedJournal);
