@@ -1,0 +1,24 @@
+{
+	"name": "sugarizer-server",
+	"description": "Sugarizer Server",
+	"version": "0.0.1",
+	"private": true,
+	"dependencies": {
+		"express": "3.x",
+		"ini": "1.1.x",
+		"mongodb": "1.4.x",
+		"bson": "1.0.x",
+		"websocket": "1.0.x",
+    "jwt-simple": "^0.2.0",
+		"http": "0.0.x"
+	},
+	"devDependencies": {
+    "chai": "*",
+    "chai-http": "*",
+		"mocha": "*"
+  },
+	"scripts":{
+		"test" : "mocha app/test/",
+		"run" : "node sugarizer.js"
+	}
+}
