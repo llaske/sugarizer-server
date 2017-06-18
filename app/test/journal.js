@@ -81,7 +81,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.length.should.be.gt(1);
+					res.body.length.should.be.gt(0);
 					for (var i = 0; i < res.body.length; i++) {
 						res.body[i].should.have.property('_id').not.eql(undefined);
 						res.body[i].should.have.property('shared').eql(false);

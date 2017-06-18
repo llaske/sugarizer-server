@@ -109,15 +109,22 @@ exports.findAll = function(req, res) {
 		options.shared = (req.query.type == 'shared' ? true : false);
 	}
 
-	//limit fields
-	var fields = {
-		'_id': 1,
-		'shared': 1
-	};
+	// add role based validation
+	if (req.user.role == 'student') {
+		options._id = {
+			$in: [
+				new BSON.ObjectID(req.user.private_journal),
+				new BSON.ObjectID(req.user.shared_journal)
+			]
+		}
+	}
 
 	//get data
 	db.collection(journalCollection, function(err, collection) {
-		collection.find(options, fields).toArray(function(err, items) {
+		collection.find(options, {
+			'_id': 1,
+			'shared': 1
+		}).toArray(function(err, items) {
 			res.send(items);
 		});
 	});
