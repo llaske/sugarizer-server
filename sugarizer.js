@@ -60,7 +60,7 @@ app.get("/api/v1/journal", journal.findAll);
 app.get("/api/v1/journal/:jid", journal.findJournalContent);
 app.post("/api/v1/journal/:jid", journal.addEntryInJournal);
 app.put("/api/v1/journal/:jid", journal.updateEntryInJournal);
-app.delete("/api/v1/journal/:jid", journal.removeEntryInJournal);
+app.delete("/api/v1/journal/:jid", journal.removeInJournal);
 
 // If no route is matched by now, it must be a 404
 app.use(function(req, res, next) {

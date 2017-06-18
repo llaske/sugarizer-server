@@ -126,12 +126,22 @@ describe('Stats', function() {
 	after((done) => {
 
 		chai.request(server)
-			.delete('/api/v1/users/' + fakeUser.student.user._id)
+			.delete('/api/v1/journal/' + fakeUser.student.user.private_journal)
 			.set('x-access-token', fakeUser.student.token)
 			.set('x-key', fakeUser.student.user._id)
+			.query({
+				'type': 'full'
+			})
 			.end((err, res) => {
 				res.should.have.status(200);
-				done();
+				chai.request(server)
+					.delete('/api/v1/users/' + fakeUser.student.user._id)
+					.set('x-access-token', fakeUser.student.token)
+					.set('x-key', fakeUser.student.user._id)
+					.end((err, res) => {
+						res.should.have.status(200);
+						done();
+					});
 			});
 	});
 });

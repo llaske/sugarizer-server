@@ -1,6 +1,7 @@
 // Journal handling
 
-var mongo = require('mongodb');
+var mongo = require('mongodb'),
+	users = require('./users');
 
 var Server = mongo.Server,
 	Db = mongo.Db,
@@ -71,32 +72,6 @@ exports.createJournal = function(callback) {
 		}, {
 			safe: true
 		}, callback)
-	});
-}
-
-// Remove a journal
-exports.removeJournal = function(req, res) {
-	if (!BSON.ObjectID.isValid(req.params.jid)) {
-		res.status(401);
-		res.send({
-			'error': 'Invalid journal id'
-		});
-		return;
-	}
-	var jid = req.params.jid;
-	db.collection(journalCollection, function(err, collection) {
-		collection.remove({
-			'_id': new BSON.ObjectID(jid)
-		}, function(err, result) {
-			if (err) {
-				res.status(500);
-				res.send({
-					'error': 'An error has occurred'
-				});
-			} else {
-				res.send(req.params.jid);
-			}
-		});
 	});
 }
 
@@ -214,7 +189,8 @@ exports.findJournalContent = function(req, res) {
 
 	// validate on the basis of user's role
 	if (req.user.role == 'student') {
-		if ([req.user.private_journal, req.user.shared_journal].indexOf(req.params.jid) == -1) {
+		var allowed_journals = [req.user.private_journal.toString(), req.user.shared_journal.toString()];
+		if (allowed_journals.indexOf(req.params.jid) == -1) {
 			res.status(401);
 			res.send({
 				'error': 'You don\'t have permission to access this journal'
@@ -248,22 +224,36 @@ exports.findJournalContent = function(req, res) {
 			//apply pagination
 			items = items.slice(skip, (skip + limit));
 
-			//@TODO join of user with user and remove buddy_name field
+			//get user data
+			users.getAllUsers({}, {}, function(usersList) {
 
-			//add pagination
-			var data = {
-				'entries': items,
-				'offset': skip,
-				'limit': limit,
-				'total': total,
-				'links': {
-					'prev_page': ((skip - limit) >= 0) ? formPaginatedUrl(route, params, (skip - limit), limit) : undefined,
-					'next_page': ((skip + limit) < total) ? formPaginatedUrl(route, params, (skip + limit), limit) : undefined,
-				},
-			}
+				//hash users' list
+				var hashedList = {};
+				for (var i = 0; i < usersList.length; i++) {
+					hashedList[usersList[i]._id.toString()] = usersList[i];
+				}
 
-			// Return
-			res.send(data);
+				// join of user's delails with entries
+				for (var i = 0; i < items.length; i++) {
+					items[i].metadata.buddy_name = hashedList[items[i].metadata.user_id.toString()].name;
+					items[i].metadata.buddy_color = hashedList[items[i].metadata.user_id.toString()].color;
+				}
+
+				//add pagination
+				var data = {
+					'entries': items,
+					'offset': skip,
+					'limit': limit,
+					'total': total,
+					'links': {
+						'prev_page': ((skip - limit) >= 0) ? formPaginatedUrl(route, params, (skip - limit), limit) : undefined,
+						'next_page': ((skip + limit) < total) ? formPaginatedUrl(route, params, (skip + limit), limit) : undefined,
+					},
+				}
+
+				// Return
+				res.send(data);
+			});
 		});
 	});
 }
@@ -325,11 +315,12 @@ function getOptions(req) {
 		//get fields
 		var fields = req.query.fields.toLowerCase().split(',');
 		var qry = {
-			'objectId': '$content.objectId'
+			'_id': 0,
+			'objectId': '$content.objectId',
+			'metadata': '$content.metadata'
 		};
 
 		//based on condition
-		if (fields.indexOf('metadata') > -1) qry.metadata = '$content.metadata';
 		if (fields.indexOf('text') > -1) qry.text = '$content.text';
 		options.push({
 			$project: qry
@@ -568,7 +559,7 @@ exports.updateEntryInJournal = function(req, res) {
  *       }
  *     }
  **/
-exports.removeEntryInJournal = function(req, res) {
+exports.removeInJournal = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.jid)) {
 		res.status(401);
 		res.send({
@@ -577,28 +568,69 @@ exports.removeEntryInJournal = function(req, res) {
 		return;
 	}
 	var jid = req.params.jid;
-	var oid = req.query.oid;
-	var deletecontent = {
-		$pull: {
-			content: {
-				objectId: oid
-			}
-		}
-	};
-	db.collection(journalCollection, function(err, collection) {
-		collection.update({
-			'_id': new BSON.ObjectID(jid)
-		}, deletecontent, {
-			safe: true
-		}, function(err, result) {
-			if (err) {
-				res.status(500);
-				res.send({
-					'error': 'An error has occurred'
-				});
-			} else {
-				res.send(deletecontent);
-			}
+	var oid = (req.query.oid) ? req.query.oid : false;;
+	var type = (req.query.type) ? req.query.type : 'partial';
+
+	//whether or partial is deleted!
+	if (type == 'full') {
+		db.collection(journalCollection, function(err, collection) {
+			collection.remove({
+				'_id': new BSON.ObjectID(jid)
+			}, function(err, result) {
+				if (err) {
+					res.status(500);
+					res.send({
+						'error': 'An error has occurred'
+					});
+				} else {
+					if (result) {
+						res.send();
+					} else {
+						res.status(401);
+						res.send({
+							'error': 'Error while deleting journal!'
+						});
+					}
+				}
+			});
 		});
-	});
+	} else {
+		if (oid) {
+			db.collection(journalCollection, function(err, collection) {
+				collection.update({
+					'_id': new BSON.ObjectID(jid)
+				}, {
+					$pull: {
+						content: {
+							objectId: oid
+						}
+					}
+				}, {
+					safe: true
+				}, function(err, result) {
+					if (err) {
+						res.status(500);
+						res.send({
+							'error': 'An error has occurred'
+						});
+					} else {
+						if (result) {
+							res.send();
+						} else {
+							res.status(401);
+							res.send({
+								'error': 'Error while deleting journal entry!'
+							});
+						}
+
+					}
+				});
+			});
+		} else {
+			res.status(401);
+			res.send({
+				'error': 'Invalid Object ID'
+			});
+		}
+	}
 }
