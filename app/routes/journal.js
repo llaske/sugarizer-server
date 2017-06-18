@@ -188,16 +188,7 @@ exports.findJournalContent = function(req, res) {
 	}
 
 	// validate on the basis of user's role
-	if (req.user.role == 'student') {
-		var allowed_journals = [req.user.private_journal.toString(), req.user.shared_journal.toString()];
-		if (allowed_journals.indexOf(req.params.jid) == -1) {
-			res.status(401);
-			res.send({
-				'error': 'You don\'t have permission to access this journal'
-			});
-			return;
-		}
-	}
+	validateUser(req, res);
 
 	//get options
 	var options = getOptions(req);
@@ -405,6 +396,9 @@ exports.addEntryInJournal = function(req, res) {
 	var jid = req.params.jid;
 	var journal = JSON.parse(req.body.journal);
 
+	// validate on the basis of user's role
+	validateUser(req, res);
+
 	// Look for existing entry with the same objectId
 	var filter = {
 		'_id': new BSON.ObjectID(jid),
@@ -508,6 +502,9 @@ exports.updateEntryInJournal = function(req, res) {
 	var jid = req.params.jid;
 	var oid = req.query.oid;
 
+	// validate on the basis of user's role
+	validateUser(req, res);
+
 	// Delete the entry
 	var deletecontent = {
 		$pull: {
@@ -571,6 +568,9 @@ exports.removeInJournal = function(req, res) {
 	var oid = (req.query.oid) ? req.query.oid : false;;
 	var type = (req.query.type) ? req.query.type : 'partial';
 
+	// validate on the basis of user's role
+	validateUser(req, res);
+
 	//whether or partial is deleted!
 	if (type == 'full') {
 		db.collection(journalCollection, function(err, collection) {
@@ -631,6 +631,20 @@ exports.removeInJournal = function(req, res) {
 			res.send({
 				'error': 'Invalid Object ID'
 			});
+		}
+	}
+}
+
+//check user permission
+var validateUser = function(req, res) {
+	// validate on the basis of user's role
+	if (req.user.role == 'student') {
+		if ([req.user.private_journal.toString(), req.user.shared_journal.toString()].indexOf(req.params.jid) == -1) {
+			res.status(401);
+			res.send({
+				'error': 'You don\'t have permission to remove this journal'
+			});
+			return;
 		}
 	}
 }
