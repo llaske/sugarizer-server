@@ -13,6 +13,12 @@ var fakeUser = {
 	'admin': '{"name":"TarunFake","password":"pokemon","role":"admin"}'
 }
 
+//fake jornal entry
+var fakeJournalEntry = {
+	'one': '{"objectId":"ffffffff-ffff-ffff-ffff-ffffffffffff","name":"Entry1","value":"#0000FF","metadata":{"timestamp":9990, "activity": "1.mocha.org"}}',
+	'two': '{"objectId":"fffffffe-ffff-ffff-ffff-ffffffffffff","name":"Entry2","value":"#00FF00","metadata":{"timestamp":9999, "activity": "2.mocha.org"}}'
+}
+
 //init server
 chai.use(chaiHttp);
 
@@ -26,7 +32,7 @@ describe('Journal', function() {
 			chai.request(server)
 				.post('/signup')
 				.send({
-					"user": fakeUser.admin
+					"user": fakeUser.student
 				})
 				.end((err, res) => {
 
@@ -34,26 +40,102 @@ describe('Journal', function() {
 					chai.request(server)
 						.post('/login')
 						.send({
-							"user": fakeUser.admin
+							"user": fakeUser.student
 						})
 						.end((err, res) => {
 							//store user data
-							fakeUser.admin = res.body;
+							fakeUser.student = res.body;
 							done();
 						});
 				});
 		}, 300);
 	});
 
+	describe('/GET shared', function() {
+		it('it should return the shared journal id', (done) => {
+			chai.request(server)
+				.get('/api/v1/journal/shared')
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user._id)
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body._id.should.be.not.eql(undefined);
+					done();
+				});
+		});
+	});
 
+	describe('/POST/:id journal', function() {
+		it('it should do nothing on invalid journal', (done) => {
+
+			chai.request(server)
+				.post('/api/v1/journal/' + 'xxx')
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user._id)
+				.send({
+					"journal": fakeJournalEntry.one
+				})
+				.end((err, res) => {
+					res.should.have.status(401);
+					done();
+				});
+		});
+
+		it('it should do nothing on inexisting journal', (done) => {
+
+			chai.request(server)
+				.post('/api/v1/journal/' + 'ffffffffffffffffffffffff')
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user._id)
+				.send({
+					"journal": fakeJournalEntry.one
+				})
+				.end((err, res) => {
+					res.should.have.status(401);
+					done();
+				});
+		});
+
+		it('it should add entry in the journal (1/2)', (done) => {
+
+			chai.request(server)
+				.post('/api/v1/journal/' + fakeUser.student.user.private_journal)
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user._id)
+				.send({
+					"journal": fakeJournalEntry.one
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.$push.content.should.be.deep.equal(JSON.parse(fakeJournalEntry.one));
+					done();
+				});
+		});
+
+		it('it should add another entry in the journal (2/2)', (done) => {
+
+			chai.request(server)
+				.post('/api/v1/journal/' + fakeUser.student.user.private_journal)
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user._id)
+				.send({
+					"journal": fakeJournalEntry.two
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.$push.content.should.be.deep.equal(JSON.parse(fakeJournalEntry.two));
+					done();
+				});
+		});
+	});
 
 	//delete fake user access key
 	after((done) => {
 
 		chai.request(server)
-			.delete('/api/v1/users/' + fakeUser.admin.user._id)
-			.set('x-access-token', fakeUser.admin.token)
-			.set('x-key', fakeUser.admin.user._id)
+			.delete('/api/v1/users/' + fakeUser.student.user._id)
+			.set('x-access-token', fakeUser.student.token)
+			.set('x-key', fakeUser.student.user._id)
 			.end((err, res) => {
 				res.should.have.status(200);
 				done();

@@ -89,7 +89,7 @@ exports.removeJournal = function(req, res) {
 			'_id': new BSON.ObjectID(jid)
 		}, function(err, result) {
 			if (err) {
-				res.status(401);
+				res.status(500);
 				res.send({
 					'error': 'An error has occurred'
 				});
@@ -115,7 +115,7 @@ exports.findAll = function(req, res) {
 exports.addJournal = function(req, res) {
 	exports.createJournal(function(err, result) {
 		if (err) {
-			res.status(401);
+			res.status(500);
 			res.send({
 				'error': 'An error has occurred'
 			});
@@ -404,10 +404,10 @@ function getOptions(req) {
  **/
 exports.addEntryInJournal = function(req, res) {
 	// Get parameter
-	if (!BSON.ObjectID.isValid(req.params.jid)) {
+	if (!BSON.ObjectID.isValid(req.params.jid) || !req.body.journal) {
 		res.status(401);
 		res.send({
-			'error': 'Invalid journal id'
+			'error': 'Invalid journal id or entry'
 		});
 		return;
 	}
@@ -435,13 +435,19 @@ exports.addEntryInJournal = function(req, res) {
 						safe: true
 					}, function(err, result) {
 						if (err) {
-
-							res.status(401);
+							res.status(500);
 							res.send({
 								'error': 'An error has occurred'
 							});
 						} else {
-							res.send(newcontent);
+							if (result) {
+								res.send(newcontent);
+							} else {
+								res.status(401);
+								res.send({
+									'error': 'Journal not found!'
+								});
+							}
 						}
 					});
 				});
@@ -526,7 +532,7 @@ exports.updateEntryInJournal = function(req, res) {
 			safe: true
 		}, function(err, result) {
 			if (err) {
-				res.status(401);
+				res.status(500);
 				res.send({
 					'error': 'An error has occurred'
 				});
@@ -586,7 +592,7 @@ exports.removeEntryInJournal = function(req, res) {
 			safe: true
 		}, function(err, result) {
 			if (err) {
-				res.status(401);
+				res.status(500);
 				res.send({
 					'error': 'An error has occurred'
 				});
