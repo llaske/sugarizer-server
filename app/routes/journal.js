@@ -102,8 +102,22 @@ exports.removeJournal = function(req, res) {
 
 // Find all journal
 exports.findAll = function(req, res) {
+
+	//set options
+	var options = {};
+	if (req.query.type) {
+		options.shared = (req.query.type == 'shared' ? true : false);
+	}
+
+	//limit fields
+	var fields = {
+		'_id': 1,
+		'shared': 1
+	};
+
+	//get data
 	db.collection(journalCollection, function(err, collection) {
-		collection.find().toArray(function(err, items) {
+		collection.find(options, fields).toArray(function(err, items) {
 			res.send(items);
 		});
 	});
@@ -122,27 +136,6 @@ exports.addJournal = function(req, res) {
 		} else {
 			res.send(result[0]);
 		}
-	});
-}
-
-/**
- * @api {get} /journal/shared Get shared journal
- * @apiName GetSharedJournal
- * @apiDescription Retrieve id of the shared journal on the server. On the server, there is only one journal shared by all users.
- * @apiGroup Journal
- * @apiVersion 0.6.0
- *
- * @apiSuccess {String} _id Id of the shared journal on the server
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "_id": "536d30874326e55f2a22816f"
- *     }
- **/
-exports.findSharedJournal = function(req, res) {
-	res.send({
-		_id: shared._id
 	});
 }
 

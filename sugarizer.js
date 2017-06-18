@@ -56,7 +56,7 @@ app.post("/api/v1/stats", stats.addStats);
 app.delete("/api/v1/stats", stats.deleteStats);
 
 // Register journal API
-app.get("/api/v1/journal/shared", journal.findSharedJournal);
+app.get("/api/v1/journal", journal.findAll);
 app.get("/api/v1/journal/:jid", journal.findJournalContent);
 app.post("/api/v1/journal/:jid", journal.addEntryInJournal);
 app.put("/api/v1/journal/:jid", journal.updateEntryInJournal);

@@ -54,12 +54,38 @@ describe('Journal', function() {
 	describe('/GET shared', function() {
 		it('it should return the shared journal id', (done) => {
 			chai.request(server)
-				.get('/api/v1/journal/shared')
+				.get('/api/v1/journal')
 				.set('x-access-token', fakeUser.student.token)
 				.set('x-key', fakeUser.student.user._id)
+				.query({
+					'type': 'shared'
+				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body._id.should.be.not.eql(undefined);
+					res.body.length.should.be.gt(0);
+					for (var i = 0; i < res.body.length; i++) {
+						res.body[i].should.have.property('_id').not.eql(undefined);
+						res.body[i].should.have.property('shared').eql(true);
+					}
+					done();
+				});
+		});
+
+		it('it should return the all the private journals id', (done) => {
+			chai.request(server)
+				.get('/api/v1/journal')
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user._id)
+				.query({
+					'type': 'private'
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.length.should.be.gt(1);
+					for (var i = 0; i < res.body.length; i++) {
+						res.body[i].should.have.property('_id').not.eql(undefined);
+						res.body[i].should.have.property('shared').eql(false);
+					}
 					done();
 				});
 		});
