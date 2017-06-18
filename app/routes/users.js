@@ -332,6 +332,15 @@ function addQuery(filter, params, query, default_val) {
  **/
 exports.addUser = function(req, res) {
 
+	//validate
+	if (!req.body.user) {
+		res.status(401);
+		res.send({
+			'error': 'User object not defined!'
+		});
+		return;
+	}
+
 	//parse user details
 	var user = JSON.parse(req.body.user);
 
@@ -453,6 +462,16 @@ exports.updateUser = function(req, res) {
 		});
 		return;
 	}
+
+	//validate
+	if (!req.body.user) {
+		res.status(401);
+		res.send({
+			'error': 'User object not defined!'
+		});
+		return;
+	}
+
 	var uid = req.params.uid;
 	var user = JSON.parse(req.body.user);
 

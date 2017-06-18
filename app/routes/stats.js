@@ -29,6 +29,15 @@ exports.init = function(settings, callback) {
 
 exports.addStats = function(req, res) {
 
+	//validate
+	if (!req.body.stats) {
+		res.status(401);
+		res.send({
+			'error': 'Stats object not defined!'
+		});
+		return;
+	}
+
 	//parse user details
 	var stats = JSON.parse(req.body.stats);
 
