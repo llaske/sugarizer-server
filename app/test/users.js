@@ -51,7 +51,7 @@ describe('Users', function() {
 			chai.request(server)
 				.post('/api/v1/users/')
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.send({
 					"user": fakeUser.student
 				})
@@ -76,7 +76,7 @@ describe('Users', function() {
 			chai.request(server)
 				.post('/api/v1/users/')
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.send({
 					"user": JSON.stringify(fakeUser.student)
 				})
@@ -94,7 +94,7 @@ describe('Users', function() {
 			chai.request(server)
 				.get('/api/v1/users/' + 'xxx')
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(401);
 					done();
@@ -106,7 +106,7 @@ describe('Users', function() {
 			chai.request(server)
 				.get('/api/v1/users/' + 'ffffffffffffffffffffffff')
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
 					res.body.should.be.eql({});
@@ -119,7 +119,7 @@ describe('Users', function() {
 			chai.request(server)
 				.get('/api/v1/users/' + fakeUser.student._id)
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
 					res.body.should.be.a('object');
@@ -142,7 +142,7 @@ describe('Users', function() {
 			chai.request(server)
 				.get('/api/v1/users')
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.query({
 					role: "admin"
 				})
@@ -159,7 +159,7 @@ describe('Users', function() {
 			chai.request(server)
 				.get('/api/v1/users')
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.query({
 					role: "admin"
 				})
@@ -182,7 +182,7 @@ describe('Users', function() {
 			chai.request(server)
 				.get('/api/v1/users')
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.query({
 					role: "student"
 				})
@@ -209,7 +209,7 @@ describe('Users', function() {
 			chai.request(server)
 				.get('/api/v1/users')
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.query({
 					q: "sugar"
 				})
@@ -229,7 +229,7 @@ describe('Users', function() {
 			chai.request(server)
 				.put('/api/v1/users/' + 'xxx')
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.send({
 					user: '{"language":"en"}'
 				})
@@ -244,7 +244,7 @@ describe('Users', function() {
 			chai.request(server)
 				.put('/api/v1/users/' + 'ffffffffffffffffffffffff')
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.send({
 					user: '{"language":"en"}'
 				})
@@ -259,7 +259,7 @@ describe('Users', function() {
 			chai.request(server)
 				.put('/api/v1/users/' + fakeUser.student._id)
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.send({
 					user: '{"language":"en"}'
 				})
@@ -268,7 +268,7 @@ describe('Users', function() {
 					chai.request(server)
 						.get('/api/v1/users/' + fakeUser.student._id)
 						.set('x-access-token', fakeUser.admin.token)
-						.set('x-key', fakeUser.admin.user.name)
+						.set('x-key', fakeUser.admin.user._id)
 						.end((err, res) => {
 							res.should.have.status(200);
 							res.body.should.be.a('object');
@@ -285,7 +285,7 @@ describe('Users', function() {
 			chai.request(server)
 				.put('/api/v1/users/' + fakeUser.student._id)
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.send({
 					user: '{"name":"TarunFake"}'
 				})
@@ -303,7 +303,7 @@ describe('Users', function() {
 			chai.request(server)
 				.delete('/api/v1/users/' + 'xxx')
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(401);
 					done();
@@ -315,7 +315,7 @@ describe('Users', function() {
 			chai.request(server)
 				.delete('/api/v1/users/' + 'ffffffffffffffffffffffff')
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(401);
 					done();
@@ -327,7 +327,7 @@ describe('Users', function() {
 			chai.request(server)
 				.delete('/api/v1/users/' + fakeUser.student._id)
 				.set('x-access-token', fakeUser.admin.token)
-				.set('x-key', fakeUser.admin.user.name)
+				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
 					done();
@@ -341,7 +341,7 @@ describe('Users', function() {
 		chai.request(server)
 			.delete('/api/v1/users/' + fakeUser.admin.user._id)
 			.set('x-access-token', fakeUser.admin.token)
-			.set('x-key', fakeUser.admin.user.name)
+			.set('x-key', fakeUser.admin.user._id)
 			.end((err, res) => {
 				res.should.have.status(200);
 				done();

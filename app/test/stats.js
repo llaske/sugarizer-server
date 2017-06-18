@@ -50,7 +50,7 @@ describe('Stats', function() {
 			chai.request(server)
 				.post('/api/v1/stats/')
 				.set('x-access-token', fakeUser.student.token)
-				.set('x-key', fakeUser.student.user.name)
+				.set('x-key', fakeUser.student.user._id)
 				.send({
 					"stats": getLogs(10)
 				})
@@ -67,7 +67,7 @@ describe('Stats', function() {
 			chai.request(server)
 				.get('/api/v1/stats/')
 				.set('x-access-token', fakeUser.student.token)
-				.set('x-key', fakeUser.student.user.name)
+				.set('x-key', fakeUser.student.user._id)
 				.query({
 					"user_id": fakeUser.student.user._id
 				})
@@ -83,7 +83,7 @@ describe('Stats', function() {
 			chai.request(server)
 				.get('/api/v1/stats/')
 				.set('x-access-token', fakeUser.student.token)
-				.set('x-key', fakeUser.student.user.name)
+				.set('x-key', fakeUser.student.user._id)
 				.query({
 					"user_id": fakeUser.student.user._id
 				})
@@ -111,7 +111,7 @@ describe('Stats', function() {
 			chai.request(server)
 				.delete('/api/v1/stats/')
 				.set('x-access-token', fakeUser.student.token)
-				.set('x-key', fakeUser.student.user.name)
+				.set('x-key', fakeUser.student.user._id)
 				.query({
 					"user_id": fakeUser.student.user._id
 				})
@@ -128,7 +128,7 @@ describe('Stats', function() {
 		chai.request(server)
 			.delete('/api/v1/users/' + fakeUser.student.user._id)
 			.set('x-access-token', fakeUser.student.token)
-			.set('x-key', fakeUser.student.user.name)
+			.set('x-key', fakeUser.student.user._id)
 			.end((err, res) => {
 				res.should.have.status(200);
 				done();
