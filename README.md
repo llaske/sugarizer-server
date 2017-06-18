@@ -18,9 +18,9 @@ Run following command in `terminal`.
 
 Run following command in `terminal`.
 
-    node sugarizer.js
+    npm run
 
-Then navigate to `http://localhost:8080`
+Then navigate to postman to start hitting queries.
 
 ## License
 
