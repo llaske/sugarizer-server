@@ -1,5 +1,9 @@
 var jwt = require('jwt-simple'),
-	users = require('./users.js');
+	users = require('./users.js'),
+	mongo = require('mongodb'),
+	journal = require('./journal');
+
+var BSON = mongo.BSONPure;
 
 exports.login = function(req, res) {
 
@@ -47,15 +51,12 @@ exports.signup = function(req, res) {
 	users.addUser(req, res);
 };
 
-exports.validateUser = function(name, callback) {
+exports.validateUser = function(uid, callback) {
 
 	//parse response
-	var query = {
-		'name': {
-			$regex: new RegExp("^" + name + "$", "i")
-		}
-	};
-	users.getAllUsers(query, {}, function(users) {
+	users.getAllUsers({
+		'_id': new BSON.ObjectID(uid)
+	}, {}, function(users) {
 		if (users.length > 0) {
 			callback(users[0]);
 		} else {
