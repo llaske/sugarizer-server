@@ -432,6 +432,7 @@ exports.addEntryInJournal = function(req, res) {
 								res.send({
 									'error': 'Journal not found!'
 								});
+								return;
 							}
 						}
 					});

@@ -6,11 +6,11 @@
 	"url" : "api",
 	"header": {
 		"title": "About",
-		"filename": "docheader.md"
+		"filename": "docs/docheader.md"
 	},
 	"footer": {
 		"title": "License",
-		"filename": "docfooter.md"
+		"filename": "docs/docfooter.md"
 	},
 	"order": [
 		"GetAllActivities",
