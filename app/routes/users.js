@@ -75,8 +75,7 @@ exports.init = function(settings, callback) {
  **/
 exports.findById = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.uid)) {
-		res.status(401);
-		res.send({
+		res.status(401).send({
 			'error': 'Invalid user id'
 		});
 		return;
@@ -334,8 +333,7 @@ exports.addUser = function(req, res) {
 
 	//validate
 	if (!req.body.user) {
-		res.status(401);
-		res.send({
+		res.status(401).send({
 			'error': 'User object not defined!'
 		});
 		return;
@@ -350,8 +348,7 @@ exports.addUser = function(req, res) {
 
 	//validation for fields [password, name]
 	if (!user.password || !user.name) {
-		res.status(401);
-		res.send({
+		res.status(401).send({
 			"message": "Invalid user object!"
 		});
 	}
@@ -368,8 +365,7 @@ exports.addUser = function(req, res) {
 						safe: true
 					}, function(err, result) {
 						if (err) {
-							res.status(500);
-							res.send({
+							res.status(500).send({
 								'error': 'An error has occurred'
 							});
 						} else {
@@ -389,8 +385,7 @@ exports.addUser = function(req, res) {
 							safe: true
 						}, function(err, result) {
 							if (err) {
-								res.status(500);
-								res.send({
+								res.status(500).send({
 									'error': 'An error has occurred'
 								});
 							} else {
@@ -402,8 +397,7 @@ exports.addUser = function(req, res) {
 			}
 
 		} else {
-			res.status(401);
-			res.send({
+			res.status(401).send({
 				'error': 'User with same name already exist'
 			});
 		}
@@ -456,8 +450,7 @@ exports.addUser = function(req, res) {
  **/
 exports.updateUser = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.uid)) {
-		res.status(401);
-		res.send({
+		res.status(401).send({
 			'error': 'Invalid user id'
 		});
 		return;
@@ -465,8 +458,7 @@ exports.updateUser = function(req, res) {
 
 	//validate
 	if (!req.body.user) {
-		res.status(401);
-		res.send({
+		res.status(401).send({
 			'error': 'User object not defined!'
 		});
 		return;
@@ -478,8 +470,7 @@ exports.updateUser = function(req, res) {
 	// validate on the basis of user's role
 	if (req.user.role == 'student') {
 		if (req.user._id != uid) {
-			res.status(401);
-			res.send({
+			res.status(401).send({
 				'error': 'You don\'t have permission to perform this action'
 			});
 			return;
@@ -500,8 +491,7 @@ exports.updateUser = function(req, res) {
 				//update user
 				updateUser(uid, user, res);
 			} else {
-				res.status(401);
-				res.send({
+				res.status(401).send({
 					'error': 'User with same name already exist'
 				});
 			}
@@ -523,16 +513,14 @@ function updateUser(uid, user, res) {
 			safe: true
 		}, function(err, result) {
 			if (err) {
-				res.status(500);
-				res.send({
+				res.status(500).send({
 					'error': 'An error has occurred'
 				});
 			} else {
 				if (result) {
 					res.send(user);
 				} else {
-					res.status(401);
-					res.send({
+					res.status(401).send({
 						'error': 'Inexisting user id'
 					});
 				}
@@ -544,8 +532,7 @@ function updateUser(uid, user, res) {
 // Remove user
 exports.removeUser = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.uid)) {
-		res.status(401);
-		res.send({
+		res.status(401).send({
 			'error': 'Invalid user id'
 		});
 		return;
@@ -554,8 +541,7 @@ exports.removeUser = function(req, res) {
 	// validate on the basis of user's role
 	if (req.user.role == 'student') {
 		if (req.user._id != req.params.uid) {
-			res.status(401);
-			res.send({
+			res.status(401).send({
 				'error': 'You don\'t have permission to perform this action'
 			});
 			return;
@@ -568,16 +554,14 @@ exports.removeUser = function(req, res) {
 			'_id': new BSON.ObjectID(uid)
 		}, function(err, result) {
 			if (err) {
-				res.status(500);
-				res.send({
+				res.status(500).send({
 					'error': 'An error has occurred'
 				});
 			} else {
 				if (result) {
 					res.send();
 				} else {
-					res.status(401);
-					res.send({
+					res.status(401).send({
 						'error': 'Inexisting user id'
 					});
 				}

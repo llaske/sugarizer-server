@@ -36,8 +36,7 @@ exports.login = function(req, res) {
 			res.send(genToken(user));
 
 		} else {
-			res.status(401);
-			res.send({
+			res.status(401).send({
 				"message": "Invalid credentials"
 			});
 		}

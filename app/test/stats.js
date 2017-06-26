@@ -6,10 +6,11 @@ var server = require('../../sugarizer.js');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var should = chai.should();
+var timestamp = +new Date();
 
 //fake user for testing auth
 var fakeUser = {
-	'student': '{"name":"Sugarizer1","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"pass","language":"fr"}'
+	'student': '{"name":"Sugarizer' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"pass","language":"fr"}'
 }
 
 //init server
