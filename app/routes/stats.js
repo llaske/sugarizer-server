@@ -31,8 +31,7 @@ exports.addStats = function(req, res) {
 
 	//validate
 	if (!req.body.stats) {
-		res.status(401);
-		res.send({
+		res.status(401).send({
 			'error': 'Stats object not defined!'
 		});
 		return;
@@ -46,8 +45,7 @@ exports.addStats = function(req, res) {
 			safe: true
 		}, function(err, result) {
 			if (err) {
-				res.status(500);
-				res.send({
+				res.status(500).send({
 					'error': 'An error has occurred'
 				});
 			} else {
@@ -61,8 +59,7 @@ exports.deleteStats = function(req, res) {
 
 	//validate
 	if (!req.query.user_id) {
-		res.status(401);
-		res.send({
+		res.status(401).send({
 			'error': 'Invalid user id'
 		});
 		return;
@@ -73,8 +70,7 @@ exports.deleteStats = function(req, res) {
 			'user_id': req.query.user_id
 		}, function(err, result) {
 			if (err) {
-				res.status(500);
-				res.send({
+				res.status(500).send({
 					'error': 'An error has occurred'
 				});
 			} else {
