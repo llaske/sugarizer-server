@@ -6,11 +6,12 @@ var server = require('../../sugarizer.js');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var should = chai.should();
+var timestamp = +new Date();
 
 //fake user for testing auth
 var fakeUser = {
-	'student': '{"name":"Sugarizer","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"pass","language":"fr"}',
-	'admin': '{"name":"TarunFake","password":"pokemon","role":"admin"}'
+	'student': '{"name":"Sugarizer_' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"pass","language":"fr"}',
+	'admin': '{"name":"TarunFake_' + (timestamp.toString()) + '","password":"pokemon","role":"admin"}'
 }
 
 //init server
@@ -60,7 +61,7 @@ describe('Users', function() {
 					fakeUser.student = res.body;
 					res.body.should.be.a('object');
 					res.body.should.have.property('_id').not.eql(undefined);
-					res.body.should.have.property('name').eql("Sugarizer");
+					res.body.should.have.property('name').eql("Sugarizer_" + (timestamp.toString()));
 					res.body.should.have.property('role').eql('student');
 					res.body.should.have.property('password').eql("pass");
 					res.body.should.have.property('color').not.eql(undefined);
@@ -124,7 +125,7 @@ describe('Users', function() {
 					res.should.have.status(200);
 					res.body.should.be.a('object');
 					res.body.should.have.property('_id').eql(fakeUser.student._id);
-					res.body.should.have.property('name').eql("Sugarizer");
+					res.body.should.have.property('name').eql("Sugarizer_" + (timestamp.toString()));
 					res.body.should.have.property('role').eql('student');
 					res.body.should.have.property('password').eql("pass");
 					res.body.should.have.property('color').not.eql(undefined);
@@ -273,7 +274,7 @@ describe('Users', function() {
 							res.should.have.status(200);
 							res.body.should.be.a('object');
 							res.body.should.have.property('_id').eql(fakeUser.student._id);
-							res.body.should.have.property('name').eql("Sugarizer");
+							res.body.should.have.property('name').eql("Sugarizer_" + (timestamp.toString()));
 							res.body.should.have.property('language').eql("en");
 							done();
 						});
@@ -287,7 +288,7 @@ describe('Users', function() {
 				.set('x-access-token', fakeUser.admin.token)
 				.set('x-key', fakeUser.admin.user._id)
 				.send({
-					user: '{"name":"TarunFake"}'
+					user: '{"name":"TarunFake_' + timestamp.toString() + '"}'
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
