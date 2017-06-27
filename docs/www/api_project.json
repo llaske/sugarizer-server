@@ -10,9 +10,14 @@
   },
   "footer": {
     "title": "License",
-    "content": "<p>Sugarizer is an open source software under <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache 2 licence</a>, source code is available on <a href=\"https://github.com/llaske/sugarizer\">Github</a>.</p>\n<p>© 2013-2016, Lionel Laské, Sugar Labs Inc and Contributors.</p>\n"
+    "content": "<p>Sugarizer is an open source software under <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache 2 licence</a>, source code is available on <a href=\"https://github.com/llaske/sugarizer\">Github</a>.</p>\n<p>© 2013-2017, Lionel Laské, Sugar Labs Inc and Contributors.</p>\n"
   },
   "order": [
+    "Auth",
+    "Users",
+    "Activities",
+    "Journal",
+    "Stats",
     "Login",
     "Signup",
     "GetAllActivities",
@@ -41,7 +46,7 @@
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2017-06-27T06:26:25.047Z",
+    "time": "2017-06-27T06:30:27.676Z",
     "url": "http://apidocjs.com",
     "version": "0.17.6"
   }
