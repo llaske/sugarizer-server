@@ -29,48 +29,55 @@ exports.init = function(settings, callback) {
 }
 
 /**
- * @api {get} /users/:id Get user detail
+ * @api {get} api/v1/users/:id Get user detail
  * @apiName GetUser
  * @apiDescription Retrieve detail for a specific user.
  * @apiGroup Users
- * @apiVersion 0.6.0
+ * @apiVersion 0.6.5
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
  *
  * @apiSuccess {String} _id Unique user id
- * @apiSuccess {String} name User name
+ * @apiSuccess {String} name Unique user name
+ * @apiSuccess {String} role User role (student or admin)
  * @apiSuccess {Object} color Buddy color
  * @apiSuccess {String} color.strike Buddy strike color
  * @apiSuccess {String} color.file Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
  * @apiSuccess {String} language Language setting of the user
+ * @apiSuccess {String} password password of the user
  * @apiSuccess {String} private_journal Id of the private journal on the server
- * @apiSuccess {String} shared_journal Id of the shared journal on the server
+ * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
+ * @apiSuccess {Number} timestamp when the user was created on the server
  *
- * @apiSuccessExample {json} Success-Response:
+ * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "name": "Lionel",
+ *       "name": "Tarun",
+ *       "role": "student",
  *       "color": {
- *         "stroke": "#A700FF",
- *         "fill": "#FF8F00"
+ *         "stroke": "#00A0FF",
+ *         "fill": "#00B20D"
  *       },
  *       "favorites": [
- *         "org.olpcfrance.PaintActivity",
- *         "org.olpcfrance.TamTamMicro",
- *         "org.olpcfrance.MemorizeActivity",
- *         "org.olpg-france.physicsjs",
- *         "org.olpcfrance.RecordActivity",
- *         "org.olpcfrance.Abecedarium",
- *         "org.olpcfrance.KAView",
- *         "org.olpcfrance.FoodChain",
- *         "org.olpc-france.labyrinthjs",
- *         "org.olpcfrance.TankOp",
- *         "org.olpcfrance.Gridpaint",
- *         "org.olpc-france.LOLActivity"
+ *          "org.olpcfrance.Abecedarium",
+ *          "org.sugarlabs.ChatPrototype",
+ *          "org.sugarlabs.Clock",
+ *          "org.olpcfrance.FoodChain",
+ *          "org.sugarlabs.GearsActivity",
+ *          "org.sugarlabs.GTDActivity",
+ *          "org.olpcfrance.Gridpaint",
+ *          "org.olpc-france.LOLActivity",
+ *          "org.sugarlabs.Markdown",
+ *          "org.sugarlabs.MazeWebActivity",
+ *          "org.sugarlabs.PaintActivity"
  *       ],
- *       "language": "fr",
- *       "private_journal": "56b271d026068d62059565e4",
+ *       "language": "en",
+ *       "password": "xxx",
+ *       "private_journal": "5569f4b019e0b4c9525b3c96",
  *       "shared_journal": "536d30874326e55f2a22816f",
- *       "_id": "56b271d026068d62059565e5"
+ *       "timestamp": 1423341000747,
+ *       "_id": "5569f4b019e0b4c9525b3c97"
  *    }
  **/
 exports.findById = function(req, res) {
@@ -90,19 +97,43 @@ exports.findById = function(req, res) {
 };
 
 /**
- * @api {get} /users/ Get all users
+ * @api {get} api/v1/users/ Get all users
  * @apiName GetAllUsers
- * @apiDescription Retrieve all users registered on the server.
+ * @apiDescription Retrieve all users registered on the server. Query params can be mixed and match to achieve suitable results.
  * @apiGroup Users
- * @apiVersion 0.6.0
+ * @apiVersion 0.6.5
  *
- * @apiSuccess {Object[]} users
+ * @apiExample {curl} Example usage:
+ *     /api/v1/users
+ *     /api/v1/users?name=tarun
+ *     /api/v1/users?language=fr&sort=+name
+ *     /api/v1/users?sort=+name&limit=5&offset=20
+ *
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ *
+ * @apiParam {String} [name] Display name of the activity <code>e.g. name=paint</code>
+ * @apiParam {Boolean} [language] To get users of specific language <code>e.g. language=fr</code>
+ * @apiParam {String} [role=student] To filter users based on role <code>e.g. role=admin or role= student</code>
+ * @apiParam {String} [q] Fuzzy Search <code>e.g. q=tar</code> to search user with name "Tarun"
+ * @apiParam {String} [sort=+name] Order of results <code>e.g. sort=-name or sort=+role</code>
+ * @apiParam {String} [offset=0] Offset in results <code>e.g. offset=15</code>
+ * @apiParam {String} [limit=10] Limit results <code>e.g. limit=5</code>
+ *
+ * @apiSuccess {Object[]} users List of users
+ * @apiSuccess {Number} offset Offset in users list
+ * @apiSuccess {Number} limit Limit on number of results
+ * @apiSuccess {Number} total total number of results
+ * @apiSuccess {String} sort information about sorting used in the results
+ * @apiSuccess {Object} link pagination links
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
- *     [
+ *     {
+ *     "users":[
  *       {
- *         "name": "Walter",
+ *         "name": "Tarun Singhal",
+ *         "role": "student",
  *         "color": {
  *           "stroke": "#005FE4",
  *           "fill": "#FF2B34"
@@ -110,51 +141,25 @@ exports.findById = function(req, res) {
  *         "favorites": [
  *           "org.sugarlabs.GearsActivity",
  *           "org.sugarlabs.MazeWebActivity",
- *           "org.olpcfrance.PaintActivity",
- *           "org.olpcfrance.TamTamMicro",
- *           "org.olpcfrance.MemorizeActivity",
- *           "org.olpg-france.physicsjs",
- *           "org.sugarlabs.CalculateActivity",
- *           "org.sugarlabs.TurtleBlocksJS",
- *           "org.sugarlabs.Clock",
- *           "org.olpcfrance.RecordActivity",
- *           "org.olpcfrance.Abecedarium",
- *           "org.olpcfrance.KAView",
- *           "org.olpcfrance.FoodChain",
- *           "org.olpc-france.labyrinthjs"
  *         ],
  *         "language": "en",
- *         "private_journal": "536dd30aadcd557f2a9d648a",
+ *         "password": "xxx",
+ *         "private_journal": "5569f4b019e0b4c9525b3c96",
  *         "shared_journal": "536d30874326e55f2a22816f",
+ *         "timestamp": 1423341000747,
  *         "_id": "536dd30aadcd557f2a9d648b"
  *      },
- *      {
- *         "name": "Martin",
- *         "color": {
- *           "stroke": "#8BFF7A",
- *           "fill": "#FF8F00"
- *         },
- *         "favorites": [
- *           "org.olpcfrance.PaintActivity",
- *           "org.olpcfrance.TamTamMicro",
- *           "org.olpcfrance.MemorizeActivity",
- *           "org.olpg-france.physicsjs",
- *           "org.sugarlabs.CalculateActivity",
- *           "org.sugarlabs.TurtleBlocksJS",
- *           "org.sugarlabs.Clock",
- *           "org.olpcfrance.RecordActivity",
- *           "org.olpcfrance.Abecedarium",
- *           "org.sugarlabs.ChatPrototype",
- *           "org.olpcfrance.Gridpaint",
- *           "org.laptop.WelcomeWebActivity"
- *         ],
- *         "language": "es",
- *         "private_journal": "537cb724679ebead166f35f3",
- *         "shared_journal": "536d30874326e55f2a22816f",
- *         "_id": "537cb724679ebead166f35f4"
- *      },
  *      ...
- *     ]
+ *     ],
+ *     "limit": 10,
+ *     "offset": 20,
+ *     "total": 200,
+ *     "sort": "+name",
+ *     "links": {
+ *     	"next_page": "/api/v1/users?limit=10&offset=10",
+ *     	"next_page": "/api/v1/users?limit=10&offset=30"
+ *     }
+ *    }
  **/
 exports.findAll = function(req, res) {
 
@@ -287,26 +292,32 @@ function addQuery(filter, params, query, default_val) {
 
 
 /**
- * @api {post} /users/ Add user
+ * @api {post} api/v1/users/ Add user
  * @apiName AddUser
  * @apiDescription Add a new user. Return the user created.
  * @apiGroup Users
- * @apiVersion 0.6.0
-
+ * @apiVersion 0.6.5
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ *
  * @apiSuccess {String} _id Unique user id
- * @apiSuccess {String} name User name
+ * @apiSuccess {String} name Unique user name
+ * @apiSuccess {String} role User role (student or admin)
  * @apiSuccess {Object} color Buddy color
  * @apiSuccess {String} color.strike Buddy strike color
  * @apiSuccess {String} color.file Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
  * @apiSuccess {String} language Language setting of the user
+ * @apiSuccess {String} password password of the user
  * @apiSuccess {String} private_journal Id of the private journal on the server
  * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
+ * @apiSuccess {Number} timestamp when the user was created on the server
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "name": "Sameer",
+ *       "name": "Tarun",
+ *       "role": "student",
  *       "color": {
  *         "stroke": "#00A0FF",
  *         "fill": "#00B20D"
@@ -325,8 +336,10 @@ function addQuery(filter, params, query, default_val) {
  *          "org.sugarlabs.PaintActivity"
  *       ],
  *       "language": "en",
+ *       "password": "xxx",
  *       "private_journal": "5569f4b019e0b4c9525b3c96",
  *       "shared_journal": "536d30874326e55f2a22816f",
+ *       "timestamp": 1423341000747,
  *       "_id": "5569f4b019e0b4c9525b3c97"
  *    }
  **/
@@ -406,26 +419,32 @@ exports.addUser = function(req, res) {
 }
 
 /**
- * @api {put} /users/ Update user
+ * @api {put} api/v1/users/ Update user
  * @apiName UpdateUser
  * @apiDescription Update an user. Return the user updated.
  * @apiGroup Users
- * @apiVersion 0.6.0
-
+ * @apiVersion 0.6.5
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ *
  * @apiSuccess {String} _id Unique user id
- * @apiSuccess {String} name User name
+ * @apiSuccess {String} name Unique user name
+ * @apiSuccess {String} role User role (student or admin)
  * @apiSuccess {Object} color Buddy color
  * @apiSuccess {String} color.strike Buddy strike color
  * @apiSuccess {String} color.file Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
  * @apiSuccess {String} language Language setting of the user
+ * @apiSuccess {String} password password of the user
  * @apiSuccess {String} private_journal Id of the private journal on the server
- * @apiSuccess {String} shared_journal Id of the shared journal on the server
+ * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
+ * @apiSuccess {Number} timestamp when the user was created on the server
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "name": "Sameer",
+ *       "name": "Tarun",
+ *       "role": "student",
  *       "color": {
  *         "stroke": "#00A0FF",
  *         "fill": "#00B20D"
@@ -444,8 +463,10 @@ exports.addUser = function(req, res) {
  *          "org.sugarlabs.PaintActivity"
  *       ],
  *       "language": "en",
+ *       "password": "xxx",
  *       "private_journal": "5569f4b019e0b4c9525b3c96",
  *       "shared_journal": "536d30874326e55f2a22816f",
+ *       "timestamp": 1423341000747,
  *       "_id": "5569f4b019e0b4c9525b3c97"
  *    }
  **/
@@ -530,7 +551,22 @@ function updateUser(uid, user, res) {
 	});
 }
 
-// Remove user
+/**
+ * @api {delete} api/v1/users/:uid Remove user
+ * @apiName RemoveUser
+ * @apiDescription Remove an user from the database.
+ * @apiGroup Users
+ * @apiVersion 0.6.5
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ * @apiParam {String} uid Unique id of the user to delete
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "user_id": "5569f4b019e0b4c9525b3c97"
+ *     }
+ **/
 exports.removeUser = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.uid)) {
 		res.status(401).send({
@@ -560,7 +596,9 @@ exports.removeUser = function(req, res) {
 				});
 			} else {
 				if (result) {
-					res.send();
+					res.send({
+						'user_id': uid
+					});
 				} else {
 					res.status(401).send({
 						'error': 'Inexisting user id'

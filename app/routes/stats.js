@@ -27,6 +27,43 @@ exports.init = function(settings, callback) {
 	});
 }
 
+
+/**
+ * @api {post} api/v1/stats Add Stats
+ * @apiName AddStats
+ * @apiDescription Add stats in the database.
+ * @apiGroup Stats
+ * @apiVersion 0.6.5
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ *
+ * @apiSuccess {String} _id Unique user id
+ * @apiSuccess {String} user_agent User agent
+ * @apiSuccess {String} user_ip User ip
+ * @apiSuccess {Object} client_type Type of client (Mobile/Web)
+ * @apiSuccess {String} source where the action is being performed
+ * @apiSuccess {String} event_object where the action is being performed
+ * @apiSuccess {String} event_action type of action
+ * @apiSuccess {String} event_label label of the event
+ * @apiSuccess {String} event_value value of the event
+ * @apiSuccess {Number} timestamp when the stats was created by the user
+ *
+ * @apiSuccessExample {json} Success-Response(Student):
+ *     HTTP/1.1 200 OK
+ *     [{
+ *		     "user_id"         : "592d4445cc8be9187abb284f",
+ *		     "user_agent"      : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+ *		     "user_ip"         : "122.34.42.165",
+ *		     "client_type"     : "mobile",
+ *		     "source"     	   : "sugarizer",
+ *		     "event_object"    : "home_view",
+ *		     "event_action"    : "search",
+ *		     "event_label"     : "q=stopwatch",
+ *		     "event_value"     : null,
+ *		     "timestamp"       : 6712375127
+ *		 }]
+ *
+ **/
 exports.addStats = function(req, res) {
 
 	//validate
@@ -55,6 +92,24 @@ exports.addStats = function(req, res) {
 	});
 }
 
+
+/**
+ * @api {delete} api/v1/stats Remove stats
+ * @apiName RemoveStats
+ * @apiDescription Remove all the stats for a particular user.
+ * @apiGroup Stats
+ * @apiVersion 0.6.5
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ *
+ * @apiParam {String} uid Unique id of the user to delete stats
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "user_id": "5569f4b019e0b4c9525b3c97"
+ *     }
+ **/
 exports.deleteStats = function(req, res) {
 
 	//validate
@@ -74,13 +129,54 @@ exports.deleteStats = function(req, res) {
 					'error': 'An error has occurred'
 				});
 			} else {
-				res.send();
+				res.send({
+					'user_id': req.query.user_id
+				});
 			}
 		});
 	});
 }
 
-
+/**
+ * @api {get} api/v1/stats/ Get all stats
+ * @apiName GetAllStats
+ * @apiDescription Retrieve all stats data registered on the server.
+ * @apiGroup Stats
+ * @apiVersion 0.6.5
+ * @apiHeader {String} x-key Users unique id.
+ * @apiHeader {String} x-access-token Users access token.
+ *
+ * @apiParam {String} [user_id] ID of the user
+ * @apiParam {String} [object] Name of the Event Object
+ * @apiParam {String} [action] Name of the Event Action
+ * @apiParam {String} [sort=+timestamp] Order of results <code>e.g. sort=-action or sort=+timestamp</code>
+ *
+ * @apiExample {curl} Example usage:
+ *     /api/v1/stats
+ *     /api/v1/stats?user_id=592d4445cc8be9187abb284f
+ *     /api/v1/stats?event_object=home_view
+ *     /api/v1/stats?user_id=592d4445cc8be9187abb284f&sort=-timestamp
+ *
+ * @apiSuccess {Object[]} stats
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *        {
+ *			     "user_id"         : "592d4445cc8be9187abb284f",
+ *			     "user_agent"      : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+ *			     "user_ip"         : "122.34.42.165",
+ *			     "client_type"     : "mobile",
+ *			     "source"     	   : "sugarizer",
+ *			     "event_object"    : "home_view",
+ *			     "event_action"    : "search",
+ *			     "event_label"     : "q=stopwatch",
+ *			     "event_value"     : null,
+ *			     "timestamp"       : 6712375127
+ *				}
+ *      ...
+ *     ]
+ **/
 exports.findAll = function(req, res) {
 
 	//form query

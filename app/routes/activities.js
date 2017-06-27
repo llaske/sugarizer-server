@@ -79,11 +79,23 @@ exports.load = function(settings, callback) {
 };
 
 /**
- * @api {get} /activities/ Get all activities
+ * @api {get} api/v1/activities?name=:name&favorite=:favorite&fields=:fields&sort=:sort Get all activities
  * @apiName GetAllActivities
  * @apiDescription Retrieve all activities installed on the server.
  * @apiGroup Activities
- * @apiVersion 0.6.0
+ * @apiVersion 0.6.5
+ * @apiExample {curl} Example usage:
+ *     /api/v1/activities
+ *     /api/v1/activities?name=gears
+ *     /api/v1/activities?favorite=false&sort=-version
+ *     /api/v1/activities?favorite=true&fields=index,name&sort=+name
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ *
+ * @apiParam {String} [name] Display name of the activity <code>e.g. name=paint</code>
+ * @apiParam {Boolean} [favorite] true means that the activity is in the favorite view <code>e.g. favorite=true</code>
+ * @apiParam {String} [fields] Fields to display <code>e.g. fields=name,index,version</code>
+ * @apiParam {String} [sort=+index] Order of results <code>e.g. sort=-name or sort=+index</code>
  *
  * @apiSuccess {Object[]} activities
  * @apiSuccessExample {json} Success-Response:
@@ -120,10 +132,17 @@ exports.findAll = function(req, res) {
 };
 
 /**
- * @api {get} /activities/:id Get activity detail
+ * @api {get} api/v1/activities/:id?fields=:fields Get activity detail
  * @apiName GetActivity
  * @apiDescription Retrieve detail of an activity.
+ *
+ * @apiExample {curl} Example usage:
+ *     /api/v1/activities/org.olpcfrance.Abecedarium
+ *     /api/v1/activities/org.olpcfrance.Abecedarium?ields=index,name
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
  * @apiParam {id} id Activity unique ID
+ * @apiParam {String} [fields] Fields to display <code>e.g. fields=name,index,version</code>
  *
  * @apiSuccess {String} id Activity unique ID
  * @apiSuccess {String} name Display name of the activity
@@ -135,7 +154,7 @@ exports.findAll = function(req, res) {
  * @apiSuccess {Number} index Index of the activity in the activity list
  *
  * @apiGroup Activities
- * @apiVersion 0.6.0
+ * @apiVersion 0.6.5
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
