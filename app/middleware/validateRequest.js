@@ -11,8 +11,7 @@ module.exports = function(req, res, next) {
 			var decoded = jwt.decode(token, require('../config/secret.js')());
 
 			if (decoded.exp <= Date.now()) {
-				res.status(400);
-				res.send({
+				return res.status(400).send({
 					"message": "Token Expired"
 				});
 			}
@@ -29,23 +28,20 @@ module.exports = function(req, res, next) {
 					next();
 				} else {
 					// No user with this name exists, respond back with a 401
-					res.status(401);
-					res.send({
+					return res.status(401).send({
 						"message": "Invalid User"
 					});
 				}
 			});
 
 		} catch (err) {
-			res.status(500);
-			res.send({
+			return res.status(500).send({
 				"message": "Oops something went wrong",
 				"error": err
 			});
 		}
 	} else {
-		res.status(401);
-		res.send({
+		return res.status(401).send({
 			"message": "Invalid Token or Key"
 		});
 	}

@@ -13,11 +13,28 @@ var express = require('express'),
 var app = express();
 
 app.configure(function() {
+
+	//logger
 	if (process.env.NODE_ENV !== 'test') {
 		app.use(express.logger('dev'));
 	}
+
+	//body parser
 	app.use(express.bodyParser());
+
+	// header's fix
+	app.use(function(req, res, next) {
+		var _send = res.send;
+		var sent = false;
+		res.send = function(data) {
+			if (sent) return;
+			_send.bind(res)(data);
+			sent = true;
+		};
+		next();
+	});
 });
+
 
 //load conf file
 var confFile = process.env.NODE_ENV;

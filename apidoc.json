@@ -3,7 +3,7 @@
 	"version": "0.8.0",
 	"description": "Sugarizer Server API",
 	"title": "Sugarizer Server API",
-	"url" : "api",
+	"url" : "/",
 	"header": {
 		"title": "About",
 		"filename": "docs/docheader.md"
@@ -13,12 +13,21 @@
 		"filename": "docs/docfooter.md"
 	},
 	"order": [
+		"Auth",
+		"Users",
+		"Activities",
+		"Journal",
+		"Stats",
+		"Login",
+		"Signup",
+		"GetAllActivities",
 		"GetAllActivities",
 		"GetActivity",
 		"GetAllUsers",
 		"GetUser",
 		"AddUser",
 		"UpdateUser",
+		"RemoveUser",
 		"GetSharedJournal",
 		"GetJournalContent",
 		"GetJournalContentField",
@@ -27,6 +36,9 @@
 		"GetEntry",
 		"AddEntry",
 		"UpdateEntry",
-		"RemoveEntry"
+		"RemoveEntry",
+		"GetAllStats",
+		"AddStats",
+		"RemoveStats"
 	]
 }
