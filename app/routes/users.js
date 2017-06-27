@@ -219,16 +219,17 @@ exports.getAllUsers = function(query, options, callback) {
 	db.collection(usersCollection, function(err, collection) {
 
 		//get users
-		var users = collection.find(query);
+		collection.find(query, function(err, users) {
 
-		//skip sort limit
-		if (options.sort) users.sort(options.sort);
-		if (options.skip) users.skip(options.skip);
-		if (options.limit) users.limit(options.limit);
+			//skip sort limit
+			if (options.sort) users.sort(options.sort);
+			if (options.skip) users.skip(options.skip);
+			if (options.limit) users.limit(options.limit);
 
-		//return
-		users.toArray(function(err, users) {
-			callback(users);
+			//return
+			users.toArray(function(err, usersList) {
+				callback(usersList);
+			});
 		});
 	});
 }
