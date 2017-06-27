@@ -121,21 +121,34 @@ exports.addJournal = function(req, res) {
 }
 
 /**
- * @api {get} /journal/:jid Get journal entries
+ * @api {get} api/v1/journal/:jid Get journal entries
  * @apiName GetJournalContent
  * @apiDescription Retrieve full content of a journal. Result include both metadata and text.
  *
- * **Deprecated**: it's better to use the "api/journal/:jid/field/:field" to avoid big entries in the result.
  * @apiGroup Journal
- * @apiVersion 0.6.0
+ * @apiVersion 0.6.5
+ *
+ * @apiExample {curl} Example usage:
+ *     /api/v1/journal/5569f4b019e0b4c9525b3c96
+ *
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
  *
  * @apiParam {String} jid Unique id of the journal to retrieve
+ * @apiParam {String} [aid] filter on activity id <code>e.g. aid=org.sugarlabs.Markdown</code>
+ * @apiParam {Boolean} [oid] filter on object id of the activity <code>e.g. oid=4837240f-bf78-4d22-b936-3db96880f0a0</code>
+ * @apiParam {String} [uid] filter on user id <code>e.g. uid=5569f4b019e0b4c9525b3c97</code>
+ * @apiParam {String} [fields=metadata] field limiting <code>e.g. fields=text,metadata </code>
+ * @apiParam {String} [sort=+timestamp] Order of results <code>e.g. sort=-timestamp or sort=-creation_time</code>
+ * @apiParam {String} [offset=0] Offset in results <code>e.g. offset=15</code>
+ * @apiParam {String} [limit=10] Limit results <code>e.g. limit=5</code>*
  *
  * @apiSuccess {Object[]} entries List of all entries in the journal.
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
- *     [
+ *     {
+ *     "entries" : [
  *       {
  *         "metadata": {
  *           "title": "Read me !",
@@ -145,13 +158,13 @@ exports.addJournal = function(req, res) {
  *           "creation_time": ​1423341000747,
  *           "timestamp": ​1423341066909,
  *           "file_size": ​0,
+ *           "user_id": "5569f4b019e0b4c9525b3c97",
  *           "buddy_name": "Sugarizer server",
  *           "buddy_color": {
  *             "stroke": "#005FE4",
  *             "fill": "#FF2B34"
  *           }
  *         },
- *         "text": "\"# Hello Sugarizer user !\\n\\nWelcome to the Sugarizer server cloud storage. You could put everything that you need to share.\\n\\n\"",
  *         "objectId": "4837240f-bf78-4d22-b936-3db96880f0a0"
  *       },
  *       {
@@ -163,17 +176,26 @@ exports.addJournal = function(req, res) {
  *           "creation_time": ​1436003632237,
  *           "timestamp": ​1436025389565,
  *           "file_size": ​0,
+ *           "user_id": "5569f4b019e0b4c9525b3c97",
  *           "buddy_name": "Lionel",
  *           "buddy_color": {
  *             "stroke": "#00A0FF",
  *             "fill": "#F8E800"
  *           }
  *         },
- *         "text": "{\"world\":[{\"type\":\"circle\",\"radius\":67,\"restitution\":0.9,\"styles\":{\"fillStyle\":\"0xe25e36\",\"strokeStyle\":\"0x79231b\",\"lineWidth\":1,\"angleIndicator\":\"0x79231b\"},\"x\":476.38179433624566,\"y\":293.01047102092167},{\"type\":\"convex-polygon\",\"vertices\":[{\"x\":56,\"y\":0},{\"x\":-27.999999999999986,\"y\":48.49742261192857},{\"x\":-28.000000000000025,\"y\":-48.49742261192855}],\"restitution\":0.9,\"styles\":{\"fillStyle\":\"0x268bd2\",\"strokeStyle\":\"0x0d394f\",\"lineWidth\":1,\"angleIndicator\":\"0x0d394f\"},\"x\":48.905310222358665,\"y\":331.98056461712133},{\"type\":\"rectangle\",\"width\":64.5,\"height\":64,\"restitution\":0.9,\"styles\":{\"fillStyle\":\"0x58c73c\",\"strokeStyle\":\"0x30641c\",\"lineWidth\":1,\"angleIndicator\":\"0x30641c\"},\"x\":152.0965437765946,\"y\":328.48676667480015}]}",
  *         "objectId": "2acbcd69-aa14-4273-8a9f-47642b41ad9d"
  *       },
  *       ...
- *     ]
+ *     ],
+ *     "limit": 10,
+ *     "offset": 20,
+ *     "total": 200,
+ *     "sort": "+timestamp",
+ *     "links": {
+ *     	"next_page": "/api/v1/users?limit=10&offset=10",
+ *     	"next_page": "/api/v1/users?limit=10&offset=30"
+ *     	}
+ *     }
  **/
 exports.findJournalContent = function(req, res) {
 
@@ -337,11 +359,17 @@ function getOptions(req) {
 }
 
 /**
- * @api {post} /Journal/:jid Add entry
+ * @api {post} api/v1/Journal/:jid Add entry
  * @apiName AddEntry
  * @apiDescription Add an entry in a journal. Return the entry created. If the entry already exist, update it instead.
  * @apiGroup Journal
- * @apiVersion 0.6.0
+ * @apiVersion 0.6.5
+ *
+ * @apiExample {curl} Example usage:
+ *     /api/v1/journal/5569f4b019e0b4c9525b3c96
+ *
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
  *
  * @apiParam {String} jid Unique id of the journal where the entry will be created
  *
@@ -354,6 +382,7 @@ function getOptions(req) {
  * @apiSuccess {Number} metadata.creation_time Timestamp, creation time of the entry
  * @apiSuccess {Number} metadata.timestamp Timestamp, last time the instance was updated
  * @apiSuccess {Number} metadata.file_size Here for Sugar compatibility, always set to 0
+ * @apiSuccess {String} metadata.user_id User id of the entry creator
  * @apiSuccess {String} metadata.name User name of the entry creator
  * @apiSuccess {Object} metadata.color Buddy color of the entry creator
  * @apiSuccess {String} metadata.color.strike Buddy strike color of the entry creator
@@ -371,6 +400,7 @@ function getOptions(req) {
  *         "creation_time": ​1423341000747,
  *         "timestamp": ​1423341000747,
  *         "file_size": ​0,
+ *         "user_id": "5569f4b019e0b4c9525b3c97",
  *         "buddy_name": "Lionel",
  *         "buddy_color": {
  *           "stroke": "#005FE4",
@@ -440,11 +470,17 @@ exports.addEntryInJournal = function(req, res) {
 }
 
 /**
- * @api {put} /Journal/:jid/:oid Update entry
+ * @api {put} api/v1/journal/:jid Update entry
  * @apiName UpdateEntry
  * @apiDescription Update an entry in a journal. Return the entry updated. If the entry don't exist, create a new one instead.
  * @apiGroup Journal
- * @apiVersion 0.6.0
+ * @apiVersion 0.6.5
+ *
+ * @apiExample {curl} Example usage:
+ *     /api/v1/journal/5569f4b019e0b4c9525b3c96?oid=d3c7cfc2-8a02-4ce8-9306-073814a2024e
+ *
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
  *
  * @apiParam {String} jid Unique id of the journal to update
  * @apiParam {String} oid Unique id of the entry to update
@@ -458,6 +494,7 @@ exports.addEntryInJournal = function(req, res) {
  * @apiSuccess {Number} metadata.creation_time Timestamp, creation time of the entry
  * @apiSuccess {Number} metadata.timestamp Timestamp, last time the instance was updated
  * @apiSuccess {Number} metadata.file_size Here for Sugar compatibility, always set to 0
+ * @apiSuccess {String} metadata.user_id User id of the entry creator
  * @apiSuccess {String} metadata.name User name of the entry creator
  * @apiSuccess {Object} metadata.color Buddy color of the entry creator
  * @apiSuccess {String} metadata.color.strike Buddy strike color of the entry creator
@@ -475,6 +512,7 @@ exports.addEntryInJournal = function(req, res) {
  *         "creation_time": ​1423341000747,
  *         "timestamp": ​1423341066120,
  *         "file_size": ​0,
+ *         "user_id": ​"5569f4b019e0b4c9525b3c97",
  *         "buddy_name": "Lionel",
  *         "buddy_color": {
  *           "stroke": "#005FE4",
@@ -486,9 +524,9 @@ exports.addEntryInJournal = function(req, res) {
  *    }
  **/
 exports.updateEntryInJournal = function(req, res) {
-	if (!BSON.ObjectID.isValid(req.params.jid)) {
+	if (!BSON.ObjectID.isValid(req.params.jid) || !req.query.oid) {
 		res.status(401).send({
-			'error': 'Invalid journal id'
+			'error': 'Invalid journal or object id'
 		});
 		return;
 	}
@@ -525,14 +563,22 @@ exports.updateEntryInJournal = function(req, res) {
 }
 
 /**
- * @api {delete} /Journal/:jid/:oid Remove entry
+ * @api {delete} api/v1/journal/:jid Remove entry
  * @apiName RemoveEntry
  * @apiDescription Remove an entry in a journal. Return the id of the entry.
  * @apiGroup Journal
- * @apiVersion 0.6.0
+ * @apiVersion 0.6.5
+ *
+ * @apiExample {curl} Example usage:
+ *     /api/v1/journal?type=full
+ *     /api/v1/journal?type=partial&oid=d3c7cfc2-8a02-4ce8-9306-073814a2024e
+ *
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
  *
  * @apiParam {String} jid Unique id of the journal to update
- * @apiParam {String} oid Unique id of the entry to update
+ * @apiParam {String} [oid] Unique id of the entry to update when type is set to partial
+ * @apiParam {String} [type=partial] <code>type=full</code> when to delete the entire journal else <code>type=partial</code>
  *
  * @apiSuccess {Object} _pull Container object
  * @apiSuccess {Object} _pull.content Container object

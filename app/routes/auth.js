@@ -5,6 +5,56 @@ var jwt = require('jwt-simple'),
 
 var BSON = mongo.BSONPure;
 
+
+
+/**
+ * @api {post} login/ Login User
+ * @apiName Login User
+ * @apiDescription login a user (Admin or Student) on to the system. Return the user created with access token.
+ * @apiGroup Auth
+ * @apiVersion 0.6.5
+ *
+ * @apiSuccess {String} token Unique token of the user
+ * @apiSuccess {String} expires Expiration time of token
+ * @apiSuccess {Object} user User object (student or admin)
+ *
+ * @apiSuccessExample {json} Success-Response(Student):
+ *     HTTP/1.1 200 OK
+ *     {
+ *     	"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0OTkxNDM2ODQxNjJ9.4gVrk0o_pyYt_X5z-FfdSEFuGGFxeEsQP8QBjNqI9EA",
+ *      "expires": 1499143684162,
+ *      "user": {
+ *       "name": "Sameer",
+ *       "role": "student",
+ *       "color": {
+ *         "stroke": "#00A0FF",
+ *         "fill": "#00B20D"
+ *       },
+ *       "favorites": [],
+ *       "language": "en",
+ *       "password": "xxx",
+ *       "private_journal": "5569f4b019e0b4c9525b3c96",
+ *       "shared_journal": "536d30874326e55f2a22816f",
+ *       "timestamp": 1423341000747,
+ *       "_id": "5569f4b019e0b4c9525b3c97"
+ *     }
+ *    }
+ *
+ * @apiSuccessExample {json} Success-Response(Admin):
+ *     HTTP/1.1 200 OK
+ *     {
+ *     	"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0OTkxNDM2ODQxNjJ9.4gVrk0o_pyYt_X5z-FfdSEFuGGFxeEsQP8QBjNqI9EA",
+ *      "expires": 1499143684162,
+ *      "user": {
+ *       "name": "Tarun",
+ *       "role": "admin",
+ *       "language": "en",
+ *       "password": "xxx",
+ *       "timestamp": 1423341000747,
+ *       "_id": "5569f4b019e0b4c9525b3c97"
+ *       }
+ *     }
+ **/
 exports.login = function(req, res) {
 
 	//parse response
@@ -44,6 +94,55 @@ exports.login = function(req, res) {
 	});
 };
 
+/**
+ * @api {post} signup/ Signup User
+ * @apiName Signup User
+ * @apiDescription Add a new user (Admin or Student). Return the user created.
+ * @apiGroup Auth
+ * @apiVersion 0.6.5
+ *
+ * @apiSuccess {String} _id Unique user id
+ * @apiSuccess {String} name User name
+ * @apiSuccess {String} role User role (student or admin)
+ * @apiSuccess {Object} color Buddy color
+ * @apiSuccess {String} color.strike Buddy strike color
+ * @apiSuccess {String} color.file Buddy fill color
+ * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
+ * @apiSuccess {String} language Language setting of the user
+ * @apiSuccess {String} password password of the user
+ * @apiSuccess {String} private_journal Id of the private journal on the server
+ * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
+ * @apiSuccess {Number} timestamp when the user was created on the server
+ *
+ * @apiSuccessExample Success-Response(Student):
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "Sameer",
+ *       "role": "student",
+ *       "color": {
+ *         "stroke": "#00A0FF",
+ *         "fill": "#00B20D"
+ *       },
+ *       "favorites": [],
+ *       "language": "en",
+ *       "password": "xxx",
+ *       "private_journal": "5569f4b019e0b4c9525b3c96",
+ *       "shared_journal": "536d30874326e55f2a22816f",
+ *       "timestamp": 1423341000747,
+ *       "_id": "5569f4b019e0b4c9525b3c97"
+ *    }
+ *
+ * @apiSuccessExample Success-Response(Admin):
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "Tarun",
+ *       "role": "admin",
+ *       "language": "en",
+ *       "password": "xxx",
+ *       "timestamp": 1423341000747,
+ *       "_id": "5569f4b019e0b4c9525b3c97"
+ *    }*
+ **/
 exports.signup = function(req, res) {
 
 	//insert the user using the same logic but without auth
