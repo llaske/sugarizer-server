@@ -70,7 +70,7 @@ describe('Stats', function() {
 				.set('x-access-token', fakeUser.student.token)
 				.set('x-key', fakeUser.student.user._id)
 				.query({
-					"user_id": fakeUser.student.user._id
+					"uid": fakeUser.student.user._id
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
@@ -86,7 +86,7 @@ describe('Stats', function() {
 				.set('x-access-token', fakeUser.student.token)
 				.set('x-key', fakeUser.student.user._id)
 				.query({
-					"user_id": fakeUser.student.user._id
+					"uid": fakeUser.student.user._id
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
@@ -114,7 +114,7 @@ describe('Stats', function() {
 				.set('x-access-token', fakeUser.student.token)
 				.set('x-key', fakeUser.student.user._id)
 				.query({
-					"user_id": fakeUser.student.user._id
+					"uid": fakeUser.student.user._id
 				})
 				.end((err, res) => {
 					res.should.have.status(200);

@@ -75,7 +75,39 @@ exports.createJournal = function(callback) {
 	});
 }
 
-// Find all journal
+/**
+ * @api {get} api/v1/journal Get all journals
+ * @apiName GetAllJournals
+ * @apiDescription It will get all the journals present in the database. Private and shared can be filtered using the "type" query param. Admin can access all journals but student can access only shared and his/her private journal.
+ * @apiGroup Journal
+ * @apiVersion 1.0.0
+ *
+ * @apiExample Example usage:
+ *     /api/v1/journal
+ *     /api/v1/journal?type=shared
+ *     /api/v1/journal?type=private
+ *
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ *
+ * @apiParam {String} [type] Type of the journal (shared or private)
+ *
+ * @apiSuccess {String} _id Unique id of the journal
+ * @apiSuccess {Boolean} type Type of the journal
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *      {
+ *       "_id": "5946d4fc9f0e36686c50a548",
+ *       "shared": true
+ *      },
+ *      {
+ *       "_id": "5954089e088a9fd957734e46",
+ *       "shared": false
+ *      }
+ *     ]
+ **/
 exports.findAll = function(req, res) {
 
 	//set options
@@ -123,13 +155,18 @@ exports.addJournal = function(req, res) {
 /**
  * @api {get} api/v1/journal/:jid Get journal entries
  * @apiName GetJournalContent
- * @apiDescription Retrieve full content of a journal. Result include both metadata and text.
+ * @apiDescription Retrieve full content of a journal. Result include both metadata and text. Admin has access to all journals but student can access entries of his/her journal only.
  *
  * @apiGroup Journal
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  *
- * @apiExample {curl} Example usage:
+ * @apiExample Example usage:
  *     /api/v1/journal/5569f4b019e0b4c9525b3c96
+ *     /api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown
+ *     /api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&uid=5569f4b019e0b4c9525b3c97
+ *     /api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp
+ *     /api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&offset=15&limit=10
+ *     /api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&fields=text,metadata
  *
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
@@ -144,11 +181,15 @@ exports.addJournal = function(req, res) {
  * @apiParam {String} [limit=10] Limit results <code>e.g. limit=5</code>*
  *
  * @apiSuccess {Object[]} entries List of all entries in the journal.
+ * @apiSuccess {Number} offset Offset in journal entries
+ * @apiSuccess {Number} limit Limit on number of results
+ * @apiSuccess {Number} total total number of results
+ * @apiSuccess {Object} link pagination links
  *
- * @apiSuccessExample {json} Success-Response:
+ * @apiSuccessExample {Json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *     "entries" : [
+ *      "entries" : [
  *       {
  *         "metadata": {
  *           "title": "Read me !",
@@ -190,12 +231,11 @@ exports.addJournal = function(req, res) {
  *     "limit": 10,
  *     "offset": 20,
  *     "total": 200,
- *     "sort": "+timestamp",
  *     "links": {
- *     	"next_page": "/api/v1/users?limit=10&offset=10",
- *     	"next_page": "/api/v1/users?limit=10&offset=30"
- *     	}
+ *     	"prev_page": "/api/v1/journal/5569f4b019e0b4c9525b3c96?limit=10&offset=10",
+ *     	"next_page": "/api/v1/journal/5569f4b019e0b4c9525b3c96?limit=10&offset=30"
  *     }
+ *    }
  **/
 exports.findJournalContent = function(req, res) {
 
@@ -358,11 +398,11 @@ function getOptions(req) {
 /**
  * @api {post} api/v1/Journal/:jid Add entry
  * @apiName AddEntry
- * @apiDescription Add an entry in a journal. Return the entry created. If the entry already exist, update it instead.
+ * @apiDescription Add an entry in a journal. Return the entry created. If the entry already exist, update it instead. Admin has access to all journals but student can modify his/her journal only.
  * @apiGroup Journal
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  *
- * @apiExample {curl} Example usage:
+ * @apiExample Example usage:
  *     /api/v1/journal/5569f4b019e0b4c9525b3c96
  *
  * @apiHeader {String} x-key User unique id.
@@ -382,8 +422,8 @@ function getOptions(req) {
  * @apiSuccess {String} metadata.user_id User id of the entry creator
  * @apiSuccess {String} metadata.name User name of the entry creator
  * @apiSuccess {Object} metadata.color Buddy color of the entry creator
- * @apiSuccess {String} metadata.color.strike Buddy strike color of the entry creator
- * @apiSuccess {String} metadata.color.file Buddy fill color of the entry creator
+ * @apiSuccess {String} metadata.color.stroke Buddy strike color of the entry creator
+ * @apiSuccess {String} metadata.color.fill Buddy fill color of the entry creator
  * @apiSuccess {String} text Text of the entries, i.e. storage value of the entry. It depends of the entry type
  *
  * @apiSuccessExample Success-Response:
@@ -448,9 +488,11 @@ exports.addEntryInJournal = function(req, res) {
 							});
 						} else {
 							if (result) {
-								return res.send(newcontent);
+								return res.send(journal);
 							} else {
-								return res.status(401).send();
+								return res.status(401).send({
+									'error': 'An error has occurred'
+								});
 							}
 						}
 					});
@@ -467,11 +509,11 @@ exports.addEntryInJournal = function(req, res) {
 /**
  * @api {put} api/v1/journal/:jid Update entry
  * @apiName UpdateEntry
- * @apiDescription Update an entry in a journal. Return the entry updated. If the entry don't exist, create a new one instead.
+ * @apiDescription Update an entry in a journal. Return the entry updated. If the entry don't exist, create a new one instead. Admin has access to all journals but student can modify his/her journal only.
  * @apiGroup Journal
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  *
- * @apiExample {curl} Example usage:
+ * @apiExample Example usage:
  *     /api/v1/journal/5569f4b019e0b4c9525b3c96?oid=d3c7cfc2-8a02-4ce8-9306-073814a2024e
  *
  * @apiHeader {String} x-key User unique id.
@@ -492,8 +534,8 @@ exports.addEntryInJournal = function(req, res) {
  * @apiSuccess {String} metadata.user_id User id of the entry creator
  * @apiSuccess {String} metadata.name User name of the entry creator
  * @apiSuccess {Object} metadata.color Buddy color of the entry creator
- * @apiSuccess {String} metadata.color.strike Buddy strike color of the entry creator
- * @apiSuccess {String} metadata.color.file Buddy fill color of the entry creator
+ * @apiSuccess {String} metadata.color.stroke Buddy strike color of the entry creator
+ * @apiSuccess {String} metadata.color.fill Buddy fill color of the entry creator
  * @apiSuccess {String} text Text of the entries, i.e. storage value of the entry. It depends of the entry type
  *
  * @apiSuccessExample Success-Response:
@@ -558,35 +600,36 @@ exports.updateEntryInJournal = function(req, res) {
 }
 
 /**
- * @api {delete} api/v1/journal/:jid Remove entry
- * @apiName RemoveEntry
- * @apiDescription Remove an entry in a journal. Return the id of the entry.
+ * @api {delete} api/v1/journal/:jid Remove entry/journal
+ * @apiName RemoveEntryJournal
+ * @apiDescription Remove an entry in a journal or the complete journal. Return the id of the entry or journal. Admin has access to all journals but student can modify his/her journal only.
  * @apiGroup Journal
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  *
- * @apiExample {curl} Example usage:
+ * @apiExample Example usage:
  *     /api/v1/journal?type=full
  *     /api/v1/journal?type=partial&oid=d3c7cfc2-8a02-4ce8-9306-073814a2024e
  *
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
- * @apiParam {String} jid Unique id of the journal to update
- * @apiParam {String} [oid] Unique id of the entry to update when type is set to partial
+ * @apiParam {String} jid Unique id of the journal to delete
+ * @apiParam {String} [oid] Unique id of the entry to delete when type is set to partial
  * @apiParam {String} [type=partial] <code>type=full</code> when to delete the entire journal else <code>type=partial</code>
  *
- * @apiSuccess {Object} _pull Container object
- * @apiSuccess {Object} _pull.content Container object
- * @apiSuccess {String} _pull.content.objectId Unique id of the entry removed
+ * @apiSuccess {String} [objectId] Unique id of the entry removed
+ * @apiSuccess {String} [jid] Unique id of the journal removed
  *
- * @apiSuccessExample Success-Response:
+ * @apiSuccessExample Success-Response-Journal:
  *     HTTP/1.1 200 OK
  *     {
- *       "$pull": {
- *         "content": {
- *           "objectId": "d3c7cfc2-8a02-4ce8-9306-073814a2024e"
- *         }
- *       }
+ *      "jid": "5569f4b019e0b4c9525b3c97"
+ *     }
+ *
+ * @apiSuccessExample Success-Response-Entry:
+ *     HTTP/1.1 200 OK
+ *     {
+ *      "objectId": "d3c7cfc2-8a02-4ce8-9306-073814a2024e"
  *     }
  **/
 exports.removeInJournal = function(req, res) {
@@ -615,7 +658,9 @@ exports.removeInJournal = function(req, res) {
 					});
 				} else {
 					if (result) {
-						return res.send();
+						return res.send({
+							'jid': jid
+						});
 					} else {
 						return res.status(401).send({
 							'error': 'Error while deleting journal!'
@@ -644,7 +689,9 @@ exports.removeInJournal = function(req, res) {
 						});
 					} else {
 						if (result) {
-							return res.send();
+							return res.send({
+								'objectId': oid
+							});
 						} else {
 							return res.status(401).send({
 								'error': 'Error while deleting journal entry!'

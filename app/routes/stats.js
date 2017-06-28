@@ -31,9 +31,9 @@ exports.init = function(settings, callback) {
 /**
  * @api {post} api/v1/stats Add Stats
  * @apiName AddStats
- * @apiDescription Add stats in the database.
+ * @apiDescription Add stats in the database. Returns all the inserted stats.
  * @apiGroup Stats
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
@@ -50,18 +50,21 @@ exports.init = function(settings, callback) {
  *
  * @apiSuccessExample {json} Success-Response(Student):
  *     HTTP/1.1 200 OK
- *     [{
- *		     "user_id"         : "592d4445cc8be9187abb284f",
- *		     "user_agent"      : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
- *		     "user_ip"         : "122.34.42.165",
- *		     "client_type"     : "mobile",
- *		     "source"     	   : "sugarizer",
- *		     "event_object"    : "home_view",
- *		     "event_action"    : "search",
- *		     "event_label"     : "q=stopwatch",
- *		     "event_value"     : null,
- *		     "timestamp"       : 6712375127
- *		 }]
+ *    [
+ *      {
+ *       "user_id"         : "592d4445cc8be9187abb284f",
+ *       "user_agent"      : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+ *       "user_ip"         : "122.34.42.165",
+ *       "client_type"     : "mobile",
+ *       "event_source"    : "sugarizer",
+ *       "event_object"    : "home_view",
+ *       "event_action"    : "search",
+ *       "event_label"     : "q=stopwatch",
+ *       "event_value"     : null,
+ *       "timestamp"       : 6712375127,
+ *       "_id"             : "59541db5a297accf5b9003da"
+ *      }
+ *    ]
  *
  **/
 exports.addStats = function(req, res) {
@@ -98,7 +101,7 @@ exports.addStats = function(req, res) {
  * @apiName RemoveStats
  * @apiDescription Remove all the stats for a particular user.
  * @apiGroup Stats
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
@@ -113,16 +116,25 @@ exports.addStats = function(req, res) {
 exports.deleteStats = function(req, res) {
 
 	//validate
-	if (!req.query.user_id) {
+	if (!req.query.uid) {
 		res.status(401).send({
 			'error': 'Invalid user id'
 		});
 		return;
 	}
 
+	// validate on the basis of user's role
+	if (req.user.role == 'student') {
+		if (req.user._id != req.query.uid) {
+			return res.status(401).send({
+				'error': 'You don\'t have permission to perform this action'
+			});
+		}
+	}
+
 	db.collection(statsCollection, function(err, collection) {
 		collection.remove({
-			'user_id': req.query.user_id
+			'user_id': req.query.uid
 		}, function(err, result) {
 			if (err) {
 				res.status(500).send({
@@ -130,7 +142,7 @@ exports.deleteStats = function(req, res) {
 				});
 			} else {
 				res.send({
-					'user_id': req.query.user_id
+					'user_id': req.query.uid
 				});
 			}
 		});
@@ -142,16 +154,16 @@ exports.deleteStats = function(req, res) {
  * @apiName GetAllStats
  * @apiDescription Retrieve all stats data registered on the server.
  * @apiGroup Stats
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  * @apiHeader {String} x-key Users unique id.
  * @apiHeader {String} x-access-token Users access token.
  *
- * @apiParam {String} [user_id] ID of the user
+ * @apiParam {String} [uid] ID of the user
  * @apiParam {String} [object] Name of the Event Object
  * @apiParam {String} [action] Name of the Event Action
  * @apiParam {String} [sort=+timestamp] Order of results <code>e.g. sort=-action or sort=+timestamp</code>
  *
- * @apiExample {curl} Example usage:
+ * @apiExample Example usage:
  *     /api/v1/stats
  *     /api/v1/stats?user_id=592d4445cc8be9187abb284f
  *     /api/v1/stats?event_object=home_view
@@ -162,18 +174,19 @@ exports.deleteStats = function(req, res) {
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     [
- *        {
- *			     "user_id"         : "592d4445cc8be9187abb284f",
- *			     "user_agent"      : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
- *			     "user_ip"         : "122.34.42.165",
- *			     "client_type"     : "mobile",
- *			     "source"     	   : "sugarizer",
- *			     "event_object"    : "home_view",
- *			     "event_action"    : "search",
- *			     "event_label"     : "q=stopwatch",
- *			     "event_value"     : null,
- *			     "timestamp"       : 6712375127
- *				}
+ *      {
+ *       "user_id"         : "592d4445cc8be9187abb284f",
+ *       "user_agent"      : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+ *       "user_ip"         : "122.34.42.165",
+ *       "client_type"     : "mobile",
+ *       "event_source"    : "sugarizer",
+ *       "event_object"    : "home_view",
+ *       "event_action"    : "search",
+ *       "event_label"     : "q=stopwatch",
+ *       "event_value"     : null,
+ *       "timestamp"       : 6712375127,
+ *       "_id"             : "59541db5a297accf5b9003da"
+ *      }
  *      ...
  *     ]
  **/
@@ -181,7 +194,7 @@ exports.findAll = function(req, res) {
 
 	//form query
 	var query = {};
-	query = addQuery('user_id', req.query, query);
+	query = addQuery('uid', req.query, query);
 	query = addQuery('object', req.query, query);
 	query = addQuery('action', req.query, query);
 
@@ -218,8 +231,8 @@ function addQuery(filter, params, query, default_val) {
 	//validate
 	if (typeof params[filter] != "undefined" && typeof params[filter] === "string") {
 
-		if (filter == 'user_id') {
-			query[filter] = params[filter];
+		if (filter == 'uid') {
+			query['user_id'] = params[filter];
 		} else {
 			query[filter] = {
 				$regex: new RegExp("^" + params[filter] + "$", "i")

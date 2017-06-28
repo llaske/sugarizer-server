@@ -128,7 +128,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.$push.content.should.be.deep.equal(JSON.parse(entry));
+					res.body.should.be.deep.equal(JSON.parse(entry));
 					done();
 				});
 		});
@@ -144,7 +144,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.$push.content.should.be.deep.equal(JSON.parse(entry));
+					res.body.should.be.deep.equal(JSON.parse(entry));
 					done();
 				});
 		});

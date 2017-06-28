@@ -4,12 +4,12 @@
     "url": "api/v1/activities/:id?fields=:fields",
     "title": "Get activity detail",
     "name": "GetActivity",
-    "description": "<p>Retrieve detail of an activity.</p>",
+    "description": "<p>Retrieve details of an activity.</p>",
     "examples": [
       {
         "title": "Example usage:",
-        "content": "/api/v1/activities/org.olpcfrance.Abecedarium\n/api/v1/activities/org.olpcfrance.Abecedarium?ields=index,name",
-        "type": "curl"
+        "content": "/api/v1/activities/org.olpcfrance.Abecedarium\n/api/v1/activities/org.olpcfrance.Abecedarium?fields=id,index,name,index",
+        "type": "json"
       }
     ],
     "header": {
@@ -118,11 +118,16 @@
           "title": "Success-Response:",
           "content": "HTTP/1.1 200 OK\n{\n  \"id\": \"org.olpcfrance.Abecedarium\",\n  \"name\": \"Abecedarium\",\n  \"version\": \"5\",\n  \"directory\": \"activities/Abecedarium.activity\",\n  \"icon\": \"activity/activity-icon.svg\",\n  \"favorite\": true,\n  \"activityId\": null,\n  \"index\": 11\n}",
           "type": "json"
+        },
+        {
+          "title": "Success-Response-Fields-Limited:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"id\": \"org.olpcfrance.Abecedarium\",\n  \"name\": \"Abecedarium\",\n  \"version\": \"5\",\n  \"index\": 11\n}",
+          "type": "json"
         }
       ]
     },
     "group": "Activities",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "filename": "app/routes/activities.js",
     "groupTitle": "Activities"
   },
@@ -131,14 +136,14 @@
     "url": "api/v1/activities?name=:name&favorite=:favorite&fields=:fields&sort=:sort",
     "title": "Get all activities",
     "name": "GetAllActivities",
-    "description": "<p>Retrieve all activities installed on the server.</p>",
+    "description": "<p>Retrieve details of all activities installed on the server.</p>",
     "group": "Activities",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "examples": [
       {
         "title": "Example usage:",
         "content": "/api/v1/activities\n/api/v1/activities?name=gears\n/api/v1/activities?favorite=false&sort=-version\n/api/v1/activities?favorite=true&fields=index,name&sort=+name",
-        "type": "curl"
+        "type": "json"
       }
     ],
     "header": {
@@ -226,7 +231,7 @@
     "name": "Login_User",
     "description": "<p>login a user (Admin or Student) on to the system. Return the user created with access token.</p>",
     "group": "Auth",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "success": {
       "fields": {
         "Success 200": [
@@ -256,7 +261,7 @@
       "examples": [
         {
           "title": "Success-Response(Student):",
-          "content": " HTTP/1.1 200 OK\n {\n \t\"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0OTkxNDM2ODQxNjJ9.4gVrk0o_pyYt_X5z-FfdSEFuGGFxeEsQP8QBjNqI9EA\",\n  \"expires\": 1499143684162,\n  \"user\": {\n   \"name\": \"Sameer\",\n   \"role\": \"student\",\n   \"color\": {\n     \"stroke\": \"#00A0FF\",\n     \"fill\": \"#00B20D\"\n   },\n   \"favorites\": [],\n   \"language\": \"en\",\n   \"password\": \"xxx\",\n   \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n   \"shared_journal\": \"536d30874326e55f2a22816f\",\n   \"timestamp\": 1423341000747,\n   \"_id\": \"5569f4b019e0b4c9525b3c97\"\n }\n}",
+          "content": " HTTP/1.1 200 OK\n {\n  \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0OTkxNDM2ODQxNjJ9.4gVrk0o_pyYt_X5z-FfdSEFuGGFxeEsQP8QBjNqI9EA\",\n  \"expires\": 1499143684162,\n  \"user\": {\n   \"name\": \"Tarun\",\n   \"role\": \"student\",\n   \"color\": {\n     \"stroke\": \"#00A0FF\",\n     \"fill\": \"#00B20D\"\n   },\n   \"favorites\": [],\n   \"language\": \"en\",\n   \"password\": \"xxx\",\n   \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n   \"shared_journal\": \"536d30874326e55f2a22816f\",\n   \"timestamp\": 1423341000747,\n   \"_id\": \"5569f4b019e0b4c9525b3c97\"\n }\n}",
           "type": "json"
         },
         {
@@ -276,7 +281,7 @@
     "name": "Signup_User",
     "description": "<p>Add a new user (Admin or Student). Return the user created.</p>",
     "group": "Auth",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "success": {
       "fields": {
         "Success 200": [
@@ -312,14 +317,14 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "color.strike",
+            "field": "color.stroke",
             "description": "<p>Buddy strike color</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "color.file",
+            "field": "color.fill",
             "description": "<p>Buddy fill color</p>"
           },
           {
@@ -369,7 +374,7 @@
       "examples": [
         {
           "title": "Success-Response(Student):",
-          "content": " HTTP/1.1 200 OK\n {\n   \"name\": \"Sameer\",\n   \"role\": \"student\",\n   \"color\": {\n     \"stroke\": \"#00A0FF\",\n     \"fill\": \"#00B20D\"\n   },\n   \"favorites\": [],\n   \"language\": \"en\",\n   \"password\": \"xxx\",\n   \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n   \"shared_journal\": \"536d30874326e55f2a22816f\",\n   \"timestamp\": 1423341000747,\n   \"_id\": \"5569f4b019e0b4c9525b3c97\"\n}",
+          "content": " HTTP/1.1 200 OK\n {\n   \"name\": \"Tarun\",\n   \"role\": \"student\",\n   \"color\": {\n     \"stroke\": \"#00A0FF\",\n     \"fill\": \"#00B20D\"\n   },\n   \"favorites\": [],\n   \"language\": \"en\",\n   \"password\": \"xxx\",\n   \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n   \"shared_journal\": \"536d30874326e55f2a22816f\",\n   \"timestamp\": 1423341000747,\n   \"_id\": \"5569f4b019e0b4c9525b3c97\"\n}",
           "type": "json"
         },
         {
@@ -387,14 +392,14 @@
     "url": "api/v1/Journal/:jid",
     "title": "Add entry",
     "name": "AddEntry",
-    "description": "<p>Add an entry in a journal. Return the entry created. If the entry already exist, update it instead.</p>",
+    "description": "<p>Add an entry in a journal. Return the entry created. If the entry already exist, update it instead. Admin has access to all journals but student can modify his/her journal only.</p>",
     "group": "Journal",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "examples": [
       {
         "title": "Example usage:",
         "content": "/api/v1/journal/5569f4b019e0b4c9525b3c96",
-        "type": "curl"
+        "type": "json"
       }
     ],
     "header": {
@@ -521,14 +526,14 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "metadata.color.strike",
+            "field": "metadata.color.stroke",
             "description": "<p>Buddy strike color of the entry creator</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "metadata.color.file",
+            "field": "metadata.color.fill",
             "description": "<p>Buddy fill color of the entry creator</p>"
           },
           {
@@ -553,17 +558,95 @@
   },
   {
     "type": "get",
-    "url": "api/v1/journal/:jid",
-    "title": "Get journal entries",
-    "name": "GetJournalContent",
-    "description": "<p>Retrieve full content of a journal. Result include both metadata and text.</p>",
+    "url": "api/v1/journal",
+    "title": "Get all journals",
+    "name": "GetAllJournals",
+    "description": "<p>It will get all the journals present in the database. Private and shared can be filtered using the &quot;type&quot; query param. Admin can access all journals but student can access only shared and his/her private journal.</p>",
     "group": "Journal",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "examples": [
       {
         "title": "Example usage:",
-        "content": "/api/v1/journal/5569f4b019e0b4c9525b3c96",
-        "type": "curl"
+        "content": "/api/v1/journal\n/api/v1/journal?type=shared\n/api/v1/journal?type=private",
+        "type": "json"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "type",
+            "description": "<p>Type of the journal (shared or private)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>Unique id of the journal</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "type",
+            "description": "<p>Type of the journal</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n {\n  \"_id\": \"5946d4fc9f0e36686c50a548\",\n  \"shared\": true\n },\n {\n  \"_id\": \"5954089e088a9fd957734e46\",\n  \"shared\": false\n }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/journal.js",
+    "groupTitle": "Journal"
+  },
+  {
+    "type": "get",
+    "url": "api/v1/journal/:jid",
+    "title": "Get journal entries",
+    "name": "GetJournalContent",
+    "description": "<p>Retrieve full content of a journal. Result include both metadata and text. Admin has access to all journals but student can access entries of his/her journal only.</p>",
+    "group": "Journal",
+    "version": "1.0.0",
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "/api/v1/journal/5569f4b019e0b4c9525b3c96\n/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown\n/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&uid=5569f4b019e0b4c9525b3c97\n/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp\n/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&offset=15&limit=10\n/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&fields=text,metadata",
+        "type": "json"
       }
     ],
     "header": {
@@ -661,14 +744,42 @@
             "optional": false,
             "field": "entries",
             "description": "<p>List of all entries in the journal.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "offset",
+            "description": "<p>Offset in journal entries</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>Limit on number of results</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "total",
+            "description": "<p>total number of results</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "link",
+            "description": "<p>pagination links</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n\"entries\" : [\n  {\n    \"metadata\": {\n      \"title\": \"Read me !\",\n      \"title_set_by_user\": \"0\",\n      \"activity\": \"org.sugarlabs.Markdown\",\n      \"activity_id\": \"caa97e48-d33c-470a-99e9-495ff02afe01\",\n      \"creation_time\": ​1423341000747,\n      \"timestamp\": ​1423341066909,\n      \"file_size\": ​0,\n      \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n      \"buddy_name\": \"Sugarizer server\",\n      \"buddy_color\": {\n        \"stroke\": \"#005FE4\",\n        \"fill\": \"#FF2B34\"\n      }\n    },\n    \"objectId\": \"4837240f-bf78-4d22-b936-3db96880f0a0\"\n  },\n  {\n    \"metadata\": {\n      \"title\": \"Physics JS Activity\",\n      \"title_set_by_user\": \"0\",\n      \"activity\": \"org.olpg-france.physicsjs\",\n      \"activity_id\": \"43708a15-f48e-49b1-85ef-da4c1419b364\",\n      \"creation_time\": ​1436003632237,\n      \"timestamp\": ​1436025389565,\n      \"file_size\": ​0,\n      \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n      \"buddy_name\": \"Lionel\",\n      \"buddy_color\": {\n        \"stroke\": \"#00A0FF\",\n        \"fill\": \"#F8E800\"\n      }\n    },\n    \"objectId\": \"2acbcd69-aa14-4273-8a9f-47642b41ad9d\"\n  },\n  ...\n],\n\"limit\": 10,\n\"offset\": 20,\n\"total\": 200,\n\"sort\": \"+timestamp\",\n\"links\": {\n\t\"next_page\": \"/api/v1/users?limit=10&offset=10\",\n\t\"next_page\": \"/api/v1/users?limit=10&offset=30\"\n\t}\n}",
-          "type": "json"
+          "content": " HTTP/1.1 200 OK\n {\n  \"entries\" : [\n   {\n     \"metadata\": {\n       \"title\": \"Read me !\",\n       \"title_set_by_user\": \"0\",\n       \"activity\": \"org.sugarlabs.Markdown\",\n       \"activity_id\": \"caa97e48-d33c-470a-99e9-495ff02afe01\",\n       \"creation_time\": ​1423341000747,\n       \"timestamp\": ​1423341066909,\n       \"file_size\": ​0,\n       \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n       \"buddy_name\": \"Sugarizer server\",\n       \"buddy_color\": {\n         \"stroke\": \"#005FE4\",\n         \"fill\": \"#FF2B34\"\n       }\n     },\n     \"objectId\": \"4837240f-bf78-4d22-b936-3db96880f0a0\"\n   },\n   {\n     \"metadata\": {\n       \"title\": \"Physics JS Activity\",\n       \"title_set_by_user\": \"0\",\n       \"activity\": \"org.olpg-france.physicsjs\",\n       \"activity_id\": \"43708a15-f48e-49b1-85ef-da4c1419b364\",\n       \"creation_time\": ​1436003632237,\n       \"timestamp\": ​1436025389565,\n       \"file_size\": ​0,\n       \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n       \"buddy_name\": \"Lionel\",\n       \"buddy_color\": {\n         \"stroke\": \"#00A0FF\",\n         \"fill\": \"#F8E800\"\n       }\n     },\n     \"objectId\": \"2acbcd69-aa14-4273-8a9f-47642b41ad9d\"\n   },\n   ...\n ],\n \"limit\": 10,\n \"offset\": 20,\n \"total\": 200,\n \"links\": {\n \t\"prev_page\": \"/api/v1/journal/5569f4b019e0b4c9525b3c96?limit=10&offset=10\",\n \t\"next_page\": \"/api/v1/journal/5569f4b019e0b4c9525b3c96?limit=10&offset=30\"\n }\n}",
+          "type": "Json"
         }
       ]
     },
@@ -678,16 +789,16 @@
   {
     "type": "delete",
     "url": "api/v1/journal/:jid",
-    "title": "Remove entry",
-    "name": "RemoveEntry",
-    "description": "<p>Remove an entry in a journal. Return the id of the entry.</p>",
+    "title": "Remove entry/journal",
+    "name": "RemoveEntryJournal",
+    "description": "<p>Remove an entry in a journal or the complete journal. Return the id of the entry or journal. Admin has access to all journals but student can modify his/her journal only.</p>",
     "group": "Journal",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "examples": [
       {
         "title": "Example usage:",
         "content": "/api/v1/journal?type=full\n/api/v1/journal?type=partial&oid=d3c7cfc2-8a02-4ce8-9306-073814a2024e",
-        "type": "curl"
+        "type": "json"
       }
     ],
     "header": {
@@ -718,14 +829,14 @@
             "type": "String",
             "optional": false,
             "field": "jid",
-            "description": "<p>Unique id of the journal to update</p>"
+            "description": "<p>Unique id of the journal to delete</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
             "field": "oid",
-            "description": "<p>Unique id of the entry to update when type is set to partial</p>"
+            "description": "<p>Unique id of the entry to delete when type is set to partial</p>"
           },
           {
             "group": "Parameter",
@@ -743,31 +854,29 @@
         "Success 200": [
           {
             "group": "Success 200",
-            "type": "Object",
-            "optional": false,
-            "field": "_pull",
-            "description": "<p>Container object</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Object",
-            "optional": false,
-            "field": "_pull.content",
-            "description": "<p>Container object</p>"
+            "type": "String",
+            "optional": true,
+            "field": "objectId",
+            "description": "<p>Unique id of the entry removed</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
-            "optional": false,
-            "field": "_pull.content.objectId",
-            "description": "<p>Unique id of the entry removed</p>"
+            "optional": true,
+            "field": "jid",
+            "description": "<p>Unique id of the journal removed</p>"
           }
         ]
       },
       "examples": [
         {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"$pull\": {\n    \"content\": {\n      \"objectId\": \"d3c7cfc2-8a02-4ce8-9306-073814a2024e\"\n    }\n  }\n}",
+          "title": "Success-Response-Journal:",
+          "content": "HTTP/1.1 200 OK\n{\n \"jid\": \"5569f4b019e0b4c9525b3c97\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success-Response-Entry:",
+          "content": "HTTP/1.1 200 OK\n{\n \"objectId\": \"d3c7cfc2-8a02-4ce8-9306-073814a2024e\"\n}",
           "type": "json"
         }
       ]
@@ -780,14 +889,14 @@
     "url": "api/v1/journal/:jid",
     "title": "Update entry",
     "name": "UpdateEntry",
-    "description": "<p>Update an entry in a journal. Return the entry updated. If the entry don't exist, create a new one instead.</p>",
+    "description": "<p>Update an entry in a journal. Return the entry updated. If the entry don't exist, create a new one instead. Admin has access to all journals but student can modify his/her journal only.</p>",
     "group": "Journal",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "examples": [
       {
         "title": "Example usage:",
         "content": "/api/v1/journal/5569f4b019e0b4c9525b3c96?oid=d3c7cfc2-8a02-4ce8-9306-073814a2024e",
-        "type": "curl"
+        "type": "json"
       }
     ],
     "header": {
@@ -921,14 +1030,14 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "metadata.color.strike",
+            "field": "metadata.color.stroke",
             "description": "<p>Buddy strike color of the entry creator</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "metadata.color.file",
+            "field": "metadata.color.fill",
             "description": "<p>Buddy fill color of the entry creator</p>"
           },
           {
@@ -956,9 +1065,9 @@
     "url": "api/v1/stats",
     "title": "Add Stats",
     "name": "AddStats",
-    "description": "<p>Add stats in the database.</p>",
+    "description": "<p>Add stats in the database. Returns all the inserted stats.</p>",
     "group": "Stats",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "header": {
       "fields": {
         "Header": [
@@ -1057,7 +1166,7 @@
       "examples": [
         {
           "title": "Success-Response(Student):",
-          "content": "    HTTP/1.1 200 OK\n    [{\n\t\t     \"user_id\"         : \"592d4445cc8be9187abb284f\",\n\t\t     \"user_agent\"      : \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36\",\n\t\t     \"user_ip\"         : \"122.34.42.165\",\n\t\t     \"client_type\"     : \"mobile\",\n\t\t     \"source\"     \t   : \"sugarizer\",\n\t\t     \"event_object\"    : \"home_view\",\n\t\t     \"event_action\"    : \"search\",\n\t\t     \"event_label\"     : \"q=stopwatch\",\n\t\t     \"event_value\"     : null,\n\t\t     \"timestamp\"       : 6712375127\n\t\t }]",
+          "content": " HTTP/1.1 200 OK\n[\n  {\n   \"user_id\"         : \"592d4445cc8be9187abb284f\",\n   \"user_agent\"      : \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36\",\n   \"user_ip\"         : \"122.34.42.165\",\n   \"client_type\"     : \"mobile\",\n   \"event_source\"    : \"sugarizer\",\n   \"event_object\"    : \"home_view\",\n   \"event_action\"    : \"search\",\n   \"event_label\"     : \"q=stopwatch\",\n   \"event_value\"     : null,\n   \"timestamp\"       : 6712375127,\n   \"_id\"             : \"59541db5a297accf5b9003da\"\n  }\n]",
           "type": "json"
         }
       ]
@@ -1072,7 +1181,7 @@
     "name": "GetAllStats",
     "description": "<p>Retrieve all stats data registered on the server.</p>",
     "group": "Stats",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "header": {
       "fields": {
         "Header": [
@@ -1100,7 +1209,7 @@
             "group": "Parameter",
             "type": "String",
             "optional": true,
-            "field": "user_id",
+            "field": "uid",
             "description": "<p>ID of the user</p>"
           },
           {
@@ -1132,7 +1241,7 @@
       {
         "title": "Example usage:",
         "content": "/api/v1/stats\n/api/v1/stats?user_id=592d4445cc8be9187abb284f\n/api/v1/stats?event_object=home_view\n/api/v1/stats?user_id=592d4445cc8be9187abb284f&sort=-timestamp",
-        "type": "curl"
+        "type": "json"
       }
     ],
     "success": {
@@ -1150,7 +1259,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "    HTTP/1.1 200 OK\n    [\n       {\n\t\t\t     \"user_id\"         : \"592d4445cc8be9187abb284f\",\n\t\t\t     \"user_agent\"      : \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36\",\n\t\t\t     \"user_ip\"         : \"122.34.42.165\",\n\t\t\t     \"client_type\"     : \"mobile\",\n\t\t\t     \"source\"     \t   : \"sugarizer\",\n\t\t\t     \"event_object\"    : \"home_view\",\n\t\t\t     \"event_action\"    : \"search\",\n\t\t\t     \"event_label\"     : \"q=stopwatch\",\n\t\t\t     \"event_value\"     : null,\n\t\t\t     \"timestamp\"       : 6712375127\n\t\t\t\t}\n     ...\n    ]",
+          "content": "HTTP/1.1 200 OK\n[\n {\n  \"user_id\"         : \"592d4445cc8be9187abb284f\",\n  \"user_agent\"      : \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36\",\n  \"user_ip\"         : \"122.34.42.165\",\n  \"client_type\"     : \"mobile\",\n  \"event_source\"    : \"sugarizer\",\n  \"event_object\"    : \"home_view\",\n  \"event_action\"    : \"search\",\n  \"event_label\"     : \"q=stopwatch\",\n  \"event_value\"     : null,\n  \"timestamp\"       : 6712375127,\n  \"_id\"             : \"59541db5a297accf5b9003da\"\n }\n ...\n]",
           "type": "json"
         }
       ]
@@ -1165,7 +1274,7 @@
     "name": "RemoveStats",
     "description": "<p>Remove all the stats for a particular user.</p>",
     "group": "Stats",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "header": {
       "fields": {
         "Header": [
@@ -1216,9 +1325,9 @@
     "url": "api/v1/users/",
     "title": "Add user",
     "name": "AddUser",
-    "description": "<p>Add a new user. Return the user created.</p>",
+    "description": "<p>Add a new user. Return the user created. Only admin can add another admin or student.</p>",
     "group": "Users",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "header": {
       "fields": {
         "Header": [
@@ -1274,14 +1383,14 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "color.strike",
+            "field": "color.stroke",
             "description": "<p>Buddy strike color</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "color.file",
+            "field": "color.fill",
             "description": "<p>Buddy fill color</p>"
           },
           {
@@ -1346,12 +1455,12 @@
     "name": "GetAllUsers",
     "description": "<p>Retrieve all users registered on the server. Query params can be mixed and match to achieve suitable results.</p>",
     "group": "Users",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "examples": [
       {
         "title": "Example usage:",
         "content": "/api/v1/users\n/api/v1/users?name=tarun\n/api/v1/users?language=fr&sort=+name\n/api/v1/users?sort=+name&limit=5&offset=20",
-        "type": "curl"
+        "type": "json"
       }
     ],
     "header": {
@@ -1483,7 +1592,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n {\n \"users\":[\n   {\n     \"name\": \"Tarun Singhal\",\n     \"role\": \"student\",\n     \"color\": {\n       \"stroke\": \"#005FE4\",\n       \"fill\": \"#FF2B34\"\n     },\n     \"favorites\": [\n       \"org.sugarlabs.GearsActivity\",\n       \"org.sugarlabs.MazeWebActivity\",\n     ],\n     \"language\": \"en\",\n     \"password\": \"xxx\",\n     \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n     \"shared_journal\": \"536d30874326e55f2a22816f\",\n     \"timestamp\": 1423341000747,\n     \"_id\": \"536dd30aadcd557f2a9d648b\"\n  },\n  ...\n ],\n \"limit\": 10,\n \"offset\": 20,\n \"total\": 200,\n \"sort\": \"+name\",\n \"links\": {\n \t\"next_page\": \"/api/v1/users?limit=10&offset=10\",\n \t\"next_page\": \"/api/v1/users?limit=10&offset=30\"\n }\n}",
+          "content": " HTTP/1.1 200 OK\n {\n \"users\":[\n   {\n     \"name\": \"Tarun Singhal\",\n     \"role\": \"student\",\n     \"color\": {\n       \"stroke\": \"#005FE4\",\n       \"fill\": \"#FF2B34\"\n     },\n     \"favorites\": [\n       \"org.sugarlabs.GearsActivity\",\n       \"org.sugarlabs.MazeWebActivity\",\n     ],\n     \"language\": \"en\",\n     \"password\": \"xxx\",\n     \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n     \"shared_journal\": \"536d30874326e55f2a22816f\",\n     \"timestamp\": 1423341000747,\n     \"_id\": \"536dd30aadcd557f2a9d648b\"\n  },\n  ...\n ],\n \"limit\": 10,\n \"offset\": 20,\n \"total\": 200,\n \"sort\": \"+name\",\n \"links\": {\n \t\"prev_page\": \"/api/v1/users?limit=10&offset=10\",\n \t\"next_page\": \"/api/v1/users?limit=10&offset=30\"\n }\n}",
           "type": "json"
         }
       ]
@@ -1498,7 +1607,7 @@
     "name": "GetUser",
     "description": "<p>Retrieve detail for a specific user.</p>",
     "group": "Users",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "header": {
       "fields": {
         "Header": [
@@ -1554,14 +1663,14 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "color.strike",
+            "field": "color.stroke",
             "description": "<p>Buddy strike color</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "color.file",
+            "field": "color.fill",
             "description": "<p>Buddy fill color</p>"
           },
           {
@@ -1624,9 +1733,9 @@
     "url": "api/v1/users/:uid",
     "title": "Remove user",
     "name": "RemoveUser",
-    "description": "<p>Remove an user from the database.</p>",
+    "description": "<p>Remove an user from the database. Only admin can remove other users. Self removal can also be done.</p>",
     "group": "Users",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "header": {
       "fields": {
         "Header": [
@@ -1677,9 +1786,9 @@
     "url": "api/v1/users/",
     "title": "Update user",
     "name": "UpdateUser",
-    "description": "<p>Update an user. Return the user updated.</p>",
+    "description": "<p>Update an user. Return the user updated. Student can update only his/her details but admin can update anyone.</p>",
     "group": "Users",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "header": {
       "fields": {
         "Header": [
@@ -1735,14 +1844,14 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "color.strike",
+            "field": "color.stroke",
             "description": "<p>Buddy strike color</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "color.file",
+            "field": "color.fill",
             "description": "<p>Buddy fill color</p>"
           },
           {
