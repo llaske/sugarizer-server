@@ -4,15 +4,17 @@ var express = require('express'),
 	moment = require('moment'),
 	ini = require('ini'),
 	ejs = require('ejs'),
-	request = require('request'),
 	app = express(),
 	bodyParser = require('body-parser'),
 	expressSession = require('express-session'),
 	cookieParser = require('cookie-parser'),
 	flash = require('express-flash'),
-	path = require('path'),
 	expressValidator = require('express-validator'),
-	authController = require('./controller/auth');
+	authController = require('./controller/auth'),
+	usersController = require('./controller/users'),
+	activitiesController = require('./controller/activities'),
+	journalController = require('./controller/journal'),
+	dashboardController = require('./controller/dashboard');
 
 // must use cookieParser before expressSession
 app.use(cookieParser());
@@ -49,11 +51,10 @@ app.get('/', authController.index);
 app.get('/login', authController.getLogin);
 app.post('/login', authController.postLogin);
 app.get('/logout', authController.logout);
-app.get('/app/dashboard', function(req, res) {
-	res.render('dashboard', {
-		'module': 'dashboard',
-	});
-});
+app.get('/app/dashboard', dashboardController.index);
+// app.get('/app/users', usersController.index);
+// app.get('/app/journal', journalController.index);
+// app.get('/app/activities', activitiesController.index);
 
 // If no route is matched by now, it must be a 404
 app.use(function(req, res) {
