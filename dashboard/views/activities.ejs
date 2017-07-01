@@ -1,0 +1,39 @@
+
+<div class="wrapper">
+	<% include includes/sidebar %> 
+	<div class="main-panel">
+		<% include includes/header %> 
+		<div class="content ">
+			<div class="container-fluid">
+				<div class="row">
+					<% for(var i=0; i < activities.length; i++) { %>
+ 						<!-- item container starts -->
+						<div class="col-lg-4 col-md-6 col-sm-6" index="<%= activities[i].index %>">
+							<div class="card card-stats">
+								<div class="card-header" data-background-color="orange">
+									<img style="height: 40px;width: 40px;" src="<%= config.main_url %><%= activities[i].directory %>/<%= activities[i].icon %>" />
+								</div>
+								<div class="card-content">
+									<p class="category">Version <%= activities[i].version %></p>
+									<h3 class="title" title="<%= activities[i].name %>"><%= activities[i].name %></h3>
+									<h5 class="title"><%= activities[i].id %></h5>
+									<%if (activities[i].favorite == true) { %>
+										<h5 class="title">It is a favorite app</h5>
+									<% } else {%>
+										<h5 class="title">It is not a favorite app</h5>
+									<% } %>
+								</div>
+								<div class="card-footer">
+									<div class="stats">
+										<a target="_blank" href="<%= config.main_url %><%= activities[i].directory %>">click here to launch activity</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- item container ends -->
+					<% } %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,54 @@
+
+<div class="sidebar" data-color="purple" data-image="../img/sidebar-1.jpg">
+
+	<div class="logo">
+		<a class="simple-text">
+			Sugarizer
+		</a>
+	</div>
+
+	<div class="sidebar-wrapper">
+		<ul class="nav">
+			<%if (module == 'dashboard') { %>
+				<li class="active">
+			<% } else {%>
+				<li>
+			<% }%>
+				<a href="<%  %>dashboard">
+					<i class="material-icons">dashboard</i>
+					<p>Dashboard</p>
+				</a>
+			</li>
+			<%if (module == 'users') { %>
+				<li class="active">
+			<% } else {%>
+				<li>
+			<% }%>
+				<a href="<%  %>users">
+					<i class="material-icons">person</i>
+					<p>Users</p>
+				</a>
+			</li>
+			<%if (module == 'activities') { %>
+				<li class="active">
+			<% } else {%>
+				<li>
+			<% }%>
+				<a href="<%  %>activities">
+					<i class="material-icons">bubble_chart</i>
+					<p>Activities<sup>***</sup></p>
+				</a>
+			</li>
+			<%if (module == 'journals') { %>
+				<li class="active">
+			<% } else {%>
+				<li>
+			<% }%>
+				<a href="<%  %>journals">
+					<i class="material-icons">library_books</i>
+					<p>Journals</p>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>

@@ -1,0 +1,29 @@
+.overlay {
+    display: none;
+    position: fixed;
+    z-index: 111000;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba( 0, 0, 0,1);
+    -webkit-opacity: 0.6;
+    -khtml-opacity: 0.6;
+    -moz-opacity: 0.6;
+    -ms-opacity: 0.6;
+    -o-opacity: 0.6;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
+    filter: alpha(opacity=60);
+    opacity: 0.6;
+}
+
+.overlay #supersuperbase {
+    margin-top: 20%;
+}
+
+body.loading {
+    overflow: hidden;
+}
+body.loading .overlay {
+    display: block;
+}
