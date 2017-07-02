@@ -19,7 +19,10 @@ var express = require('express'),
 // must use cookieParser before expressSession
 app.use(cookieParser());
 app.use(expressSession({
-	secret: 'somesecrettokenhere'
+	secret: 'somesecrettokenhere',
+	cookie: {
+		maxAge: (3600 * 24)
+	}
 }));
 app.use(bodyParser());
 app.use(expressValidator());

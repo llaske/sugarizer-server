@@ -1,3 +1,4 @@
+// include libraries
 var request = require('request');
 
 /**
@@ -66,8 +67,8 @@ exports.postLogin = function(req, res, next) {
 		}, function(error, response, body) {
 
 			if (response.statusCode == 200) {
-				//store in session
-				req.session.user = response
+				//store user and key in session
+				req.session.user = response.body
 
 				// redirect to dashboard
 				return res.redirect('/app/dashboard');
