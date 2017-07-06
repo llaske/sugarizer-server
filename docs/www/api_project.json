@@ -1,6 +1,6 @@
 {
   "name": "Sugarizer",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "description": "Sugarizer Server API",
   "title": "Sugarizer Server API",
   "url": "/",
@@ -21,22 +21,18 @@
     "Login",
     "Signup",
     "GetAllActivities",
-    "GetAllActivities",
     "GetActivity",
     "GetAllUsers",
     "GetUser",
     "AddUser",
     "UpdateUser",
     "RemoveUser",
-    "GetSharedJournal",
+    "GetAllJournals",
     "GetJournalContent",
-    "GetJournalContentField",
-    "GetJournalContentFilter",
-    "GetJournalContentFilterField",
     "GetEntry",
     "AddEntry",
     "UpdateEntry",
-    "RemoveEntry",
+    "RemoveEntryJournal",
     "GetAllStats",
     "AddStats",
     "RemoveStats"
@@ -46,7 +42,7 @@
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2017-06-27T06:30:27.676Z",
+    "time": "2017-06-28T21:22:11.023Z",
     "url": "http://apidocjs.com",
     "version": "0.17.6"
   }

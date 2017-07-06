@@ -81,10 +81,10 @@ exports.load = function(settings, callback) {
 /**
  * @api {get} api/v1/activities?name=:name&favorite=:favorite&fields=:fields&sort=:sort Get all activities
  * @apiName GetAllActivities
- * @apiDescription Retrieve all activities installed on the server.
+ * @apiDescription Retrieve details of all activities installed on the server.
  * @apiGroup Activities
- * @apiVersion 0.6.5
- * @apiExample {curl} Example usage:
+ * @apiVersion 1.0.0
+ * @apiExample Example usage:
  *     /api/v1/activities
  *     /api/v1/activities?name=gears
  *     /api/v1/activities?favorite=false&sort=-version
@@ -134,11 +134,11 @@ exports.findAll = function(req, res) {
 /**
  * @api {get} api/v1/activities/:id?fields=:fields Get activity detail
  * @apiName GetActivity
- * @apiDescription Retrieve detail of an activity.
+ * @apiDescription Retrieve details of an activity.
  *
- * @apiExample {curl} Example usage:
+ * @apiExample Example usage:
  *     /api/v1/activities/org.olpcfrance.Abecedarium
- *     /api/v1/activities/org.olpcfrance.Abecedarium?ields=index,name
+ *     /api/v1/activities/org.olpcfrance.Abecedarium?fields=id,index,name,index
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  * @apiParam {id} id Activity unique ID
@@ -154,7 +154,7 @@ exports.findAll = function(req, res) {
  * @apiSuccess {Number} index Index of the activity in the activity list
  *
  * @apiGroup Activities
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
@@ -165,6 +165,15 @@ exports.findAll = function(req, res) {
  *       "icon": "activity/activity-icon.svg",
  *       "favorite": true,
  *       "activityId": null,
+ *       "index": 11
+ *     }
+ *
+ * @apiSuccessExample {json} Success-Response-Fields-Limited:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "id": "org.olpcfrance.Abecedarium",
+ *       "name": "Abecedarium",
+ *       "version": "5",
  *       "index": 11
  *     }
  **/

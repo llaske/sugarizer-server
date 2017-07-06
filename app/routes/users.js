@@ -33,7 +33,7 @@ exports.init = function(settings, callback) {
  * @apiName GetUser
  * @apiDescription Retrieve detail for a specific user.
  * @apiGroup Users
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
@@ -41,8 +41,8 @@ exports.init = function(settings, callback) {
  * @apiSuccess {String} name Unique user name
  * @apiSuccess {String} role User role (student or admin)
  * @apiSuccess {Object} color Buddy color
- * @apiSuccess {String} color.strike Buddy strike color
- * @apiSuccess {String} color.file Buddy fill color
+ * @apiSuccess {String} color.stroke Buddy strike color
+ * @apiSuccess {String} color.fill Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
  * @apiSuccess {String} language Language setting of the user
  * @apiSuccess {String} password password of the user
@@ -101,9 +101,9 @@ exports.findById = function(req, res) {
  * @apiName GetAllUsers
  * @apiDescription Retrieve all users registered on the server. Query params can be mixed and match to achieve suitable results.
  * @apiGroup Users
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  *
- * @apiExample {curl} Example usage:
+ * @apiExample Example usage:
  *     /api/v1/users
  *     /api/v1/users?name=tarun
  *     /api/v1/users?language=fr&sort=+name
@@ -156,7 +156,7 @@ exports.findById = function(req, res) {
  *     "total": 200,
  *     "sort": "+name",
  *     "links": {
- *     	"next_page": "/api/v1/users?limit=10&offset=10",
+ *     	"prev_page": "/api/v1/users?limit=10&offset=10",
  *     	"next_page": "/api/v1/users?limit=10&offset=30"
  *     }
  *    }
@@ -294,9 +294,9 @@ function addQuery(filter, params, query, default_val) {
 /**
  * @api {post} api/v1/users/ Add user
  * @apiName AddUser
- * @apiDescription Add a new user. Return the user created.
+ * @apiDescription Add a new user. Return the user created. Only admin can add another admin or student.
  * @apiGroup Users
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
@@ -304,8 +304,8 @@ function addQuery(filter, params, query, default_val) {
  * @apiSuccess {String} name Unique user name
  * @apiSuccess {String} role User role (student or admin)
  * @apiSuccess {Object} color Buddy color
- * @apiSuccess {String} color.strike Buddy strike color
- * @apiSuccess {String} color.file Buddy fill color
+ * @apiSuccess {String} color.stroke Buddy strike color
+ * @apiSuccess {String} color.fill Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
  * @apiSuccess {String} language Language setting of the user
  * @apiSuccess {String} password password of the user
@@ -358,13 +358,22 @@ exports.addUser = function(req, res) {
 
 	//add timestamp & language
 	user.timestamp = +new Date();
-	user.role = user.role || 'student';
+	user.role = (user.role ? user.role.toLowerCase() : 'student');
 
 	//validation for fields [password, name]
 	if (!user.password || !user.name) {
 		res.status(401).send({
 			"message": "Invalid user object!"
 		});
+	}
+
+	// validate on the basis of user's role for logged in case
+	if (req.user) {
+		if (req.user.role == 'student') {
+			return res.status(401).send({
+				'error': 'You don\'t have permission to perform this action'
+			});
+		}
 	}
 
 	//check if user already exist
@@ -421,9 +430,9 @@ exports.addUser = function(req, res) {
 /**
  * @api {put} api/v1/users/ Update user
  * @apiName UpdateUser
- * @apiDescription Update an user. Return the user updated.
+ * @apiDescription Update an user. Return the user updated. Student can update only his/her details but admin can update anyone.
  * @apiGroup Users
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
@@ -431,8 +440,8 @@ exports.addUser = function(req, res) {
  * @apiSuccess {String} name Unique user name
  * @apiSuccess {String} role User role (student or admin)
  * @apiSuccess {Object} color Buddy color
- * @apiSuccess {String} color.strike Buddy strike color
- * @apiSuccess {String} color.file Buddy fill color
+ * @apiSuccess {String} color.stroke Buddy strike color
+ * @apiSuccess {String} color.fill Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
  * @apiSuccess {String} language Language setting of the user
  * @apiSuccess {String} password password of the user
@@ -540,7 +549,13 @@ function updateUser(uid, user, res) {
 				});
 			} else {
 				if (result) {
-					res.send(user);
+					db.collection(usersCollection, function(err, collection) {
+						collection.findOne({
+							'_id': new BSON.ObjectID(uid)
+						}, function(err, user) {
+							res.send(user);
+						});
+					});
 				} else {
 					res.status(401).send({
 						'error': 'Inexisting user id'
@@ -554,9 +569,9 @@ function updateUser(uid, user, res) {
 /**
  * @api {delete} api/v1/users/:uid Remove user
  * @apiName RemoveUser
- * @apiDescription Remove an user from the database.
+ * @apiDescription Remove an user from the database. Only admin can remove other users. Self removal can also be done.
  * @apiGroup Users
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  * @apiParam {String} uid Unique id of the user to delete

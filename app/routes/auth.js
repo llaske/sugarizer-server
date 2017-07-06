@@ -12,7 +12,7 @@ var BSON = mongo.BSONPure;
  * @apiName Login User
  * @apiDescription login a user (Admin or Student) on to the system. Return the user created with access token.
  * @apiGroup Auth
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  *
  * @apiSuccess {String} token Unique token of the user
  * @apiSuccess {String} expires Expiration time of token
@@ -21,10 +21,10 @@ var BSON = mongo.BSONPure;
  * @apiSuccessExample {json} Success-Response(Student):
  *     HTTP/1.1 200 OK
  *     {
- *     	"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0OTkxNDM2ODQxNjJ9.4gVrk0o_pyYt_X5z-FfdSEFuGGFxeEsQP8QBjNqI9EA",
+ *      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0OTkxNDM2ODQxNjJ9.4gVrk0o_pyYt_X5z-FfdSEFuGGFxeEsQP8QBjNqI9EA",
  *      "expires": 1499143684162,
  *      "user": {
- *       "name": "Sameer",
+ *       "name": "Tarun",
  *       "role": "student",
  *       "color": {
  *         "stroke": "#00A0FF",
@@ -99,14 +99,14 @@ exports.login = function(req, res) {
  * @apiName Signup User
  * @apiDescription Add a new user (Admin or Student). Return the user created.
  * @apiGroup Auth
- * @apiVersion 0.6.5
+ * @apiVersion 1.0.0
  *
  * @apiSuccess {String} _id Unique user id
  * @apiSuccess {String} name User name
  * @apiSuccess {String} role User role (student or admin)
  * @apiSuccess {Object} color Buddy color
- * @apiSuccess {String} color.strike Buddy strike color
- * @apiSuccess {String} color.file Buddy fill color
+ * @apiSuccess {String} color.stroke Buddy strike color
+ * @apiSuccess {String} color.fill Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
  * @apiSuccess {String} language Language setting of the user
  * @apiSuccess {String} password password of the user
@@ -117,7 +117,7 @@ exports.login = function(req, res) {
  * @apiSuccessExample Success-Response(Student):
  *     HTTP/1.1 200 OK
  *     {
- *       "name": "Sameer",
+ *       "name": "Tarun",
  *       "role": "student",
  *       "color": {
  *         "stroke": "#00A0FF",

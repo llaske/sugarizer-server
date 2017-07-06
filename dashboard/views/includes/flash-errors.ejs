@@ -1,0 +1,7 @@
+<% if(messages.errors){ %>
+  <div class="alert alert-danger">
+    <% for (var key in messages.errors) { %>
+      - <%= messages.errors[key].msg %><br>
+    <% } %>
+  </div>
+<% } %>
