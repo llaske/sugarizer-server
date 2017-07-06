@@ -85,10 +85,10 @@ exports.load = function(settings, callback) {
  * @apiGroup Activities
  * @apiVersion 1.0.0
  * @apiExample Example usage:
- *     /api/v1/activities
- *     /api/v1/activities?name=gears
- *     /api/v1/activities?favorite=false&sort=-version
- *     /api/v1/activities?favorite=true&fields=index,name&sort=+name
+ *     "/api/v1/activities"
+ *     "/api/v1/activities?name=gears"
+ *     "/api/v1/activities?favorite=false&sort=-version"
+ *     "/api/v1/activities?favorite=true&fields=index,name&sort=+name"
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
@@ -137,8 +137,8 @@ exports.findAll = function(req, res) {
  * @apiDescription Retrieve details of an activity.
  *
  * @apiExample Example usage:
- *     /api/v1/activities/org.olpcfrance.Abecedarium
- *     /api/v1/activities/org.olpcfrance.Abecedarium?fields=id,index,name,index
+ *     "/api/v1/activities/org.olpcfrance.Abecedarium"
+ *     "/api/v1/activities/org.olpcfrance.Abecedarium?fields=id,index,name,index"
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  * @apiParam {id} id Activity unique ID

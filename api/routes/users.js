@@ -104,10 +104,10 @@ exports.findById = function(req, res) {
  * @apiVersion 1.0.0
  *
  * @apiExample Example usage:
- *     /api/v1/users
- *     /api/v1/users?name=tarun
- *     /api/v1/users?language=fr&sort=+name
- *     /api/v1/users?sort=+name&limit=5&offset=20
+ *     "/api/v1/users"
+ *     "/api/v1/users?name=tarun"
+ *     "/api/v1/users?language=fr&sort=+name"
+ *     "/api/v1/users?sort=+name&limit=5&offset=20"
  *
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.

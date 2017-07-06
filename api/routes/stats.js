@@ -164,10 +164,10 @@ exports.deleteStats = function(req, res) {
  * @apiParam {String} [sort=+timestamp] Order of results <code>e.g. sort=-action or sort=+timestamp</code>
  *
  * @apiExample Example usage:
- *     /api/v1/stats
- *     /api/v1/stats?user_id=592d4445cc8be9187abb284f
- *     /api/v1/stats?event_object=home_view
- *     /api/v1/stats?user_id=592d4445cc8be9187abb284f&sort=-timestamp
+ *     "/api/v1/stats"
+ *     "/api/v1/stats?user_id=592d4445cc8be9187abb284f"
+ *     "/api/v1/stats?event_object=home_view"
+ *     "/api/v1/stats?user_id=592d4445cc8be9187abb284f&sort=-timestamp"
  *
  * @apiSuccess {Object[]} stats
  *
