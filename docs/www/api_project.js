@@ -22,6 +22,7 @@ define({
     "Signup",
     "GetAllActivities",
     "GetActivity",
+    "UpdateActivities",
     "GetAllUsers",
     "GetUser",
     "AddUser",
@@ -42,7 +43,7 @@ define({
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2017-07-06T23:00:38.314Z",
+    "time": "2017-07-07T16:21:33.968Z",
     "url": "http://apidocjs.com",
     "version": "0.17.6"
   }

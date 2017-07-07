@@ -76,6 +76,7 @@ app.post('/signup', auth.signup);
 
 // Register activities list API
 app.get("/api/v1/activities", activities.findAll);
+app.put("/api/v1/activities", activities.updateActivities);
 app.get("/api/v1/activities/:id", activities.findById);
 
 // Register users API
