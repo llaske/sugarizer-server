@@ -12,15 +12,15 @@
                       <form method="get">
                         <div class="col-md-3">
                           <div class="form-group form-black label-floating is-empty">
-                              <input placeholder="Name..." class="form-control" name="username" value="<% if(query.name){ %> <%= query.name %> <% } %>" type="text">
+                              <input placeholder="Name..." class="form-control" name="username" value="<% if(query.name){ %><%= query.name %><% } %>" type="text">
                               <span class="material-input"></span>
                           </div>
                         </div>
                         <div class="col-md-3">
                           <div class="form-group form-black label-floating is-empty">
                               <select class="form-control" name="role">
-                                <option value="student">Student</option>
-                                  <option value="admin">Admin</option>
+                                 <option value="student" <% if(query.role=='student'){ %>selected="selected"<% } %> >Student</option>
+                                 <option value="admin" <% if(query.role=='admin'){ %>selected="selected"<% } %> >Admin</option>
                               </select>
                           </div>
                         </div>
