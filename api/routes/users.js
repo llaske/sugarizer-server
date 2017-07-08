@@ -104,10 +104,10 @@ exports.findById = function(req, res) {
  * @apiVersion 1.0.0
  *
  * @apiExample Example usage:
- *     /api/v1/users
- *     /api/v1/users?name=tarun
- *     /api/v1/users?language=fr&sort=+name
- *     /api/v1/users?sort=+name&limit=5&offset=20
+ *     "/api/v1/users"
+ *     "/api/v1/users?name=tarun"
+ *     "/api/v1/users?language=fr&sort=+name"
+ *     "/api/v1/users?sort=+name&limit=5&offset=20"
  *
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
@@ -212,9 +212,9 @@ function formPaginatedUrl(route, params, offset, limit) {
 	var str = [];
 	for (var p in params)
 		if (params.hasOwnProperty(p)) {
-			str.push(encodeURIComponent(p) + "=" + encodeURIComponent(params[p]));
+			str.push((p) + "=" + (params[p]));
 		}
-	return route + '?' + str.join("&");
+	return '?' + str.join("&");
 }
 
 //get all users

@@ -5,14 +5,19 @@ var fs = require('fs'),
 	ini = require('ini');
 
 // Load into memory the content of activities directory
-var activities = [];
+var activities;
+var settingsData;
 exports.load = function(settings, callback) {
+
 	// Get settings
+	activities = []
+	settingsData = settings;
 	var activitiesDirName = settings.activities.activities_directory_name;
 	var activitiesPath = settings.activities.activities_path;
 	var templateDirName = settings.activities.template_directory_name;
 	var activityInfoPath = settings.activities.activity_info_path;
 	var favorites = settings.activities.favorites ? settings.activities.favorites.split(',') : [];
+	var favoritesLength = favorites.length;
 
 	// Read activities directory
 	fs.readdir(activitiesPath, function(err, files) {
@@ -53,7 +58,7 @@ exports.load = function(settings, callback) {
 								"icon": "activity/" + info.Activity.icon + ".svg",
 								"favorite": favorite,
 								"activityId": null,
-								"index": index
+								"index": (favorites.indexOf(info.Activity.bundle_id) == -1 ? favoritesLength++ : favorites.indexOf(info.Activity.bundle_id))
 							});
 						});
 						stream.on('end', function() {
@@ -85,10 +90,10 @@ exports.load = function(settings, callback) {
  * @apiGroup Activities
  * @apiVersion 1.0.0
  * @apiExample Example usage:
- *     /api/v1/activities
- *     /api/v1/activities?name=gears
- *     /api/v1/activities?favorite=false&sort=-version
- *     /api/v1/activities?favorite=true&fields=index,name&sort=+name
+ *     "/api/v1/activities"
+ *     "/api/v1/activities?name=gears"
+ *     "/api/v1/activities?favorite=false&sort=-version"
+ *     "/api/v1/activities?favorite=true&fields=index,name&sort=+name"
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
@@ -137,8 +142,8 @@ exports.findAll = function(req, res) {
  * @apiDescription Retrieve details of an activity.
  *
  * @apiExample Example usage:
- *     /api/v1/activities/org.olpcfrance.Abecedarium
- *     /api/v1/activities/org.olpcfrance.Abecedarium?fields=id,index,name,index
+ *     "/api/v1/activities/org.olpcfrance.Abecedarium"
+ *     "/api/v1/activities/org.olpcfrance.Abecedarium?fields=id,index,name,index"
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  * @apiParam {id} id Activity unique ID
@@ -277,4 +282,70 @@ function process_results(req, activities) {
 
 	//return
 	return activities2;
+}
+
+
+/**
+ * @api {put} api/v1/activities Update details of activities
+ * @apiName UpdateActivities
+ * @apiDescription Update about details of the activities. Only admin can perform this action.
+ * @apiGroup Activities
+ * @apiVersion 1.0.0
+ *
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ * @apiSuccess {Object[]} activities
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *       {
+ *         "id": "org.sugarlabs.GearsActivity",
+ *         "name": "Gears",
+ *         "version": "6",
+ *         "directory": "activities/Gears.activity",
+ *         "icon": "activity/activity-icon.svg",
+ *         "favorite": true,
+ *         "activityId": null,
+ *         "index": 0
+ *       },
+ *       {
+ *         "id": "org.sugarlabs.MazeWebActivity",
+ *         "name": "Maze Web",
+ *         "version": "2",
+ *         "directory": "activities/MazeWeb.activity",
+ *         "icon": "activity/activity-icon.svg",
+ *         "favorite": true,
+ *         "activityId": null,
+ *         "index": 1
+ *       },
+ *       ...
+ *     ]
+ **/
+exports.updateActivities = function(req, res) {
+
+	// validate on the basis of user's role
+	if (req.user.role == 'student') {
+			return res.status(401).send({
+				'error': 'You don\'t have permission to remove this journal'
+			});
+	}
+
+	//do changes
+	if(req.body.favorites){
+		settingsData.activities.favorites = req.body.favorites;
+	}else{
+		return res.status(401).send({
+			'error': 'Invalid favorites variable'
+		});
+	}
+
+	// write it back to ini
+	var file = "./env/" + (process.env.NODE_ENV ? process.env.NODE_ENV : 'sugarizer') + ".ini";
+	fs.writeFileSync(file, ini.stringify(settingsData));
+
+	//update activities list and return
+	exports.load(settingsData, function(){
+		res.send(activities);
+	});
 }

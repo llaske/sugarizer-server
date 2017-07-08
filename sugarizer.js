@@ -1,16 +1,32 @@
 // Sugarizer server
 
 var express = require('express'),
-	settings = require('./app/config/settings'),
-	activities = require('./app/routes/activities'),
-	journal = require('./app/routes/journal'),
-	users = require('./app/routes/users'),
-	auth = require('./app/routes/auth'),
-	stats = require('./app/routes/stats'),
-	validate = require('./app/middleware/validateRequest'),
-	presence = require('./app/middleware/presence');
+	settings = require('./api/config/settings'),
+	activities = require('./api/routes/activities'),
+	journal = require('./api/routes/journal'),
+	users = require('./api/routes/users'),
+	auth = require('./api/routes/auth'),
+	stats = require('./api/routes/stats'),
+	validate = require('./api/middleware/validateRequest'),
+	presence = require('./api/middleware/presence');
 
 var app = express();
+
+// Add headers
+app.use(function (req, res, next) {
+
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'x-key,x-access-token');
+
+    // Pass to next layer of middleware
+    next();
+});
 
 app.configure(function() {
 
@@ -36,6 +52,8 @@ app.configure(function() {
 });
 
 
+
+
 //load conf file
 var confFile = process.env.NODE_ENV;
 var ini = settings.load(confFile);
@@ -58,6 +76,7 @@ app.post('/signup', auth.signup);
 
 // Register activities list API
 app.get("/api/v1/activities", activities.findAll);
+app.put("/api/v1/activities", activities.updateActivities);
 app.get("/api/v1/activities/:id", activities.findById);
 
 // Register users API

@@ -83,9 +83,9 @@ exports.createJournal = function(callback) {
  * @apiVersion 1.0.0
  *
  * @apiExample Example usage:
- *     /api/v1/journal
- *     /api/v1/journal?type=shared
- *     /api/v1/journal?type=private
+ *     "/api/v1/journal"
+ *     "/api/v1/journal?type=shared"
+ *     "/api/v1/journal?type=private"
  *
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
@@ -161,12 +161,12 @@ exports.addJournal = function(req, res) {
  * @apiVersion 1.0.0
  *
  * @apiExample Example usage:
- *     /api/v1/journal/5569f4b019e0b4c9525b3c96
- *     /api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown
- *     /api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&uid=5569f4b019e0b4c9525b3c97
- *     /api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp
- *     /api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&offset=15&limit=10
- *     /api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&fields=text,metadata
+ *     "/api/v1/journal/5569f4b019e0b4c9525b3c96"
+ *     "/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown"
+ *     "/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&uid=5569f4b019e0b4c9525b3c97"
+ *     "/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp"
+ *     "/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&offset=15&limit=10"
+ *     "/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&fields=text,metadata"
  *
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
@@ -403,7 +403,7 @@ function getOptions(req) {
  * @apiVersion 1.0.0
  *
  * @apiExample Example usage:
- *     /api/v1/journal/5569f4b019e0b4c9525b3c96
+ *     "/api/v1/journal/5569f4b019e0b4c9525b3c96"
  *
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
@@ -514,7 +514,7 @@ exports.addEntryInJournal = function(req, res) {
  * @apiVersion 1.0.0
  *
  * @apiExample Example usage:
- *     /api/v1/journal/5569f4b019e0b4c9525b3c96?oid=d3c7cfc2-8a02-4ce8-9306-073814a2024e
+ *     "/api/v1/journal/5569f4b019e0b4c9525b3c96?oid=d3c7cfc2-8a02-4ce8-9306-073814a2024e"
  *
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
@@ -607,8 +607,8 @@ exports.updateEntryInJournal = function(req, res) {
  * @apiVersion 1.0.0
  *
  * @apiExample Example usage:
- *     /api/v1/journal?type=full
- *     /api/v1/journal?type=partial&oid=d3c7cfc2-8a02-4ce8-9306-073814a2024e
+ *     "/api/v1/journal?type=full"
+ *     "/api/v1/journal?type=partial&oid=d3c7cfc2-8a02-4ce8-9306-073814a2024e"
  *
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.

@@ -22,6 +22,7 @@
 		"Signup",
 		"GetAllActivities",
 		"GetActivity",
+		"UpdateActivities",
 		"GetAllUsers",
 		"GetUser",
 		"AddUser",

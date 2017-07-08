@@ -193,6 +193,28 @@ describe('Activities', function() {
 		});
 	})
 
+	describe('/PUT activities', () => {
+		it('it should update favorites and order property of activities', (done) => {
+			chai.request(server)
+				.put('/api/v1/activities')
+				.send({
+					favorites: 'org.olpcfrance.Abecedarium,org.sugarlabs.MazeWebActivity,org.olpcfrance.PaintActivity'
+				})
+				.set('x-access-token', fakeUser.token)
+				.set('x-key', fakeUser.user._id)
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body[0].should.have.property('id').eql('org.olpcfrance.Abecedarium');
+					res.body[0].should.have.property('favorite').eql(true);
+					res.body[1].should.have.property('id').eql('org.sugarlabs.MazeWebActivity');
+					res.body[1].should.have.property('favorite').eql(true);
+					res.body[2].should.have.property('id').eql('org.olpcfrance.PaintActivity');
+					res.body[2].should.have.property('favorite').eql(true);
+					done();
+				});
+		});
+	});
+
 	//delete fake user access key
 	after((done) => {
 

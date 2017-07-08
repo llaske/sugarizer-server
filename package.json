@@ -19,8 +19,8 @@
 		"mocha": "*"
 	},
 	"scripts": {
-		"test": "mocha app/test/",
-		"docs": "apidoc -i app/routes -o docs/www/",
+		"test": "mocha api/test/",
+		"docs": "apidoc -i api/routes -o docs/www/",
 		"run": "node sugarizer.js"
 	}
 }

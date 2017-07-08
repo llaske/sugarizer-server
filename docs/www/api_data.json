@@ -8,7 +8,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "/api/v1/activities/org.olpcfrance.Abecedarium\n/api/v1/activities/org.olpcfrance.Abecedarium?fields=id,index,name,index",
+        "content": "\"/api/v1/activities/org.olpcfrance.Abecedarium\"\n\"/api/v1/activities/org.olpcfrance.Abecedarium?fields=id,index,name,index\"",
         "type": "json"
       }
     ],
@@ -128,7 +128,7 @@
     },
     "group": "Activities",
     "version": "1.0.0",
-    "filename": "app/routes/activities.js",
+    "filename": "api/routes/activities.js",
     "groupTitle": "Activities"
   },
   {
@@ -142,7 +142,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "/api/v1/activities\n/api/v1/activities?name=gears\n/api/v1/activities?favorite=false&sort=-version\n/api/v1/activities?favorite=true&fields=index,name&sort=+name",
+        "content": "\"/api/v1/activities\"\n\"/api/v1/activities?name=gears\"\n\"/api/v1/activities?favorite=false&sort=-version\"\n\"/api/v1/activities?favorite=true&fields=index,name&sort=+name\"",
         "type": "json"
       }
     ],
@@ -221,7 +221,58 @@
         }
       ]
     },
-    "filename": "app/routes/activities.js",
+    "filename": "api/routes/activities.js",
+    "groupTitle": "Activities"
+  },
+  {
+    "type": "put",
+    "url": "api/v1/activities",
+    "title": "Update details of activities",
+    "name": "UpdateActivities",
+    "description": "<p>Update about details of the activities. Only admin can perform this action.</p>",
+    "group": "Activities",
+    "version": "1.0.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "activities",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n  {\n    \"id\": \"org.sugarlabs.GearsActivity\",\n    \"name\": \"Gears\",\n    \"version\": \"6\",\n    \"directory\": \"activities/Gears.activity\",\n    \"icon\": \"activity/activity-icon.svg\",\n    \"favorite\": true,\n    \"activityId\": null,\n    \"index\": 0\n  },\n  {\n    \"id\": \"org.sugarlabs.MazeWebActivity\",\n    \"name\": \"Maze Web\",\n    \"version\": \"2\",\n    \"directory\": \"activities/MazeWeb.activity\",\n    \"icon\": \"activity/activity-icon.svg\",\n    \"favorite\": true,\n    \"activityId\": null,\n    \"index\": 1\n  },\n  ...\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/activities.js",
     "groupTitle": "Activities"
   },
   {
@@ -271,7 +322,7 @@
         }
       ]
     },
-    "filename": "app/routes/auth.js",
+    "filename": "api/routes/auth.js",
     "groupTitle": "Auth"
   },
   {
@@ -384,7 +435,7 @@
         }
       ]
     },
-    "filename": "app/routes/auth.js",
+    "filename": "api/routes/auth.js",
     "groupTitle": "Auth"
   },
   {
@@ -398,7 +449,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "/api/v1/journal/5569f4b019e0b4c9525b3c96",
+        "content": "\"/api/v1/journal/5569f4b019e0b4c9525b3c96\"",
         "type": "json"
       }
     ],
@@ -553,7 +604,7 @@
         }
       ]
     },
-    "filename": "app/routes/journal.js",
+    "filename": "api/routes/journal.js",
     "groupTitle": "Journal"
   },
   {
@@ -567,7 +618,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "/api/v1/journal\n/api/v1/journal?type=shared\n/api/v1/journal?type=private",
+        "content": "\"/api/v1/journal\"\n\"/api/v1/journal?type=shared\"\n\"/api/v1/journal?type=private\"",
         "type": "json"
       }
     ],
@@ -631,7 +682,7 @@
         }
       ]
     },
-    "filename": "app/routes/journal.js",
+    "filename": "api/routes/journal.js",
     "groupTitle": "Journal"
   },
   {
@@ -645,7 +696,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "/api/v1/journal/5569f4b019e0b4c9525b3c96\n/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown\n/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&uid=5569f4b019e0b4c9525b3c97\n/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp\n/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&offset=15&limit=10\n/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&fields=text,metadata",
+        "content": "\"/api/v1/journal/5569f4b019e0b4c9525b3c96\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&uid=5569f4b019e0b4c9525b3c97\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&offset=15&limit=10\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&fields=text,metadata\"",
         "type": "json"
       }
     ],
@@ -783,7 +834,7 @@
         }
       ]
     },
-    "filename": "app/routes/journal.js",
+    "filename": "api/routes/journal.js",
     "groupTitle": "Journal"
   },
   {
@@ -797,7 +848,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "/api/v1/journal?type=full\n/api/v1/journal?type=partial&oid=d3c7cfc2-8a02-4ce8-9306-073814a2024e",
+        "content": "\"/api/v1/journal?type=full\"\n\"/api/v1/journal?type=partial&oid=d3c7cfc2-8a02-4ce8-9306-073814a2024e\"",
         "type": "json"
       }
     ],
@@ -881,7 +932,7 @@
         }
       ]
     },
-    "filename": "app/routes/journal.js",
+    "filename": "api/routes/journal.js",
     "groupTitle": "Journal"
   },
   {
@@ -895,7 +946,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "/api/v1/journal/5569f4b019e0b4c9525b3c96?oid=d3c7cfc2-8a02-4ce8-9306-073814a2024e",
+        "content": "\"/api/v1/journal/5569f4b019e0b4c9525b3c96?oid=d3c7cfc2-8a02-4ce8-9306-073814a2024e\"",
         "type": "json"
       }
     ],
@@ -1057,7 +1108,7 @@
         }
       ]
     },
-    "filename": "app/routes/journal.js",
+    "filename": "api/routes/journal.js",
     "groupTitle": "Journal"
   },
   {
@@ -1171,7 +1222,7 @@
         }
       ]
     },
-    "filename": "app/routes/stats.js",
+    "filename": "api/routes/stats.js",
     "groupTitle": "Stats"
   },
   {
@@ -1240,7 +1291,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "/api/v1/stats\n/api/v1/stats?user_id=592d4445cc8be9187abb284f\n/api/v1/stats?event_object=home_view\n/api/v1/stats?user_id=592d4445cc8be9187abb284f&sort=-timestamp",
+        "content": "\"/api/v1/stats\"\n\"/api/v1/stats?user_id=592d4445cc8be9187abb284f\"\n\"/api/v1/stats?event_object=home_view\"\n\"/api/v1/stats?user_id=592d4445cc8be9187abb284f&sort=-timestamp\"",
         "type": "json"
       }
     ],
@@ -1264,7 +1315,7 @@
         }
       ]
     },
-    "filename": "app/routes/stats.js",
+    "filename": "api/routes/stats.js",
     "groupTitle": "Stats"
   },
   {
@@ -1317,7 +1368,7 @@
         }
       ]
     },
-    "filename": "app/routes/stats.js",
+    "filename": "api/routes/stats.js",
     "groupTitle": "Stats"
   },
   {
@@ -1445,7 +1496,7 @@
         }
       ]
     },
-    "filename": "app/routes/users.js",
+    "filename": "api/routes/users.js",
     "groupTitle": "Users"
   },
   {
@@ -1459,7 +1510,7 @@
     "examples": [
       {
         "title": "Example usage:",
-        "content": "/api/v1/users\n/api/v1/users?name=tarun\n/api/v1/users?language=fr&sort=+name\n/api/v1/users?sort=+name&limit=5&offset=20",
+        "content": "\"/api/v1/users\"\n\"/api/v1/users?name=tarun\"\n\"/api/v1/users?language=fr&sort=+name\"\n\"/api/v1/users?sort=+name&limit=5&offset=20\"",
         "type": "json"
       }
     ],
@@ -1597,7 +1648,7 @@
         }
       ]
     },
-    "filename": "app/routes/users.js",
+    "filename": "api/routes/users.js",
     "groupTitle": "Users"
   },
   {
@@ -1725,7 +1776,7 @@
         }
       ]
     },
-    "filename": "app/routes/users.js",
+    "filename": "api/routes/users.js",
     "groupTitle": "Users"
   },
   {
@@ -1778,7 +1829,7 @@
         }
       ]
     },
-    "filename": "app/routes/users.js",
+    "filename": "api/routes/users.js",
     "groupTitle": "Users"
   },
   {
@@ -1906,7 +1957,7 @@
         }
       ]
     },
-    "filename": "app/routes/users.js",
+    "filename": "api/routes/users.js",
     "groupTitle": "Users"
   }
 ]
