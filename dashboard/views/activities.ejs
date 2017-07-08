@@ -1,0 +1,56 @@
+<% include includes/header %>
+<div class="wrapper">
+	<% include includes/sidebar %>
+	<div class="main-panel">
+		<% include includes/navbar %>
+		<div class="content ">
+			<div class="container-fluid">
+				<div class="row">
+						<div class="card card-plain" style="margin:10px;">
+							<div class="card-content">
+								<div class="text-muted col-lg-2 col-md-2 col-sm-2 text-center">Icon</div>
+								<div class="text-muted col-lg-3 col-md-3 col-sm-3">Name</div>
+								<div class="text-muted col-lg-4 col-md-4 col-sm-4">Activity Id</div>
+								<div class="text-center text-muted col-lg-1 col-md-1 col-sm-1 text-center">Version</div>
+								<div class="text-center text-muted col-lg-2 col-md-2 col-sm-2 text-center">Favorite</div>
+							</div>
+						</div>
+				    <div class="col-md-12">
+							<ol class="simple_with_animation">
+								<% for(var i=0; i < activities.length; i++) { %>
+								<li>
+									<div class="card">
+										<div class="card-content">
+											<div class="col-lg-2 col-md-2 col-sm-2"><img style="width: 30px;height: 30px;margin: 5px;" src="<%= client_url + activities[i].directory + '/' + activities[i].icon %>" /></div>
+											<div class="col-lg-3 col-md-3 col-sm-3" style="line-height: 40px;"><%= activities[i].name %></div>
+											<div class="col-lg-4 col-md-4 col-sm-4" style="line-height: 40px;"><%= activities[i].id %></div>
+											<div class="text-center col-lg-1 col-md-1 col-sm-1" style="line-height: 40px;"><%= activities[i].version %></div>
+											<div class="text-center col-lg-2 col-md-2 col-sm-2">
+												<div class="checkbox">
+														<label data-id="<%= activities[i].id %>">
+																<% if(activities[i].favorite == true){ %>
+																	<input checked="" name="optionsCheckboxes" type="checkbox" onclick="updateActivties()">
+																<% }else{ %>
+																	<input name="optionsCheckboxes" type="checkbox" onclick="updateActivties()">
+																<% } %>
+																<span class="checkbox-material"></span>
+														</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</li>
+								<% } %>
+							</ol>
+				   </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<% include includes/footer %>
+<script>
+var headers = <%- JSON.stringify(headers) %>;
+var url = '<%= url %>';
+initDragDrop();
+</script>

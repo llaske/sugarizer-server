@@ -1,0 +1,64 @@
+<% include includes/header %>
+  <div class="wrapper">
+  	<% include includes/sidebar %>
+    	<div class="main-panel">
+    	<% include includes/navbar %>
+    		<div class="content">
+    			<div class="container-fluid">
+            <div class="col-md-8 col-lg-8 col-sm-12">
+              <div class="card">
+                <div class="card-content">
+                    <% include includes/flash-errors %>
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-black label-floating">
+                                    <label class="control-label">Name</label>
+                                    <input class="form-control" name="name" value="<% if(user){ %> <%= user.name %> <% } %>" type="text">
+                                    <span class="material-input"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-black label-floating">
+                                    <select class="form-control" name="language">
+                                        <option value="en">English</option>
+                                        <option value="fr">France</option>
+                                    </select>
+                                    <span class="material-input"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-black label-floating">
+                                    <select class="form-control" name="role">
+                                        <option value="admin">Admin</option>
+                                        <option value="student">Student</option>
+                                    </select>
+                                    <span class="material-input"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-black label-floating">
+                                    <label class="control-label">Password</label>
+                                    <input class="form-control" name="password" value="<% if(user){ %> <%= user.password %> <% } %>" type="text">
+                                    <span class="material-input"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-danger pull-right btn-round" type="submit">Save</button>
+                        <a class="btn pull-right btn-round" href="/app/users">Cancel</a>
+                        <div class="clearfix"></div>
+                    </form>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% include includes/footer %>

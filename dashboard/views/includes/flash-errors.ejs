@@ -1,0 +1,41 @@
+<% if(messages.errors){ %>
+  <script>
+    $( document ).ready(function() {
+      <% for (var key in messages.errors) { %>
+      $.notify({
+            	icon: "error",
+            	message: "<%= messages.errors[key].msg %>"
+
+            },{
+                type: 'danger',
+                timer: 2000,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+      <% } %>
+    });
+  </script>
+<% } %>
+
+<% if(messages.success){ %>
+  <script>
+    $( document ).ready(function() {
+      <% for (var key in messages.success) { %>
+      $.notify({
+            	icon: "notifications",
+            	message: "<%= messages.success[key].msg %>"
+
+            },{
+                type: 'success',
+                timer: 2000,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+      <% } %>
+    });
+  </script>
+<% } %>

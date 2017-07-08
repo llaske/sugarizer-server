@@ -4,21 +4,23 @@
 	"version": "0.0.1",
 	"private": true,
 	"dependencies": {
-		"express": "3.x",
-		"ini": "1.1.x",
-		"mongodb": "1.4.x",
 		"bson": "1.0.x",
-		"websocket": "1.0.x",
-    "jwt-simple": "^0.2.0",
-		"http": "0.0.x"
+		"express": "3.x",
+		"http": "0.0.x",
+		"ini": "1.1.x",
+		"jwt-simple": "^0.2.0",
+		"mongodb": "1.4.x",
+		"nodemon": "^1.11.0",
+		"websocket": "1.0.x"
 	},
 	"devDependencies": {
-    "chai": "*",
-    "chai-http": "*",
+		"chai": "*",
+		"chai-http": "*",
 		"mocha": "*"
-  },
-	"scripts":{
-		"test" : "mocha app/test/",
-		"run" : "node sugarizer.js"
+	},
+	"scripts": {
+		"test": "mocha api/test/",
+		"docs": "apidoc -i api/routes -o docs/www/",
+		"run": "node sugarizer.js"
 	}
 }
