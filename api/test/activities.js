@@ -196,7 +196,7 @@ describe('Activities', function() {
 	describe('/PUT activities', () => {
 		it('it should update favorites and order property of activities', (done) => {
 			chai.request(server)
-				.put('/api/v1/activities')
+				.post('/api/v1/activities')
 				.send({
 					favorites: 'org.olpcfrance.Abecedarium,org.sugarlabs.MazeWebActivity,org.olpcfrance.PaintActivity'
 				})

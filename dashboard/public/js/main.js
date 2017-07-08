@@ -52,30 +52,24 @@ function updateActivties() {
 	$.each($('[name="optionsCheckboxes"]:checked'), function(index, value) {
 		list.push($(this).parent().data('id'));
 	});
+	var data = {
+		favorites: list.join()
+	};
 
-	//call ajax to update list @TODO
-	$.ajax({
-		url: (url + 'api/v1/activities'),
-		type: "PUT",
-		headers: headers,
-		contentType: "application/json",
-		processData: false,
-		data: {
-			favorites: JSON.stringify(list)
-		},
-		success: function(response) {
-			console.log(response);
-			$.notify({
-				icon: "notifications",
-				message: "Activities successfully updated!"
-			}, {
-				type: 'success',
-				timer: 2000,
-				placement: {
-					from: 'top',
-					align: 'right'
-				}
-			});
-		}
+	$.post((url + 'api/v1/activities?' + decodeURIComponent($.param({
+		x_key: headers['x-key'],
+		access_token: headers['x-access-token']
+	}))), data, function(response) {
+		$.notify({
+			icon: "notifications",
+			message: "Activities successfully updated!"
+		}, {
+			type: 'success',
+			timer: 2000,
+			placement: {
+				from: 'top',
+				align: 'right'
+			}
+		});
 	});
 }

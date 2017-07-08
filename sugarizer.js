@@ -13,19 +13,19 @@ var express = require('express'),
 var app = express();
 
 // Add headers
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
 
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', '*');
+	// Website you wish to allow to connect
+	res.setHeader('Access-Control-Allow-Origin', '*');
 
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+	// Request methods you wish to allow
+	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'x-key,x-access-token');
+	// Request headers you wish to allow
+	res.setHeader('Access-Control-Allow-Headers', 'x-key,x-access-token');
 
-    // Pass to next layer of middleware
-    next();
+	// Pass to next layer of middleware
+	next();
 });
 
 app.configure(function() {
@@ -76,7 +76,7 @@ app.post('/signup', auth.signup);
 
 // Register activities list API
 app.get("/api/v1/activities", activities.findAll);
-app.put("/api/v1/activities", activities.updateActivities);
+app.post("/api/v1/activities", activities.updateActivities);
 app.get("/api/v1/activities/:id", activities.findById);
 
 // Register users API
