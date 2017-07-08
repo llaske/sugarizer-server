@@ -37,7 +37,7 @@ exports.index = function(req, res) {
 
 			// send to activities page
 			res.render('users', {
-				module: 'Users',
+				module: 'users',
 				moment: moment,
 				query: query,
 				data: body
@@ -102,7 +102,7 @@ exports.addUser = function(req, res) {
 	} else {
 		// send to activities page
 		res.render('addEditUser', {
-			module: 'Users'
+			module: 'users'
 		});
 	}
 };
@@ -165,7 +165,7 @@ exports.editUser = function(req, res) {
 
 					// send to users page
 					res.render('addEditUser', {
-						module: 'Users',
+						module: 'users',
 						user: body
 					});
 				} else {

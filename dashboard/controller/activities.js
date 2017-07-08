@@ -18,7 +18,7 @@ exports.index = function(req, res) {
 
 			// send to activities page
 			res.render('activities', {
-				module: 'Activities',
+				module: 'activities',
 				activities: body,
 				headers: common.getHeaders(req),
 				url: req.iniconfig.web.api,

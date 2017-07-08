@@ -63,6 +63,12 @@ ol.simple_with_animation li:before {
   line-height: 50px;
 }
 
+ol.simple_with_animation li .card .card-content div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 
 /* ANIMATION */
 

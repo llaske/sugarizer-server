@@ -76,7 +76,7 @@ app.post('/app/users/add', usersController.addUser);
 app.get('/app/users/edit/:uid', usersController.editUser);
 app.post('/app/users/edit/:uid', usersController.editUser);
 app.get('/app/users/delete/:uid', usersController.deleteUser);
-// app.get('/app/journal', journalController.index);
+app.get('/app/journal', journalController.index);
 app.get('/app/activities', activitiesController.index);
 
 // If no route is matched by now, it must be a 404
