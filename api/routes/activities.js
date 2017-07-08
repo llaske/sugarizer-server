@@ -286,7 +286,7 @@ function process_results(req, activities) {
 
 
 /**
- * @api {put} api/v1/activities Update details of activities
+ * @api {post} api/v1/activities Update details of activities
  * @apiName UpdateActivities
  * @apiDescription Update about details of the activities. Only admin can perform this action.
  * @apiGroup Activities
@@ -326,15 +326,15 @@ exports.updateActivities = function(req, res) {
 
 	// validate on the basis of user's role
 	if (req.user.role == 'student') {
-			return res.status(401).send({
-				'error': 'You don\'t have permission to remove this journal'
-			});
+		return res.status(401).send({
+			'error': 'You don\'t have permission to remove this journal'
+		});
 	}
 
 	//do changes
-	if(req.body.favorites){
+	if (req.body.favorites) {
 		settingsData.activities.favorites = req.body.favorites;
-	}else{
+	} else {
 		return res.status(401).send({
 			'error': 'Invalid favorites variable'
 		});
@@ -345,7 +345,7 @@ exports.updateActivities = function(req, res) {
 	fs.writeFileSync(file, ini.stringify(settingsData));
 
 	//update activities list and return
-	exports.load(settingsData, function(){
+	exports.load(settingsData, function() {
 		res.send(activities);
 	});
 }

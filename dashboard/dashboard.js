@@ -74,6 +74,7 @@ app.get('/app/users', usersController.index);
 app.get('/app/users/add', usersController.addUser);
 app.post('/app/users/add', usersController.addUser);
 app.get('/app/users/edit/:uid', usersController.editUser);
+app.post('/app/users/edit/:uid', usersController.editUser);
 app.get('/app/users/delete/:uid', usersController.deleteUser);
 // app.get('/app/journal', journalController.index);
 app.get('/app/activities', activitiesController.index);
