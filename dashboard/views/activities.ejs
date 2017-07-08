@@ -1,39 +1,56 @@
-
+<% include includes/header %>
 <div class="wrapper">
-	<% include includes/sidebar %> 
+	<% include includes/sidebar %>
 	<div class="main-panel">
-		<% include includes/header %> 
+		<% include includes/navbar %>
 		<div class="content ">
 			<div class="container-fluid">
 				<div class="row">
-					<% for(var i=0; i < activities.length; i++) { %>
- 						<!-- item container starts -->
-						<div class="col-lg-4 col-md-6 col-sm-6" index="<%= activities[i].index %>">
-							<div class="card card-stats">
-								<div class="card-header" data-background-color="orange">
-									<img style="height: 40px;width: 40px;" src="<%= config.main_url %><%= activities[i].directory %>/<%= activities[i].icon %>" />
-								</div>
-								<div class="card-content">
-									<p class="category">Version <%= activities[i].version %></p>
-									<h3 class="title" title="<%= activities[i].name %>"><%= activities[i].name %></h3>
-									<h5 class="title"><%= activities[i].id %></h5>
-									<%if (activities[i].favorite == true) { %>
-										<h5 class="title">It is a favorite app</h5>
-									<% } else {%>
-										<h5 class="title">It is not a favorite app</h5>
-									<% } %>
-								</div>
-								<div class="card-footer">
-									<div class="stats">
-										<a target="_blank" href="<%= config.main_url %><%= activities[i].directory %>">click here to launch activity</a>
-									</div>
-								</div>
+						<div class="card card-plain" style="margin:10px;">
+							<div class="card-content">
+								<div class="text-muted col-lg-2 col-md-2 col-sm-2 text-center">Icon</div>
+								<div class="text-muted col-lg-3 col-md-3 col-sm-3">Name</div>
+								<div class="text-muted col-lg-4 col-md-4 col-sm-4">Activity Id</div>
+								<div class="text-center text-muted col-lg-1 col-md-1 col-sm-1 text-center">Version</div>
+								<div class="text-center text-muted col-lg-2 col-md-2 col-sm-2 text-center">Favorite</div>
 							</div>
 						</div>
-						<!-- item container ends -->
-					<% } %>
+				    <div class="col-md-12">
+							<ol class="simple_with_animation">
+								<% for(var i=0; i < activities.length; i++) { %>
+								<li>
+									<div class="card">
+										<div class="card-content">
+											<div class="col-lg-2 col-md-2 col-sm-2"><img style="width: 30px;height: 30px;margin: 5px;" src="<%= client_url + activities[i].directory + '/' + activities[i].icon %>" /></div>
+											<div class="col-lg-3 col-md-3 col-sm-3" style="line-height: 40px;"><%= activities[i].name %></div>
+											<div class="col-lg-4 col-md-4 col-sm-4" style="line-height: 40px;"><%= activities[i].id %></div>
+											<div class="text-center col-lg-1 col-md-1 col-sm-1" style="line-height: 40px;"><%= activities[i].version %></div>
+											<div class="text-center col-lg-2 col-md-2 col-sm-2">
+												<div class="checkbox">
+														<label data-id="<%= activities[i].id %>">
+																<% if(activities[i].favorite == true){ %>
+																	<input checked="" name="optionsCheckboxes" type="checkbox" onclick="updateActivties()">
+																<% }else{ %>
+																	<input name="optionsCheckboxes" type="checkbox" onclick="updateActivties()">
+																<% } %>
+																<span class="checkbox-material"></span>
+														</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</li>
+								<% } %>
+							</ol>
+				   </div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+<% include includes/footer %>
+<script>
+var headers = <%- JSON.stringify(headers) %>;
+var url = '<%= url %>';
+initDragDrop();
+</script>

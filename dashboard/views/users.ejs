@@ -1,25 +1,86 @@
-<!DOCTYPE html>
-<html>
+<% include includes/header %>
+<div class="wrapper">
+	<% include includes/sidebar %>
+	<div class="main-panel">
+	<% include includes/navbar %>
+		<div class="content">
+			<div class="container-fluid">
+          <% include includes/flash-errors %>
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="card">
+                      <form method="get">
+                        <div class="col-md-3">
+                          <div class="form-group form-black label-floating is-empty">
+                              <input placeholder="Name..." class="form-control" name="username" value="<% if(query.name){ %> <%= query.name %> <% } %>" type="text">
+                              <span class="material-input"></span>
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="form-group form-black label-floating is-empty">
+                              <select class="form-control" name="role">
+                                <option value="student">Student</option>
+                                  <option value="admin">Admin</option>
+                              </select>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <button class="btn btn-danger btn-round" type="submit">Show Results<div class="ripple-container"></div></button>
+                          <a class="btn pull-right btn-round" href="users/add">Add User<div class="ripple-container"></div></a>
+                        </div>
+                      </form>
+                  </div>
+              </div>
+              <div class="col-md-12">
+                  <div class="card">
+                      <div class="card-header row" data-background-color="red">
+                          <div class="col-md-4 col-sm-4 col-lg-4 text-left">
+                          <% if(data.links.prev_page) { %>
+                             <a href="<%= data.links.prev_page %>"><< previous page</a>
+                          <% } %>
+                          </div>
+                          <div class="col-md-4 col-sm-4 col-lg-4 text-center">showing results <%= data.offset %>-<%= data.offset + data.users.length %> out of <%= data.total %></div>
+                          <div class="col-md-4 col-sm-4 col-lg-4 text-right">
+                          <% if(data.links.next_page) { %>
+                             <a href="<%= data.links.next_page %>">next page >></a>
+                          <% } %>
+                          </div>
+                      </div>
+                      <div class="card-content table-responsive">
+                          <table class="table">
+                              <thead class="text-danger">
+                                  <tr>
+                                      <th>#</th>
+                                      <th>Name</th>
+                                      <th>Language</th>
+                                      <th>Role</th>
+                                      <th>Timestamp</th>
+                                      <th>Action</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <% for(var i=0; i < data.users.length; i++) { %>
+                                    <tr>
+                                        <td><%= data.offset + i + 1 %></td>
+                                        <td><%= data.users[i].name %></td>
+                                        <td><%= data.users[i].language %></td>
+                                        <td><%= data.users[i].role %></td>
+                                        <td><%= moment(data.users[i].timestamp).calendar() %></td>
+                                        <td>
+                                          <a title="Edit User" href="users/edit/<%= data.users[i]._id %>"><i class="material-icons text-muted">edit</i></a>
+                                          <a title="Delete User" href="users/delete/<%= data.users[i]._id %>" onclick="return confirm('Are you sure?')"><i class="material-icons text-muted">delete_forever</i></a>
+                                        </td>
+                                    </tr>
+                                  <% } %>
+                              </tbody>
+                          </table>
 
-<head>
-    <title>Sugarlabs Dashboard</title>
-    <% include ../includes/headscripts %> 
-</head> 
-<body>
-	<div class="wrapper">
-		<% include ../includes/sidebar %> 
-		<div class="main-panel">
-			<% include ../includes/header %> 
-			<div class="content ">
-				<div class="container-fluid">
-					<div class="row">
-						 This is a users page
-					</div>  
-				</div>
-			</div> 
+                      </div>
+                  </div>
+              </div>
+          </div>
+			</div>
 		</div>
 	</div>
-    <% include ../includes/scripts %> 
-</body>
-
-</html>
+</div>
+<% include includes/footer %>

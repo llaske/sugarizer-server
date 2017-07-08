@@ -212,9 +212,9 @@ function formPaginatedUrl(route, params, offset, limit) {
 	var str = [];
 	for (var p in params)
 		if (params.hasOwnProperty(p)) {
-			str.push(encodeURIComponent(p) + "=" + encodeURIComponent(params[p]));
+			str.push((p) + "=" + (params[p]));
 		}
-	return route + '?' + str.join("&");
+	return '?' + str.join("&");
 }
 
 //get all users
