@@ -225,7 +225,7 @@ define({ "api": [
     "groupTitle": "Activities"
   },
   {
-    "type": "put",
+    "type": "post",
     "url": "api/v1/activities",
     "title": "Update details of activities",
     "name": "UpdateActivities",

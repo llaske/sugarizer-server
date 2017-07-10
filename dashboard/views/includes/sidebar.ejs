@@ -14,7 +14,7 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a href="<%  %>dashboard">
+				<a href="/app/dashboard">
 					<i class="material-icons">dashboard</i>
 					<p>Dashboard</p>
 				</a>
@@ -24,7 +24,7 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a href="<%  %>users">
+				<a href="/app/users">
 					<i class="material-icons">person</i>
 					<p>Users</p>
 				</a>
@@ -34,17 +34,17 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a href="<%  %>activities">
+				<a href="/app/activities">
 					<i class="material-icons">bubble_chart</i>
 					<p>Activities</p>
 				</a>
 			</li>
-			<%if (module == 'journals') { %>
+			<%if (module == 'journal') { %>
 				<li class="active">
 			<% } else {%>
 				<li>
 			<% }%>
-				<a href="<%  %>journals">
+				<a href="/app/journal">
 					<i class="material-icons">library_books</i>
 					<p>Journals</p>
 				</a>

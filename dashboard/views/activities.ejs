@@ -6,13 +6,27 @@
 		<div class="content ">
 			<div class="container-fluid">
 				<div class="row">
-						<div class="card card-plain" style="margin:10px;">
-							<div class="card-content">
-								<div class="text-muted col-lg-2 col-md-2 col-sm-2 text-center">Icon</div>
-								<div class="text-muted col-lg-3 col-md-3 col-sm-3">Name</div>
-								<div class="text-muted col-lg-4 col-md-4 col-sm-4">Activity Id</div>
-								<div class="text-center text-muted col-lg-1 col-md-1 col-sm-1 text-center">Version</div>
-								<div class="text-center text-muted col-lg-2 col-md-2 col-sm-2 text-center">Favorite</div>
+						<div class="col-md-12">
+								<div class="navbar-form navbar-right">
+		                <div class="form-group form-black is-empty" style="margin:0;">
+		                    <input class="form-control search_query" style="width: 300px;"  value="" placeholder="Search Activity..." type="text">
+		                    <span class="material-input"></span>
+		                <span class="material-input"></span></div>
+		                <button class="btn btn-white btn-round btn-just-icon" onclick="highlight($('.search_query').val().trim())">
+		                    <i class="material-icons">search</i>
+		                </button>
+		            </div>
+						</div>
+						<div class="col-md-12">
+							<div class="card card-plain" style="margin:10px;">
+								<div class="card-content">
+									<div class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Icon</div>
+									<div class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Name</div>
+									<div class="text-center text-muted col-lg-4 col-md-4 col-sm-4">Activity Id</div>
+									<div class="text-center text-muted col-lg-1 col-md-1 col-sm-1">Version</div>
+									<div class="text-center text-muted col-lg-1 col-md-1 col-sm-1">Favorite</div>
+									<div class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Action</div>
+								</div>
 							</div>
 						</div>
 				    <div class="col-md-12">
@@ -21,21 +35,28 @@
 								<li>
 									<div class="card">
 										<div class="card-content">
-											<div class="col-lg-2 col-md-2 col-sm-2"><img style="width: 30px;height: 30px;margin: 5px;" src="<%= client_url + activities[i].directory + '/' + activities[i].icon %>" /></div>
-											<div class="col-lg-3 col-md-3 col-sm-3" style="line-height: 40px;"><%= activities[i].name %></div>
-											<div class="col-lg-4 col-md-4 col-sm-4" style="line-height: 40px;"><%= activities[i].id %></div>
-											<div class="text-center col-lg-1 col-md-1 col-sm-1" style="line-height: 40px;"><%= activities[i].version %></div>
 											<div class="text-center col-lg-2 col-md-2 col-sm-2">
-												<div class="checkbox">
+													<img style="width: 30px;height: 30px;margin: 5px;" src="<%= client_url + activities[i].directory + '/' + activities[i].icon %>" />
+											</div>
+											<div class="text-center col-lg-2 col-md-2 col-sm-2 search_textbox" style="line-height: 40px;"><%= activities[i].name %></div>
+											<div class="text-center col-lg-4 col-md-4 col-sm-4" style="line-height: 40px;"><%= activities[i].id %></div>
+											<div class="text-center col-lg-1 col-md-1 col-sm-1" style="line-height: 40px;"><%= activities[i].version %></div>
+											<div class="text-center col-lg-1 col-md-1 col-sm-1">
+												<div class="favoriteBox">
 														<label data-id="<%= activities[i].id %>">
 																<% if(activities[i].favorite == true){ %>
-																	<input checked="" name="optionsCheckboxes" type="checkbox" onclick="updateActivties()">
+																	<input checked name="favoriteActivities" type="checkbox" onclick="updateActivities()">
 																<% }else{ %>
-																	<input name="optionsCheckboxes" type="checkbox" onclick="updateActivties()">
+																	<input name="favoriteActivities" type="checkbox" onclick="updateActivities()">
 																<% } %>
 																<span class="checkbox-material"></span>
 														</label>
 												</div>
+											</div>
+											<div class="text-center col-lg-2 col-md-2 col-sm-2" style="line-height: 40px;">
+												<a target="_blank" href="<%= client_url %><%= activities[i].directory %>">
+													<i class="material-icons text-muted">launch</i>
+												</a>
 											</div>
 										</div>
 									</div>
@@ -50,7 +71,12 @@
 </div>
 <% include includes/footer %>
 <script>
+
+//set headers
 var headers = <%- JSON.stringify(headers) %>;
 var url = '<%= url %>';
+
+//init drag drop
 initDragDrop();
+
 </script>

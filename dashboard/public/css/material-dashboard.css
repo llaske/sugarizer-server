@@ -63,6 +63,12 @@ ol.simple_with_animation li:before {
   line-height: 50px;
 }
 
+ol.simple_with_animation li .card .card-content div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 
 /* ANIMATION */
 
@@ -728,7 +734,7 @@ h2.title {
 
 .main-panel>.content {
   margin-top: 70px;
-  padding: 30px 15px;
+  padding: 0px 15px;
   min-height: calc(100% - 123px);
 }
 
@@ -1526,7 +1532,7 @@ output {
 
 .form-control, .form-group .form-control {
   border: 0;
-  background-image: linear-gradient(#9c27b0, #9c27b0), linear-gradient(#D2D2D2, #D2D2D2);
+  background-image: linear-gradient(#D2D2D2, #D2D2D2), linear-gradient(#D2D2D2, #D2D2D2);
   background-size: 0 2px, 100% 1px;
   background-repeat: no-repeat;
   background-position: center bottom, center calc(100% - 1px);
@@ -1587,10 +1593,10 @@ output {
 
 .form-group.is-focused .form-control {
   outline: none;
-  background-image: linear-gradient(#9c27b0, #9c27b0), linear-gradient(#D2D2D2, #D2D2D2);
+  /*background-image: linear-gradient(#9c27b0, #9c27b0), linear-gradient(#D2D2D2, #D2D2D2);*/
   background-size: 100% 2px, 100% 1px;
   box-shadow: none;
-  transition-duration: 0.3s;
+  /*transition-duration: 0.3s;*/
 }
 
 .form-group.is-focused .form-control .material-input:after {
@@ -4705,8 +4711,8 @@ footer .btn {
 
 @media (min-width: 992px) {
   .navbar-form {
-    margin-top: 21px;
-    margin-bottom: 21px;
+    /*margin-top: 21px;*/
+    /*margin-bottom: 21px;*/
     padding-left: 5px;
     padding-right: 5px;
   }

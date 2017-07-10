@@ -1,4 +1,5 @@
 function initDragDrop() {
+
 	var adjustment;
 
 	$("ol.simple_with_animation").sortable({
@@ -49,33 +50,56 @@ function updateActivties() {
 
 	//get favorites
 	var list = []
-	$.each($('[name="optionsCheckboxes"]:checked'), function(index, value) {
+	$.each($('[name="favoriteActivities"]:checked'), function(index, value) {
 		list.push($(this).parent().data('id'));
 	});
+	var data = {
+		favorites: list.join()
+	};
 
-	//call ajax to update list @TODO
-	$.ajax({
-		url: (url + 'api/v1/activities'),
-		type: "PUT",
-		headers: headers,
-		contentType: "application/json",
-		processData: false,
-		data: {
-			favorites: JSON.stringify(list)
-		},
-		success: function(response) {
-			console.log(response);
-			$.notify({
-				icon: "notifications",
-				message: "Activities successfully updated!"
-			}, {
-				type: 'success',
-				timer: 2000,
-				placement: {
-					from: 'top',
-					align: 'right'
-				}
-			});
-		}
+	$.post((url + 'api/v1/activities?' + decodeURIComponent($.param({
+		x_key: headers['x-key'],
+		access_token: headers['x-access-token']
+	}))), data, function(response) {
+		$.notify({
+			icon: "notifications",
+			message: "Activities successfully updated!"
+		}, {
+			type: 'success',
+			timer: 2000,
+			placement: {
+				from: 'top',
+				align: 'right'
+			}
+		});
 	});
+}
+
+function highlight(text) {
+
+	//set var
+	var offset = -1;
+	var text = text.toLowerCase().trim();
+
+	//search elemetns for text
+	$('.search_textbox').each(function() {
+
+		//get data
+		var inputText = $(this).text();
+		var index = inputText.toLowerCase().indexOf(text);
+
+		//check
+		if (index >= 0 && text.length > 0) {
+			if (offset == -1) {
+				offset = $(this).offset().top;
+			}
+			inputText = inputText.substring(0, index) + "<span class='highlight'>" + inputText.substring(index, index + text.length) + "</span>" + inputText.substring(index + text.length);
+		}
+		$(this).html(inputText);
+	});
+
+	//scroll
+	$('.main-panel').animate({
+		scrollTop: (offset - 30)
+	}, 500);
 }

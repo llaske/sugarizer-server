@@ -4,13 +4,15 @@ var request = require('request'),
 
 // main landing page
 exports.index = function(req, res) {
+
 	// call
 	request({
 		headers: common.getHeaders(req),
 		json: true,
 		method: 'GET',
-		query: {
-			sort: '+name'
+		qs: {
+			sort: '+index',
+			name: (req.query.search ? req.query.search.trim() : undefined)
 		},
 		uri: req.iniconfig.web.api + 'api/v1/activities'
 	}, function(error, response, body) {
@@ -18,10 +20,11 @@ exports.index = function(req, res) {
 
 			// send to activities page
 			res.render('activities', {
-				module: 'Activities',
+				module: 'activities',
 				activities: body,
 				headers: common.getHeaders(req),
 				url: req.iniconfig.web.api,
+				search: (req.query.search ? req.query.search.trim() : ''),
 				client_url: req.iniconfig.web.client
 			});
 
