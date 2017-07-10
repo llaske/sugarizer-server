@@ -118,14 +118,14 @@ describe('Activities', function() {
 			chai.request(server)
 				.get('/api/v1/activities')
 				.query({
-					name: "Paint",
+					name: "labyrinth",
 					fields: 'id,name'
 				})
 				.set('x-access-token', fakeUser.token)
 				.set('x-key', fakeUser.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body[0].should.have.property('id').eql('org.olpcfrance.PaintActivity');
+					res.body[0].should.have.property('id').eql('org.olpc-france.labyrinthjs');
 					res.body[0].should.have.property('name').not.eql(undefined);
 					res.body[0].should.not.have.property('version');
 					res.body[0].should.not.have.property('directory');

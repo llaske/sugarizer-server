@@ -246,7 +246,7 @@ function process_results(req, activities) {
 
 		//filtering by name
 		if (opt.name) {
-			if (opt.name.toLowerCase().trim() != activity.name.toLowerCase().trim()) {
+			if (activity.name.toLowerCase().indexOf(opt.name.toLowerCase()) == -1) {
 				isValid = false;
 			}
 		}

@@ -1,0 +1,25 @@
+.favoriteBox input[type=checkbox] {
+  display: block;
+  width: 30px;
+  height: 30px;
+  -webkit-appearance: none;
+  outline: 0;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.favoriteBox input[type=checkbox]:not(:checked) {
+  background-image: url('/public/img/star_inactive.png');
+}
+
+.favoriteBox input[type=checkbox]:checked {
+  background-image: url('/public/img/star_active.png');
+}
+
+.highlight {
+  background-color: #FFEB3B;
+  padding: 3px 6px;
+  border-radius: 4px;
+}

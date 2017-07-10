@@ -1,4 +1,5 @@
 function initDragDrop() {
+
 	var adjustment;
 
 	$("ol.simple_with_animation").sortable({
@@ -49,7 +50,7 @@ function updateActivties() {
 
 	//get favorites
 	var list = []
-	$.each($('[name="optionsCheckboxes"]:checked'), function(index, value) {
+	$.each($('[name="favoriteActivities"]:checked'), function(index, value) {
 		list.push($(this).parent().data('id'));
 	});
 	var data = {
@@ -72,4 +73,33 @@ function updateActivties() {
 			}
 		});
 	});
+}
+
+function highlight(text) {
+
+	//set var
+	var offset = -1;
+	var text = text.toLowerCase().trim();
+
+	//search elemetns for text
+	$('.search_textbox').each(function() {
+
+		//get data
+		var inputText = $(this).text();
+		var index = inputText.toLowerCase().indexOf(text);
+
+		//check
+		if (index >= 0 && text.length > 0) {
+			if (offset == -1) {
+				offset = $(this).offset().top;
+			}
+			inputText = inputText.substring(0, index) + "<span class='highlight'>" + inputText.substring(index, index + text.length) + "</span>" + inputText.substring(index + text.length);
+		}
+		$(this).html(inputText);
+	});
+
+	//scroll
+	$('.main-panel').animate({
+		scrollTop: (offset - 30)
+	}, 500);
 }
