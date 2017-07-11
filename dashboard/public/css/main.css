@@ -23,3 +23,39 @@
   padding: 3px 6px;
   border-radius: 4px;
 }
+
+.card.student {
+  margin: 0 0 5px 0;
+  cursor: pointer;
+}
+
+.card.student:hover {
+  background: #FFA300;
+}
+
+.card.student.active {
+  background: #FFA300;
+}
+
+.card.student .xo-icon {
+  height: 40px;
+  float: left;
+  width: 40px;
+  margin: 5px;
+}
+
+.card.student .name {
+  font-weight: 500;
+  padding: 5px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card.student .timestamp {
+  font-size: 11px;
+  white-space: nowrap;
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
