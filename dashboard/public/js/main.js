@@ -21,7 +21,7 @@ function initDragDrop() {
 			});
 
 			//update activities
-			updateActivties();
+			updateActivities();
 		},
 
 		// set $item relative to cursor position
@@ -46,7 +46,7 @@ function initDragDrop() {
 }
 
 
-function updateActivties() {
+function updateActivities() {
 
 	//get favorites
 	var list = []
@@ -63,7 +63,7 @@ function updateActivties() {
 	}))), data, function(response) {
 		$.notify({
 			icon: "notifications",
-			message: "Activities successfully updated!"
+			message: document.webL10n.get('successActivityUpdate')
 		}, {
 			type: 'success',
 			timer: 2000,
@@ -103,3 +103,23 @@ function highlight(text) {
 		scrollTop: (offset - 30)
 	}, 500);
 }
+
+// localization
+function onLocalized() {
+	var l10n = document.webL10n;
+	var lang = document.getElementById('languageSelection');
+
+	if (lang.selectedIndex == -1) {
+		lang.value = l10n.getLanguage();
+	} else if (localStorage.getItem("languageSelection") == null) {
+		l10n.setLanguage(lang.options[lang.selectedIndex].value);
+	} else {
+		l10n.setLanguage(localStorage.getItem("languageSelection"));
+		lang.value = localStorage.getItem("languageSelection");
+	}
+	lang.onchange = function() {
+		l10n.setLanguage(this.value);
+		localStorage.setItem("languageSelection", this.value);
+	};
+}
+document.webL10n.ready(onLocalized);

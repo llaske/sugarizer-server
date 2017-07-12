@@ -23,6 +23,7 @@ exports.index = function(req, res) {
 				module: 'activities',
 				activities: body,
 				headers: common.getHeaders(req),
+				account: req.session.user,
 				url: req.iniconfig.web.api,
 				search: (req.query.search ? req.query.search.trim() : ''),
 				client_url: req.iniconfig.web.client

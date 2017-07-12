@@ -17,7 +17,8 @@ exports.index = function(req, res) {
 				moment: moment,
 				entries: entries,
 				users: users,
-				client_url: req.iniconfig.web.client
+				client_url: req.iniconfig.web.client,
+				account: req.session.user
 			};
 
 			// send to activities page

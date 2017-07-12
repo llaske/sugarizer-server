@@ -40,7 +40,8 @@ exports.index = function(req, res) {
 				module: 'users',
 				moment: moment,
 				query: query,
-				data: body
+				data: body,
+				account: req.session.user
 			});
 
 		} else {
@@ -102,7 +103,8 @@ exports.addUser = function(req, res) {
 	} else {
 		// send to activities page
 		res.render('addEditUser', {
-			module: 'users'
+			module: 'users',
+			account: req.session.user
 		});
 	}
 };
@@ -166,7 +168,8 @@ exports.editUser = function(req, res) {
 					// send to users page
 					res.render('addEditUser', {
 						module: 'users',
-						user: body
+						user: body,
+						account: req.session.user
 					});
 				} else {
 					req.flash('errors', {
