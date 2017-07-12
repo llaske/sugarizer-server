@@ -13,7 +13,7 @@ exports.index = function(req, res) {
 		getJournalEntries(req, res, users[6], function(entries) {
 
 			var data = {
-				module: 'journal',
+				module: 'journals',
 				moment: moment,
 				entries: entries,
 				users: users,
