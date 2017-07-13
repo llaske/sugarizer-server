@@ -6,6 +6,32 @@
 		<div class="content">
 			<div class="container-fluid">
 				<div class="row">
+					<div class="card">
+							<form method="get">
+								<div class="col-md-3">
+									<div class="form-group form-black label-floating is-empty">
+											<select class="form-control" name="role">
+												 <% for(var i=0; i< users.length; i++) { %>
+												 <option value="<%= users[i]._id %>@@@<%= users[i].private_journal %>@@@<%= users[i].shared_journal %>"><%= users[i].name %></option>
+												 <% } %>
+											</select>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group form-black label-floating is-empty">
+											<select class="form-control" name="role">
+												 <option value="shared" >Shared</option>
+												 <option value="private" >Private</option>
+											</select>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<button class="btn btn-round" type="submit">Show Results<div class="ripple-container"></div></button>
+								</div>
+							</form>
+					</div>
+				</div>
+				<div class="row">
 					<div class="col-md-3 col-lg-3 col-sm-3">
 						<div class="navbar-form navbar-center" style="width: 100%;">
 								<div class="form-group form-black is-empty" style="margin:0;width: 100%;">
