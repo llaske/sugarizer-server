@@ -61,6 +61,7 @@ describe('Journal', function() {
 					for (var i = 0; i < res.body.length; i++) {
 						res.body[i].should.have.property('_id').not.eql(undefined);
 						res.body[i].should.have.property('shared').eql(true);
+						res.body[i].should.have.property('count').not.eql(undefined);
 					}
 					done();
 				});
