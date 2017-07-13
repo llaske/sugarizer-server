@@ -52,7 +52,7 @@ function getAllJournals(req, res, callback) {
 		headers: common.getHeaders(req),
 		json: true,
 		method: 'GET',
-		uri: req.iniconfig.dashboard.api + 'api/v1/journal'
+		uri: common.getAPIUrl(req) + 'api/v1/journal'
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 
@@ -73,7 +73,7 @@ function getAllActivities(req, res, callback) {
 		headers: common.getHeaders(req),
 		json: true,
 		method: 'GET',
-		uri: req.iniconfig.dashboard.api + 'api/v1/activities'
+		uri: common.getAPIUrl(req) + 'api/v1/activities'
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 
@@ -96,7 +96,7 @@ function getAllUsers(req, res, callback) {
 		qs: {
 			role: 'student'
 		},
-		uri: req.iniconfig.dashboard.api + 'api/v1/users'
+		uri: common.getAPIUrl(req) + 'api/v1/users'
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 			//callback
