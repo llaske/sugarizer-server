@@ -62,7 +62,7 @@ exports.postLogin = function(req, res, next) {
 			},
 			json: true,
 			method: 'POST',
-			uri: req.iniconfig.web.api + 'login',
+			uri: req.iniconfig.dashboard.api + 'login',
 			body: form
 		}, function(error, response, body) {
 

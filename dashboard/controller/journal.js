@@ -17,7 +17,7 @@ exports.index = function(req, res) {
 				moment: moment,
 				entries: entries,
 				users: users,
-				client_url: req.iniconfig.web.client,
+				client_url: req.iniconfig.dashboard.client,
 				account: req.session.user
 			};
 
@@ -38,7 +38,7 @@ function getJournalEntries(req, res, user, callback) {
 		json: true,
 		method: 'GET',
 		qs: {},
-		uri: req.iniconfig.web.api + 'api/v1/journal/' + user.private_journal
+		uri: req.iniconfig.dashboard.api + 'api/v1/journal/' + user.private_journal
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 
@@ -51,7 +51,7 @@ function getJournalEntries(req, res, user, callback) {
 				json: true,
 				method: 'GET',
 				qs: {},
-				uri: req.iniconfig.web.api + 'api/v1/journal/' + user.shared_journal
+				uri: req.iniconfig.dashboard.api + 'api/v1/journal/' + user.shared_journal
 			}, function(error, response, body) {
 				if (response.statusCode == 200) {
 
@@ -85,7 +85,7 @@ function getUsers(req, res, callback) {
 			sort: '+name',
 			role: 'student'
 		},
-		uri: req.iniconfig.web.api + 'api/v1/users'
+		uri: req.iniconfig.dashboard.api + 'api/v1/users'
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 

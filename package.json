@@ -8,10 +8,15 @@
 		"express": "3.x",
 		"http": "0.0.x",
 		"ini": "1.1.x",
+    "moment": "2.x.x",
 		"jwt-simple": "^0.2.0",
 		"mongodb": "1.4.x",
 		"nodemon": "^1.11.0",
-		"websocket": "1.0.x"
+		"websocket": "1.0.x",
+    "ejs": "^1.0.0",
+    "express-flash": "~0.0.2",
+    "express-validator": "~1.0.1",
+    "request" : "*"
 	},
 	"devDependencies": {
 		"chai": "*",

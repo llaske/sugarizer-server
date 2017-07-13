@@ -31,7 +31,7 @@ exports.index = function(req, res) {
 		json: true,
 		method: 'GET',
 		qs: query,
-		uri: req.iniconfig.web.api + 'api/v1/users'
+		uri: req.iniconfig.dashboard.api + 'api/v1/users'
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 
@@ -79,7 +79,7 @@ exports.addUser = function(req, res) {
 				body: {
 					user: JSON.stringify(req.body)
 				},
-				uri: req.iniconfig.web.api + 'api/v1/users'
+				uri: req.iniconfig.dashboard.api + 'api/v1/users'
 			}, function(error, response, body) {
 				if (response.statusCode == 200) {
 
@@ -136,7 +136,7 @@ exports.editUser = function(req, res) {
 					body: {
 						user: JSON.stringify(req.body)
 					},
-					uri: req.iniconfig.web.api + 'api/v1/users/' + req.params.uid
+					uri: req.iniconfig.dashboard.api + 'api/v1/users/' + req.params.uid
 				}, function(error, response, body) {
 					if (response.statusCode == 200) {
 
@@ -161,7 +161,7 @@ exports.editUser = function(req, res) {
 				headers: common.getHeaders(req),
 				json: true,
 				method: 'get',
-				uri: req.iniconfig.web.api + 'api/v1/users/' + req.params.uid
+				uri: req.iniconfig.dashboard.api + 'api/v1/users/' + req.params.uid
 			}, function(error, response, body) {
 				if (response.statusCode == 200) {
 
@@ -194,7 +194,7 @@ exports.deleteUser = function(req, res) {
 			headers: common.getHeaders(req),
 			json: true,
 			method: 'delete',
-			uri: req.iniconfig.web.api + 'api/v1/users/' + req.params.uid
+			uri: req.iniconfig.dashboard.api + 'api/v1/users/' + req.params.uid
 		}, function(error, response, body) {
 			if (response.statusCode == 200) {
 
