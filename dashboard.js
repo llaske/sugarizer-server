@@ -10,11 +10,11 @@ var express = require('express'),
 	cookieParser = require('cookie-parser'),
 	flash = require('express-flash'),
 	expressValidator = require('express-validator'),
-	authController = require('./controller/auth'),
-	usersController = require('./controller/users'),
-	activitiesController = require('./controller/activities'),
-	journalController = require('./controller/journal'),
-	dashboardController = require('./controller/dashboard');
+	authController = require('./dashboard/controller/auth'),
+	usersController = require('./dashboard/controller/users'),
+	activitiesController = require('./dashboard/controller/activities'),
+	journalController = require('./dashboard/controller/journal'),
+	dashboardController = require('./dashboard/controller/dashboard');
 
 // must use cookieParser before expressSession
 app.use(cookieParser());
@@ -33,13 +33,13 @@ app.use(flash());
 app.set('view engine', 'ejs');
 
 // Tell express where it can find the templates
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/dashboard/views');
 
 // Make the files in the public folder available to the world
-app.use('/public', express.static(__dirname + '/public'));
+app.use('/public', express.static(__dirname + '/dashboard/public'));
 
 //varialbes.inc file
-var cfs = ini.parse(fs.readFileSync('./config/dashboard.ini', 'utf-8'));
+var cfs = ini.parse(fs.readFileSync('./env/sugarizer.ini', 'utf-8'));
 
 //pass config variables to all routes
 app.use(function(req, res, next) {
@@ -92,5 +92,5 @@ app.use(function(req, res) {
 });
 
 //listen to the port
-app.listen(cfs.web.port);
-console.log('Your application is running on port:' + cfs.web.port);
+app.listen(cfs.dashboard.port);
+console.log('Your application is running on port:' + cfs.dashboard.port);

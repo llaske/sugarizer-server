@@ -12,12 +12,12 @@
 								<i class="material-icons">person</i>
 							</div>
 							<div class="card-content">
-								<p class="category">Users</p>
-								<h3 class="title">49</h3>
+								<p class="category" data-l10n-id="users">Users</p>
+								<h3 class="title"><%= data.users.total %></h3>
 							</div>
 							<div class="card-footer">
 								<div class="stats">
-									<a href="users">View all users</a>
+									<a href="users" data-l10n-id="viewAllUsers">View all users</a>
 								</div>
 							</div>
 						</div>
@@ -28,12 +28,12 @@
 								<i class="material-icons">bubble_chart</i>
 							</div>
 							<div class="card-content">
-								<p class="category">Activities</p>
-								<h3 class="title">32</h3>
+								<p class="category" data-l10n-id="activities">Activities</p>
+								<h3 class="title"><%= data.activities.length %></h3>
 							</div>
 							<div class="card-footer">
 								<div class="stats">
-									<a href="activities">View all activities</a>
+									<a href="activities" data-l10n-id="viewAllActivities">View all activities</a>
 								</div>
 							</div>
 						</div>
@@ -44,12 +44,12 @@
 								<i class="material-icons">library_books</i>
 							</div>
 							<div class="card-content">
-								<p class="category">Journal</p>
-								<h3 class="title">15</h3>
+								<p class="category" data-l10n-id="journals">Journal</p>
+								<h3 class="title"><%= data.journal.totalEntries %></h3>
 							</div>
 							<div class="card-footer">
 								<div class="stats">
-									<a href="jorunals">View all journals</a>
+									<a href="journal" data-l10n-id="viewAllJournal">View all journal entries</a>
 								</div>
 							</div>
 						</div>
@@ -126,6 +126,8 @@
 						</div>
 					</div>
 				</div>
+
+
 			</div>
 		</div>
 	</div>

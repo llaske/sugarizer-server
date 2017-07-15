@@ -2,7 +2,7 @@
 process.env.NODE_ENV = 'test';
 
 //Require the dev-dependencies
-var server = require('../../sugarizer.js');
+var server = require('../../api.js');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var should = chai.should();

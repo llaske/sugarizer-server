@@ -128,10 +128,15 @@ exports.findAll = function(req, res) {
 
 	//get data
 	db.collection(journalCollection, function(err, collection) {
-		collection.find(options, {
-			'_id': 1,
-			'shared': 1
-		}).toArray(function(err, items) {
+		collection.find(options).toArray(function(err, items) {
+
+			//count
+			for (var i = 0; i < items.length; i++) {
+				items[i].count = items[i].content.length;
+				delete items[i].content;
+			}
+
+			//return
 			res.send(items);
 		});
 	});

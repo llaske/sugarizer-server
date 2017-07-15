@@ -1,5 +1,6 @@
 // include libraries
-var request = require('request');
+var request = require('request'),
+	common = require('../helper/common');
 
 /**
  * GET /
@@ -62,7 +63,7 @@ exports.postLogin = function(req, res, next) {
 			},
 			json: true,
 			method: 'POST',
-			uri: req.iniconfig.web.api + 'login',
+			uri: common.getAPIUrl(req) + 'login',
 			body: form
 		}, function(error, response, body) {
 

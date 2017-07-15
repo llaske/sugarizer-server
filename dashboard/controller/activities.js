@@ -14,7 +14,7 @@ exports.index = function(req, res) {
 			sort: '+index',
 			name: (req.query.search ? req.query.search.trim() : undefined)
 		},
-		uri: req.iniconfig.web.api + 'api/v1/activities'
+		uri: common.getAPIUrl(req) + 'api/v1/activities'
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 
@@ -23,9 +23,10 @@ exports.index = function(req, res) {
 				module: 'activities',
 				activities: body,
 				headers: common.getHeaders(req),
-				url: req.iniconfig.web.api,
+				account: req.session.user,
+				url: common.getAPIUrl(req),
 				search: (req.query.search ? req.query.search.trim() : ''),
-				client_url: req.iniconfig.web.client
+				client_url: req.iniconfig.dashboard.client
 			});
 
 		} else {

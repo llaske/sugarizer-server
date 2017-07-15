@@ -31,7 +31,7 @@ exports.index = function(req, res) {
 		json: true,
 		method: 'GET',
 		qs: query,
-		uri: req.iniconfig.web.api + 'api/v1/users'
+		uri: common.getAPIUrl(req) + 'api/v1/users'
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 
@@ -40,7 +40,8 @@ exports.index = function(req, res) {
 				module: 'users',
 				moment: moment,
 				query: query,
-				data: body
+				data: body,
+				account: req.session.user
 			});
 
 		} else {
@@ -78,7 +79,7 @@ exports.addUser = function(req, res) {
 				body: {
 					user: JSON.stringify(req.body)
 				},
-				uri: req.iniconfig.web.api + 'api/v1/users'
+				uri: common.getAPIUrl(req) + 'api/v1/users'
 			}, function(error, response, body) {
 				if (response.statusCode == 200) {
 
@@ -102,7 +103,8 @@ exports.addUser = function(req, res) {
 	} else {
 		// send to activities page
 		res.render('addEditUser', {
-			module: 'users'
+			module: 'users',
+			account: req.session.user
 		});
 	}
 };
@@ -134,7 +136,7 @@ exports.editUser = function(req, res) {
 					body: {
 						user: JSON.stringify(req.body)
 					},
-					uri: req.iniconfig.web.api + 'api/v1/users/' + req.params.uid
+					uri: common.getAPIUrl(req) + 'api/v1/users/' + req.params.uid
 				}, function(error, response, body) {
 					if (response.statusCode == 200) {
 
@@ -159,14 +161,15 @@ exports.editUser = function(req, res) {
 				headers: common.getHeaders(req),
 				json: true,
 				method: 'get',
-				uri: req.iniconfig.web.api + 'api/v1/users/' + req.params.uid
+				uri: common.getAPIUrl(req) + 'api/v1/users/' + req.params.uid
 			}, function(error, response, body) {
 				if (response.statusCode == 200) {
 
 					// send to users page
 					res.render('addEditUser', {
 						module: 'users',
-						user: body
+						user: body,
+						account: req.session.user
 					});
 				} else {
 					req.flash('errors', {
@@ -191,7 +194,7 @@ exports.deleteUser = function(req, res) {
 			headers: common.getHeaders(req),
 			json: true,
 			method: 'delete',
-			uri: req.iniconfig.web.api + 'api/v1/users/' + req.params.uid
+			uri: common.getAPIUrl(req) + 'api/v1/users/' + req.params.uid
 		}, function(error, response, body) {
 			if (response.statusCode == 200) {
 

@@ -1,10 +1,36 @@
 <% include includes/header %>
 <div class="wrapper">
 	<% include includes/sidebar %>
-	<div class="main-panel">
+	<div class="main-panel" style="overflow:hidden;">
 	<% include includes/navbar %>
 		<div class="content">
 			<div class="container-fluid">
+				<div class="row">
+					<div class="card">
+							<form method="get">
+								<div class="col-md-3">
+									<div class="form-group form-black label-floating is-empty">
+											<select class="form-control" name="role">
+												 <% for(var i=0; i< users.length; i++) { %>
+												 <option value="<%= users[i]._id %>@@@<%= users[i].private_journal %>@@@<%= users[i].shared_journal %>"><%= users[i].name %></option>
+												 <% } %>
+											</select>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group form-black label-floating is-empty">
+											<select class="form-control" name="role">
+												 <option value="shared" >Shared</option>
+												 <option value="private" >Private</option>
+											</select>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<button class="btn btn-round" type="submit">Show Results<div class="ripple-container"></div></button>
+								</div>
+							</form>
+					</div>
+				</div>
 				<div class="row">
 					<div class="col-md-3 col-lg-3 col-sm-3">
 						<div class="navbar-form navbar-center" style="width: 100%;">
@@ -13,14 +39,68 @@
 										<span class="material-input"></span>
 								<span class="material-input"></span><span class="material-input"></span></div>
 						</div>
-						<div class="card">
-							this will have users list with search
+						<div class="row" style="overflow-y:scroll;height: 75vh;">
+							<div class="col-md-12">
+								<% for(var i=0; i< users.length; i++) { %>
+								<div class="student card" id="<%= users[i]._id %>">
+									<div class="xo-icon"></div>
+									<div class="name"><%= users[i].name %></div>
+									<div class="timestamp"><%= moment(users[i].timestamp).calendar() %></div>
+									<script>
+										new icon().load('/public/img/owner-icon.svg', '<%- JSON.stringify(users[i].color) %>', "<%= users[i]._id %>")
+									</script>
+								</div>
+								<% } %>
+							</div>
 						</div>
 					</div>
 	        <div class="col-md-9 col-lg-9 col-sm-9">
-						<div class="card">
-							this will have shared/private journal entries
+						<div class="text-center">
+							<a class="btn btn-muted btn-round" href="javascript:$('.card[data-type]').addClass('hide');$('.card[data-type=shared]').removeClass('hide');">Shared<div class="ripple-container"></div></a>
+							<a class="btn btn-danger btn-round" href="javascript:$('.card[data-type]').addClass('hide');$('.card[data-type=private]').removeClass('hide');">Private<div class="ripple-container"></div></a>
 						</div>
+						<% for(var type in entries) { %>
+							<div class="card hide" data-type="<%= type %>">
+									<div class="card-header row" data-background-color="">
+											<div class="col-md-4 col-sm-4 col-lg-4 text-left">
+											<% if(entries[type].links.prev_page) { %>
+												 <a href="<%= entries[type].links.prev_page %>"><< previous page</a>
+											<% } %>
+											</div>
+											<div class="col-md-4 col-sm-4 col-lg-4 text-center">showing results <%= entries[type].offset %>-<%= entries[type].offset + entries[type].entries.length %> out of <%= entries[type].total %></div>
+											<div class="col-md-4 col-sm-4 col-lg-4 text-right">
+											<% if(entries[type].links.next_page) { %>
+												 <a href="<%= entries[type].links.next_page %>">next page >></a>
+											<% } %>
+											</div>
+									</div>
+									<div class="card-content table-responsive">
+											<table class="table">
+													<thead class="text-danger">
+															<tr>
+																	<th class="text-muted">#</th>
+																	<th class="text-muted">Name</th>
+																	<th class="text-muted">Timestamp</th>
+																	<th class="text-muted">Action</th>
+															</tr>
+													</thead>
+													<tbody>
+															<% for(var i=0; i < entries[type].entries.length; i++) { %>
+																<tr>
+																		<td><%= entries[type].offset + i + 1 %></td>
+																		<td><%= entries[type].entries[i].metadata.title %></td>
+																		<td><%= moment(entries[type].entries[i].metadata.timestamp).calendar() %></td>
+																		<td>
+																			<a title="Launch" href=""><i class="material-icons text-muted">edit</i></a>
+																			<a title="Delete User" href="" onclick="return confirm('Are you really want to delete the entry ?')"><i class="material-icons text-muted">delete_forever</i></a>
+																		</td>
+																</tr>
+															<% } %>
+													</tbody>
+											</table>
+									</div>
+							</div>
+						<% } %>
 					</div>
 				</div>
 			</div>
