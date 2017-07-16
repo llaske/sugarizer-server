@@ -67,12 +67,12 @@ exports.postLogin = function(req, res, next) {
 				req.flash('errors', {
 					msg: body.message
 				});
-				return res.redirect('/login');
+				return res.redirect('/dashboard/login');
 			}
 		})
 	} else {
 		req.flash('errors', errors);
-		return res.redirect('/login');
+		return res.redirect('/dashboard/login');
 	}
 };
 
@@ -83,7 +83,7 @@ exports.postLogin = function(req, res, next) {
 
 exports.logout = function(req, res) {
 	req.session.destroy();
-	res.redirect('/login');
+	res.redirect('/dashboard/login');
 };
 
 /**
@@ -91,7 +91,7 @@ exports.logout = function(req, res) {
  */
 exports.validateSession = function(req, res, next) {
 	if (!req.session.user) {
-		res.redirect('/login');
+		res.redirect('/dashboard/login');
 	}
 	next();
 };

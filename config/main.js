@@ -72,7 +72,7 @@ module.exports = function(app, ini) {
 		app.use('/public', express.static(__dirname + '/../dashboard/public'));
 
 		// Make the activities folder available to the world
-		app.use('/sugarizer', express.static(__dirname + '/../' + ini.client.path));
+		app.use('/', express.static(__dirname + '/../' + ini.client.path));
 
 		// Make the docs folder available to the world
 		app.use('/docs', express.static(__dirname + '/../docs/www'));
