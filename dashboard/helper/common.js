@@ -9,5 +9,5 @@ exports.getHeaders = function(req) {
 }
 
 exports.getAPIUrl = function(req) {
-	return req.protocol + '://' + req.get('host').substring(0, req.get('host').length - 4) + req.iniconfig.web.port + '/';
+	return req.protocol + '://' + req.get('host') + '/';
 }
