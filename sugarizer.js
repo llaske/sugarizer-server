@@ -7,7 +7,7 @@ var express = require('express'),
 //configure app setting
 require('./config/main')(app, ini);
 
-//force login ONLY for dev purpose @TODO
+//force login ONLY for dev purpose @TODO remove this
 app.use(function(req, res, next) {
 	req.session.user = {
 		token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MDA4MzM1NDQyMjZ9.LIm9rQdQfGEwVcRVQmm5o71iXbKdIbo9Vs-pAjCLEy4',
