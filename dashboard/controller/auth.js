@@ -3,16 +3,6 @@ var request = require('request'),
 	common = require('../helper/common');
 
 /**
- * GET /
- * index page.
- */
-
-exports.index = function(req, res) {
-	//redirect to login page
-	res.redirect('/login');
-};
-
-/**
  * GET /login
  * Login page.
  */

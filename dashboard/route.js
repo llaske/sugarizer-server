@@ -11,7 +11,7 @@ module.exports = function(app, ini) {
 	app.all('/dashboard/*', [authController.validateSession]);
 
 	// add routes
-	app.get('/', authController.index);
+	app.get('/', authController.getLogin);
 	app.get('/login', authController.getLogin);
 	app.post('/login', authController.postLogin);
 	app.get('/logout', authController.logout);
@@ -26,12 +26,8 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/activities', activitiesController.index);
 
 	// If no route is matched by now, it must be a 404
-	app.use('/dashboard/*', function(req, res) {
-		// 404
+	app.get('/dashboard/*', function(req, res) {
 		res.render('404', {
-			'config': ini,
-			'module': 'Error',
-			"status": 404,
 			"message": "Route Not Found!",
 			"url": req.protocol + '://' + req.get('host') + req.originalUrl
 		});
