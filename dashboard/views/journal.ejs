@@ -32,33 +32,7 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-3 col-lg-3 col-sm-3">
-						<div class="navbar-form navbar-center" style="width: 100%;">
-								<div class="form-group form-black is-empty" style="margin:0;width: 100%;">
-										<input class="form-control search_query" style="width: 100%;" value="" placeholder="Search User..." type="text">
-										<span class="material-input"></span>
-								<span class="material-input"></span><span class="material-input"></span></div>
-						</div>
-						<div class="row" style="overflow-y:scroll;height: 75vh;">
-							<div class="col-md-12">
-								<% for(var i=0; i< users.length; i++) { %>
-								<div class="student card" id="<%= users[i]._id %>">
-									<div class="xo-icon"></div>
-									<div class="name"><%= users[i].name %></div>
-									<div class="timestamp"><%= moment(users[i].timestamp).calendar() %></div>
-									<script>
-										new icon().load('/public/img/owner-icon.svg', '<%- JSON.stringify(users[i].color) %>', "<%= users[i]._id %>")
-									</script>
-								</div>
-								<% } %>
-							</div>
-						</div>
-					</div>
-	        <div class="col-md-9 col-lg-9 col-sm-9">
-						<div class="text-center">
-							<a class="btn btn-muted btn-round" href="javascript:$('.card[data-type]').addClass('hide');$('.card[data-type=shared]').removeClass('hide');">Shared<div class="ripple-container"></div></a>
-							<a class="btn btn-danger btn-round" href="javascript:$('.card[data-type]').addClass('hide');$('.card[data-type=private]').removeClass('hide');">Private<div class="ripple-container"></div></a>
-						</div>
+	        <div class="col-md-12 col-lg-12 col-sm-12"> 
 						<% for(var type in entries) { %>
 							<div class="card hide" data-type="<%= type %>">
 									<div class="card-header row" data-background-color="">
