@@ -128,7 +128,7 @@ define({ "api": [
     },
     "group": "Activities",
     "version": "1.0.0",
-    "filename": "api/routes/activities.js",
+    "filename": "api/controller/activities.js",
     "groupTitle": "Activities"
   },
   {
@@ -221,7 +221,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/activities.js",
+    "filename": "api/controller/activities.js",
     "groupTitle": "Activities"
   },
   {
@@ -272,12 +272,12 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/activities.js",
+    "filename": "api/controller/activities.js",
     "groupTitle": "Activities"
   },
   {
     "type": "post",
-    "url": "login/",
+    "url": "auth/login/",
     "title": "Login User",
     "name": "Login_User",
     "description": "<p>login a user (Admin or Student) on to the system. Return the user created with access token.</p>",
@@ -322,12 +322,12 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/auth.js",
+    "filename": "api/controller/auth.js",
     "groupTitle": "Auth"
   },
   {
     "type": "post",
-    "url": "signup/",
+    "url": "auth/signup/",
     "title": "Signup User",
     "name": "Signup_User",
     "description": "<p>Add a new user (Admin or Student). Return the user created.</p>",
@@ -435,7 +435,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/auth.js",
+    "filename": "api/controller/auth.js",
     "groupTitle": "Auth"
   },
   {
@@ -604,7 +604,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/journal.js",
+    "filename": "api/controller/journal.js",
     "groupTitle": "Journal"
   },
   {
@@ -682,7 +682,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/journal.js",
+    "filename": "api/controller/journal.js",
     "groupTitle": "Journal"
   },
   {
@@ -834,7 +834,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/journal.js",
+    "filename": "api/controller/journal.js",
     "groupTitle": "Journal"
   },
   {
@@ -932,7 +932,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/journal.js",
+    "filename": "api/controller/journal.js",
     "groupTitle": "Journal"
   },
   {
@@ -1108,7 +1108,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/journal.js",
+    "filename": "api/controller/journal.js",
     "groupTitle": "Journal"
   },
   {
@@ -1222,7 +1222,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/stats.js",
+    "filename": "api/controller/stats.js",
     "groupTitle": "Stats"
   },
   {
@@ -1315,7 +1315,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/stats.js",
+    "filename": "api/controller/stats.js",
     "groupTitle": "Stats"
   },
   {
@@ -1368,7 +1368,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/stats.js",
+    "filename": "api/controller/stats.js",
     "groupTitle": "Stats"
   },
   {
@@ -1496,7 +1496,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/users.js",
+    "filename": "api/controller/users.js",
     "groupTitle": "Users"
   },
   {
@@ -1648,7 +1648,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/users.js",
+    "filename": "api/controller/users.js",
     "groupTitle": "Users"
   },
   {
@@ -1776,7 +1776,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/users.js",
+    "filename": "api/controller/users.js",
     "groupTitle": "Users"
   },
   {
@@ -1829,7 +1829,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/users.js",
+    "filename": "api/controller/users.js",
     "groupTitle": "Users"
   },
   {
@@ -1957,7 +1957,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "api/routes/users.js",
+    "filename": "api/controller/users.js",
     "groupTitle": "Users"
   }
 ] });

@@ -3,10 +3,10 @@ var fs = require('fs'),
 	ini = require('ini');
 
 // Load and parse sugarizer.ini file
-exports.load = function(env) {
+exports.load = function() {
 
 	//validate
-	if (!env) env = "sugarizer";
+	env = (process.env.NODE_ENV ? process.env.NODE_ENV : 'sugarizer')
 
 	//add directory
 	confFile = "./env/" + env + '.ini';
