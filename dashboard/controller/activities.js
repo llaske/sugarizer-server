@@ -25,8 +25,7 @@ exports.index = function(req, res) {
 				headers: common.getHeaders(req),
 				account: req.session.user,
 				url: common.getAPIUrl(req),
-				search: (req.query.search ? req.query.search.trim() : ''),
-				client_url: req.iniconfig.dashboard.client
+				search: (req.query.search ? req.query.search.trim() : '')
 			});
 
 		} else {

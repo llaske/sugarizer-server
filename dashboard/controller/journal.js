@@ -17,7 +17,6 @@ exports.index = function(req, res) {
 				moment: moment,
 				entries: entries,
 				users: users,
-				client_url: req.iniconfig.dashboard.client,
 				account: req.session.user
 			};
 

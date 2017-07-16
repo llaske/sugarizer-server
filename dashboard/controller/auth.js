@@ -20,7 +20,7 @@ exports.index = function(req, res) {
 exports.getLogin = function(req, res) {
 	if (req.session.user) {
 		// send to dashboard
-		return res.redirect('/app/dashboard');
+		return res.redirect('/dashboard');
 	} else {
 		// send to login page
 		res.render('login', {
@@ -63,7 +63,7 @@ exports.postLogin = function(req, res, next) {
 			},
 			json: true,
 			method: 'POST',
-			uri: common.getAPIUrl(req) + 'login',
+			uri: common.getAPIUrl(req) + 'auth/login',
 			body: form
 		}, function(error, response, body) {
 
@@ -72,7 +72,7 @@ exports.postLogin = function(req, res, next) {
 				req.session.user = response.body
 
 				// redirect to dashboard
-				return res.redirect('/app/dashboard');
+				return res.redirect('/dashboard');
 			} else {
 				req.flash('errors', {
 					msg: body.message
