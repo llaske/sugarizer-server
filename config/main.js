@@ -73,5 +73,8 @@ module.exports = function(app, ini) {
 
 		// Make the activities folder available to the world
 		app.use('/activities', express.static(__dirname + '/../' + ini.activities.activities_path));
+
+		// Make the docs folder available to the world
+		app.use('/docs', express.static(__dirname + '/../docs/www'));
 	});
 };

@@ -1,6 +1,6 @@
 # Sugarizer Server
 
-Repository for Sugarizer Server API and Server Dashboard.
+Repository for Sugarizer Server API and Dashboard.
 
 ## Requirements
 
@@ -12,11 +12,11 @@ Run following command in `terminal`.
 
     npm install
 
-To test the API, run following command in `terminal`.
+To test the API, run the following command in `terminal`.
 
     npm test
 
-To generate docs, run following command in `terminal`.
+To generate docs, run the following command in `terminal`.
 
     apidoc -i api/controller -o docs/www/
 
@@ -26,7 +26,9 @@ Run following command in `terminal`.
 
     node sugarizer.js
 
-Then navigate to postman to start making calls to REST API and to http://localhost:{PORT}/ to access sugarizer dashboard.
+To access sugarizer dashboard, navigate to http://127.0.0.1:8080/.
+
+To view API documentation, navigate to http://127.0.0.1:8080/docs.
 
 ## License
 
