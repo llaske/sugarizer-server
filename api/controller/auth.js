@@ -8,7 +8,7 @@ var BSON = mongo.BSONPure;
 
 
 /**
- * @api {post} login/ Login User
+ * @api {post} auth/login/ Login User
  * @apiName Login User
  * @apiDescription login a user (Admin or Student) on to the system. Return the user created with access token.
  * @apiGroup Auth
@@ -95,7 +95,7 @@ exports.login = function(req, res) {
 };
 
 /**
- * @api {post} signup/ Signup User
+ * @api {post} auth/signup/ Signup User
  * @apiName Signup User
  * @apiDescription Add a new user (Admin or Student). Return the user created.
  * @apiGroup Auth
@@ -168,7 +168,7 @@ function genToken(user) {
 	var expires = expiresIn(7); // 7 days
 	var token = jwt.encode({
 		exp: expires
-	}, require('../config/secret')());
+	}, require('../../config/secret')());
 
 	return {
 		token: token,

@@ -1,5 +1,6 @@
 var jwt = require('jwt-simple');
-var users = require('../routes/auth');
+var users = require('../controller/auth');
+var config = require('../../config/secret.js')();
 
 module.exports = function(req, res, next) {
 
@@ -9,7 +10,7 @@ module.exports = function(req, res, next) {
 	if (token && key) {
 
 		try {
-			var decoded = jwt.decode(token, require('../config/secret.js')());
+			var decoded = jwt.decode(token, config);
 
 			if (decoded.exp <= Date.now()) {
 				return res.status(400).send({

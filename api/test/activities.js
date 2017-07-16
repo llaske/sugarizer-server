@@ -2,7 +2,7 @@
 process.env.NODE_ENV = 'test';
 
 //Require the dev-dependencies
-var server = require('../../api.js');
+var server = require('../../sugarizer.js');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var should = chai.should();
@@ -24,13 +24,13 @@ describe('Activities', function() {
 		//delay for db connection for establish
 		setTimeout(function() {
 			chai.request(server)
-				.post('/signup')
+				.post('/auth/signup')
 				.send(fakeUser)
 				.end((err, res) => {
 
 					//login user
 					chai.request(server)
-						.post('/login')
+						.post('/auth/login')
 						.send(fakeUser)
 						.end((err, res) => {
 							//store user data

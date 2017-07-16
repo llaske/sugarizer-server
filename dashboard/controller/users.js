@@ -87,17 +87,17 @@ exports.addUser = function(req, res) {
 					req.flash('success', {
 						msg: 'User has been successfully created!'
 					});
-					return res.redirect('/app/users/add');
+					return res.redirect('/dashboard/users/add');
 				} else {
 					req.flash('errors', {
 						msg: body.error
 					});
-					return res.redirect('/app/users/add');
+					return res.redirect('/dashboard/users/add');
 				}
 			});
 		} else {
 			req.flash('errors', errors);
-			return res.redirect('/app/users/add');
+			return res.redirect('/dashboard/users/add');
 		}
 
 	} else {
@@ -144,17 +144,17 @@ exports.editUser = function(req, res) {
 						req.flash('success', {
 							msg: 'User has been successfully updated!'
 						});
-						return res.redirect('/app/users/edit/' + req.params.uid);
+						return res.redirect('/dashboard/users/edit/' + req.params.uid);
 					} else {
 						req.flash('errors', {
 							msg: body.error
 						});
-						return res.redirect('/app/users/edit/' + req.params.uid);
+						return res.redirect('/dashboard/users/edit/' + req.params.uid);
 					}
 				});
 			} else {
 				req.flash('errors', errors);
-				return res.redirect('/app/users/edit/' + req.params.uid);
+				return res.redirect('/dashboard/users/edit/' + req.params.uid);
 			}
 		} else {
 			request({
@@ -175,7 +175,7 @@ exports.editUser = function(req, res) {
 					req.flash('errors', {
 						msg: body.error
 					});
-					return res.redirect('/app/users');
+					return res.redirect('/dashboard/users');
 				}
 			});
 		}
@@ -183,7 +183,7 @@ exports.editUser = function(req, res) {
 		req.flash('errors', {
 			msg: 'There is some error!'
 		});
-		return res.redirect('/app/users');
+		return res.redirect('/dashboard/users');
 	}
 };
 
@@ -207,12 +207,12 @@ exports.deleteUser = function(req, res) {
 					msg: body.error
 				});
 			}
-			return res.redirect('/app/users');
+			return res.redirect('/dashboard/users');
 		});
 	} else {
 		req.flash('errors', {
 			msg: 'There is some error!'
 		});
-		return res.redirect('/app/users');
+		return res.redirect('/dashboard/users');
 	}
 };
