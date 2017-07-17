@@ -24,9 +24,11 @@ module.exports = function(app, ini) {
 
 	//include body parser
 	app.use(bodyParser.urlencoded({
+		limit: '5mb',
 		extended: false
 	}))
 	app.use(bodyParser.json({
+		limit: '5mb',
 		type: '*/*'
 	}))
 

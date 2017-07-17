@@ -75,6 +75,31 @@ function updateActivities() {
 	});
 }
 
+
+function formatUserField(state) {
+	if (!state.id) {
+		return state.text;
+	}
+	var $state = $(
+		'<div class="student" id="' + $(state.element).data('id') + '">\
+			<div class="xo-icon"></div>\
+			<div class="name">' + state.text + '</div>\
+			<div class="timestamp">' + $(state.element).data('timestamp') + '</div>\
+		</div>'
+	);
+	new icon().load("/public/img/owner-icon.svg", $(state.element).data('color'), $(state.element).data('id'));
+	return $state;
+};
+
+$(document).ready(function() {
+	if ($("#users-select2").length > 0) {
+		$("#users-select2").select2({
+			templateResult: formatUserField
+		})
+	}
+});
+
+
 function highlight(text) {
 
 	//set var

@@ -41,7 +41,7 @@ icon = (function() {
 	};
 
 	function colorize(url, colors, uid) {
-		colors = JSON.parse(colors);
+
 		var iconInfo = {
 			"uri": url,
 			"strokeColor": colors.stroke,
