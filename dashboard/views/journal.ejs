@@ -10,19 +10,22 @@
 							<form method="get">
 								<div class="col-md-3">
 									<div class="form-group form-black label-floating is-empty">
-											<select class="form-control" name="role">
+											<select class="form-control" id="users-select2" name="user">
 												 <% for(var i=0; i< users.length; i++) { %>
-												 <option value="<%= users[i]._id %>@@@<%= users[i].private_journal %>@@@<%= users[i].shared_journal %>"><%= users[i].name %></option>
+												 <option data-id="<%= users[i]._id %>" data-color='<%- JSON.stringify(users[i].color) %>' data-timestamp="<%= moment(users[i].timestamp).calendar() %>" value="<%= users[i]._id %>@@@<%= users[i].private_journal %>@@@<%= users[i].shared_journal %>"><%= users[i].name %></option>
 												 <% } %>
 											</select>
 									</div>
 								</div>
 								<div class="col-md-3">
 									<div class="form-group form-black label-floating is-empty">
-											<select class="form-control" name="role">
+											<select class="form-control" id="journal-type-select2" name="role">
 												 <option value="shared" >Shared</option>
 												 <option value="private" >Private</option>
 											</select>
+											<script>
+												$("#journal-type-select2").select2()
+											</script>
 									</div>
 								</div>
 								<div class="col-md-6">
@@ -32,7 +35,7 @@
 					</div>
 				</div>
 				<div class="row">
-	        <div class="col-md-12 col-lg-12 col-sm-12"> 
+	        <div class="col-md-12 col-lg-12 col-sm-12">
 						<% for(var type in entries) { %>
 							<div class="card hide" data-type="<%= type %>">
 									<div class="card-header row" data-background-color="">

@@ -24,27 +24,19 @@
   border-radius: 4px;
 }
 
-.card.student {
+.student {
   margin: 0 0 5px 0;
   cursor: pointer;
 }
 
-.card.student:hover {
-  background: #FFA300;
-}
-
-.card.student.active {
-  background: #FFA300;
-}
-
-.card.student .xo-icon {
+.student .xo-icon {
   height: 40px;
   float: left;
   width: 40px;
   margin: 5px;
 }
 
-.card.student .name {
+.student .name {
   font-weight: 500;
   padding: 5px 0;
   white-space: nowrap;
@@ -52,10 +44,26 @@
   text-overflow: ellipsis;
 }
 
-.card.student .timestamp {
+.student .timestamp {
   font-size: 11px;
   white-space: nowrap;
   font-style: italic;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.select2-selection {
+  border: 0 !important;
+  background-image: linear-gradient(#D2D2D2, #D2D2D2), linear-gradient(#D2D2D2, #D2D2D2);
+  background-size: 0 2px, 100% 1px;
+  background-repeat: no-repeat;
+  background-position: center bottom, center calc(100% - 1px);
+  background-color: transparent;
+  transition: background 0s ease-out;
+  float: none;
+  box-shadow: none;
+  margin-bottom: 7px;
+  height: 36px !important;
+  border-radius: 0;
+  font-weight: 400;
 }
