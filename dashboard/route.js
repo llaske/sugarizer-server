@@ -22,6 +22,7 @@ module.exports = function(app, ini) {
 	app.post('/dashboard/users/edit/:uid', authController.validateSession, usersController.editUser);
 	app.get('/dashboard/users/delete/:uid', authController.validateSession, usersController.deleteUser);
 	app.get('/dashboard/journal', authController.validateSession, journalController.index);
+	app.get('/dashboard/journal/:jid', authController.validateSession, journalController.getEntries);
 	app.get('/dashboard/activities', authController.validateSession, activitiesController.index);
 
 	// If no route is matched by now, it must be a 404

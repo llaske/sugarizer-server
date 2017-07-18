@@ -26,6 +26,6 @@
 	"scripts": {
 		"test": "mocha api/test/",
 		"docs": "apidoc -i api/controller -o docs/www/",
-		"run": "node sugarizer.js"
+		"start": "node sugarizer.js"
 	}
 }

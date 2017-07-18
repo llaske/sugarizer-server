@@ -75,7 +75,6 @@ function updateActivities() {
 	});
 }
 
-
 function formatUserField(state) {
 	if (!state.id) {
 		return state.text;
@@ -95,6 +94,24 @@ $(document).ready(function() {
 	if ($("#users-select2").length > 0) {
 		$("#users-select2").select2({
 			templateResult: formatUserField
+		}).on("change", function(e) {
+			var pj = $("#users-select2 option:selected").data('private_journal');
+			var sj = $("#users-select2 option:selected").data('shared_journal');
+			$('#journal-type-select2').trigger("change");
+			$('#getJournalEntries').attr('action', '/dashboard/journal/' + sj);
+		})
+		$("#users-select2").trigger("change");
+	}
+
+	if ($("#journal-type-select2").length > 0) {
+		$("#journal-type-select2").select2().on("change", function(e) {
+			var pj = $("#users-select2 option:selected").data('private_journal');
+			var sj = $("#users-select2 option:selected").data('shared_journal');
+			if ($("#journal-type-select2 option:selected").val() == 'shared') {
+				$('#getJournalEntries').attr('action', '/dashboard/journal/' + sj);
+			} else {
+				$('#getJournalEntries').attr('action', '/dashboard/journal/' + pj);
+			}
 		})
 	}
 });
