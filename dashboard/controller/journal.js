@@ -20,6 +20,34 @@ exports.index = function(req, res) {
 	});
 };
 
+// delete entry
+exports.deleteEntry = function(req, res) {
+	// call
+	request({
+		headers: common.getHeaders(req),
+		json: true,
+		method: 'DELETE',
+		qs: {
+			oid: req.params.oid,
+			type: 'partial'
+		},
+		uri: common.getAPIUrl(req) + 'api/v1/journal/' + req.params.jid
+	}, function(error, response, body) {
+		if (response.statusCode == 200) {
+			// return back
+			req.flash('success', {
+				msg: 'Entry Successfully deleted!'
+			});
+			return res.redirect('/dashboard/journal/' + req.params.jid + '?uid=' + req.query.uid + '&offset=' + (req.query.offset ? req.query.offset : 0) + '&limit=' + (req.query.limit ? req.query.limit : 10));
+
+		} else {
+			req.flash('errors', {
+				msg: body.error
+			});
+			return res.redirect('/dashboard/journal/' + req.params.jid + '?uid=' + req.query.uid + '&offset=' + (req.query.offset ? req.query.offset : 0) + '&limit=' + (req.query.limit ? req.query.limit : 10));
+		}
+	})
+};
 
 exports.getEntries = function(req, res) {
 
@@ -30,7 +58,7 @@ exports.getEntries = function(req, res) {
 			uid: req.query.uid,
 			journal: req.params.jid,
 			type: req.query.type,
-			limit: (req.query.limit ? req.query.limit : 5),
+			limit: (req.query.limit ? req.query.limit : 10),
 			offset: (req.query.offset ? req.query.offset : 0)
 		}
 
@@ -70,9 +98,9 @@ function getJournalEntries(req, res, query, callback) {
 			callback(body);
 		} else {
 			req.flash('errors', {
-				msg: body.message
+				msg: body.error
 			});
-			//@TODO
+			return res.redirect('/dashboard/journal');
 		}
 	})
 }
@@ -94,9 +122,9 @@ function getUsers(req, res, callback) {
 			callback(body.users);
 		} else {
 			req.flash('errors', {
-				msg: body.message
+				msg: body.error
 			});
-			//@TODO
+			return res.redirect('/dashboard/journal');
 		}
 	})
 }

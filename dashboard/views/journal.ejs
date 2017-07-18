@@ -5,6 +5,7 @@
 	<% include includes/navbar %>
 		<div class="content">
 			<div class="container-fluid">
+				<% include includes/flash-errors %>
 				<div class="row">
 					<div class="card">
 							<form method="get" action="" id="getJournalEntries">
@@ -83,8 +84,8 @@
 																	<td><%= entries.entries[i].metadata.title %></td>
 																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>
 																	<td>
-																		<a title="Launch" href=""><i class="material-icons text-muted">launch</i></a>
-																		<a title="Delete Entry" href="" onclick="return confirm('Are you really want to delete the entry?')"><i class="material-icons text-muted">delete_forever</i></a>
+																		<a target="_blank" title="Launch" href="/dashboard/activities/launch?jid=<%= query.journal %>&oid=<%= entries.entries[i].objectId %>&source=journal"><i class="material-icons text-muted">launch</i></a>
+																		<a title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>" onclick="return confirm('Are you really want to delete the entry?')"><i class="material-icons text-muted">delete_forever</i></a>
 																	</td>
 															</tr>
 														<% } %>
