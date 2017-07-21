@@ -5,71 +5,102 @@ var request = require('request'),
 
 // main landing page
 exports.index = function(req, res) {
-
-	// call
 	getUsers(req, res, function(users) {
-
-		//get data
-		getJournalEntries(req, res, users[0], function(entries) {
-
-			var data = {
-				module: 'journal',
-				moment: moment,
-				entries: entries,
-				users: users,
-				account: req.session.user
-			};
-
-			// send to activities page
-			res.render('journal', data);
-		})
+		res.render('journal', {
+			module: 'journals',
+			moment: moment,
+			entries: [],
+			query: {
+				uid: -1,
+				type: 'private'
+			},
+			users: users,
+			account: req.session.user
+		});
 	});
 };
 
-function getJournalEntries(req, res, user, callback) {
+// delete entry
+exports.deleteEntry = function(req, res) {
+	// call
+	request({
+		headers: common.getHeaders(req),
+		json: true,
+		method: 'DELETE',
+		qs: {
+			oid: req.params.oid,
+			type: 'partial'
+		},
+		uri: common.getAPIUrl(req) + 'api/v1/journal/' + req.params.jid
+	}, function(error, response, body) {
+		if (response.statusCode == 200) {
+			// return back
+			req.flash('success', {
+				msg: 'Entry Successfully deleted!'
+			});
+			return res.redirect('/dashboard/journal/' + req.params.jid + '?uid=' + req.query.uid + '&offset=' + (req.query.offset ? req.query.offset : 0) + '&limit=' + (req.query.limit ? req.query.limit : 10));
 
-	//var
-	var entries = {};
+		} else {
+			req.flash('errors', {
+				msg: body.error
+			});
+			return res.redirect('/dashboard/journal/' + req.params.jid + '?uid=' + req.query.uid + '&offset=' + (req.query.offset ? req.query.offset : 0) + '&limit=' + (req.query.limit ? req.query.limit : 10));
+		}
+	})
+};
+
+exports.getEntries = function(req, res) {
+
+	//get users
+	getUsers(req, res, function(users) {
+
+		var query = {
+			uid: req.query.uid,
+			journal: req.params.jid,
+			type: req.query.type,
+			limit: (req.query.limit ? req.query.limit : 10),
+			offset: (req.query.offset ? req.query.offset : 0)
+		}
+
+		//get entries
+		getJournalEntries(req, res, query, function(entries) {
+
+			res.render('journal', {
+				module: 'journals',
+				moment: moment,
+				entries: entries,
+				query: query,
+				users: users,
+				account: req.session.user
+			});
+
+		});
+	});
+}
+
+function getJournalEntries(req, res, query, callback) {
 
 	// call
 	request({
 		headers: common.getHeaders(req),
 		json: true,
 		method: 'GET',
-		qs: {},
-		uri: common.getAPIUrl(req) + 'api/v1/journal/' + user.private_journal
+		qs: {
+			uid: query.uid,
+			offset: query.offset,
+			limit: query.limit,
+		},
+		uri: common.getAPIUrl(req) + 'api/v1/journal/' + query.journal
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 
 			//store
-			entries['private'] = body;
-
-			//get shared entries
-			request({
-				headers: common.getHeaders(req),
-				json: true,
-				method: 'GET',
-				qs: {},
-				uri: common.getAPIUrl(req) + 'api/v1/journal/' + user.shared_journal
-			}, function(error, response, body) {
-				if (response.statusCode == 200) {
-
-					//store
-					entries['shared'] = body;
-
-					//return
-					callback(entries);
-
-				} else {
-					req.flash('errors', {
-						msg: body.message
-					});
-				}
-			})
+			callback(body);
 		} else {
 			req.flash('errors', {
-				msg: body.message
+				msg: body.error
 			});
+			return res.redirect('/dashboard/journal');
 		}
 	})
 }
@@ -91,8 +122,9 @@ function getUsers(req, res, callback) {
 			callback(body.users);
 		} else {
 			req.flash('errors', {
-				msg: body.message
+				msg: body.error
 			});
+			return res.redirect('/dashboard/journal');
 		}
 	})
 }

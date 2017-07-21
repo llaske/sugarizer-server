@@ -67,3 +67,18 @@
   border-radius: 0;
   font-weight: 400;
 }
+
+.material-icons.dp24 {
+  font-size: 24px;
+  line-height: 36px;
+}
+
+.material-icons.dp48 {
+  font-size: 48px;
+  line-height: 56px;
+}
+
+.material-icons.dp96 {
+  font-size: 96px;
+  line-height: 108px;
+}
