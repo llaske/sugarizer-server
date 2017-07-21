@@ -1,0 +1,103 @@
+<% include includes/header %>
+<div class="wrapper">
+	<% include includes/sidebar %>
+	<div class="main-panel">
+	<% include includes/navbar %>
+		<div class="content">
+			<div class="container-fluid">
+				<% include includes/flash-errors %>
+				<div class="row">
+					<div class="card">
+							<form method="get" action="" id="getJournalEntries">
+								<div class="col-md-4">
+									<div class="form-group form-black label-floating is-empty">
+											<select class="form-control" id="users-select2" name="uid">
+												 <% for(var i=0; i< users.length; i++) { %>
+												 <option data-id="<%= users[i]._id %>"
+													 data-private_journal="<%= users[i].private_journal %>"
+													 data-shared_journal="<%= users[i].shared_journal %>"
+													 <% if(users[i]._id == query.uid){%> selected="selected" <% } %>
+													 data-color='<%- JSON.stringify(users[i].color) %>'
+													 data-timestamp="<%= moment(users[i].timestamp).calendar() %>"
+													 value="<%= users[i]._id %>">
+													 <%= users[i].name %>
+												 </option>
+												 <% } %>
+											</select>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group form-black label-floating is-empty">
+											<select class="form-control" id="journal-type-select2" name="type">
+												 <option <% if('private' == query.type){%> selected="selected" <% } %> value="private">Private</option>
+	 											 <option <% if('shared' == query.type){%> selected="selected" <% } %> value="shared">Shared</option>
+											</select>
+									</div>
+								</div>
+								<div class="col-md-4 text-right">
+									<button class="btn btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+								</div>
+							</form>
+					</div>
+				</div>
+				<div class="row">
+	        <div class="col-md-12 col-lg-12 col-sm-12">
+						<% if(query.uid == -1) { %>
+							<div class="text-center" style="margin-top:50px;">
+								<i class="material-icons dp96">info_outline</i>
+								<p data-l10n-id="selectUserText"></p>
+							</div>
+						<% } else if(entries.entries.length == 0) { %>
+							<div class="text-center" style="margin-top:50px;">
+								<i class="material-icons dp96">info_outline</i>
+								<p data-l10n-id="noEntryText"></p>
+							</div>
+						<% } else { %>
+						<div class="card">
+								<div class="card-header row" data-background-color="">
+										<div class="col-md-4 col-sm-4 col-lg-4 text-left">
+										<% if(entries.links.prev_page) { %>
+											 <a data-l10n-id="prevPage" href="<%= query.journal %><%= entries.links.prev_page %>&type=<%= query.type %>"><< previous page</a>
+										<% } %>
+										</div>
+										<div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= entries.offset %>", "to": "<%= entries.offset + entries.entries.length %>", "total": "<%= entries.total %>" }'></div>
+										<div class="col-md-4 col-sm-4 col-lg-4 text-right">
+										<% if(entries.links.next_page) { %>
+											 <a data-l10n-id="nextPage" href="<%= query.journal %><%= entries.links.next_page %>&type=<%= query.type %>">next page >></a>
+										<% } %>
+										</div>
+								</div>
+								<div class="card-content table-responsive">
+										<table class="table">
+												<thead class="text-danger">
+														<tr>
+																<th class="text-muted">#</th>
+																<th data-l10n-id="title" class="text-muted"></th>
+																<th data-l10n-id="timestamp" class="text-muted"></th>
+																<th data-l10n-id="action" class="text-muted"></th>
+														</tr>
+												</thead>
+												<tbody>
+														<% for(var i=0; i < entries.entries.length; i++) { %>
+															<tr>
+																	<td><%= entries.offset + i + 1 %></td>
+																	<td><%= entries.entries[i].metadata.title %></td>
+																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>
+																	<td>
+																		<a target="_blank" title="Launch" href="/dashboard/activities/launch?jid=<%= query.journal %>&oid=<%= entries.entries[i].objectId %>&source=journal"><i class="material-icons text-muted">launch</i></a>
+																		<a title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>" onclick="return confirm('Are you really want to delete the entry?')"><i class="material-icons text-muted">delete_forever</i></a>
+																	</td>
+															</tr>
+														<% } %>
+												</tbody>
+										</table>
+								</div>
+						</div>
+						<% } %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<% include includes/footer %>

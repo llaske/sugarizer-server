@@ -12,21 +12,21 @@
                       <form method="get">
                         <div class="col-md-3">
                           <div class="form-group form-black label-floating is-empty">
-                              <input placeholder="Name..." class="form-control" name="username" value="<% if(query.name){ %> <%= query.name %> <% } %>" type="text">
+                              <input placeholder="John..." class="form-control" name="username" value="<% if(query.q){ %><%= query.q %><% } %>" type="text">
                               <span class="material-input"></span>
                           </div>
                         </div>
                         <div class="col-md-3">
                           <div class="form-group form-black label-floating is-empty">
                               <select class="form-control" name="role">
-                                <option value="student">Student</option>
-                                  <option value="admin">Admin</option>
+                                 <option value="student" <% if(query.role=='student'){ %>selected="selected"<% } %> >Student</option>
+                                 <option value="admin" <% if(query.role=='admin'){ %>selected="selected"<% } %> >Admin</option>
                               </select>
                           </div>
                         </div>
                         <div class="col-md-6">
-                          <button class="btn btn-danger btn-round" type="submit">Show Results<div class="ripple-container"></div></button>
-                          <a class="btn pull-right btn-round" href="users/add">Add User<div class="ripple-container"></div></a>
+                          <button class="btn btn-danger btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+                          <a class="btn pull-right btn-round" href="users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
                         </div>
                       </form>
                   </div>
@@ -39,7 +39,7 @@
                              <a href="<%= data.links.prev_page %>"><< previous page</a>
                           <% } %>
                           </div>
-                          <div class="col-md-4 col-sm-4 col-lg-4 text-center">showing results <%= data.offset %>-<%= data.offset + data.users.length %> out of <%= data.total %></div>
+                          <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset %>", "to": "<%= data.offset + data.users.length %>", "total": "<%= data.total %>" }'></div>
                           <div class="col-md-4 col-sm-4 col-lg-4 text-right">
                           <% if(data.links.next_page) { %>
                              <a href="<%= data.links.next_page %>">next page >></a>
@@ -51,11 +51,11 @@
                               <thead class="text-danger">
                                   <tr>
                                       <th>#</th>
-                                      <th>Name</th>
-                                      <th>Language</th>
-                                      <th>Role</th>
-                                      <th>Timestamp</th>
-                                      <th>Action</th>
+                                      <th data-l10n-id="name">Name</th>
+                                      <th data-l10n-id="language">Language</th>
+                                      <th data-l10n-id="role">Role</th>
+                                      <th data-l10n-id="timestamp">Timestamp</th>
+                                      <th data-l10n-id="action">Action</th>
                                   </tr>
                               </thead>
                               <tbody>
@@ -68,13 +68,12 @@
                                         <td><%= moment(data.users[i].timestamp).calendar() %></td>
                                         <td>
                                           <a title="Edit User" href="users/edit/<%= data.users[i]._id %>"><i class="material-icons text-muted">edit</i></a>
-                                          <a title="Delete User" href="users/delete/<%= data.users[i]._id %>" onclick="return confirm('Are you sure?')"><i class="material-icons text-muted">delete_forever</i></a>
+                                          <a title="Delete User" href="users/delete/<%= data.users[i]._id %>" onclick="return confirm('Are you really want to delete the user(<%= data.users[i].name %>) ?')"><i class="material-icons text-muted">delete_forever</i></a>
                                         </td>
                                     </tr>
                                   <% } %>
                               </tbody>
                           </table>
-
                       </div>
                   </div>
               </div>

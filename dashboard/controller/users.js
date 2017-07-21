@@ -13,7 +13,7 @@ exports.index = function(req, res) {
 
 	//get query params
 	if (req.query.username != '') {
-		query['name'] = req.query.username;
+		query['q'] = req.query.username;
 	}
 	if (req.query.role != '') {
 		query['role'] = req.query.role;
@@ -31,16 +31,17 @@ exports.index = function(req, res) {
 		json: true,
 		method: 'GET',
 		qs: query,
-		uri: req.iniconfig.web.api + 'api/v1/users'
+		uri: common.getAPIUrl(req) + 'api/v1/users'
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 
 			// send to activities page
 			res.render('users', {
-				module: 'Users',
+				module: 'users',
 				moment: moment,
 				query: query,
-				data: body
+				data: body,
+				account: req.session.user
 			});
 
 		} else {
@@ -55,7 +56,14 @@ exports.addUser = function(req, res) {
 
 	if (req.method == 'POST') {
 
+		//check student or admin
+		if (req.body.password instanceof Array) {
+			req.body.password = req.body.password.join('#');
+		}
+
 		// validate
+		req.body.name = req.body.name.trim();
+		req.body.password = req.body.password.trim();
 		req.assert('name', 'Name should be alphanumeric').isAlphanumeric();
 		req.assert('password', 'Password should have 6 to 20 characters').len(6, 20);
 
@@ -71,7 +79,7 @@ exports.addUser = function(req, res) {
 				body: {
 					user: JSON.stringify(req.body)
 				},
-				uri: req.iniconfig.web.api + 'api/v1/users'
+				uri: common.getAPIUrl(req) + 'api/v1/users'
 			}, function(error, response, body) {
 				if (response.statusCode == 200) {
 
@@ -79,23 +87,24 @@ exports.addUser = function(req, res) {
 					req.flash('success', {
 						msg: 'User has been successfully created!'
 					});
-					return res.redirect('/app/users/add');
+					return res.redirect('/dashboard/users/add');
 				} else {
 					req.flash('errors', {
 						msg: body.error
 					});
-					return res.redirect('/app/users/add');
+					return res.redirect('/dashboard/users/add');
 				}
 			});
 		} else {
 			req.flash('errors', errors);
-			return res.redirect('/app/users/add');
+			return res.redirect('/dashboard/users/add');
 		}
 
 	} else {
 		// send to activities page
 		res.render('addEditUser', {
-			module: 'Users'
+			module: 'users',
+			account: req.session.user
 		});
 	}
 };
@@ -103,31 +112,78 @@ exports.addUser = function(req, res) {
 exports.editUser = function(req, res) {
 
 	if (req.params.uid) {
-		request({
-			headers: common.getHeaders(req),
-			json: true,
-			method: 'get',
-			uri: req.iniconfig.web.api + 'api/v1/users/' + req.params.uid
-		}, function(error, response, body) {
-			if (response.statusCode == 200) {
+		if (req.method == 'POST') {
 
-				// send to users page
-				res.render('addEditUser', {
-					module: 'Users',
-					user: body
+			//check student or admin
+			if (req.body.password instanceof Array) {
+				req.body.password = req.body.password.join('#');
+			}
+
+			// validate
+			req.body.name = req.body.name.trim();
+			req.body.password = req.body.password.trim();
+			req.assert('name', 'Name should be alphanumeric').isAlphanumeric();
+			req.assert('password', 'Password should have 6 to 20 characters').len(6, 20);
+
+			// get errors
+			var errors = req.validationErrors();
+
+			if (!errors) {
+				request({
+					headers: common.getHeaders(req),
+					json: true,
+					method: 'put',
+					body: {
+						user: JSON.stringify(req.body)
+					},
+					uri: common.getAPIUrl(req) + 'api/v1/users/' + req.params.uid
+				}, function(error, response, body) {
+					if (response.statusCode == 200) {
+
+						// send back
+						req.flash('success', {
+							msg: 'User has been successfully updated!'
+						});
+						return res.redirect('/dashboard/users/edit/' + req.params.uid);
+					} else {
+						req.flash('errors', {
+							msg: body.error
+						});
+						return res.redirect('/dashboard/users/edit/' + req.params.uid);
+					}
 				});
 			} else {
-				req.flash('errors', {
-					msg: body.error
-				});
-				return res.redirect('/app/users');
+				req.flash('errors', errors);
+				return res.redirect('/dashboard/users/edit/' + req.params.uid);
 			}
-		});
+		} else {
+			request({
+				headers: common.getHeaders(req),
+				json: true,
+				method: 'get',
+				uri: common.getAPIUrl(req) + 'api/v1/users/' + req.params.uid
+			}, function(error, response, body) {
+				if (response.statusCode == 200) {
+
+					// send to users page
+					res.render('addEditUser', {
+						module: 'users',
+						user: body,
+						account: req.session.user
+					});
+				} else {
+					req.flash('errors', {
+						msg: body.error
+					});
+					return res.redirect('/dashboard/users');
+				}
+			});
+		}
 	} else {
 		req.flash('errors', {
 			msg: 'There is some error!'
 		});
-		return res.redirect('/app/users');
+		return res.redirect('/dashboard/users');
 	}
 };
 
@@ -138,7 +194,7 @@ exports.deleteUser = function(req, res) {
 			headers: common.getHeaders(req),
 			json: true,
 			method: 'delete',
-			uri: req.iniconfig.web.api + 'api/v1/users/' + req.params.uid
+			uri: common.getAPIUrl(req) + 'api/v1/users/' + req.params.uid
 		}, function(error, response, body) {
 			if (response.statusCode == 200) {
 
@@ -151,12 +207,12 @@ exports.deleteUser = function(req, res) {
 					msg: body.error
 				});
 			}
-			return res.redirect('/app/users');
+			return res.redirect('/dashboard/users');
 		});
 	} else {
 		req.flash('errors', {
 			msg: 'There is some error!'
 		});
-		return res.redirect('/app/users');
+		return res.redirect('/dashboard/users');
 	}
 };

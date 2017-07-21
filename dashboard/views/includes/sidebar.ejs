@@ -14,9 +14,9 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a href="<%  %>dashboard">
+				<a href="/dashboard">
 					<i class="material-icons">dashboard</i>
-					<p>Dashboard</p>
+					<p data-l10n-id="dashboard"></p>
 				</a>
 			</li>
 			<%if (module == 'users') { %>
@@ -24,9 +24,9 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a href="<%  %>users">
+				<a href="/dashboard/users">
 					<i class="material-icons">person</i>
-					<p>Users</p>
+					<p data-l10n-id="users"></p>
 				</a>
 			</li>
 			<%if (module == 'activities') { %>
@@ -34,9 +34,9 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a href="<%  %>activities">
+				<a href="/dashboard/activities">
 					<i class="material-icons">bubble_chart</i>
-					<p>Activities</p>
+					<p data-l10n-id="activities"></p>
 				</a>
 			</li>
 			<%if (module == 'journals') { %>
@@ -44,9 +44,9 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a href="<%  %>journals">
+				<a href="/dashboard/journal">
 					<i class="material-icons">library_books</i>
-					<p>Journals</p>
+					<p data-l10n-id="journals"></p>
 				</a>
 			</li>
 		</ul>

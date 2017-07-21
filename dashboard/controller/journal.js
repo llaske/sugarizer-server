@@ -1,0 +1,130 @@
+// include libraries
+var request = require('request'),
+	moment = require('moment'),
+	common = require('../helper/common');
+
+// main landing page
+exports.index = function(req, res) {
+	getUsers(req, res, function(users) {
+		res.render('journal', {
+			module: 'journals',
+			moment: moment,
+			entries: [],
+			query: {
+				uid: -1,
+				type: 'private'
+			},
+			users: users,
+			account: req.session.user
+		});
+	});
+};
+
+// delete entry
+exports.deleteEntry = function(req, res) {
+	// call
+	request({
+		headers: common.getHeaders(req),
+		json: true,
+		method: 'DELETE',
+		qs: {
+			oid: req.params.oid,
+			type: 'partial'
+		},
+		uri: common.getAPIUrl(req) + 'api/v1/journal/' + req.params.jid
+	}, function(error, response, body) {
+		if (response.statusCode == 200) {
+			// return back
+			req.flash('success', {
+				msg: 'Entry Successfully deleted!'
+			});
+			return res.redirect('/dashboard/journal/' + req.params.jid + '?uid=' + req.query.uid + '&offset=' + (req.query.offset ? req.query.offset : 0) + '&limit=' + (req.query.limit ? req.query.limit : 10));
+
+		} else {
+			req.flash('errors', {
+				msg: body.error
+			});
+			return res.redirect('/dashboard/journal/' + req.params.jid + '?uid=' + req.query.uid + '&offset=' + (req.query.offset ? req.query.offset : 0) + '&limit=' + (req.query.limit ? req.query.limit : 10));
+		}
+	})
+};
+
+exports.getEntries = function(req, res) {
+
+	//get users
+	getUsers(req, res, function(users) {
+
+		var query = {
+			uid: req.query.uid,
+			journal: req.params.jid,
+			type: req.query.type,
+			limit: (req.query.limit ? req.query.limit : 10),
+			offset: (req.query.offset ? req.query.offset : 0)
+		}
+
+		//get entries
+		getJournalEntries(req, res, query, function(entries) {
+
+			res.render('journal', {
+				module: 'journals',
+				moment: moment,
+				entries: entries,
+				query: query,
+				users: users,
+				account: req.session.user
+			});
+
+		});
+	});
+}
+
+function getJournalEntries(req, res, query, callback) {
+
+	// call
+	request({
+		headers: common.getHeaders(req),
+		json: true,
+		method: 'GET',
+		qs: {
+			uid: query.uid,
+			offset: query.offset,
+			limit: query.limit,
+		},
+		uri: common.getAPIUrl(req) + 'api/v1/journal/' + query.journal
+	}, function(error, response, body) {
+		if (response.statusCode == 200) {
+
+			//store
+			callback(body);
+		} else {
+			req.flash('errors', {
+				msg: body.error
+			});
+			return res.redirect('/dashboard/journal');
+		}
+	})
+}
+
+function getUsers(req, res, callback) {
+	// call
+	request({
+		headers: common.getHeaders(req),
+		json: true,
+		method: 'GET',
+		qs: {
+			sort: '+name',
+			role: 'student'
+		},
+		uri: common.getAPIUrl(req) + 'api/v1/users'
+	}, function(error, response, body) {
+		if (response.statusCode == 200) {
+
+			callback(body.users);
+		} else {
+			req.flash('errors', {
+				msg: body.error
+			});
+			return res.redirect('/dashboard/journal');
+		}
+	})
+}

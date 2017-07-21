@@ -1,15 +1,6 @@
 // include libraries
-var request = require('request');
-
-/**
- * GET /
- * index page.
- */
-
-exports.index = function(req, res) {
-	//redirect to login page
-	res.redirect('/login');
-};
+var request = require('request'),
+	common = require('../helper/common');
 
 /**
  * GET /login
@@ -19,7 +10,7 @@ exports.index = function(req, res) {
 exports.getLogin = function(req, res) {
 	if (req.session.user) {
 		// send to dashboard
-		return res.redirect('/app/dashboard');
+		return res.redirect('/dashboard');
 	} else {
 		// send to login page
 		res.render('login', {
@@ -62,7 +53,7 @@ exports.postLogin = function(req, res, next) {
 			},
 			json: true,
 			method: 'POST',
-			uri: req.iniconfig.web.api + 'login',
+			uri: common.getAPIUrl(req) + 'auth/login',
 			body: form
 		}, function(error, response, body) {
 
@@ -71,17 +62,17 @@ exports.postLogin = function(req, res, next) {
 				req.session.user = response.body
 
 				// redirect to dashboard
-				return res.redirect('/app/dashboard');
+				return res.redirect('/dashboard');
 			} else {
 				req.flash('errors', {
 					msg: body.message
 				});
-				return res.redirect('/login');
+				return res.redirect('/dashboard/login');
 			}
 		})
 	} else {
 		req.flash('errors', errors);
-		return res.redirect('/login');
+		return res.redirect('/dashboard/login');
 	}
 };
 
@@ -92,7 +83,7 @@ exports.postLogin = function(req, res, next) {
 
 exports.logout = function(req, res) {
 	req.session.destroy();
-	res.redirect('/login');
+	res.redirect('/dashboard/login');
 };
 
 /**
@@ -100,7 +91,7 @@ exports.logout = function(req, res) {
  */
 exports.validateSession = function(req, res, next) {
 	if (!req.session.user) {
-		res.redirect('/login');
+		res.redirect('/dashboard/login');
 	}
 	next();
 };

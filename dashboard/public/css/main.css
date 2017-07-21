@@ -1,0 +1,84 @@
+.favoriteBox input[type=checkbox] {
+  display: block;
+  width: 30px;
+  height: 30px;
+  -webkit-appearance: none;
+  outline: 0;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.favoriteBox input[type=checkbox]:not(:checked) {
+  background-image: url('/public/img/star_inactive.png');
+}
+
+.favoriteBox input[type=checkbox]:checked {
+  background-image: url('/public/img/star_active.png');
+}
+
+.highlight {
+  background-color: #FFEB3B;
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+
+.student {
+  margin: 0 0 5px 0;
+  cursor: pointer;
+}
+
+.student .xo-icon {
+  height: 40px;
+  float: left;
+  width: 40px;
+  margin: 5px;
+}
+
+.student .name {
+  font-weight: 500;
+  padding: 5px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.student .timestamp {
+  font-size: 11px;
+  white-space: nowrap;
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.select2-selection {
+  border: 0 !important;
+  background-image: linear-gradient(#D2D2D2, #D2D2D2), linear-gradient(#D2D2D2, #D2D2D2);
+  background-size: 0 2px, 100% 1px;
+  background-repeat: no-repeat;
+  background-position: center bottom, center calc(100% - 1px);
+  background-color: transparent;
+  transition: background 0s ease-out;
+  float: none;
+  box-shadow: none;
+  margin-bottom: 7px;
+  height: 36px !important;
+  border-radius: 0;
+  font-weight: 400;
+}
+
+.material-icons.dp24 {
+  font-size: 24px;
+  line-height: 36px;
+}
+
+.material-icons.dp48 {
+  font-size: 48px;
+  line-height: 56px;
+}
+
+.material-icons.dp96 {
+  font-size: 96px;
+  line-height: 108px;
+}

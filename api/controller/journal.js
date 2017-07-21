@@ -128,10 +128,15 @@ exports.findAll = function(req, res) {
 
 	//get data
 	db.collection(journalCollection, function(err, collection) {
-		collection.find(options, {
-			'_id': 1,
-			'shared': 1
-		}).toArray(function(err, items) {
+		collection.find(options).toArray(function(err, items) {
+
+			//count
+			for (var i = 0; i < items.length; i++) {
+				items[i].count = items[i].content.length;
+				delete items[i].content;
+			}
+
+			//return
 			res.send(items);
 		});
 	});
@@ -297,6 +302,7 @@ exports.findJournalContent = function(req, res) {
 					'total': total,
 					'links': {
 						'prev_page': ((skip - limit) >= 0) ? formPaginatedUrl(route, params, (skip - limit), limit) : undefined,
+						'curr_page': formPaginatedUrl(route, params, (skip), limit),
 						'next_page': ((skip + limit) < total) ? formPaginatedUrl(route, params, (skip + limit), limit) : undefined,
 					}
 				});
@@ -315,7 +321,7 @@ function formPaginatedUrl(route, params, offset, limit) {
 		if (params.hasOwnProperty(p)) {
 			str.push(encodeURIComponent(p) + "=" + encodeURIComponent(params[p]));
 		}
-	return route + '?' + str.join("&");
+	return '?' + str.join("&");
 }
 
 //form options

@@ -25,7 +25,7 @@ describe('Users', function() {
 		//delay for db connection for establish
 		setTimeout(function() {
 			chai.request(server)
-				.post('/signup')
+				.post('/auth/signup')
 				.send({
 					"user": fakeUser.admin
 				})
@@ -33,7 +33,7 @@ describe('Users', function() {
 
 					//login user
 					chai.request(server)
-						.post('/login')
+						.post('/auth/login')
 						.send({
 							"user": fakeUser.admin
 						})

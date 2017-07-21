@@ -25,7 +25,7 @@ describe('Journal', function() {
 		//delay for db connection for establish
 		setTimeout(function() {
 			chai.request(server)
-				.post('/signup')
+				.post('/auth/signup')
 				.send({
 					"user": fakeUser.student
 				})
@@ -33,7 +33,7 @@ describe('Journal', function() {
 
 					//login user
 					chai.request(server)
-						.post('/login')
+						.post('/auth/login')
 						.send({
 							"user": fakeUser.student
 						})
@@ -61,6 +61,7 @@ describe('Journal', function() {
 					for (var i = 0; i < res.body.length; i++) {
 						res.body[i].should.have.property('_id').not.eql(undefined);
 						res.body[i].should.have.property('shared').eql(true);
+						res.body[i].should.have.property('count').not.eql(undefined);
 					}
 					done();
 				});
