@@ -49,13 +49,14 @@ icon = (function() {
 		};
 		load(iconInfo, function(url) {
 			var ele = document.getElementById(uid);
-			for (var i = 0; i < ele.childNodes.length; i++) {
-				if (ele.childNodes[i].className == "xo-icon") {
-					ele.childNodes[i].style.backgroundImage = "url('" + url + "')";
-					ele.childNodes[i].style.backgroundSize = "40px";
+			if (ele) {
+				for (var i = 0; i < ele.childNodes.length; i++) {
+					if (ele.childNodes[i].className == "xo-icon") {
+						ele.childNodes[i].style.backgroundImage = "url('" + url + "')";
+						ele.childNodes[i].style.backgroundSize = "40px";
+					}
 				}
 			}
-
 		});
 	};
 

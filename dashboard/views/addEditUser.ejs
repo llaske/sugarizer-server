@@ -9,7 +9,7 @@
               <div class="card">
                 <div class="card-content">
                     <% include includes/flash-errors %>
-                    <form method="post" <% if(typeof user == 'object'){ %> action="<%= user._id %>" <% } %>>
+                    <form id="user-add-edit-form" method="post" <% if(typeof user == 'object'){ %> action="<%= user._id %>" <% } %>>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
@@ -27,7 +27,6 @@
                                         <option value="en" <% if(typeof user == 'object' &&  user.language=='en'){ %> selected="selected" <% } %>>English</option>
                                         <option value="fr" <% if(typeof user == 'object' &&  user.language=='fr'){ %> selected="selected" <% } %>>French</option>
                                     </select>
-                                    <span class="material-input"></span>
                                 </div>
                             </div>
                         </div>
@@ -39,21 +38,22 @@
                                         <option value="admin" <% if(typeof user == 'object' &&  user.role=='admin'){ %> selected="selected" <% } %> >Admin</option>
                                         <option value="student" <% if(typeof user == 'object' &&  user.role=='student'){ %> selected="selected" <% } %> >Student</option>
                                     </select>
-                                    <span class="material-input"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="row color_input">
-                            <div class="col-md-4 col-lg-4 col-sm-4">
+                            <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
-                                    <label class="control-label">Color Stroke</label>
-                                    <input readonly="readonly" style="height:50px;" class="form-control" name="color[stroke]" value="<% if(typeof user == 'object' && typeof user.color == 'object'){ %><%= user.color.stroke %><% }else{ %>#FF8F00<% } %>" type="color">
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-lg-4 col-sm-4">
-                                <div class="form-group form-black label-floating">
-                                    <label class="control-label">Color Fill</label>
-                                    <input readonly="readonly" style="height:50px;" class="form-control" name="color[fill]" value="<% if(typeof user == 'object' && typeof user.color == 'object'){ %><%= user.color.fill %><% }else{ %>#FF8F00<% } %>" type="color">
+                                    <label class="control-label">Color</label>
+                                    <select class="form-control" name="color" id="color-select2">
+                                        <% for(var i=0; i< xocolors.length; i++){ %>
+                                          <% if(typeof user == 'object' && typeof user.color == 'object' && xocolors[i].stroke == user.color.stroke && xocolors[i].fill == user.color.fill){ %>
+                                            <option selected="selected" data-stroke="<%= xocolors[i].stroke %>" data-fill="<%= xocolors[i].fill %>" value='<%- JSON.stringify(xocolors[i]) %>'></option>
+                                          <% }else{ %>
+                                            <option data-stroke="<%= xocolors[i].stroke %>" data-fill="<%= xocolors[i].fill %>" value='<%- JSON.stringify(xocolors[i]) %>'></option>
+                                          <% } %>
+                                        <% } %>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -70,7 +70,7 @@
                             <div class="col-lg-4 col-md-4 col-sm-4">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label">Password</label>
-                                    <select class="form-control" name="password[]">
+                                    <select class="form-control" name="password">
                                         <option value="p1_1">1</option>
                                         <option value="p1_2">2</option>
                                         <option value="p1_3">3</option>
@@ -81,7 +81,7 @@
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-4">
                                 <div class="form-group form-black label-floating">
-                                    <select class="form-control" name="password[]">
+                                    <select class="form-control" name="password">
                                         <option value="p2_1">1</option>
                                         <option value="p2_2">2</option>
                                         <option value="p2_3">3</option>
@@ -92,7 +92,7 @@
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-4">
                                 <div class="form-group form-black label-floating">
-                                    <select class="form-control" name="password[]">
+                                    <select class="form-control" name="password">
                                         <option value="p3_1">1</option>
                                         <option value="p3_2">2</option>
                                         <option value="p3_3">3</option>

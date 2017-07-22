@@ -1,7 +1,8 @@
 // include libraries
 var request = require('request'),
 	moment = require('moment'),
-	common = require('../helper/common');
+	common = require('../helper/common'),
+	xocolors = require('../helper/xocolors')();
 
 // main landing page
 exports.index = function(req, res) {
@@ -57,8 +58,9 @@ exports.addUser = function(req, res) {
 	if (req.method == 'POST') {
 
 		//check student or admin
-		if (req.body.password instanceof Array) {
+		if (req.body.role == 'student') {
 			req.body.password = req.body.password.join('#');
+			req.body.color = JSON.parse(req.body.color);
 		}
 
 		// validate
@@ -87,7 +89,7 @@ exports.addUser = function(req, res) {
 					req.flash('success', {
 						msg: 'User has been successfully created!'
 					});
-					return res.redirect('/dashboard/users/add');
+					return res.redirect('/dashboard/users/edit/' + body._id);
 				} else {
 					req.flash('errors', {
 						msg: body.error
@@ -104,6 +106,7 @@ exports.addUser = function(req, res) {
 		// send to activities page
 		res.render('addEditUser', {
 			module: 'users',
+			xocolors: xocolors,
 			account: req.session.user
 		});
 	}
@@ -115,8 +118,9 @@ exports.editUser = function(req, res) {
 		if (req.method == 'POST') {
 
 			//check student or admin
-			if (req.body.password instanceof Array) {
+			if (req.body.role == 'student') {
 				req.body.password = req.body.password.join('#');
+				req.body.color = JSON.parse(req.body.color);
 			}
 
 			// validate
@@ -169,6 +173,7 @@ exports.editUser = function(req, res) {
 					res.render('addEditUser', {
 						module: 'users',
 						user: body,
+						xocolors: xocolors,
 						account: req.session.user
 					});
 				} else {

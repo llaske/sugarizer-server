@@ -82,3 +82,29 @@
   font-size: 96px;
   line-height: 108px;
 }
+
+#user-add-edit-form .select2-selection {
+  height: 50px !important;
+}
+
+#user-add-edit-form .select2-container {
+  width: 100% !important;
+}
+
+.color {
+  margin: 0 0 5px 0;
+  cursor: pointer;
+}
+
+.color .xo-icon {
+  height: 40px;
+  float: left;
+  width: 40px;
+  margin: 5px;
+}
+
+.color .fill, .color .stroke {
+  font-weight: 300;
+  padding: 5px 0;
+  line-height: 15px;
+}

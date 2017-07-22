@@ -37,10 +37,52 @@ exports.index = function(req, res) {
 	})
 };
 
+exports.fakeLaunch = function(req, res) {
+	//validate
+	if (!req.query.aid) {
+		req.flash('errors', {
+			msg: 'Invalid aid!'
+		});
+		return res.redirect('/dashboard/activities');
+	}
+
+	//make sugar context
+	var lsObj = {}
+	lsObj['sugar_settings'] = {};
+	lsObj['sugar_settings'].name = req.session.user.name;
+	lsObj['sugar_settings'].color = 128;
+	lsObj['sugar_settings'].colorvalue = {
+		stroke: '#fff',
+		fill: '#uuu'
+	};
+	lsObj['sugar_settings'].connected = false;
+	lsObj['sugar_settings'].language = req.session.user.language;
+	lsObj['sugar_settings'].networkId = req.session.user._id;
+	lsObj['sugar_settings'].server = null;
+	lsObj['sugar_settings'].view = 0;
+	lsObj['sugar_settings'].activities = [];
+
+	getActivity(req, req.query.aid, function(activity) {
+
+		activity.instances = [];
+		lsObj['sugar_settings'].activities.push(activity);
+		lsObj['sugar_settings'] = JSON.stringify(lsObj['sugar_settings']);
+
+		//launch url
+		res.json({
+			lsObj: lsObj,
+			url: '/' + activity.directory + '/index.html' + formQueryString({
+				a: activity.id,
+				n: activity.name
+			})
+		});
+	})
+}
+
 exports.launch = function(req, res) {
 
 	//validate
-	if (!req.query.oid || !req.query.jid) {
+	if (!req.query.oid || !req.params.jid) {
 		req.flash('errors', {
 			msg: 'Invalid oid or jid!'
 		});
@@ -56,7 +98,7 @@ exports.launch = function(req, res) {
 			fields: 'text,metadata',
 			oid: req.query.oid
 		},
-		uri: common.getAPIUrl(req) + 'api/v1/journal/' + req.query.jid
+		uri: common.getAPIUrl(req) + 'api/v1/journal/' + req.params.jid
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 
@@ -70,8 +112,12 @@ exports.launch = function(req, res) {
 
 			// process data and create context
 			var lsObj = {}
-			lsObj['sugar_datastore_' + body.entries[0].objectId] = JSON.stringify(body.entries[0]);
 			lsObj['sugar_datastoretext_' + body.entries[0].objectId] = JSON.stringify(body.entries[0].text);
+
+			body.entries[0].text = {
+				link: 'sugar_datastoretext_' + body.entries[0].objectId
+			}
+			lsObj['sugar_datastore_' + body.entries[0].objectId] = JSON.stringify(body.entries[0]);
 
 			//sugar settings
 			lsObj['sugar_settings'] = {};
@@ -92,21 +138,17 @@ exports.launch = function(req, res) {
 
 				getActivity(req, body.entries[0].metadata.activity, function(activity) {
 
-					delete body.entries[0].text
-					body.entries[0].text = {
-						link: 'sugar_datastoretext_' + body.entries[0].objectId
-					}
 					activity.instances = [body.entries[0]];
 					lsObj['sugar_settings'].activities.push(activity);
 					lsObj['sugar_settings'] = JSON.stringify(lsObj['sugar_settings']);
 
 					//launch url
-					res.render('launch', {
+					res.json({
 						lsObj: lsObj,
 						url: '/' + activity.directory + '/index.html' + formQueryString({
 							aid: body.entries[0].metadata.activity_id,
 							a: activity.id,
-							oid: body.entries[0].objectId,
+							o: body.entries[0].objectId,
 							n: activity.name
 						})
 					});
@@ -119,7 +161,6 @@ exports.launch = function(req, res) {
 			return res.redirect('/dashboard/' + (req.query.source ? req.query.source : 'journal'));
 		}
 	})
-
 };
 
 function getActivity(req, aid, callback) {
