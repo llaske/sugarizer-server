@@ -124,7 +124,11 @@ $(document).ready(function() {
 			var pj = $("#users-select2 option:selected").data('private_journal');
 			var sj = $("#users-select2 option:selected").data('shared_journal');
 			$('#journal-type-select2').trigger("change");
-			$('#getJournalEntries').attr('action', '/dashboard/journal/' + sj);
+			if ($("#journal-type-select2 option:selected").val() == 'shared') {
+				$('#getJournalEntries').attr('action', '/dashboard/journal/' + sj);
+			} else {
+				$('#getJournalEntries').attr('action', '/dashboard/journal/' + pj);
+			}
 		})
 		$("#users-select2").trigger("change");
 	}
