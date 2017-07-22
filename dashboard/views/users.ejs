@@ -52,6 +52,7 @@
                               <thead class="text-danger">
                                   <tr>
                                       <th>#</th>
+																			<% if(query.role != 'admin'){ %><th data-l10n-id="buddy">Buddy</th><% } %>
                                       <th data-l10n-id="name">Name</th>
                                       <th data-l10n-id="language">Language</th>
                                       <th data-l10n-id="role">Role</th>
@@ -63,6 +64,16 @@
                                   <% for(var i=0; i < data.users.length; i++) { %>
                                     <tr>
                                         <td><%= data.offset + i + 1 %></td>
+																				<% if(query.role != 'admin'){ %>
+																					<td>
+																						<div class="color" id="<%= data.users[i]._id %>">
+																							<div class="xo-icon"></div>
+																						</div>
+																					</td>
+																					<script>
+																						new icon().load("/public/img/owner-icon.svg", (<%- JSON.stringify(data.users[i].color) %>), "<%= data.users[i]._id %>");
+																					</script>
+																				<% } %>
                                         <td><%= data.users[i].name %></td>
                                         <td><%= data.users[i].language %></td>
                                         <td><%= data.users[i].role %></td>

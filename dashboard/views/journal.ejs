@@ -72,6 +72,7 @@
 												<thead class="text-danger">
 														<tr>
 																<th class="text-muted">#</th>
+																<th data-l10n-id="icon" class="text-muted"></th>
 																<th data-l10n-id="title" class="text-muted"></th>
 																<th data-l10n-id="timestamp" class="text-muted"></th>
 																<th data-l10n-id="action" class="text-muted"></th>
@@ -81,6 +82,7 @@
 														<% for(var i=0; i < entries.entries.length; i++) { %>
 															<tr>
 																	<td><%= entries.offset + i + 1 %></td>
+																	<td></td>
 																	<td><%= entries.entries[i].metadata.title %></td>
 																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>
 																	<td>
