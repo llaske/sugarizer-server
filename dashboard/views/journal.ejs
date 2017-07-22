@@ -82,7 +82,7 @@
 														<% for(var i=0; i < entries.entries.length; i++) { %>
 															<tr>
 																	<td><%= entries.offset + i + 1 %></td>
-																	<td></td>
+																	<td><img src="<%= iconList[entries.entries[i].metadata.activity] %>" style="height:30px;width:30px;" /></td>
 																	<td><%= entries.entries[i].metadata.title %></td>
 																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>
 																	<td>
