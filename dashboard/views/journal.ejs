@@ -82,7 +82,14 @@
 														<% for(var i=0; i < entries.entries.length; i++) { %>
 															<tr>
 																	<td><%= entries.offset + i + 1 %></td>
-																	<td><img src="<%= iconList[entries.entries[i].metadata.activity] %>" style="height:30px;width:30px;" /></td>
+																	<td>
+																		<div class="color" id="<%= entries.entries[i].objectId %>">
+																			<div class="xo-icon"></div>
+																		</div>
+																	</td>
+																	<script>
+																		new icon().load("<%= iconList[entries.entries[i].metadata.activity] %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color) %>), "<%= entries.entries[i].objectId %>");
+																	</script>
 																	<td><%= entries.entries[i].metadata.title %></td>
 																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>
 																	<td>
