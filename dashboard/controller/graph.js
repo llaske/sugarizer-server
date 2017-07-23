@@ -23,7 +23,7 @@ function getTopContributors(req, res) {
 			labels: ["Red", "Blue", "Yellow", "Green", "Purple"],
 			datasets: [{
 				label: '# of Votes',
-				data: [12, 19, 3, 5, 2],
+				data: [12, 15, 3, 5, 2],
 				backgroundColor: [
 					'rgba(255, 99, 132, 0.8)',
 					'rgba(54, 162, 235, 0.8)',

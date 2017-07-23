@@ -4,9 +4,40 @@
 	<div class="main-panel">
 	<% include includes/navbar %>
 		<div class="content">
-			<div class="container-fluid"> 
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="card" style="margin-top:0px;">
+							<div class="card-content">
+								<p class="title text-muted">Top Contributors</p>
+								<canvas onload="" id="top-contributor-chart" width="400" height="250"></canvas>
+							</div>
+							<div class="card-footer">
+								<div class="stats">
+									<a href="/dashboard/users" data-l10n-id="viewAllUsers">View all users</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="card" style="margin-top:0px;">
+							<div class="card-content">
+								<p class="title text-muted">Top Activities</p>
+								<canvas id="top-activities-chart" width="400" height="250"></canvas>
+							</div>
+							<div class="card-footer">
+								<div class="stats">
+									<a href="/dashboard/activities" data-l10n-id="viewAllActivities">View all activities</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 <% include includes/footer %>
+
+<script>createGraph('top-contributor', 'top-contributor-chart');</script>
+<script>createGraph('top-activities', 'top-activities-chart');</script>

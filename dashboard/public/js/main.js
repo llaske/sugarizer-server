@@ -206,7 +206,7 @@ document.webL10n.ready(onLocalized);
 // graph create
 function createGraph(type, element) {
 	$(document).ready(function() {
-		$.get(('dashboard/graph'), {
+		$.get(('/dashboard/graph'), {
 			type: type,
 			element: element
 		}, function(response) {
