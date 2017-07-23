@@ -60,6 +60,7 @@
 						<div class="card" style="margin-top:0px;">
 							<div class="card-content">
 								<p class="title text-muted">Top Contributors</p>
+								<canvas onload="" id="top-contributor-chart" width="400" height="250"></canvas>
 							</div>
 							<div class="card-footer">
 								<div class="stats">
@@ -72,6 +73,7 @@
 						<div class="card" style="margin-top:0px;">
 							<div class="card-content">
 								<p class="title text-muted">Top Activities</p>
+								<canvas id="top-activities-chart" width="400" height="250"></canvas>
 							</div>
 							<div class="card-footer">
 								<div class="stats">
@@ -203,3 +205,6 @@
 	</div>
 </div>
 <% include includes/footer %>
+
+<script>createGraph('top-contributor', 'top-contributor-chart');</script>
+<script>createGraph('top-activities', 'top-activities-chart');</script>

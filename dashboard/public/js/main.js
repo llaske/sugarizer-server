@@ -202,3 +202,20 @@ function onLocalized() {
 	};
 }
 document.webL10n.ready(onLocalized);
+
+// graph create
+function createGraph(type, element) {
+	$(document).ready(function() {
+		$.get(('dashboard/graph'), {
+			type: type,
+			element: element
+		}, function(response) {
+			var ctx = document.getElementById(response.element).getContext('2d');
+			var myChart = new Chart(ctx, {
+				type: response.graph,
+				data: response.data,
+				options: (response.options ? response.options : {})
+			});
+		});
+	})
+}
