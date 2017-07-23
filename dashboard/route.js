@@ -4,6 +4,7 @@ var authController = require('./controller/auth'),
 	activitiesController = require('./controller/activities'),
 	journalController = require('./controller/journal'),
 	dashboardController = require('./controller/dashboard');
+statsController = require('./controller/stats');
 
 module.exports = function(app, ini) {
 
@@ -27,6 +28,7 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/activities', authController.validateSession, activitiesController.index);
 	app.get('/dashboard/activities/launch', authController.validateSession, activitiesController.fakeLaunch);
 	app.get('/dashboard/activities/launch/:jid', authController.validateSession, activitiesController.launch);
+	app.get('/dashboard/stats', authController.validateSession, statsController.index);
 
 	// If no route is matched by now, it must be a 404
 	app.get('/dashboard/*', function(req, res) {
