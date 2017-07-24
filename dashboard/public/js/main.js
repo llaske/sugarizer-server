@@ -219,3 +219,14 @@ function createGraph(type, element) {
 		});
 	})
 }
+
+function createTable(type, element) {
+	$(document).ready(function() {
+		$.get(('/dashboard/graph'), {
+			type: type,
+			element: element
+		}, function(response) {
+			$('#' + response.element + ' tbody').html(response.data);
+		});
+	})
+}

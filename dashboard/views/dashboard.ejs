@@ -85,115 +85,37 @@
 				</div>
 
 				<div class="row">
-					<div class="col-md-4">
+					<div class="col-md-6">
 						<div class="card" style="margin-top:0px;">
 							<div class="card-content">
 								<p class="title text-muted">Recent Users</p>
-								<table class="table table-hover">
+								<table class="table table-hover" id="recent-users-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Timestamp</th>
+                            <th>#</th>
+                            <th data-l10n-id="name">Name</th>
+                            <th data-l10n-id="timestamp">Timestamp</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Dakota Rice</td>
-                            <td class="text-muted">3 days ago</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Dakota Rice</td>
-                            <td class="text-muted">3 days ago</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Dakota Rice</td>
-                            <td class="text-muted">3 days ago</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Dakota Rice</td>
-                            <td class="text-muted">3 days ago</td>
-                        </tr>
                     </tbody>
                 </table>
 							</div>
 						</div>
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-6">
 						<div class="card" style="margin-top:0px;">
 							<div class="card-content">
 								<p class="title text-muted">Recent Entries</p>
-								<table class="table table-hover">
+								<table class="table table-hover"  id="recent-activities-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Timestamp</th>
+                            <th>#</th>
+                            <th data-l10n-id="name">Name</th>
+                            <th data-l10n-id="timestamp">Timestamp</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Dakota Rice</td>
-                            <td class="text-muted">3 days ago</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Dakota Rice</td>
-                            <td class="text-muted">3 days ago</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Dakota Rice</td>
-                            <td class="text-muted">3 days ago</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Dakota Rice</td>
-                            <td class="text-muted">3 days ago</td>
-                        </tr>
-                    </tbody>
-                </table>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="card" style="margin-top:0px;">
-							<div class="card-content">
-								<p class="title text-muted">Recent Entries</p>
-								<table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Timestamp</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Dakota Rice</td>
-                            <td class="text-muted">3 days ago</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Dakota Rice</td>
-                            <td class="text-muted">3 days ago</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Dakota Rice</td>
-                            <td class="text-muted">3 days ago</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Dakota Rice</td>
-                            <td class="text-muted">3 days ago</td>
-                        </tr>
                     </tbody>
                 </table>
 							</div>
@@ -208,3 +130,5 @@
 
 <script>createGraph('top-contributor', 'top-contributor-chart');</script>
 <script>createGraph('top-activities', 'top-activities-chart');</script>
+<script>createTable('recent-activities', 'recent-activities-table');</script>
+<script>createTable('recent-users', 'recent-users-table');</script>

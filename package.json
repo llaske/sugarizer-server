@@ -16,6 +16,7 @@
     "ejs": "^1.0.0",
     "express-flash": "~0.0.2",
     "express-validator": "~1.0.1",
+    "synchronize": "*",
     "request" : "*"
 	},
 	"devDependencies": {
