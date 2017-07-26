@@ -40,7 +40,7 @@ function getTopContributors(req, res) {
 				if (hashList[journals[i]._id] != undefined) {
 					journals[i].user = hashList[journals[i]._id].name;
 				} else {
-					delete journals[i]
+					journals.splice(i, 1);
 				}
 			}
 
