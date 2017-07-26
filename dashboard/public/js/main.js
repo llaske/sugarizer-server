@@ -204,9 +204,9 @@ function onLocalized() {
 document.webL10n.ready(onLocalized);
 
 // graph create
-function createGraph(type, element) {
+function createGraph(type, element, route) {
 	$(document).ready(function() {
-		$.get(('/dashboard/graph'), {
+		$.get(('/dashboard/' + (route ? route : 'graph')), {
 			type: type,
 			element: element
 		}, function(response) {
@@ -220,9 +220,9 @@ function createGraph(type, element) {
 	})
 }
 
-function createTable(type, element) {
+function createTable(type, element, route) {
 	$(document).ready(function() {
-		$.get(('/dashboard/graph'), {
+		$.get(('/dashboard/' + (route ? route : 'graph')), {
 			type: type,
 			element: element
 		}, function(response) {

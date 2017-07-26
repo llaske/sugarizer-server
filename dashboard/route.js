@@ -30,6 +30,7 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/activities/launch', authController.validateSession, activitiesController.fakeLaunch);
 	app.get('/dashboard/activities/launch/:jid', authController.validateSession, activitiesController.launch);
 	app.get('/dashboard/stats', authController.validateSession, statsController.index);
+	app.get('/dashboard/stats/graph', authController.validateSession, statsController.getGraph);
 	app.get('/dashboard/graph', authController.validateSession, graphController.getGraph);
 
 

@@ -36,14 +36,15 @@ function getTopContributors(req, res) {
 		dashboard.getAllJournals(req, res, function(journals) {
 
 			//get name mapping
+			var j2 = [];
 			for (var i = 0; i < journals.length; i++) {
 				if (hashList[journals[i]._id] != undefined) {
 					journals[i].user = hashList[journals[i]._id].name;
-				} else {
-					journals.splice(i, 1);
+					j2.push(journals[i]);
 				}
 			}
-
+			journals = j2;
+			console.log(journals);
 			//separate out top users
 			journals.sort(function(a, b) {
 				if (a.count > b.count)
