@@ -26,7 +26,7 @@
                           </div>
                         </div>
                         <div class="col-md-6">
-                          <button class="btn btn-danger btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+                          <button class="btn btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                           <a class="btn pull-right btn-round" href="users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
                         </div>
                       </form>
@@ -34,7 +34,7 @@
               </div>
               <div class="col-md-12">
                   <div class="card">
-                      <div class="card-header row" data-background-color="red">
+                      <div class="card-header row" data-background-color="black">
                           <div class="col-md-4 col-sm-4 col-lg-4 text-left">
                           <% if(data.links.prev_page) { %>
                              <a href="<%= data.links.prev_page %>"><< previous page</a>
@@ -49,7 +49,7 @@
                       </div>
                       <div class="card-content table-responsive">
                           <table class="table">
-                              <thead class="text-danger">
+                              <thead class="text-muted">
                                   <tr>
                                       <th>#</th>
 																			<% if(query.role != 'admin'){ %><th data-l10n-id="buddy">Buddy</th><% } %>

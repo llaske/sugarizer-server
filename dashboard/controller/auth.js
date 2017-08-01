@@ -60,7 +60,7 @@ exports.postLogin = function(req, res, next) {
 			if (response.statusCode == 200) {
 				//store user and key in session
 				req.session.user = response.body
-
+				console.log(response.body);
 				// redirect to dashboard
 				return res.redirect('/dashboard');
 			} else {

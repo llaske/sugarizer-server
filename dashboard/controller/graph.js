@@ -44,7 +44,7 @@ function getTopContributors(req, res) {
 				}
 			}
 			journals = j2;
-			console.log(journals);
+
 			//separate out top users
 			journals.sort(function(a, b) {
 				if (a.count > b.count)
