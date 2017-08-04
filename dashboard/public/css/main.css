@@ -94,6 +94,10 @@
   background-image: url('/public/img/owner-icon.svg');
 }
 
+.home-icon {
+  background-image: url('/public/img/home-icon.svg');
+}
+
 .custom-icon.invert {
   filter: invert(100%);
   -webkit-filter: invert(100%);
