@@ -159,8 +159,9 @@ exports.deleteStats = function(req, res) {
  * @apiHeader {String} x-access-token Users access token.
  *
  * @apiParam {String} [uid] ID of the user
- * @apiParam {String} [object] Name of the Event Object
- * @apiParam {String} [action] Name of the Event Action
+ * @apiParam {String} [event_source] Name of the Event Source
+ * @apiParam {String} [event_object] Name of the Event Object
+ * @apiParam {String} [event_action] Name of the Event Action
  * @apiParam {String} [sort=+timestamp] Order of results <code>e.g. sort=-action or sort=+timestamp</code>
  *
  * @apiExample Example usage:
@@ -195,8 +196,9 @@ exports.findAll = function(req, res) {
 	//form query
 	var query = {};
 	query = addQuery('uid', req.query, query);
-	query = addQuery('object', req.query, query);
-	query = addQuery('action', req.query, query);
+	query = addQuery('event_source', req.query, query);
+	query = addQuery('event_object', req.query, query);
+	query = addQuery('event_action', req.query, query);
 
 	//get options
 	var options = getOptions(req, '+timestamp');
