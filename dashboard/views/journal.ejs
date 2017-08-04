@@ -20,7 +20,7 @@
 													 data-color='<%- JSON.stringify(users[i].color) %>'
 													 data-timestamp="<%= moment(users[i].timestamp).calendar() %>"
 													 value="<%= users[i]._id %>">
-													 <%= users[i].name %>
+													 <%- (users[i].name.replace(/[&<>]/g, "")) %>
 												 </option>
 												 <% } %>
 											</select>

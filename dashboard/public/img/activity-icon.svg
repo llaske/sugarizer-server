@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.1//EN'  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd' [
-	<!ENTITY stroke_color "#000">
-	<!ENTITY fill_color "#eee">
+<!ENTITY stroke_color "#005FE4">
+<!ENTITY fill_color "#FF2B34">
 ]><svg height="55px" viewBox="0 0 55 55" width="55px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" stroke="&stroke_color;" fill="&fill_color;">
  <g>
   <path d="M 49.139 40.188 C 48.022 31.762 40.451 22.513 27.144 17.812 C 19.719 15.189 10.363 16.52 6.641 24.386 C 2.619 32.88 10.02 43.082 20.336 42.997 C 27.202 42.941 34.08 45.588 38.191 48.162 C 42.897 51.115 50.104 47.47 49.139 40.188 Z M 42.398 40.273 C 41.818 41.95 39.99 42.846 38.302 42.271 C 36.625 41.695 35.728 39.863 36.304 38.181 C 36.881 36.5 38.71 35.604 40.393 36.179 C 42.073 36.755 42.972 38.59 42.398 40.273 Z " fill="&fill_color;" stroke="&stroke_color;" stroke-width="3.5"/>

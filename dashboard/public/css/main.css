@@ -113,6 +113,10 @@
   background-image: url('/public/img/system-shutdown.svg')
 }
 
+.stats-icon {
+  background-image: url('/public/img/stat-icon.svg')
+}
+
 .material-icons.dp24 {
   font-size: 24px;
   line-height: 36px;
