@@ -1267,14 +1267,21 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": true,
-            "field": "object",
+            "field": "event_source",
+            "description": "<p>Name of the Event Source</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "event_object",
             "description": "<p>Name of the Event Object</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": true,
-            "field": "action",
+            "field": "event_action",
             "description": "<p>Name of the Event Action</p>"
           },
           {
