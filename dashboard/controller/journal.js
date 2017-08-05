@@ -62,20 +62,51 @@ exports.getEntries = function(req, res) {
 			offset: (req.query.offset ? req.query.offset : 0)
 		}
 
-		//get entries
-		getJournalEntries(req, res, query, function(entries) {
+		//get activties
+		getActivities(req, res, function(activities) {
 
-			res.render('journal', {
-				module: 'journals',
-				moment: moment,
-				entries: entries,
-				query: query,
-				users: users,
-				account: req.session.user
+			//make hashlist
+			var hashList = {};
+			for (var i = 0; i < activities.length; i++) {
+				hashList[activities[i].id] = '/' + activities[i].directory + '/' + activities[i].icon
+			}
+
+			//get entries
+			getJournalEntries(req, res, query, function(entries) {
+
+				//render template
+				res.render('journal', {
+					module: 'journals',
+					moment: moment,
+					entries: entries,
+					iconList: hashList,
+					query: query,
+					users: users,
+					account: req.session.user
+				});
 			});
-
-		});
+		})
 	});
+}
+
+function getActivities(req, res, callback) {
+	// call
+	request({
+		headers: common.getHeaders(req),
+		json: true,
+		method: 'GET',
+		uri: common.getAPIUrl(req) + 'api/v1/activities/'
+	}, function(error, response, body) {
+		if (response.statusCode == 200) {
+			//store
+			callback(body);
+		} else {
+			req.flash('errors', {
+				msg: body.error
+			});
+			return res.redirect('/dashboard/journal');
+		}
+	})
 }
 
 function getJournalEntries(req, res, query, callback) {

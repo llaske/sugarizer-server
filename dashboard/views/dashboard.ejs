@@ -6,10 +6,10 @@
 		<div class="content">
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-lg-4 col-md-6 col-sm-6">
+					<div class="col-lg-4 col-md-4 col-sm-4">
 						<div class="card card-stats">
-							<div class="card-header" data-background-color="orange">
-								<i class="material-icons">person</i>
+							<div class="card-header" data-background-color="black">
+								<p class="custom-icon xo-icon"></p>
 							</div>
 							<div class="card-content">
 								<p class="category" data-l10n-id="users">Users</p>
@@ -17,15 +17,15 @@
 							</div>
 							<div class="card-footer">
 								<div class="stats">
-									<a href="users" data-l10n-id="viewAllUsers">View all users</a>
+									<a href="/dashboard/users" data-l10n-id="viewAllUsers">View all users</a>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col-lg-4 col-md-6 col-sm-6">
+					<div class="col-lg-4 col-md-4 col-sm-4">
 						<div class="card card-stats">
-							<div class="card-header" data-background-color="green">
-								<i class="material-icons">bubble_chart</i>
+							<div class="card-header" data-background-color="black">
+								<p class="custom-icon activity-icon"></p>
 							</div>
 							<div class="card-content">
 								<p class="category" data-l10n-id="activities">Activities</p>
@@ -33,15 +33,15 @@
 							</div>
 							<div class="card-footer">
 								<div class="stats">
-									<a href="activities" data-l10n-id="viewAllActivities">View all activities</a>
+									<a href="/dashboard/activities" data-l10n-id="viewAllActivities">View all activities</a>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col-lg-4 col-md-6 col-sm-6">
+					<div class="col-lg-4 col-md-4 col-sm-4">
 						<div class="card card-stats">
-							<div class="card-header" data-background-color="red">
-								<i class="material-icons">library_books</i>
+							<div class="card-header" data-background-color="black">
+								<p class="custom-icon journal-icon"></p>
 							</div>
 							<div class="card-content">
 								<p class="category" data-l10n-id="journals">Journal</p>
@@ -49,87 +49,86 @@
 							</div>
 							<div class="card-footer">
 								<div class="stats">
-									<a href="journal" data-l10n-id="viewAllJournal">View all journal entries</a>
+									<a href="/dashboard/journal" data-l10n-id="viewAllJournal">View all journal entries</a>
 								</div>
 							</div>
 						</div>
 					</div>
-
-					<div class="col-lg-4 col-md-6 col-sm-6 hide">
-						<div class="card card-stats">
-							<div class="card-header" data-background-color="blue">
-								<i class="fa fa-twitter"></i>
-							</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="card" style="margin-top:0px;">
 							<div class="card-content">
-								<p class="category">Followers</p>
-								<h3 class="title">+245</h3>
+								<p class="title text-muted">Top Contributors</p>
+								<canvas onload="" id="top-contributor-chart" width="400" height="250"></canvas>
 							</div>
 							<div class="card-footer">
 								<div class="stats">
-									<i class="material-icons">update</i> Just Updated
+									<a href="/dashboard/users" data-l10n-id="viewAllUsers">View all users</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="card" style="margin-top:0px;">
+							<div class="card-content">
+								<p class="title text-muted">Top Activities</p>
+								<canvas id="top-activities-chart" width="400" height="250"></canvas>
+							</div>
+							<div class="card-footer">
+								<div class="stats">
+									<a href="/dashboard/activities" data-l10n-id="viewAllActivities">View all activities</a>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="row hide">
-					<div class="col-md-4">
-						<div class="card">
-							<div class="card-header card-chart" data-background-color="green">
-								<div class="ct-chart" id="dailySalesChart"></div>
-							</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="card" style="margin-top:0px;">
 							<div class="card-content">
-								<h4 class="title">Daily Sales</h4>
-								<p class="category"><span class="text-success"><i class="fa fa-long-arrow-up"></i> 55%  </span> increase in today sales.</p>
-							</div>
-							<div class="card-footer">
-								<div class="stats">
-									<i class="material-icons">access_time</i> updated 4 minutes ago
-								</div>
+								<p class="title text-muted">Recent Users</p>
+								<table class="table table-hover" id="recent-users-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th data-l10n-id="name">Name</th>
+                            <th data-l10n-id="timestamp">Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
 							</div>
 						</div>
 					</div>
-
-					<div class="col-md-4">
-						<div class="card">
-							<div class="card-header card-chart" data-background-color="orange">
-								<div class="ct-chart" id="emailsSubscriptionChart"></div>
-							</div>
+					<div class="col-md-6">
+						<div class="card" style="margin-top:0px;">
 							<div class="card-content">
-								<h4 class="title">Email Subscriptions</h4>
-								<p class="category">Last Campaign Performance</p>
-							</div>
-							<div class="card-footer">
-								<div class="stats">
-									<i class="material-icons">library_books</i> View all journal
-								</div>
-							</div>
-
-						</div>
-					</div>
-
-					<div class="col-md-4 hide">
-						<div class="card">
-							<div class="card-header card-chart" data-background-color="red">
-								<div class="ct-chart" id="completedTasksChart"></div>
-							</div>
-							<div class="card-content">
-								<h4 class="title">Completed Tasks</h4>
-								<p class="category">Last Campaign Performance</p>
-							</div>
-							<div class="card-footer">
-								<div class="stats">
-									<i class="material-icons">access_time</i> campaign sent 2 days ago
-								</div>
+								<p class="title text-muted">Recent Entries</p>
+								<table class="table table-hover"  id="recent-activities-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th data-l10n-id="name">Name</th>
+                            <th data-l10n-id="timestamp">Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
 							</div>
 						</div>
 					</div>
 				</div>
-
-
 			</div>
 		</div>
 	</div>
 </div>
 <% include includes/footer %>
+
+<script>createGraph('top-contributor', 'top-contributor-chart');</script>
+<script>createGraph('top-activities', 'top-activities-chart');</script>
+<script>createTable('recent-activities', 'recent-activities-table');</script>
+<script>createTable('recent-users', 'recent-users-table');</script>

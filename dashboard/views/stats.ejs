@@ -1,0 +1,51 @@
+<% include includes/header %>
+<div class="wrapper">
+	<% include includes/sidebar %>
+	<div class="main-panel">
+	<% include includes/navbar %>
+		<div class="content">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="card" style="margin-top:0px;">
+							<div class="card-content">
+								<p class="title text-muted">How users are launching activities?</p><hr>
+								<canvas onload="" id="how-user-launch-activities-chart" width="400" height="250"></canvas>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="card" style="margin-top:0px;">
+							<div class="card-content">
+								<p class="title text-muted">How often users are changing their profile settings?</p><hr>
+								<canvas id="how-often-user-change-settings-chart" width="400" height="250"></canvas>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row hide">
+					<div class="col-md-6">
+						<div class="card" style="margin-top:0px;">
+							<div class="card-content">
+								<p class="title text-muted">How users are launching activities?</p><hr>
+								<canvas onload="" id="how-user-launch-activities-chart1" width="400" height="250"></canvas>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="card" style="margin-top:0px;">
+							<div class="card-content">
+								<p class="title text-muted">How often users are changing their profile settings?</p><hr>
+								<canvas id="how-often-user-change-settings-chart1" width="400" height="250"></canvas>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<% include includes/footer %>
+
+<script>createGraph('how-user-launch-activities', 'how-user-launch-activities-chart', 'stats/graph');</script>
+<script>createGraph('how-often-user-change-settings', 'how-often-user-change-settings-chart', 'stats/graph');</script>

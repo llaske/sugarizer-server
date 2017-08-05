@@ -522,7 +522,7 @@ h2.title {
 
 .sidebar .sidebar-wrapper, .off-canvas-sidebar .sidebar-wrapper {
   position: relative;
-  height: calc(100vh - 75px);
+  /*height: calc(100vh - 75px);*/
   overflow: auto;
   width: 260px;
   z-index: 4;
@@ -550,12 +550,12 @@ h2.title {
 .sidebar .nav li>a, .off-canvas-sidebar .nav li>a {
   margin: 10px 15px;
   border-radius: 3px;
-  color: #3C4858;
+  color: #fff;
 }
 
 .sidebar .nav li:hover>a, .off-canvas-sidebar .nav li:hover>a {
   background: rgba(200, 200, 200, 0.2);
-  color: #3C4858;
+  color: #FFFFFF;
 }
 
 .sidebar .nav li.active>a, .off-canvas-sidebar .nav li.active>a {
@@ -579,7 +579,7 @@ h2.title {
   line-height: 30px;
   width: 30px;
   text-align: center;
-  color: #a9afbb;
+  color: #fff;
 }
 
 .sidebar .sidebar-background, .off-canvas-sidebar .sidebar-background {
@@ -631,13 +631,11 @@ h2.title {
 }
 
 .sidebar .logo .simple-text, .off-canvas-sidebar .logo .simple-text {
-  text-transform: uppercase;
   padding: 5px 0px;
   display: block;
   font-size: 18px;
-  color: #3C4858;
+  color: #fff;
   text-align: center;
-  font-weight: 400;
   line-height: 30px;
 }
 
@@ -705,6 +703,10 @@ h2.title {
   box-shadow: 0 12px 20px -10px rgba(156, 39, 176, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(156, 39, 176, 0.2);
 }
 
+.sidebar[data-color="black"] .nav li.active a, .off-canvas-sidebar[data-color="black"] .nav li.active a {
+  background-color: #808080;
+}
+
 .off-canvas-sidebar .nav>li>a, .off-canvas-sidebar .nav>li>a:hover {
   color: #FFFFFF;
 }
@@ -715,6 +717,7 @@ h2.title {
 
 .main-panel {
   position: relative;
+  background: #E5E5E5;
   z-index: 2;
   float: right;
   overflow: auto;
@@ -749,6 +752,10 @@ h2.title {
 .main-panel {
   max-height: 100%;
   height: 100%;
+}
+
+.sidebar {
+  background: #282828;
 }
 
 .sidebar, .main-panel {
@@ -1232,7 +1239,7 @@ h2.title {
 }
 
 body {
-  background-color: #EEEEEE;
+  /*background-color: #EEEEEE;*/
   color: #3C4858;
 }
 
@@ -1284,12 +1291,12 @@ body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4 {
 }
 
 a {
-  color: #9c27b0;
+  color: #4a4a4a;
+  font-weight: 400;
 }
 
 a:hover, a:focus {
-  color: #89229b;
-  text-decoration: none;
+  color: #000;
 }
 
 a.text-info:hover, a.text-info:focus {
@@ -3526,7 +3533,7 @@ footer .btn {
 }
 
 .dropdown-menu li a:hover, .dropdown-menu li a:focus, .dropdown-menu li a:active {
-  background-color: #9c27b0;
+  background-color: #282828;
   color: #FFFFFF;
 }
 
@@ -3535,9 +3542,8 @@ footer .btn {
 }
 
 .navbar .dropdown-menu li a:hover, .navbar .dropdown-menu li a:focus, .navbar .dropdown-menu li a:active, .navbar.navbar-default .dropdown-menu li a:hover, .navbar.navbar-default .dropdown-menu li a:focus, .navbar.navbar-default .dropdown-menu li a:active {
-  background-color: #9c27b0;
+  background-color: #282828;
   color: #FFFFFF;
-  box-shadow: 0 12px 20px -10px rgba(156, 39, 176, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(156, 39, 176, 0.2);
 }
 
 .card {
@@ -3599,7 +3605,7 @@ footer .btn {
 }
 
 .card .card-header {
-  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 0px -1px rgba(0, 0, 0, 0.42), 0 0px 0px 0px rgba(0, 0, 0, 0.12), 0 2px 5px 0px rgba(0, 0, 0, 0.2);
   margin: -20px 15px 0;
   border-radius: 3px;
   padding: 15px;
@@ -3758,6 +3764,10 @@ footer .btn {
 .card [data-background-color="red"] {
   background: linear-gradient(60deg, #ef5350, #e53935);
   box-shadow: 0 12px 20px -10px rgba(244, 67, 54, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(244, 67, 54, 0.2);
+}
+
+.card [data-background-color="black"] {
+  background: #808080;
 }
 
 .card [data-background-color] {
@@ -4789,6 +4799,23 @@ footer .btn {
 /*          Changes for small display      */
 
 @media (max-width: 991px) {
+  .nav .dropdown .custom-icon {
+    height: 30px !important;
+    width: 30px !important;
+    margin: 0 !important;
+    background-size: 30px !important;
+    margin-right: 15px !important;
+    float: left !important;
+    line-height: 32px !important;
+    background-repeat: no-repeat !important;
+    background-image: url('/public/img/system-shutdown.svg');
+  }
+  #languageSelection {
+    width: 200px !important;
+    border: 1px solid #fff !important;
+    border-radius: 100px !important;
+    color: #333 !important;
+  }
   .sidebar {
     display: none;
     box-shadow: none;
@@ -4865,7 +4892,7 @@ footer .btn {
     left: auto;
     z-index: 1032;
     visibility: visible;
-    background-color: #9A9A9A;
+    background-color: #282828;
     overflow-y: visible;
     border-top: none;
     text-align: left;

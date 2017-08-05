@@ -9,7 +9,7 @@
           <div class="row">
               <div class="col-md-12">
                   <div class="card">
-                      <form method="get">
+                      <form method="get" id="user-form">
                         <div class="col-md-3">
                           <div class="form-group form-black label-floating is-empty">
                               <input placeholder="John..." class="form-control" name="username" value="<% if(query.q){ %><%= query.q %><% } %>" type="text">
@@ -22,10 +22,11 @@
                                  <option value="student" <% if(query.role=='student'){ %>selected="selected"<% } %> >Student</option>
                                  <option value="admin" <% if(query.role=='admin'){ %>selected="selected"<% } %> >Admin</option>
                               </select>
+															<script>$('#user-form [name="role"]').select2()</script>
                           </div>
                         </div>
                         <div class="col-md-6">
-                          <button class="btn btn-danger btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+                          <button class="btn btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                           <a class="btn pull-right btn-round" href="users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
                         </div>
                       </form>
@@ -33,7 +34,7 @@
               </div>
               <div class="col-md-12">
                   <div class="card">
-                      <div class="card-header row" data-background-color="red">
+                      <div class="card-header row" data-background-color="black">
                           <div class="col-md-4 col-sm-4 col-lg-4 text-left">
                           <% if(data.links.prev_page) { %>
                              <a href="<%= data.links.prev_page %>"><< previous page</a>
@@ -48,9 +49,10 @@
                       </div>
                       <div class="card-content table-responsive">
                           <table class="table">
-                              <thead class="text-danger">
+                              <thead class="text-muted">
                                   <tr>
                                       <th>#</th>
+																			<% if(query.role != 'admin'){ %><th data-l10n-id="buddy">Buddy</th><% } %>
                                       <th data-l10n-id="name">Name</th>
                                       <th data-l10n-id="language">Language</th>
                                       <th data-l10n-id="role">Role</th>
@@ -62,6 +64,16 @@
                                   <% for(var i=0; i < data.users.length; i++) { %>
                                     <tr>
                                         <td><%= data.offset + i + 1 %></td>
+																				<% if(query.role != 'admin'){ %>
+																					<td>
+																						<div class="color" id="<%= data.users[i]._id %>">
+																							<div class="xo-icon"></div>
+																						</div>
+																					</td>
+																					<script>
+																						new icon().load("/public/img/owner-icon.svg", (<%- JSON.stringify(data.users[i].color) %>), "<%= data.users[i]._id %>");
+																					</script>
+																				<% } %>
                                         <td><%= data.users[i].name %></td>
                                         <td><%= data.users[i].language %></td>
                                         <td><%= data.users[i].role %></td>

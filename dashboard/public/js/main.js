@@ -46,6 +46,16 @@ function initDragDrop() {
 }
 
 
+function launch_activity(callurl) {
+	$.get((callurl), function(response) {
+		for (var index in response.lsObj) {
+			localStorage.setItem(index, response.lsObj[index])
+		}
+		var win = window.open(response.url, '_blank');
+		win.focus();
+	});
+}
+
 function updateActivities() {
 
 	//get favorites
@@ -90,6 +100,22 @@ function formatUserField(state) {
 	return $state;
 };
 
+function formatColorField(state) {
+	if (!state.id) {
+		return $(state.element).val();
+	}
+	var id = $(state.element).data('stroke') + $(state.element).data('fill') + Math.floor((Math.random() * 100) + 1);
+	var $state = $(
+		'<div class="color" id="' + id + '">\
+			<div class="xo-icon"></div>\
+			<div class="stroke">Stroke - ' + $(state.element).data('stroke') + '</div>\
+			<div class="fill">Fill - ' + $(state.element).data('fill') + '</div>\
+		</div>'
+	);
+	new icon().load("/public/img/owner-icon.svg", JSON.parse($(state.element).val()), id);
+	return $state;
+}
+
 $(document).ready(function() {
 	if ($("#users-select2").length > 0) {
 		$("#users-select2").select2({
@@ -98,9 +124,20 @@ $(document).ready(function() {
 			var pj = $("#users-select2 option:selected").data('private_journal');
 			var sj = $("#users-select2 option:selected").data('shared_journal');
 			$('#journal-type-select2').trigger("change");
-			$('#getJournalEntries').attr('action', '/dashboard/journal/' + sj);
+			if ($("#journal-type-select2 option:selected").val() == 'shared') {
+				$('#getJournalEntries').attr('action', '/dashboard/journal/' + sj);
+			} else {
+				$('#getJournalEntries').attr('action', '/dashboard/journal/' + pj);
+			}
 		})
 		$("#users-select2").trigger("change");
+	}
+
+	if ($("#color-select2").length > 0) {
+		$("#color-select2").select2({
+			templateResult: formatColorField,
+			templateSelection: formatColorField
+		})
 	}
 
 	if ($("#journal-type-select2").length > 0) {
@@ -165,3 +202,31 @@ function onLocalized() {
 	};
 }
 document.webL10n.ready(onLocalized);
+
+// graph create
+function createGraph(type, element, route) {
+	$(document).ready(function() {
+		$.get(('/dashboard/' + (route ? route : 'graph')), {
+			type: type,
+			element: element
+		}, function(response) {
+			var ctx = document.getElementById(response.element).getContext('2d');
+			var myChart = new Chart(ctx, {
+				type: response.graph,
+				data: response.data,
+				options: (response.options ? response.options : {})
+			});
+		});
+	})
+}
+
+function createTable(type, element, route) {
+	$(document).ready(function() {
+		$.get(('/dashboard/' + (route ? route : 'graph')), {
+			type: type,
+			element: element
+		}, function(response) {
+			$('#' + response.element + ' tbody').html(response.data);
+		});
+	})
+}

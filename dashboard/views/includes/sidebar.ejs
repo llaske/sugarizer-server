@@ -1,9 +1,9 @@
 
-<div class="sidebar" data-color="purple">
+<div class="sidebar" data-color="black">
 
 	<div class="logo">
-		<a class="simple-text">
-			Sugarizer
+		<a href="/dashboard" class="simple-text">
+			Sugarizer<br> Dashboard
 		</a>
 	</div>
 
@@ -15,7 +15,7 @@
 				<li>
 			<% }%>
 				<a href="/dashboard">
-					<i class="material-icons">dashboard</i>
+					<i class="custom-icon home-icon"></i>
 					<p data-l10n-id="dashboard"></p>
 				</a>
 			</li>
@@ -25,7 +25,7 @@
 				<li>
 			<% }%>
 				<a href="/dashboard/users">
-					<i class="material-icons">person</i>
+					<i class="custom-icon xo-icon"></i>
 					<p data-l10n-id="users"></p>
 				</a>
 			</li>
@@ -35,7 +35,7 @@
 				<li>
 			<% }%>
 				<a href="/dashboard/activities">
-					<i class="material-icons">bubble_chart</i>
+					<i class="custom-icon activity-icon"></i>
 					<p data-l10n-id="activities"></p>
 				</a>
 			</li>
@@ -45,8 +45,18 @@
 				<li>
 			<% }%>
 				<a href="/dashboard/journal">
-					<i class="material-icons">library_books</i>
+					<i class="custom-icon journal-icon"></i>
 					<p data-l10n-id="journals"></p>
+				</a>
+			</li>
+			<%if (module == 'stats') { %>
+				<li class="active">
+			<% } else {%>
+				<li>
+			<% }%>
+				<a href="/dashboard/stats">
+					<i class="custom-icon stats-icon"></i>
+					<p data-l10n-id="stats">Statistics</p>
 				</a>
 			</li>
 		</ul>

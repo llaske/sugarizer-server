@@ -9,19 +9,19 @@ exports.index = function(req, res) {
 	var data = {};
 
 	//get all users
-	getAllUsers(req, res, function(usersResponse) {
+	exports.getAllUsers(req, res, function(usersResponse) {
 
 		// store
 		data.users = usersResponse;
 
 		//get all activities
-		getAllActivities(req, res, function(activitiesResponse) {
+		exports.getAllActivities(req, res, function(activitiesResponse) {
 
 			// store
 			data.activities = activitiesResponse;
 
 			//get journal data
-			getAllJournals(req, res, function(journalResponse) {
+			exports.getAllJournals(req, res, function(journalResponse) {
 
 				//process
 				var d = {}
@@ -46,7 +46,7 @@ exports.index = function(req, res) {
 	})
 };
 
-function getAllJournals(req, res, callback) {
+exports.getAllJournals = function(req, res, callback) {
 	// call
 	request({
 		headers: common.getHeaders(req),
@@ -67,7 +67,7 @@ function getAllJournals(req, res, callback) {
 	})
 }
 
-function getAllActivities(req, res, callback) {
+exports.getAllActivities = function(req, res, callback) {
 	// call
 	request({
 		headers: common.getHeaders(req),
@@ -88,7 +88,7 @@ function getAllActivities(req, res, callback) {
 	})
 }
 
-function getAllUsers(req, res, callback) {
+exports.getAllUsers = function(req, res, callback) {
 	request({
 		headers: common.getHeaders(req),
 		json: true,

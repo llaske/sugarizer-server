@@ -20,7 +20,7 @@
 													 data-color='<%- JSON.stringify(users[i].color) %>'
 													 data-timestamp="<%= moment(users[i].timestamp).calendar() %>"
 													 value="<%= users[i]._id %>">
-													 <%= users[i].name %>
+													 <%- (users[i].name.replace(/[&<>]/g, "")) %>
 												 </option>
 												 <% } %>
 											</select>
@@ -72,6 +72,7 @@
 												<thead class="text-danger">
 														<tr>
 																<th class="text-muted">#</th>
+																<th data-l10n-id="icon" class="text-muted"></th>
 																<th data-l10n-id="title" class="text-muted"></th>
 																<th data-l10n-id="timestamp" class="text-muted"></th>
 																<th data-l10n-id="action" class="text-muted"></th>
@@ -81,10 +82,18 @@
 														<% for(var i=0; i < entries.entries.length; i++) { %>
 															<tr>
 																	<td><%= entries.offset + i + 1 %></td>
+																	<td>
+																		<div class="color" id="<%= entries.entries[i].objectId %>">
+																			<div class="xo-icon"></div>
+																		</div>
+																	</td>
+																	<script>
+																		new icon().load("<%= iconList[entries.entries[i].metadata.activity] %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color) %>), "<%= entries.entries[i].objectId %>");
+																	</script>
 																	<td><%= entries.entries[i].metadata.title %></td>
 																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>
 																	<td>
-																		<a target="_blank" title="Launch" href="/dashboard/activities/launch?jid=<%= query.journal %>&oid=<%= entries.entries[i].objectId %>&source=journal"><i class="material-icons text-muted">launch</i></a>
+																		<a href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" title="Launch"><i class="material-icons text-muted">launch</i></a>
 																		<a title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>" onclick="return confirm('Are you really want to delete the entry?')"><i class="material-icons text-muted">delete_forever</i></a>
 																	</td>
 															</tr>

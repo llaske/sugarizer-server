@@ -13,8 +13,8 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
   							<li class="dropdown">
-  								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-  									<i class="material-icons">person</i>
+  								<a href="/dashboard/logout" class="dropdown-toggle" data-toggle="dropdown">
+  									<p class="custom-icon xo-icon"></p>
   									<p class="hidden-lg hidden-md">Logout</p>
   								</a>
   								<ul class="dropdown-menu">
@@ -27,6 +27,7 @@
                   <option <% if(account.user.language == 'en'){ %>selected="selected"<% } %> value="en">English</option>
                   <option <% if(account.user.language == 'es'){ %>selected="selected"<% } %> value="es">Spanish</option>
                   <option <% if(account.user.language == 'fr'){ %>selected="selected"<% } %> value="fr">French</option>
+                  <option <% if(account.user.language == 'hi'){ %>selected="selected"<% } %> value="hi">Hindi</option>
                 </select>
             </div>
         </div>

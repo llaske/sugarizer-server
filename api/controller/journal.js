@@ -279,33 +279,17 @@ exports.findJournalContent = function(req, res) {
 			//apply pagination
 			items = items.slice(skip, (skip + limit));
 
-			//get user data
-			users.getAllUsers({}, {}, function(usersList) {
-
-				//hash users' list
-				var hashedList = {};
-				for (var i = 0; i < usersList.length; i++) {
-					hashedList[usersList[i]._id.toString()] = usersList[i];
+			// Return
+			return res.send({
+				'entries': items,
+				'offset': skip,
+				'limit': limit,
+				'total': total,
+				'links': {
+					'prev_page': ((skip - limit) >= 0) ? formPaginatedUrl(route, params, (skip - limit), limit) : undefined,
+					'curr_page': formPaginatedUrl(route, params, (skip), limit),
+					'next_page': ((skip + limit) < total) ? formPaginatedUrl(route, params, (skip + limit), limit) : undefined,
 				}
-
-				// join of user's delails with entries
-				for (var i = 0; i < items.length; i++) {
-					items[i].metadata.buddy_name = hashedList[items[i].metadata.user_id.toString()].name;
-					items[i].metadata.buddy_color = hashedList[items[i].metadata.user_id.toString()].color;
-				}
-
-				// Return
-				return res.send({
-					'entries': items,
-					'offset': skip,
-					'limit': limit,
-					'total': total,
-					'links': {
-						'prev_page': ((skip - limit) >= 0) ? formPaginatedUrl(route, params, (skip - limit), limit) : undefined,
-						'curr_page': formPaginatedUrl(route, params, (skip), limit),
-						'next_page': ((skip + limit) < total) ? formPaginatedUrl(route, params, (skip + limit), limit) : undefined,
-					}
-				});
 			});
 		});
 	});
