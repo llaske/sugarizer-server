@@ -153,6 +153,7 @@ function getRecentUsers(req, res) {
 	//get all entries
 	getAllEntriesList(req, res, 1, function(allEntries) {
 
+		//sort
 		allEntries.sort(function(a, b) {
 			if (a.metadata.timestamp > b.metadata.timestamp)
 				return -1;
@@ -161,13 +162,28 @@ function getRecentUsers(req, res) {
 			return 0;
 		});
 
+		// remove duplicates
+		var allEntriesNew = [];
+		var doneArr = [];
+		for (var i = 0; i < allEntries.length; i++) {
+			if (doneArr.indexOf(allEntries[i].metadata.user_id) == -1) {
+				allEntriesNew.push(allEntries[i])
+				doneArr.push(allEntries[i].metadata.user_id)
+			}
+		}
+		allEntries = allEntriesNew
+
 		//limit 5
 		allEntries = allEntries.splice(0, 5);
 
 		var data = '';
 		for (var i = 0; i < allEntries.length; i++) {
-			data += '<tr>\
+
+			var url = '/dashboard/journal/' + allEntries[i].journalId + '?uid=' + allEntries[i].metadata.user_id + '&type=private'
+			data += '<tr onclick="window.document.location=\'' + url + '\'">\
 									<td>' + (i + 1) + '</td>\
+									<td><div class="color" id="' + allEntries[i].metadata.user_id + i.toString() + '"><div class="xo-icon"></div></div></td>\
+									<script>new icon().load("/public/img/owner-icon.svg", ' + JSON.stringify(allEntries[i].metadata.buddy_color) + ', "' + allEntries[i].metadata.user_id + i.toString() + '")</script>\
 									<td title="' + allEntries[i].metadata.buddy_name + '">' + allEntries[i].metadata.buddy_name + '</td>\
 									<td class="text-muted">' + moment(allEntries[i].metadata.timestamp).calendar(); + '</td>\
 							</tr>'
@@ -186,30 +202,47 @@ function getRecentActivities(req, res) {
 	//get all entries
 	getAllEntriesList(req, res, 1000000, function(allEntries) {
 
-		allEntries.sort(function(a, b) {
-			if (a.metadata.timestamp > b.metadata.timestamp)
-				return -1;
-			if (a.metadata.timestamp < b.metadata.timestamp)
-				return 1;
-			return 0;
-		});
+		//get activties
+		getActivities(req, res, function(activities) {
 
-		//limit 5
-		allEntries = allEntries.splice(0, 5);
+			//make hashlist
+			var hashList = {};
+			for (var i = 0; i < activities.length; i++) {
+				hashList[activities[i].id] = '/' + activities[i].directory + '/' + activities[i].icon
+			}
 
-		var data = '';
-		for (var i = 0; i < allEntries.length; i++) {
-			data += '<tr>\
-									<td>' + (i + 1) + '</td>\
-									<td title="' + allEntries[i].metadata.title + '">' + allEntries[i].metadata.title + '</td>\
-									<td class="text-muted">' + moment(allEntries[i].metadata.timestamp).calendar() + '</td>\
-							</tr>'
-		}
+			//sort entries
+			allEntries.sort(function(a, b) {
+				if (a.metadata.timestamp > b.metadata.timestamp)
+					return -1;
+				if (a.metadata.timestamp < b.metadata.timestamp)
+					return 1;
+				return 0;
+			});
 
-		return res.json({
-			data: data,
-			element: req.query.element,
-			graph: 'table'
+			//limit 5
+			allEntries = allEntries.splice(0, 5);
+
+			var data = '';
+			for (var i = 0; i < allEntries.length; i++) {
+
+				// launch url
+				var url = '/dashboard/activities/launch/' + allEntries[i].journalId + '?oid=' + allEntries[i].objectId + '&uid=' + allEntries[i].metadata.user_id + '&aid=' + allEntries[i].metadata.activity
+
+				data += '<tr onclick="javascript:launch_activity(\'' + url + '\')">\
+										<td>' + (i + 1) + '</td>\
+										<td><div class="color" id="' + allEntries[i].objectId + i.toString() + '"><div class="xo-icon"></div></div></td>\
+										<script>new icon().load("' + hashList[allEntries[i].metadata.activity] + '", ' + JSON.stringify(allEntries[i].metadata.buddy_color) + ', "' + allEntries[i].objectId + i.toString() + '")</script>\
+										<td title="' + allEntries[i].metadata.title + '">' + allEntries[i].metadata.title + '</td>\
+										<td class="text-muted">' + moment(allEntries[i].metadata.timestamp).calendar() + '</td>\
+								</tr>'
+			}
+
+			return res.json({
+				data: data,
+				element: req.query.element,
+				graph: 'table'
+			})
 		})
 	})
 }
@@ -224,6 +257,25 @@ function getAllEntriesList(req, res, limit, callback) {
 
 		//setup sync fibre
 		sync.fiber(function() {
+
+			// //get shared entries
+			if (users.users.length > 0) {
+				// call
+				var d = (sync.await(request({
+					headers: common.getHeaders(req),
+					json: true,
+					method: 'GET',
+					qs: {
+						offset: 0,
+						limit: limit,
+						sort: '-timestamp'
+					},
+					uri: common.getAPIUrl(req) + 'api/v1/journal/' + users.users[0].shared_journal
+				}, sync.defer())))
+
+				//merge data
+				allEntries = allEntries.concat(d.body.entries)
+			}
 
 			//for each user
 			for (var i = 0; i < users.users.length; i++) {
@@ -247,5 +299,25 @@ function getAllEntriesList(req, res, limit, callback) {
 			}
 			callback(allEntries);
 		})
+	})
+}
+
+function getActivities(req, res, callback) {
+	// call
+	request({
+		headers: common.getHeaders(req),
+		json: true,
+		method: 'GET',
+		uri: common.getAPIUrl(req) + 'api/v1/activities/'
+	}, function(error, response, body) {
+		if (response.statusCode == 200) {
+			//store
+			callback(body);
+		} else {
+			req.flash('errors', {
+				msg: body.error
+			});
+			return res.redirect('/dashboard/journal');
+		}
 	})
 }

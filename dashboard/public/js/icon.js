@@ -53,7 +53,7 @@ icon = (function() {
 				for (var i = 0; i < ele.childNodes.length; i++) {
 					if (ele.childNodes[i].className == "xo-icon") {
 						ele.childNodes[i].style.backgroundImage = "url('" + url + "')";
-						ele.childNodes[i].style.backgroundSize = "40px";
+						ele.childNodes[i].style.backgroundSize = "30px";
 					}
 				}
 			}
