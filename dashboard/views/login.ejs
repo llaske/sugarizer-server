@@ -1,26 +1,39 @@
 <% include includes/header %>
-
+<nav class="navbar navbar-transparent navbar-absolute">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse">
+            <div class="navbar-form navbar-right">
+                <select class="form-control" id="languageSelection">
+                  <option value="en">English</option>
+                  <option value="es">Spanish</option>
+                  <option value="fr">French</option>
+                  <option value="hi">Hindi</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</nav>
 <div class="main-content">
   <div class="container-fluid">
     <div class="row" style="margin-top:100px;">
       <div class="col-lg-4 col-md-3 col-sm-12"></div>
       <div class="col-lg-4 col-md-6 col-sm-12">
-        <h3 class="text-center">Sugarizer Dashboard Login</h3>
+        <h3 class="text-center" data-l10n-id="sugarizerDashboardLogin">Sugarizer Dashboard Login</h3>
         <div class="card card-nav-tabs">
             <div class="card-content">
               <% include includes/flash-errors %>
               <form method="post" action="/dashboard/login">
                 <div class="form-group form-black label-floating is-empty">
-                    <label class="control-label">UserName</label>
+                    <label class="control-label" data-l10n-id="username">Username</label>
                     <input class="form-control" name="username" type="text">
                     <span class="material-input"></span>
                 </div>
                 <div class="form-group form-black label-floating is-empty">
-                    <label class="control-label">Password</label>
+                    <label class="control-label" data-l10n-id="password">Password</label>
                     <input class="form-control" name="password" type="password">
                     <span class="material-input"></span>
                 </div>
-                <button class="btn pull-right" type="submit">Login<div class="ripple-container"></div></button>
+                <button class="btn pull-right" type="submit" data-l10n-id="login">Login<div class="ripple-container"></div></button>
                 <div class="clearfix"></div>
               </form>
             </div>
