@@ -77,35 +77,38 @@ function getHowUserLaunchActivity(req, res) {
 function getHowOftenUserChangeSettings(req, res) {
 
 	//data
-	var data = []
+	var data = {
+		labels: [],
+		data: []
+	}
 
 	// get data
 	getLogsData(req, res, {
 		event_object: 'my_settings_language'
 	}, function(body) {
-		data = data.concat(body)
+		data.labels.push('Language Settings')
+		data.data.push(body.length)
 		getLogsData(req, res, {
 			event_object: 'my_settings_about_me'
 		}, function(body) {
-			data = data.concat(body)
-
-			//@TODO
-			console.log(data.length);
+			data.labels.push('Name/Color Settings')
+			data.data.push(body.length)
 
 			//return
 			return res.json({
 				data: {
-					labels: ['may', 'june', 'july', 'aug', 'sep', 'oct'],
+					labels: data.labels,
 					datasets: [{
 						label: '# of times settings changed',
-						data: [12, 25, 2, 1, 5, 11],
-						fill: false,
-						borderColor: '#FF6384',
-						backgroundColor: '#FF6384'
+						data: data.data,
+						backgroundColor: [
+							'rgba(255, 206, 86, 0.8)',
+							'rgba(75, 192, 192, 0.8)'
+						]
 					}]
 				},
 				element: req.query.element,
-				graph: 'line'
+				graph: 'bar'
 			})
 		})
 	})
