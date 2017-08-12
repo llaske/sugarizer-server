@@ -188,18 +188,20 @@ function onLocalized() {
 	var l10n = document.webL10n;
 	var lang = document.getElementById('languageSelection');
 
-	if (lang.selectedIndex == -1) {
-		lang.value = l10n.getLanguage();
-	} else if (localStorage.getItem("languageSelection") == null) {
-		l10n.setLanguage(lang.options[lang.selectedIndex].value);
-	} else {
-		l10n.setLanguage(localStorage.getItem("languageSelection"));
-		lang.value = localStorage.getItem("languageSelection");
+	if (lang != null) {
+		if (lang.selectedIndex == -1) {
+			lang.value = l10n.getLanguage();
+		} else if (localStorage.getItem("languageSelection") == null) {
+			l10n.setLanguage(lang.options[lang.selectedIndex].value);
+		} else {
+			l10n.setLanguage(localStorage.getItem("languageSelection"));
+			lang.value = localStorage.getItem("languageSelection");
+		}
+		lang.onchange = function() {
+			l10n.setLanguage(this.value);
+			localStorage.setItem("languageSelection", this.value);
+		};
 	}
-	lang.onchange = function() {
-		l10n.setLanguage(this.value);
-		localStorage.setItem("languageSelection", this.value);
-	};
 }
 document.webL10n.ready(onLocalized);
 

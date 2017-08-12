@@ -211,7 +211,8 @@ exports.addJournal = function(req, res) {
  *             "fill": "#FF2B34"
  *           }
  *         },
- *         "objectId": "4837240f-bf78-4d22-b936-3db96880f0a0"
+ *         "objectId": "4837240f-bf78-4d22-b936-3db96880f0a0",
+ *         "journalId": "596bfc2e16d5147938518284"
  *       },
  *       {
  *         "metadata": {
@@ -229,7 +230,8 @@ exports.addJournal = function(req, res) {
  *             "fill": "#F8E800"
  *           }
  *         },
- *         "objectId": "2acbcd69-aa14-4273-8a9f-47642b41ad9d"
+ *         "objectId": "2acbcd69-aa14-4273-8a9f-47642b41ad9d",
+ *         "journalId": "596bfc2e16d5147938518284"
  *       },
  *       ...
  *     ],
@@ -367,7 +369,10 @@ function getOptions(req) {
 			$project: {
 				'metadata': '$content.metadata',
 				'objectId': '$content.objectId',
-				'_id': 0
+				'_id': 0,
+				'journalId': {
+					$literal: req.params.jid
+				}
 			}
 		});
 	}

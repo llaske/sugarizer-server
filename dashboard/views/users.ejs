@@ -79,6 +79,7 @@
                                         <td><%= data.users[i].role %></td>
                                         <td><%= moment(data.users[i].timestamp).calendar() %></td>
                                         <td>
+																					<a title="See Journal Entries" href="journal/<%= data.users[i].private_journal %>?uid=<%= data.users[i]._id %>&type=private"><i class="material-icons text-muted">launch</i></a>
                                           <a title="Edit User" href="users/edit/<%= data.users[i]._id %>"><i class="material-icons text-muted">edit</i></a>
                                           <a title="Delete User" href="users/delete/<%= data.users[i]._id %>" onclick="return confirm('Are you really want to delete the user(<%= data.users[i].name %>) ?')"><i class="material-icons text-muted">delete_forever</i></a>
                                         </td>

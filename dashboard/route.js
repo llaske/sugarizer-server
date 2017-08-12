@@ -9,9 +9,6 @@ var authController = require('./controller/auth'),
 
 module.exports = function(app, ini) {
 
-	//Only the requests that start with /dashboard/* will be checked for the validation.
-	// app.all('/dashboard/*', []);
-
 	// add routes
 	app.get('/dashboard/login', authController.getLogin);
 	app.post('/dashboard/login', authController.postLogin);
