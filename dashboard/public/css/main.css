@@ -121,6 +121,16 @@
   background-image: url('/public/img/activity-journal.svg');
 }
 
+.journal-icon2 {
+  cursor: pointer;
+  background-image: url(/public/img/journal-icon.svg);
+  background-size: 24px;
+  height: 24px;
+  width: 24px;
+  display: block;
+  float: left;
+}
+
 .shutdown-icon {
   background-image: url('/public/img/system-shutdown.svg')
 }
@@ -148,7 +158,7 @@
   height: 50px !important;
 }
 
-#user-add-edit-form .select2-container {
+.select2-container {
   width: 100% !important;
 }
 
@@ -174,7 +184,7 @@
 
 .color .fill, .color .stroke {
   font-weight: 300;
-  padding: 5px 0;
+  padding: 1px 0;
   line-height: 15px;
 }
 
