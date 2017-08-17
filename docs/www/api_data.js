@@ -696,7 +696,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "\"/api/v1/journal/5569f4b019e0b4c9525b3c96\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&uid=5569f4b019e0b4c9525b3c97\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&offset=15&limit=10\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&fields=text,metadata\"",
+        "content": "\"/api/v1/journal/5569f4b019e0b4c9525b3c96\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&uid=5569f4b019e0b4c9525b3c97\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&offset=15&limit=10\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&sort=-timestamp&fields=text,metadata\"\n\"/api/v1/journal/5569f4b019e0b4c9525b3c96?aid=org.sugarlabs.Markdown&stime=712786812367\"",
         "type": "json"
       }
     ],
@@ -766,6 +766,13 @@ define({ "api": [
             "field": "sort",
             "defaultValue": "+timestamp",
             "description": "<p>Order of results <code>e.g. sort=-timestamp or sort=-creation_time</code></p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "stime",
+            "description": "<p>results starting from stime in ms <code>e.g. stime=712786812367</code></p>"
           },
           {
             "group": "Parameter",
