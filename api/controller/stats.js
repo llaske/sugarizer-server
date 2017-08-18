@@ -48,7 +48,7 @@ exports.init = function(settings, callback) {
  * @apiSuccess {String} event_value value of the event
  * @apiSuccess {Number} timestamp when the stats was created by the user
  *
- * @apiSuccessExample {json} Success-Response(Student):
+ * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *    [
  *      {
@@ -81,8 +81,13 @@ exports.addStats = function(req, res) {
   var stats = JSON.parse(req.body.stats);
 
   //add client IP
-  stats.user_ip = getClientIP(req);
-
+  if (stats.constructor === Array) {
+    for (var i = 0; i < stats.length; i++) {
+      stats[i].user_ip = getClientIP(req);
+    }
+  } else {
+    stats.user_ip = getClientIP(req);
+  }
   db.collection(statsCollection, function(err, collection) {
     collection.insert(stats, {
       safe: true

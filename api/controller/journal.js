@@ -1,5 +1,4 @@
 // Journal handling
-
 var mongo = require('mongodb'),
   users = require('./users');
 
