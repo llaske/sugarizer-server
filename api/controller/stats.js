@@ -97,6 +97,7 @@ exports.addStats = function(req, res) {
 					'error': 'An error has occurred'
 				});
 			} else {
+				console.log(result);
 				res.send(result);
 			}
 		});
@@ -261,8 +262,15 @@ function addQuery(filter, params, query, default_val) {
 
 //get client IP
 function getClientIP(req) {
-	return req.headers['x-forwarded-for'] ||
+
+	var ip = req.headers['x-forwarded-for'] ||
 		req.connection.remoteAddress ||
 		req.socket.remoteAddress ||
 		req.connection.socket.remoteAddress;
+
+	if (ip.substr(0, 7) == "::ffff:") {
+		ip = ip.substr(7)
+	}
+
+	return ip
 };
