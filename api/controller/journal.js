@@ -1,10 +1,10 @@
 // Journal handling
 var mongo = require('mongodb'),
-  users = require('./users');
+	users = require('./users');
 
 var Server = mongo.Server,
-  Db = mongo.Db,
-  BSON = mongo.BSONPure;
+	Db = mongo.Db,
+	BSON = mongo.BSONPure;
 
 var server;
 var db;
@@ -17,61 +17,61 @@ var shared = null;
 
 // Init database
 exports.init = function(settings, callback) {
-  journalCollection = settings.collections.journal;
-  server = new Server(settings.database.server, settings.database.port, {
-    auto_reconnect: true
-  });
-  db = new Db(settings.database.name, server, {
-    w: 1
-  });
+	journalCollection = settings.collections.journal;
+	server = new Server(settings.database.server, settings.database.port, {
+		auto_reconnect: true
+	});
+	db = new Db(settings.database.name, server, {
+		w: 1
+	});
 
-  // Open the journal collection
-  db.open(function(err, db) {
-    if (!err) {
-      db.collection(journalCollection, function(err, collection) {
-        // Get the shared journal collection
-        collection.findOne({
-          'shared': true
-        }, function(err, item) {
-          // Not found, create one
-          if (!err && item == null) {
-            collection.insert({
-              content: [],
-              shared: true
-            }, {
-              safe: true
-            }, function(err, result) {
-              shared = result[0];
-            });
-          }
+	// Open the journal collection
+	db.open(function(err, db) {
+		if (!err) {
+			db.collection(journalCollection, function(err, collection) {
+				// Get the shared journal collection
+				collection.findOne({
+					'shared': true
+				}, function(err, item) {
+					// Not found, create one
+					if (!err && item == null) {
+						collection.insert({
+							content: [],
+							shared: true
+						}, {
+							safe: true
+						}, function(err, result) {
+							shared = result[0];
+						});
+					}
 
-          // Already exist, save it
-          else if (item != null) {
-            shared = item;
-          }
+					// Already exist, save it
+					else if (item != null) {
+						shared = item;
+					}
 
-          if (callback) callback();
-        });
-      });
-    }
-  });
+					if (callback) callback();
+				});
+			});
+		}
+	});
 }
 
 // Get shared journal
 exports.getShared = function() {
-  return shared;
+	return shared;
 }
 
 // Create a new journal
 exports.createJournal = function(callback) {
-  db.collection(journalCollection, function(err, collection) {
-    collection.insert({
-      content: [],
-      shared: false
-    }, {
-      safe: true
-    }, callback)
-  });
+	db.collection(journalCollection, function(err, collection) {
+		collection.insert({
+			content: [],
+			shared: false
+		}, {
+			safe: true
+		}, callback)
+	});
 }
 
 /**
@@ -109,51 +109,51 @@ exports.createJournal = function(callback) {
  **/
 exports.findAll = function(req, res) {
 
-  //set options
-  var options = {};
-  if (req.query.type) {
-    options.shared = (req.query.type == 'shared' ? true : false);
-  }
+	//set options
+	var options = {};
+	if (req.query.type) {
+		options.shared = (req.query.type == 'shared' ? true : false);
+	}
 
-  // add role based validation
-  if (req.user.role == 'student') {
-    options._id = {
-      $in: [
-        new BSON.ObjectID(req.user.private_journal),
-        new BSON.ObjectID(req.user.shared_journal)
-      ]
-    }
-  }
+	// add role based validation
+	if (req.user.role == 'student') {
+		options._id = {
+			$in: [
+				new BSON.ObjectID(req.user.private_journal),
+				new BSON.ObjectID(req.user.shared_journal)
+			]
+		}
+	}
 
-  //get data
-  db.collection(journalCollection, function(err, collection) {
-    collection.find(options).toArray(function(err, items) {
+	//get data
+	db.collection(journalCollection, function(err, collection) {
+		collection.find(options).toArray(function(err, items) {
 
-      //count
-      for (var i = 0; i < items.length; i++) {
-        items[i].count = items[i].content.length;
-        delete items[i].content;
-      }
+			//count
+			for (var i = 0; i < items.length; i++) {
+				items[i].count = items[i].content.length;
+				delete items[i].content;
+			}
 
-      //return
-      res.send(items);
-    });
-  });
+			//return
+			res.send(items);
+		});
+	});
 }
 
 //- REST interface
 
 // Add a new journal
 exports.addJournal = function(req, res) {
-  exports.createJournal(function(err, result) {
-    if (err) {
-      res.status(500).send({
-        'error': 'An error has occurred'
-      });
-    } else {
-      res.send(result[0]);
-    }
-  });
+	exports.createJournal(function(err, result) {
+		if (err) {
+			res.status(500).send({
+				'error': 'An error has occurred'
+			});
+		} else {
+			res.send(result[0]);
+		}
+	});
 }
 
 /**
@@ -247,159 +247,159 @@ exports.addJournal = function(req, res) {
  **/
 exports.findJournalContent = function(req, res) {
 
-  //validate journal  id
-  if (!BSON.ObjectID.isValid(req.params.jid)) {
-    res.status(401).send({
-      'error': 'Invalid journal id'
-    });
-    return;
-  }
+	//validate journal  id
+	if (!BSON.ObjectID.isValid(req.params.jid)) {
+		res.status(401).send({
+			'error': 'Invalid journal id'
+		});
+		return;
+	}
 
-  // validate on the basis of user's role
-  validateUser(req, res);
+	// validate on the basis of user's role
+	validateUser(req, res);
 
-  //get options
-  var options = getOptions(req);
+	//get options
+	var options = getOptions(req);
 
-  //get data
-  db.collection(journalCollection, function(err, collection) {
-    collection.aggregate(options, function(err, items) {
+	//get data
+	db.collection(journalCollection, function(err, collection) {
+		collection.aggregate(options, function(err, items) {
 
-      //check for errors
-      if (err) {
-        return res.status(500).send({
-          'error': err
-        });
-      }
+			//check for errors
+			if (err) {
+				return res.status(500).send({
+					'error': err
+				});
+			}
 
-      //define var
-      var params = JSON.parse(JSON.stringify(req.query));
-      var route = req.route.path;
-      var skip = parseInt(req.query.offset || 0);
-      var limit = parseInt(req.query.limit || 10);
-      var total = items.length;
+			//define var
+			var params = JSON.parse(JSON.stringify(req.query));
+			var route = req.route.path;
+			var skip = parseInt(req.query.offset || 0);
+			var limit = parseInt(req.query.limit || 10);
+			var total = items.length;
 
-      //apply pagination
-      items = items.slice(skip, (skip + limit));
+			//apply pagination
+			items = items.slice(skip, (skip + limit));
 
-      // Return
-      return res.send({
-        'entries': items,
-        'offset': skip,
-        'limit': limit,
-        'total': total,
-        'links': {
-          'prev_page': ((skip - limit) >= 0) ? formPaginatedUrl(route, params, (skip - limit), limit) : undefined,
-          'curr_page': formPaginatedUrl(route, params, (skip), limit),
-          'next_page': ((skip + limit) < total) ? formPaginatedUrl(route, params, (skip + limit), limit) : undefined,
-        }
-      });
-    });
-  });
+			// Return
+			return res.send({
+				'entries': items,
+				'offset': skip,
+				'limit': limit,
+				'total': total,
+				'links': {
+					'prev_page': ((skip - limit) >= 0) ? formPaginatedUrl(route, params, (skip - limit), limit) : undefined,
+					'curr_page': formPaginatedUrl(route, params, (skip), limit),
+					'next_page': ((skip + limit) < total) ? formPaginatedUrl(route, params, (skip + limit), limit) : undefined,
+				}
+			});
+		});
+	});
 }
 
 //form query params
 function formPaginatedUrl(route, params, offset, limit) {
-  //set params
-  params.offset = offset;
-  params.limit = limit;
-  var str = [];
-  for (var p in params)
-    if (params.hasOwnProperty(p)) {
-      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(params[p]));
-    }
-  return '?' + str.join("&");
+	//set params
+	params.offset = offset;
+	params.limit = limit;
+	var str = [];
+	for (var p in params)
+		if (params.hasOwnProperty(p)) {
+			str.push(encodeURIComponent(p) + "=" + encodeURIComponent(params[p]));
+		}
+	return '?' + str.join("&");
 }
 
 //form options
 function getOptions(req) {
 
-  //form object with journal id
-  var options = [{
-    $match: {
-      '_id': new BSON.ObjectID(req.params.jid)
-    }
-  }];
+	//form object with journal id
+	var options = [{
+		$match: {
+			'_id': new BSON.ObjectID(req.params.jid)
+		}
+	}];
 
-  //unwind data
-  options.push({
-    $unwind: '$content'
-  });
+	//unwind data
+	options.push({
+		$unwind: '$content'
+	});
 
-  //add filter based on aid,uid,oid
-  if (req.query.aid) {
-    options.push({
-      $match: {
-        'content.metadata.activity': req.query.aid
-      }
-    });
-  }
-  if (req.query.uid) {
-    options.push({
-      $match: {
-        'content.metadata.user_id': req.query.uid
-      }
-    });
-  }
-  if (req.query.oid) {
-    options.push({
-      $match: {
-        'content.objectId': req.query.oid
-      }
-    });
-  }
+	//add filter based on aid,uid,oid
+	if (req.query.aid) {
+		options.push({
+			$match: {
+				'content.metadata.activity': req.query.aid
+			}
+		});
+	}
+	if (req.query.uid) {
+		options.push({
+			$match: {
+				'content.metadata.user_id': req.query.uid
+			}
+		});
+	}
+	if (req.query.oid) {
+		options.push({
+			$match: {
+				'content.objectId': req.query.oid
+			}
+		});
+	}
 
-  //project data
-  if (req.query.fields) {
+	//project data
+	if (req.query.fields) {
 
-    //get fields
-    var fields = req.query.fields.toLowerCase().split(',');
-    var qry = {
-      '_id': 0,
-      'objectId': '$content.objectId',
-      'metadata': '$content.metadata'
-    };
+		//get fields
+		var fields = req.query.fields.toLowerCase().split(',');
+		var qry = {
+			'_id': 0,
+			'objectId': '$content.objectId',
+			'metadata': '$content.metadata'
+		};
 
-    //based on condition
-    if (fields.indexOf('text') > -1) qry.text = '$content.text';
-    options.push({
-      $project: qry
-    });
-  } else {
-    options.push({
-      $project: {
-        'metadata': '$content.metadata',
-        'objectId': '$content.objectId',
-        '_id': 0,
-        'journalId': {
-          $literal: req.params.jid
-        }
-      }
-    });
-  }
+		//based on condition
+		if (fields.indexOf('text') > -1) qry.text = '$content.text';
+		options.push({
+			$project: qry
+		});
+	} else {
+		options.push({
+			$project: {
+				'metadata': '$content.metadata',
+				'objectId': '$content.objectId',
+				'_id': 0,
+				'journalId': {
+					$literal: req.params.jid
+				}
+			}
+		});
+	}
 
-  // check for stime filter
-  if (req.query.stime) {
-    options.push({
-      $match: {
-        'metadata.timestamp': {
-          $gt: parseInt(req.query.stime)
-        }
-      }
-    });
-  }
+	// check for stime filter
+	if (req.query.stime) {
+		options.push({
+			$match: {
+				'metadata.timestamp': {
+					$gt: parseInt(req.query.stime)
+				}
+			}
+		});
+	}
 
-  //sorting
-  var sort_val = (typeof req.query.sort === "string" ? req.query.sort : '+timestamp');
-  var sort_type = sort_val.indexOf("-") == 0 ? -1 : 1;
-  var sort = {};
-  sort['metadata.' + sort_val.substring(1).toLowerCase()] = sort_type;
-  options.push({
-    $sort: sort
-  });
+	//sorting
+	var sort_val = (typeof req.query.sort === "string" ? req.query.sort : '+timestamp');
+	var sort_type = sort_val.indexOf("-") == 0 ? -1 : 1;
+	var sort = {};
+	sort['metadata.' + sort_val.substring(1).toLowerCase()] = sort_type;
+	options.push({
+		$sort: sort
+	});
 
-  //return
-  return options;
+	//return
+	return options;
 }
 
 /**
@@ -456,61 +456,61 @@ function getOptions(req) {
  *    }
  **/
 exports.addEntryInJournal = function(req, res) {
-  // Get parameter
-  if (!BSON.ObjectID.isValid(req.params.jid) || !req.body.journal) {
-    res.status(401).send({
-      'error': 'Invalid journal id or entry'
-    });
-    return;
-  }
-  var jid = req.params.jid;
-  var journal = JSON.parse(req.body.journal);
+	// Get parameter
+	if (!BSON.ObjectID.isValid(req.params.jid) || !req.body.journal) {
+		res.status(401).send({
+			'error': 'Invalid journal id or entry'
+		});
+		return;
+	}
+	var jid = req.params.jid;
+	var journal = JSON.parse(req.body.journal);
 
-  // validate on the basis of user's role
-  validateUser(req, res);
+	// validate on the basis of user's role
+	validateUser(req, res);
 
-  // Look for existing entry with the same objectId
-  var filter = {
-    '_id': new BSON.ObjectID(jid),
-    'content.objectId': journal.objectId
-  };
-  db.collection(journalCollection, function(err, collection) {
-    collection.findOne(filter, function(err, item) {
-      if (item == null) {
-        // Add a new entry
-        var newcontent = {
-          $push: {
-            content: journal
-          }
-        };
-        db.collection(journalCollection, function(err, collection) {
-          collection.update({
-            '_id': new BSON.ObjectID(jid)
-          }, newcontent, {
-            safe: true
-          }, function(err, result) {
-            if (err) {
-              return res.status(500).send({
-                'error': 'An error has occurred'
-              });
-            } else {
-              if (result) {
-                return res.send(journal);
-              } else {
-                return res.status(401).send({
-                  'error': 'An error has occurred'
-                });
-              }
-            }
-          });
-        });
-      } else {
-        // Update the entry
-        req.params.oid = journal.objectId;
-        exports.updateEntryInJournal(req, res);
-      }
-    });
-  });
+	// Look for existing entry with the same objectId
+	var filter = {
+		'_id': new BSON.ObjectID(jid),
+		'content.objectId': journal.objectId
+	};
+	db.collection(journalCollection, function(err, collection) {
+		collection.findOne(filter, function(err, item) {
+			if (item == null) {
+				// Add a new entry
+				var newcontent = {
+					$push: {
+						content: journal
+					}
+				};
+				db.collection(journalCollection, function(err, collection) {
+					collection.update({
+						'_id': new BSON.ObjectID(jid)
+					}, newcontent, {
+						safe: true
+					}, function(err, result) {
+						if (err) {
+							return res.status(500).send({
+								'error': 'An error has occurred'
+							});
+						} else {
+							if (result) {
+								return res.send(journal);
+							} else {
+								return res.status(401).send({
+									'error': 'An error has occurred'
+								});
+							}
+						}
+					});
+				});
+			} else {
+				// Update the entry
+				req.params.oid = journal.objectId;
+				exports.updateEntryInJournal(req, res);
+			}
+		});
+	});
 }
 
 /**
@@ -568,42 +568,42 @@ exports.addEntryInJournal = function(req, res) {
  *    }
  **/
 exports.updateEntryInJournal = function(req, res) {
-  if (!BSON.ObjectID.isValid(req.params.jid) || !req.query.oid) {
-    res.status(401).send({
-      'error': 'Invalid journal or object id'
-    });
-    return;
-  }
-  var jid = req.params.jid;
-  var oid = req.query.oid;
+	if (!BSON.ObjectID.isValid(req.params.jid) || !req.query.oid) {
+		res.status(401).send({
+			'error': 'Invalid journal or object id'
+		});
+		return;
+	}
+	var jid = req.params.jid;
+	var oid = req.query.oid;
 
-  // validate on the basis of user's role
-  validateUser(req, res);
+	// validate on the basis of user's role
+	validateUser(req, res);
 
-  // Delete the entry
-  var deletecontent = {
-    $pull: {
-      content: {
-        objectId: oid
-      }
-    }
-  };
-  db.collection(journalCollection, function(err, collection) {
-    collection.update({
-      '_id': new BSON.ObjectID(jid)
-    }, deletecontent, {
-      safe: true
-    }, function(err, result) {
-      if (err) {
-        return res.status(500).send({
-          'error': 'An error has occurred'
-        });
-      } else {
-        // Add the updated entry
-        exports.addEntryInJournal(req, res);
-      }
-    });
-  });
+	// Delete the entry
+	var deletecontent = {
+		$pull: {
+			content: {
+				objectId: oid
+			}
+		}
+	};
+	db.collection(journalCollection, function(err, collection) {
+		collection.update({
+			'_id': new BSON.ObjectID(jid)
+		}, deletecontent, {
+			safe: true
+		}, function(err, result) {
+			if (err) {
+				return res.status(500).send({
+					'error': 'An error has occurred'
+				});
+			} else {
+				// Add the updated entry
+				exports.addEntryInJournal(req, res);
+			}
+		});
+	});
 }
 
 /**
@@ -640,90 +640,90 @@ exports.updateEntryInJournal = function(req, res) {
  *     }
  **/
 exports.removeInJournal = function(req, res) {
-  if (!BSON.ObjectID.isValid(req.params.jid)) {
-    res.status(401).send({
-      'error': 'Invalid journal id'
-    });
-    return;
-  }
-  var jid = req.params.jid;
-  var oid = (req.query.oid) ? req.query.oid : false;;
-  var type = (req.query.type) ? req.query.type : 'partial';
+	if (!BSON.ObjectID.isValid(req.params.jid)) {
+		res.status(401).send({
+			'error': 'Invalid journal id'
+		});
+		return;
+	}
+	var jid = req.params.jid;
+	var oid = (req.query.oid) ? req.query.oid : false;;
+	var type = (req.query.type) ? req.query.type : 'partial';
 
-  // validate on the basis of user's role
-  validateUser(req, res);
+	// validate on the basis of user's role
+	validateUser(req, res);
 
-  //whether or partial is deleted!
-  if (type == 'full') {
-    db.collection(journalCollection, function(err, collection) {
-      collection.remove({
-        '_id': new BSON.ObjectID(jid)
-      }, function(err, result) {
-        if (err) {
-          return res.status(500).send({
-            'error': 'An error has occurred'
-          });
-        } else {
-          if (result) {
-            return res.send({
-              'jid': jid
-            });
-          } else {
-            return res.status(401).send({
-              'error': 'Error while deleting journal!'
-            });
-          }
-        }
-      });
-    });
-  } else {
-    if (oid) {
-      db.collection(journalCollection, function(err, collection) {
-        collection.update({
-          '_id': new BSON.ObjectID(jid)
-        }, {
-          $pull: {
-            content: {
-              objectId: oid
-            }
-          }
-        }, {
-          safe: true
-        }, function(err, result) {
-          if (err) {
-            return res.status(500).send({
-              'error': 'An error has occurred'
-            });
-          } else {
-            if (result) {
-              return res.send({
-                'objectId': oid
-              });
-            } else {
-              return res.status(401).send({
-                'error': 'Error while deleting journal entry!'
-              });
-            }
+	//whether or partial is deleted!
+	if (type == 'full') {
+		db.collection(journalCollection, function(err, collection) {
+			collection.remove({
+				'_id': new BSON.ObjectID(jid)
+			}, function(err, result) {
+				if (err) {
+					return res.status(500).send({
+						'error': 'An error has occurred'
+					});
+				} else {
+					if (result) {
+						return res.send({
+							'jid': jid
+						});
+					} else {
+						return res.status(401).send({
+							'error': 'Error while deleting journal!'
+						});
+					}
+				}
+			});
+		});
+	} else {
+		if (oid) {
+			db.collection(journalCollection, function(err, collection) {
+				collection.update({
+					'_id': new BSON.ObjectID(jid)
+				}, {
+					$pull: {
+						content: {
+							objectId: oid
+						}
+					}
+				}, {
+					safe: true
+				}, function(err, result) {
+					if (err) {
+						return res.status(500).send({
+							'error': 'An error has occurred'
+						});
+					} else {
+						if (result) {
+							return res.send({
+								'objectId': oid
+							});
+						} else {
+							return res.status(401).send({
+								'error': 'Error while deleting journal entry!'
+							});
+						}
 
-          }
-        });
-      });
-    } else {
-      return res.status(401).send({
-        'error': 'Invalid Object ID'
-      });
-    }
-  }
+					}
+				});
+			});
+		} else {
+			return res.status(401).send({
+				'error': 'Invalid Object ID'
+			});
+		}
+	}
 }
 
 //check user permission
 var validateUser = function(req, res) {
-  // validate on the basis of user's role
-  if (req.user.role == 'student') {
-    if ([req.user.private_journal.toString(), req.user.shared_journal.toString()].indexOf(req.params.jid) == -1) {
-      return res.status(401).send({
-        'error': 'You don\'t have permission to remove this journal'
-      });
-    }
-  }
+	// validate on the basis of user's role
+	if (req.user.role == 'student') {
+		if ([req.user.private_journal.toString(), req.user.shared_journal.toString()].indexOf(req.params.jid) == -1) {
+			return res.status(401).send({
+				'error': 'You don\'t have permission to remove this journal'
+			});
+		}
+	}
 }

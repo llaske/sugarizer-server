@@ -1,86 +1,86 @@
 // Activities list handling
 
 var fs = require('fs'),
-  path = require('path'),
-  ini = require('ini');
+	path = require('path'),
+	ini = require('ini');
 
 // Load into memory the content of activities directory
 var activities;
 var settingsData;
 exports.load = function(settings, callback) {
 
-  // Get settings
-  activities = []
-  settingsData = settings;
-  var activitiesDirName = settings.activities.activities_directory_name;
-  var activitiesPath = settings.activities.activities_path;
-  var templateDirName = settings.activities.template_directory_name;
-  var activityInfoPath = settings.activities.activity_info_path;
-  var favorites = settings.activities.favorites ? settings.activities.favorites.split(',') : [];
-  var favoritesLength = favorites.length;
+	// Get settings
+	activities = []
+	settingsData = settings;
+	var activitiesDirName = settings.activities.activities_directory_name;
+	var activitiesPath = settings.activities.activities_path;
+	var templateDirName = settings.activities.template_directory_name;
+	var activityInfoPath = settings.activities.activity_info_path;
+	var favorites = settings.activities.favorites ? settings.activities.favorites.split(',') : [];
+	var favoritesLength = favorites.length;
 
-  // Read activities directory
-  fs.readdir(activitiesPath, function(err, files) {
-    if (err) throw err;
-    files.forEach(function(file) {
-      // If it's not the template directory
-      if (file != templateDirName) {
-        // Get the file name
-        var filePath = activitiesPath + path.sep + file;
-        fs.stat(filePath, function(err, stats) {
-          if (err) throw err;
-          // If it's a directory, it's an activity
-          if (stats.isDirectory()) {
-            // Read the activity.info file
-            var stream = fs.createReadStream(activitiesPath + path.sep + file + path.sep + activityInfoPath, {
-              encoding: 'utf8'
-            });
-            stream.on('data', function(content) {
-              // Parse the file as an .INI file
-              var info = ini.parse(content);
+	// Read activities directory
+	fs.readdir(activitiesPath, function(err, files) {
+		if (err) throw err;
+		files.forEach(function(file) {
+			// If it's not the template directory
+			if (file != templateDirName) {
+				// Get the file name
+				var filePath = activitiesPath + path.sep + file;
+				fs.stat(filePath, function(err, stats) {
+					if (err) throw err;
+					// If it's a directory, it's an activity
+					if (stats.isDirectory()) {
+						// Read the activity.info file
+						var stream = fs.createReadStream(activitiesPath + path.sep + file + path.sep + activityInfoPath, {
+							encoding: 'utf8'
+						});
+						stream.on('data', function(content) {
+							// Parse the file as an .INI file
+							var info = ini.parse(content);
 
-              // Check if activity is favorite
-              var favorite = false;
-              var index = favorites.length + 1;
-              for (var i = 0; !favorite && i < favorites.length; i++) {
-                if (favorites[i].trim() == info.Activity.bundle_id) {
-                  favorite = true;
-                  index = i;
-                }
-              }
+							// Check if activity is favorite
+							var favorite = false;
+							var index = favorites.length + 1;
+							for (var i = 0; !favorite && i < favorites.length; i++) {
+								if (favorites[i].trim() == info.Activity.bundle_id) {
+									favorite = true;
+									index = i;
+								}
+							}
 
-              // Return the activity
-              activities.push({
-                "id": info.Activity.bundle_id,
-                "name": info.Activity.name,
-                "version": info.Activity.activity_version,
-                "directory": activitiesDirName + "/" + file,
-                "icon": "activity/" + info.Activity.icon + ".svg",
-                "favorite": favorite,
-                "activityId": null,
-                "index": (favorites.indexOf(info.Activity.bundle_id) == -1 ? favoritesLength++ : favorites.indexOf(info.Activity.bundle_id))
-              });
-            });
-            stream.on('end', function() {
-              // Sort activities array by index in .INI favorite property
-              activities.sort(function(a0, a1) {
-                if (a0.index > a1.index) return 1;
-                else if (a0.index < a1.index) return -1;
-                else return 0;
-              });
-              if (callback) {
-                callback();
-                callback = null;
-              }
-            });
-            stream.on('error', function(err) {
-              throw err;
-            });
-          }
-        });
-      }
-    });
-  });
+							// Return the activity
+							activities.push({
+								"id": info.Activity.bundle_id,
+								"name": info.Activity.name,
+								"version": info.Activity.activity_version,
+								"directory": activitiesDirName + "/" + file,
+								"icon": "activity/" + info.Activity.icon + ".svg",
+								"favorite": favorite,
+								"activityId": null,
+								"index": (favorites.indexOf(info.Activity.bundle_id) == -1 ? favoritesLength++ : favorites.indexOf(info.Activity.bundle_id))
+							});
+						});
+						stream.on('end', function() {
+							// Sort activities array by index in .INI favorite property
+							activities.sort(function(a0, a1) {
+								if (a0.index > a1.index) return 1;
+								else if (a0.index < a1.index) return -1;
+								else return 0;
+							});
+							if (callback) {
+								callback();
+								callback = null;
+							}
+						});
+						stream.on('error', function(err) {
+							throw err;
+						});
+					}
+				});
+			}
+		});
+	});
 };
 
 /**
@@ -131,9 +131,9 @@ exports.load = function(settings, callback) {
  **/
 exports.findAll = function(req, res) {
 
-  //process results based on filters and fields
-  var data = process_results(req, activities);
-  res.send(data);
+	//process results based on filters and fields
+	var data = process_results(req, activities);
+	res.send(data);
 };
 
 /**
@@ -184,104 +184,104 @@ exports.findAll = function(req, res) {
  **/
 exports.findById = function(req, res) {
 
-  //process results based on filters and fields
-  data = process_results(req, activities);
+	//process results based on filters and fields
+	data = process_results(req, activities);
 
-  //find by id
-  var id = req.params.id;
-  for (var i = 0; i < data.length; i++) {
-    var activity = data[i];
-    if (activity.id == id) {
-      res.send(activity);
-      return;
-    }
-  }
-  res.send();
+	//find by id
+	var id = req.params.id;
+	for (var i = 0; i < data.length; i++) {
+		var activity = data[i];
+		if (activity.id == id) {
+			res.send(activity);
+			return;
+		}
+	}
+	res.send();
 };
 
 //private function for filtering and sorting
 function addOptions(field, params, options, default_val) {
 
-  //validate
-  if (typeof params[field] === "string" && params[field] != "") {
-    options[field] = params[field];
-  } else {
-    //default case
-    if (typeof default_val != "undefined") {
-      options[field] = default_val;
-    }
-  }
+	//validate
+	if (typeof params[field] === "string" && params[field] != "") {
+		options[field] = params[field];
+	} else {
+		//default case
+		if (typeof default_val != "undefined") {
+			options[field] = default_val;
+		}
+	}
 
-  //return
-  return options;
+	//return
+	return options;
 }
 
 //private function for filtering activities
 function process_results(req, activities) {
 
-  //duplicate activities
-  activities2 = [];
+	//duplicate activities
+	activities2 = [];
 
-  //add options first for filtering
-  var opt = {};
-  opt = addOptions('name', req.query, opt);
-  opt = addOptions('favorite', req.query, opt);
+	//add options first for filtering
+	var opt = {};
+	opt = addOptions('name', req.query, opt);
+	opt = addOptions('favorite', req.query, opt);
 
-  //required fields; by default all
-  var keys = [];
-  for (var k in activities[0]) keys.push(k);
-  opt = addOptions('fields', req.query, opt, keys.join(','));
-  opt.fields = opt.fields.split(',');
+	//required fields; by default all
+	var keys = [];
+	for (var k in activities[0]) keys.push(k);
+	opt = addOptions('fields', req.query, opt, keys.join(','));
+	opt.fields = opt.fields.split(',');
 
-  // add sort logic
-  var sort_val = typeof req.query.sort === 'string' ? req.query.sort : '+index';
-  var sort_type = sort_val.indexOf("-") == 0 ? 'desc' : 'asc';
-  opt.sort = [sort_val.substring(1), sort_type];
+	// add sort logic
+	var sort_val = typeof req.query.sort === 'string' ? req.query.sort : '+index';
+	var sort_type = sort_val.indexOf("-") == 0 ? 'desc' : 'asc';
+	opt.sort = [sort_val.substring(1), sort_type];
 
-  //filter now
-  activities.forEach(function(activity, key) {
+	//filter now
+	activities.forEach(function(activity, key) {
 
-    //flag
-    isValid = true;
+		//flag
+		isValid = true;
 
-    //filtering by name
-    if (opt.name) {
-      if (activity.name.toLowerCase().indexOf(opt.name.toLowerCase()) == -1) {
-        isValid = false;
-      }
-    }
+		//filtering by name
+		if (opt.name) {
+			if (activity.name.toLowerCase().indexOf(opt.name.toLowerCase()) == -1) {
+				isValid = false;
+			}
+		}
 
-    //filtering by favorite
-    if (opt.favorite) {
-      if (opt.favorite != activity.favorite.toString()) {
-        isValid = false;
-      }
-    }
+		//filtering by favorite
+		if (opt.favorite) {
+			if (opt.favorite != activity.favorite.toString()) {
+				isValid = false;
+			}
+		}
 
-    //now push in new array
-    if (isValid) {
-      activities2.push(JSON.parse(JSON.stringify(activity)));
-    }
-  });
+		//now push in new array
+		if (isValid) {
+			activities2.push(JSON.parse(JSON.stringify(activity)));
+		}
+	});
 
-  //remove extra fields
-  for (var i = 0; i < activities2.length; i++) {
-    for (var k in activities2[i]) {
-      if (opt.fields.indexOf(k) == -1) {
-        delete(activities2[i][k]);
-      }
-    }
-  }
-  //sort results
-  activities2.sort(function(a, b) {
-    var ret = opt.sort[1] == "asc" ? 1 : -1;
-    if (a[opt.sort[0]] < b[opt.sort[0]]) return -1 * ret;
-    if (a[opt.sort[0]] > b[opt.sort[0]]) return 1 * ret;
-    return 0;
-  });
+	//remove extra fields
+	for (var i = 0; i < activities2.length; i++) {
+		for (var k in activities2[i]) {
+			if (opt.fields.indexOf(k) == -1) {
+				delete(activities2[i][k]);
+			}
+		}
+	}
+	//sort results
+	activities2.sort(function(a, b) {
+		var ret = opt.sort[1] == "asc" ? 1 : -1;
+		if (a[opt.sort[0]] < b[opt.sort[0]]) return -1 * ret;
+		if (a[opt.sort[0]] > b[opt.sort[0]]) return 1 * ret;
+		return 0;
+	});
 
-  //return
-  return activities2;
+	//return
+	return activities2;
 }
 
 
@@ -324,28 +324,28 @@ function process_results(req, activities) {
  **/
 exports.updateActivities = function(req, res) {
 
-  // validate on the basis of user's role
-  if (req.user.role == 'student') {
-    return res.status(401).send({
-      'error': 'You don\'t have permission to remove this journal'
-    });
-  }
+	// validate on the basis of user's role
+	if (req.user.role == 'student') {
+		return res.status(401).send({
+			'error': 'You don\'t have permission to remove this journal'
+		});
+	}
 
-  //do changes
-  if (req.body.favorites) {
-    settingsData.activities.favorites = req.body.favorites;
-  } else {
-    return res.status(401).send({
-      'error': 'Invalid favorites variable'
-    });
-  }
+	//do changes
+	if (req.body.favorites) {
+		settingsData.activities.favorites = req.body.favorites;
+	} else {
+		return res.status(401).send({
+			'error': 'Invalid favorites variable'
+		});
+	}
 
-  // write it back to ini
-  var file = "./env/" + (process.env.NODE_ENV ? process.env.NODE_ENV : 'sugarizer') + ".ini";
-  fs.writeFileSync(file, ini.stringify(settingsData));
+	// write it back to ini
+	var file = "./env/" + (process.env.NODE_ENV ? process.env.NODE_ENV : 'sugarizer') + ".ini";
+	fs.writeFileSync(file, ini.stringify(settingsData));
 
-  //update activities list and return
-  exports.load(settingsData, function() {
-    res.send(activities);
-  });
+	//update activities list and return
+	exports.load(settingsData, function() {
+		res.send(activities);
+	});
 }

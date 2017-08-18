@@ -1,11 +1,11 @@
 // User handling
 
 var mongo = require('mongodb'),
-  journal = require('./journal');
+	journal = require('./journal');
 
 var Server = mongo.Server,
-  Db = mongo.Db,
-  BSON = mongo.BSONPure;
+	Db = mongo.Db,
+	BSON = mongo.BSONPure;
 
 var server;
 var db;
@@ -14,18 +14,18 @@ var usersCollection;
 
 // Init database
 exports.init = function(settings, callback) {
-  usersCollection = settings.collections.users;
-  server = new Server(settings.database.server, settings.database.port, {
-    auto_reconnect: true
-  });
-  db = new Db(settings.database.name, server, {
-    w: 1
-  });
+	usersCollection = settings.collections.users;
+	server = new Server(settings.database.server, settings.database.port, {
+		auto_reconnect: true
+	});
+	db = new Db(settings.database.name, server, {
+		w: 1
+	});
 
-  db.open(function(err, db) {
-    if (err) {}
-    if (callback) callback();
-  });
+	db.open(function(err, db) {
+		if (err) {}
+		if (callback) callback();
+	});
 }
 
 /**
@@ -81,19 +81,19 @@ exports.init = function(settings, callback) {
  *    }
  **/
 exports.findById = function(req, res) {
-  if (!BSON.ObjectID.isValid(req.params.uid)) {
-    res.status(401).send({
-      'error': 'Invalid user id'
-    });
-    return;
-  }
-  db.collection(usersCollection, function(err, collection) {
-    collection.findOne({
-      '_id': new BSON.ObjectID(req.params.uid)
-    }, function(err, item) {
-      res.send(item);
-    });
-  });
+	if (!BSON.ObjectID.isValid(req.params.uid)) {
+		res.status(401).send({
+			'error': 'Invalid user id'
+		});
+		return;
+	}
+	db.collection(usersCollection, function(err, collection) {
+		collection.findOne({
+			'_id': new BSON.ObjectID(req.params.uid)
+		}, function(err, item) {
+			res.send(item);
+		});
+	});
 };
 
 /**
@@ -163,131 +163,131 @@ exports.findById = function(req, res) {
  **/
 exports.findAll = function(req, res) {
 
-  //prepare condition
-  var query = {};
-  query = addQuery('name', req.query, query);
-  query = addQuery('language', req.query, query);
-  query = addQuery('role', req.query, query, 'student');
-  query = addQuery('q', req.query, query)
+	//prepare condition
+	var query = {};
+	query = addQuery('name', req.query, query);
+	query = addQuery('language', req.query, query);
+	query = addQuery('role', req.query, query, 'student');
+	query = addQuery('q', req.query, query)
 
-  // add filter and pagination
-  db.collection(usersCollection, function(err, collection) {
+	// add filter and pagination
+	db.collection(usersCollection, function(err, collection) {
 
-    //count data
-    collection.count(query, function(err, count) {
+		//count data
+		collection.count(query, function(err, count) {
 
-      //define var
-      var params = JSON.parse(JSON.stringify(req.query));
-      var route = req.route.path;
-      var options = getOptions(req, count, "+name");
+			//define var
+			var params = JSON.parse(JSON.stringify(req.query));
+			var route = req.route.path;
+			var options = getOptions(req, count, "+name");
 
-      //get data
-      exports.getAllUsers(query, options, function(users) {
+			//get data
+			exports.getAllUsers(query, options, function(users) {
 
-        //add pagination
-        var data = {
-          'users': users,
-          'offset': options.skip,
-          'limit': options.limit,
-          'total': options.total,
-          'sort': (options.sort[0][0] + '(' + options.sort[0][1] + ')'),
-          'links': {
-            'prev_page': ((options.skip - options.limit) >= 0) ? formPaginatedUrl(route, params, (options.skip - options.limit), options.limit) : undefined,
-            'next_page': ((options.skip + options.limit) < options.total) ? formPaginatedUrl(route, params, (options.skip + options.limit), options.limit) : undefined,
-          },
-        }
+				//add pagination
+				var data = {
+					'users': users,
+					'offset': options.skip,
+					'limit': options.limit,
+					'total': options.total,
+					'sort': (options.sort[0][0] + '(' + options.sort[0][1] + ')'),
+					'links': {
+						'prev_page': ((options.skip - options.limit) >= 0) ? formPaginatedUrl(route, params, (options.skip - options.limit), options.limit) : undefined,
+						'next_page': ((options.skip + options.limit) < options.total) ? formPaginatedUrl(route, params, (options.skip + options.limit), options.limit) : undefined,
+					},
+				}
 
-        // Return
-        res.send(data);
-      });
-    })
-  });
+				// Return
+				res.send(data);
+			});
+		})
+	});
 };
 
 //form query params
 function formPaginatedUrl(route, params, offset, limit) {
-  //set params
-  params.offset = offset;
-  params.limit = limit;
-  var str = [];
-  for (var p in params)
-    if (params.hasOwnProperty(p)) {
-      str.push((p) + "=" + (params[p]));
-    }
-  return '?' + str.join("&");
+	//set params
+	params.offset = offset;
+	params.limit = limit;
+	var str = [];
+	for (var p in params)
+		if (params.hasOwnProperty(p)) {
+			str.push((p) + "=" + (params[p]));
+		}
+	return '?' + str.join("&");
 }
 
 //get all users
 exports.getAllUsers = function(query, options, callback) {
 
-  //get data
-  db.collection(usersCollection, function(err, collection) {
+	//get data
+	db.collection(usersCollection, function(err, collection) {
 
-    //get users
-    collection.find(query, function(err, users) {
+		//get users
+		collection.find(query, function(err, users) {
 
-      //skip sort limit
-      if (options.sort) users.sort(options.sort);
-      if (options.skip) users.skip(options.skip);
-      if (options.limit) users.limit(options.limit);
+			//skip sort limit
+			if (options.sort) users.sort(options.sort);
+			if (options.skip) users.skip(options.skip);
+			if (options.limit) users.limit(options.limit);
 
-      //return
-      users.toArray(function(err, usersList) {
-        callback(usersList);
-      });
-    });
-  });
+			//return
+			users.toArray(function(err, usersList) {
+				callback(usersList);
+			});
+		});
+	});
 }
 
 function getOptions(req, count, def_sort) {
 
-  //prepare options
-  var sort_val = (typeof req.query.sort === "string" ? req.query.sort : def_sort);
-  var sort_type = sort_val.indexOf("-") == 0 ? 'desc' : 'asc';
-  var options = {
-    sort: [
-      [sort_val.substring(1), sort_type]
-    ],
-    skip: req.query.offset || 0,
-    total: count,
-    limit: req.query.limit || 10
-  }
+	//prepare options
+	var sort_val = (typeof req.query.sort === "string" ? req.query.sort : def_sort);
+	var sort_type = sort_val.indexOf("-") == 0 ? 'desc' : 'asc';
+	var options = {
+		sort: [
+			[sort_val.substring(1), sort_type]
+		],
+		skip: req.query.offset || 0,
+		total: count,
+		limit: req.query.limit || 10
+	}
 
-  //cast to int
-  options.skip = parseInt(options.skip);
-  options.limit = parseInt(options.limit);
+	//cast to int
+	options.skip = parseInt(options.skip);
+	options.limit = parseInt(options.limit);
 
-  //return
-  return options;
+	//return
+	return options;
 }
 
 //private function for filtering and sorting
 function addQuery(filter, params, query, default_val) {
 
-  //check default case
-  query = query || {};
+	//check default case
+	query = query || {};
 
-  //validate
-  if (typeof params[filter] != "undefined" && typeof params[filter] === "string") {
+	//validate
+	if (typeof params[filter] != "undefined" && typeof params[filter] === "string") {
 
-    if (filter == 'q') {
-      query['name'] = {
-        $regex: new RegExp(params[filter], "i")
-      };
-    } else {
-      query[filter] = {
-        $regex: new RegExp("^" + params[filter] + "$", "i")
-      };
-    }
-  } else {
-    //default case
-    if (typeof default_val != "undefined") {
-      query[filter] = default_val;
-    }
-  }
+		if (filter == 'q') {
+			query['name'] = {
+				$regex: new RegExp(params[filter], "i")
+			};
+		} else {
+			query[filter] = {
+				$regex: new RegExp("^" + params[filter] + "$", "i")
+			};
+		}
+	} else {
+		//default case
+		if (typeof default_val != "undefined") {
+			query[filter] = default_val;
+		}
+	}
 
-  //return
-  return query;
+	//return
+	return query;
 }
 
 
@@ -345,86 +345,86 @@ function addQuery(filter, params, query, default_val) {
  **/
 exports.addUser = function(req, res) {
 
-  //validate
-  if (!req.body.user) {
-    res.status(401).send({
-      'error': 'User object not defined!'
-    });
-    return;
-  }
+	//validate
+	if (!req.body.user) {
+		res.status(401).send({
+			'error': 'User object not defined!'
+		});
+		return;
+	}
 
-  //parse user details
-  var user = JSON.parse(req.body.user);
+	//parse user details
+	var user = JSON.parse(req.body.user);
 
-  //add timestamp & language
-  user.timestamp = +new Date();
-  user.role = (user.role ? user.role.toLowerCase() : 'student');
+	//add timestamp & language
+	user.timestamp = +new Date();
+	user.role = (user.role ? user.role.toLowerCase() : 'student');
 
-  //validation for fields [password, name]
-  if (!user.password || !user.name) {
-    res.status(401).send({
-      "message": "Invalid user object!"
-    });
-  }
+	//validation for fields [password, name]
+	if (!user.password || !user.name) {
+		res.status(401).send({
+			"message": "Invalid user object!"
+		});
+	}
 
-  // validate on the basis of user's role for logged in case
-  if (req.user) {
-    if (req.user.role == 'student') {
-      return res.status(401).send({
-        'error': 'You don\'t have permission to perform this action'
-      });
-    }
-  }
+	// validate on the basis of user's role for logged in case
+	if (req.user) {
+		if (req.user.role == 'student') {
+			return res.status(401).send({
+				'error': 'You don\'t have permission to perform this action'
+			});
+		}
+	}
 
-  //check if user already exist
-  exports.getAllUsers({
-    'name': new RegExp("^" + user.name + "$", "i")
-  }, {}, function(item) {
-    if (item.length == 0) {
-      //create user based on role
-      if (user.role == 'admin') {
-        db.collection(usersCollection, function(err, collection) {
-          collection.insert(user, {
-            safe: true
-          }, function(err, result) {
-            if (err) {
-              res.status(500).send({
-                'error': 'An error has occurred'
-              });
-            } else {
-              res.send(result[0]);
-            }
-          });
-        });
-      } else {
-        //for student
-        db.collection(usersCollection, function(err, collection) {
-          // Create a new journal
-          journal.createJournal(function(err, result) {
-            // add journal to the new user
-            user.private_journal = result[0]._id;
-            user.shared_journal = journal.getShared()._id;
-            collection.insert(user, {
-              safe: true
-            }, function(err, result) {
-              if (err) {
-                res.status(500).send({
-                  'error': 'An error has occurred'
-                });
-              } else {
-                res.send(result[0]);
-              }
-            });
-          });
-        });
-      }
+	//check if user already exist
+	exports.getAllUsers({
+		'name': new RegExp("^" + user.name + "$", "i")
+	}, {}, function(item) {
+		if (item.length == 0) {
+			//create user based on role
+			if (user.role == 'admin') {
+				db.collection(usersCollection, function(err, collection) {
+					collection.insert(user, {
+						safe: true
+					}, function(err, result) {
+						if (err) {
+							res.status(500).send({
+								'error': 'An error has occurred'
+							});
+						} else {
+							res.send(result[0]);
+						}
+					});
+				});
+			} else {
+				//for student
+				db.collection(usersCollection, function(err, collection) {
+					// Create a new journal
+					journal.createJournal(function(err, result) {
+						// add journal to the new user
+						user.private_journal = result[0]._id;
+						user.shared_journal = journal.getShared()._id;
+						collection.insert(user, {
+							safe: true
+						}, function(err, result) {
+							if (err) {
+								res.status(500).send({
+									'error': 'An error has occurred'
+								});
+							} else {
+								res.send(result[0]);
+							}
+						});
+					});
+				});
+			}
 
-    } else {
-      res.status(401).send({
-        'error': 'User with same name already exist'
-      });
-    }
-  });
+		} else {
+			res.status(401).send({
+				'error': 'User with same name already exist'
+			});
+		}
+	});
 }
 
 /**
@@ -480,90 +480,90 @@ exports.addUser = function(req, res) {
  *    }
  **/
 exports.updateUser = function(req, res) {
-  if (!BSON.ObjectID.isValid(req.params.uid)) {
-    res.status(401).send({
-      'error': 'Invalid user id'
-    });
-    return;
-  }
+	if (!BSON.ObjectID.isValid(req.params.uid)) {
+		res.status(401).send({
+			'error': 'Invalid user id'
+		});
+		return;
+	}
 
-  //validate
-  if (!req.body.user) {
-    res.status(401).send({
-      'error': 'User object not defined!'
-    });
-    return;
-  }
+	//validate
+	if (!req.body.user) {
+		res.status(401).send({
+			'error': 'User object not defined!'
+		});
+		return;
+	}
 
-  var uid = req.params.uid;
-  var user = JSON.parse(req.body.user);
+	var uid = req.params.uid;
+	var user = JSON.parse(req.body.user);
 
-  // validate on the basis of user's role
-  if (req.user.role == 'student') {
-    if (req.user._id != uid) {
-      res.status(401).send({
-        'error': 'You don\'t have permission to perform this action'
-      });
-      return;
-    }
-  }
+	// validate on the basis of user's role
+	if (req.user.role == 'student') {
+		if (req.user._id != uid) {
+			res.status(401).send({
+				'error': 'You don\'t have permission to perform this action'
+			});
+			return;
+		}
+	}
 
-  //do not update name if already exist
-  if (typeof user.name !== 'undefined') {
-    //check for unique user name validation
-    exports.getAllUsers({
-      '_id': {
-        $ne: new BSON.ObjectID(uid)
-      },
-      'name': new RegExp("^" + user.name + "$", "i")
-    }, {}, function(item) {
-      if (item.length == 0) {
+	//do not update name if already exist
+	if (typeof user.name !== 'undefined') {
+		//check for unique user name validation
+		exports.getAllUsers({
+			'_id': {
+				$ne: new BSON.ObjectID(uid)
+			},
+			'name': new RegExp("^" + user.name + "$", "i")
+		}, {}, function(item) {
+			if (item.length == 0) {
 
-        //update user
-        updateUser(uid, user, res);
-      } else {
-        res.status(401).send({
-          'error': 'User with same name already exist'
-        });
-      }
-    });
-  } else {
-    //update user
-    updateUser(uid, user, res);
-  }
+				//update user
+				updateUser(uid, user, res);
+			} else {
+				res.status(401).send({
+					'error': 'User with same name already exist'
+				});
+			}
+		});
+	} else {
+		//update user
+		updateUser(uid, user, res);
+	}
 }
 
 //private function to update user
 function updateUser(uid, user, res) {
-  db.collection(usersCollection, function(err, collection) {
-    collection.update({
-      '_id': new BSON.ObjectID(uid)
-    }, {
-      $set: user
-    }, {
-      safe: true
-    }, function(err, result) {
-      if (err) {
-        res.status(500).send({
-          'error': 'An error has occurred'
-        });
-      } else {
-        if (result) {
-          db.collection(usersCollection, function(err, collection) {
-            collection.findOne({
-              '_id': new BSON.ObjectID(uid)
-            }, function(err, user) {
-              res.send(user);
-            });
-          });
-        } else {
-          res.status(401).send({
-            'error': 'Inexisting user id'
-          });
-        }
-      }
-    });
-  });
+	db.collection(usersCollection, function(err, collection) {
+		collection.update({
+			'_id': new BSON.ObjectID(uid)
+		}, {
+			$set: user
+		}, {
+			safe: true
+		}, function(err, result) {
+			if (err) {
+				res.status(500).send({
+					'error': 'An error has occurred'
+				});
+			} else {
+				if (result) {
+					db.collection(usersCollection, function(err, collection) {
+						collection.findOne({
+							'_id': new BSON.ObjectID(uid)
+						}, function(err, user) {
+							res.send(user);
+						});
+					});
+				} else {
+					res.status(401).send({
+						'error': 'Inexisting user id'
+					});
+				}
+			}
+		});
+	});
 }
 
 /**
@@ -583,43 +583,43 @@ function updateUser(uid, user, res) {
  *     }
  **/
 exports.removeUser = function(req, res) {
-  if (!BSON.ObjectID.isValid(req.params.uid)) {
-    res.status(401).send({
-      'error': 'Invalid user id'
-    });
-    return;
-  }
+	if (!BSON.ObjectID.isValid(req.params.uid)) {
+		res.status(401).send({
+			'error': 'Invalid user id'
+		});
+		return;
+	}
 
-  // validate on the basis of user's role
-  if (req.user.role == 'student') {
-    if (req.user._id != req.params.uid) {
-      res.status(401).send({
-        'error': 'You don\'t have permission to perform this action'
-      });
-      return;
-    }
-  }
-  //delete user from db
-  var uid = req.params.uid;
-  db.collection(usersCollection, function(err, collection) {
-    collection.remove({
-      '_id': new BSON.ObjectID(uid)
-    }, function(err, result) {
-      if (err) {
-        res.status(500).send({
-          'error': 'An error has occurred'
-        });
-      } else {
-        if (result) {
-          res.send({
-            'user_id': uid
-          });
-        } else {
-          res.status(401).send({
-            'error': 'Inexisting user id'
-          });
-        }
-      }
-    });
-  });
+	// validate on the basis of user's role
+	if (req.user.role == 'student') {
+		if (req.user._id != req.params.uid) {
+			res.status(401).send({
+				'error': 'You don\'t have permission to perform this action'
+			});
+			return;
+		}
+	}
+	//delete user from db
+	var uid = req.params.uid;
+	db.collection(usersCollection, function(err, collection) {
+		collection.remove({
+			'_id': new BSON.ObjectID(uid)
+		}, function(err, result) {
+			if (err) {
+				res.status(500).send({
+					'error': 'An error has occurred'
+				});
+			} else {
+				if (result) {
+					res.send({
+						'user_id': uid
+					});
+				} else {
+					res.status(401).send({
+						'error': 'Inexisting user id'
+					});
+				}
+			}
+		});
+	});
 }
