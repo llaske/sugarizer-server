@@ -82,7 +82,16 @@ function getTopContributors(req, res) {
 					}]
 				},
 				element: req.query.element,
-				graph: 'bar'
+				graph: 'bar',
+				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								min: 0
+							}
+						}]
+					}
+				}
 			})
 		})
 	})
