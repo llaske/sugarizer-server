@@ -3,8 +3,8 @@
 var mongo = require('mongodb');
 
 var Server = mongo.Server,
-  Db = mongo.Db,
-  BSON = require('bson').BSONPure;
+	Db = mongo.Db,
+	BSON = require('bson').BSONPure;
 
 var server;
 var db;
@@ -13,18 +13,18 @@ var statsCollection;
 
 // Init database
 exports.init = function(settings, callback) {
-  statsCollection = settings.collections.stats;
-  server = new Server(settings.database.server, settings.database.port, {
-    auto_reconnect: true
-  });
-  db = new Db(settings.database.name, server, {
-    w: 1
-  });
+	statsCollection = settings.collections.stats;
+	server = new Server(settings.database.server, settings.database.port, {
+		auto_reconnect: true
+	});
+	db = new Db(settings.database.name, server, {
+		w: 1
+	});
 
-  db.open(function(err, db) {
-    if (err) {}
-    if (callback) callback();
-  });
+	db.open(function(err, db) {
+		if (err) {}
+		if (callback) callback();
+	});
 }
 
 
@@ -48,7 +48,7 @@ exports.init = function(settings, callback) {
  * @apiSuccess {String} event_value value of the event
  * @apiSuccess {Number} timestamp when the stats was created by the user
  *
- * @apiSuccessExample {json} Success-Response(Student):
+ * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *    [
  *      {
@@ -69,33 +69,39 @@ exports.init = function(settings, callback) {
  **/
 exports.addStats = function(req, res) {
 
-  //validate
-  if (!req.body.stats) {
-    res.status(401).send({
-      'error': 'Stats object not defined!'
-    });
-    return;
-  }
+	//validate
+	if (!req.body.stats) {
+		res.status(401).send({
+			'error': 'Stats object not defined!'
+		});
+		return;
+	}
 
-  //parse user details
-  var stats = JSON.parse(req.body.stats);
+	//parse user details
+	var stats = JSON.parse(req.body.stats);
 
-  //add client IP
-  stats.user_ip = getClientIP(req);
-
-  db.collection(statsCollection, function(err, collection) {
-    collection.insert(stats, {
-      safe: true
-    }, function(err, result) {
-      if (err) {
-        res.status(500).send({
-          'error': 'An error has occurred'
-        });
-      } else {
-        res.send(result);
-      }
-    });
-  });
+	//add client IP
+	if (stats.constructor === Array) {
+		for (var i = 0; i < stats.length; i++) {
+			stats[i].user_ip = getClientIP(req);
+		}
+	} else {
+		stats.user_ip = getClientIP(req);
+	}
+	db.collection(statsCollection, function(err, collection) {
+		collection.insert(stats, {
+			safe: true
+		}, function(err, result) {
+			if (err) {
+				res.status(500).send({
+					'error': 'An error has occurred'
+				});
+			} else {
+				console.log(result);
+				res.send(result);
+			}
+		});
+	});
 }
 
 
@@ -118,38 +124,38 @@ exports.addStats = function(req, res) {
  **/
 exports.deleteStats = function(req, res) {
 
-  //validate
-  if (!req.query.uid) {
-    res.status(401).send({
-      'error': 'Invalid user id'
-    });
-    return;
-  }
+	//validate
+	if (!req.query.uid) {
+		res.status(401).send({
+			'error': 'Invalid user id'
+		});
+		return;
+	}
 
-  // validate on the basis of user's role
-  if (req.user.role == 'student') {
-    if (req.user._id != req.query.uid) {
-      return res.status(401).send({
-        'error': 'You don\'t have permission to perform this action'
-      });
-    }
-  }
+	// validate on the basis of user's role
+	if (req.user.role == 'student') {
+		if (req.user._id != req.query.uid) {
+			return res.status(401).send({
+				'error': 'You don\'t have permission to perform this action'
+			});
+		}
+	}
 
-  db.collection(statsCollection, function(err, collection) {
-    collection.remove({
-      'user_id': req.query.uid
-    }, function(err, result) {
-      if (err) {
-        res.status(500).send({
-          'error': 'An error has occurred'
-        });
-      } else {
-        res.send({
-          'user_id': req.query.uid
-        });
-      }
-    });
-  });
+	db.collection(statsCollection, function(err, collection) {
+		collection.remove({
+			'user_id': req.query.uid
+		}, function(err, result) {
+			if (err) {
+				res.status(500).send({
+					'error': 'An error has occurred'
+				});
+			} else {
+				res.send({
+					'user_id': req.query.uid
+				});
+			}
+		});
+	});
 }
 
 /**
@@ -196,68 +202,75 @@ exports.deleteStats = function(req, res) {
  **/
 exports.findAll = function(req, res) {
 
-  //form query
-  var query = {};
-  query = addQuery('uid', req.query, query);
-  query = addQuery('event_source', req.query, query);
-  query = addQuery('event_object', req.query, query);
-  query = addQuery('event_action', req.query, query);
+	//form query
+	var query = {};
+	query = addQuery('uid', req.query, query);
+	query = addQuery('event_source', req.query, query);
+	query = addQuery('event_object', req.query, query);
+	query = addQuery('event_action', req.query, query);
 
-  //get options
-  var options = getOptions(req, '+timestamp');
+	//get options
+	var options = getOptions(req, '+timestamp');
 
-  //get data
-  db.collection(statsCollection, function(err, collection) {
-    collection.find(query, {}, options).toArray(function(err, data) {
-      res.send(data);
-    });
-  });
+	//get data
+	db.collection(statsCollection, function(err, collection) {
+		collection.find(query, {}, options).toArray(function(err, data) {
+			res.send(data);
+		});
+	});
 };
 
 function getOptions(req, def_sort) {
 
-  //prepare options
-  var sort_val = (typeof req.query.sort === "string" ? req.query.sort : def_sort);
-  var sort_type = sort_val.indexOf("-") == 0 ? 'desc' : 'asc';
-  var options = {
-    sort: [
-      [sort_val.substring(1), sort_type]
-    ]
-  }
-  return options;
+	//prepare options
+	var sort_val = (typeof req.query.sort === "string" ? req.query.sort : def_sort);
+	var sort_type = sort_val.indexOf("-") == 0 ? 'desc' : 'asc';
+	var options = {
+		sort: [
+			[sort_val.substring(1), sort_type]
+		]
+	}
+	return options;
 }
 
 //private function for filtering and sorting
 function addQuery(filter, params, query, default_val) {
 
-  //check default case
-  query = query || {};
+	//check default case
+	query = query || {};
 
-  //validate
-  if (typeof params[filter] != "undefined" && typeof params[filter] === "string") {
+	//validate
+	if (typeof params[filter] != "undefined" && typeof params[filter] === "string") {
 
-    if (filter == 'uid') {
-      query['user_id'] = params[filter];
-    } else {
-      query[filter] = {
-        $regex: new RegExp("^" + params[filter] + "$", "i")
-      };
-    }
-  } else {
-    //default case
-    if (typeof default_val != "undefined") {
-      query[filter] = default_val;
-    }
-  }
+		if (filter == 'uid') {
+			query['user_id'] = params[filter];
+		} else {
+			query[filter] = {
+				$regex: new RegExp("^" + params[filter] + "$", "i")
+			};
+		}
+	} else {
+		//default case
+		if (typeof default_val != "undefined") {
+			query[filter] = default_val;
+		}
+	}
 
-  //return
-  return query;
+	//return
+	return query;
 }
 
 //get client IP
 function getClientIP(req) {
-  return req.headers['x-forwarded-for'] ||
-    req.connection.remoteAddress ||
-    req.socket.remoteAddress ||
-    req.connection.socket.remoteAddress;
+
+	var ip = req.headers['x-forwarded-for'] ||
+		req.connection.remoteAddress ||
+		req.socket.remoteAddress ||
+		req.connection.socket.remoteAddress;
+
+	if (ip.substr(0, 7) == "::ffff:") {
+		ip = ip.substr(7)
+	}
+
+	return ip
 };
