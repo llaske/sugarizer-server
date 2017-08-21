@@ -8,12 +8,14 @@ var Server = mongo.Server,
 
 var server;
 var db;
+var isActive = true
 
 var statsCollection;
 
 // Init database
 exports.init = function(settings, callback) {
 	statsCollection = settings.collections.stats;
+	isActive = settings.statistics.active
 	server = new Server(settings.database.server, settings.database.port, {
 		auto_reconnect: true
 	});
@@ -69,6 +71,9 @@ exports.init = function(settings, callback) {
  **/
 exports.addStats = function(req, res) {
 
+	//check if ststs api is active
+	isStatsActive(req, res)
+
 	//validate
 	if (!req.body.stats) {
 		res.status(401).send({
@@ -122,6 +127,9 @@ exports.addStats = function(req, res) {
  *     }
  **/
 exports.deleteStats = function(req, res) {
+
+	//check if ststs api is active
+	isStatsActive(req, res)
 
 	//validate
 	if (!req.query.uid) {
@@ -201,6 +209,9 @@ exports.deleteStats = function(req, res) {
  **/
 exports.findAll = function(req, res) {
 
+	//check if ststs api is active
+	isStatsActive(req, res)
+
 	//form query
 	var query = {};
 	query = addQuery('uid', req.query, query);
@@ -267,3 +278,12 @@ function getClientIP(req) {
 		req.socket.remoteAddress ||
 		req.connection.socket.remoteAddress;
 };
+
+//check active status of status api
+function isStatsActive(req, res) {
+	if(!isActive){
+		return res.status(401).send({
+			'error': 'Statistics API is inactive'
+		});
+	}
+}

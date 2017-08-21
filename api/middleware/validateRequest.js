@@ -36,7 +36,7 @@ module.exports = function(req, res, next) {
 				}
 			});
 
-		} catch (err) {
+		} catch (err) { 
 			return res.status(500).send({
 				"message": "Oops something went wrong",
 				"error": err
