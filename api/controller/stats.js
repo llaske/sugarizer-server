@@ -281,7 +281,7 @@ function getClientIP(req) {
 
 //check active status of status api
 function isStatsActive(req, res) {
-	if(!isActive){
+	if (!isActive) {
 		return res.status(401).send({
 			'error': 'Statistics API is inactive'
 		});
