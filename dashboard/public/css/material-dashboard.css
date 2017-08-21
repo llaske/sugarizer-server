@@ -609,6 +609,7 @@ h2.title {
   position: relative;
   padding: 15px 15px;
   z-index: 4;
+  width: 260px;
 }
 
 .sidebar .logo:after, .off-canvas-sidebar .logo:after {

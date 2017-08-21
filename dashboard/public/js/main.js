@@ -217,7 +217,7 @@ function createGraph(type, element, route) {
 			if (response.data.datasets[0].data.length == 0) {
 				var html = '<div class="text-center">\
 											<i class="material-icons dp96 text-muted">info_outline</i>\
-											<p>' + document.webL10n.get('noGraphDataText') + '</p>\
+											<p data-l10n-id="noGraphDataText">' + document.webL10n.get('noGraphDataText') + '</p>\
 										</div>'
 				$("#" + response.element).replaceWith(html);
 			} else {

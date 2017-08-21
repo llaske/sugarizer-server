@@ -128,9 +128,6 @@ exports.addStats = function(req, res) {
  **/
 exports.deleteStats = function(req, res) {
 
-	//check if ststs api is active
-	isStatsActive(req, res)
-
 	//validate
 	if (!req.query.uid) {
 		res.status(401).send({
@@ -208,9 +205,6 @@ exports.deleteStats = function(req, res) {
  *     ]
  **/
 exports.findAll = function(req, res) {
-
-	//check if ststs api is active
-	isStatsActive(req, res)
 
 	//form query
 	var query = {};

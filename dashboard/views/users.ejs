@@ -37,13 +37,13 @@
                       <div class="card-header row" data-background-color="black">
                           <div class="col-md-4 col-sm-4 col-lg-4 text-left">
                           <% if(data.links.prev_page) { %>
-                             <a href="<%= data.links.prev_page %>"><< previous page</a>
+                             <a href="<%= data.links.prev_page %>" data-l10n-id="prevPage"><< previous page</a>
                           <% } %>
                           </div>
                           <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset %>", "to": "<%= data.offset + data.users.length %>", "total": "<%= data.total %>" }'></div>
                           <div class="col-md-4 col-sm-4 col-lg-4 text-right">
                           <% if(data.links.next_page) { %>
-                             <a href="<%= data.links.next_page %>">next page >></a>
+                             <a href="<%= data.links.next_page %>" data-l10n-id="nextPage">next page >></a>
                           <% } %>
                           </div>
                       </div>
