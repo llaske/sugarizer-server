@@ -94,7 +94,9 @@ exports.getAllUsers = function(req, res, callback) {
 		json: true,
 		method: 'GET',
 		qs: {
-			role: 'student'
+			role: 'student',
+			sort: '-timestamp',
+			limit: 100000000
 		},
 		uri: common.getAPIUrl(req) + 'api/v1/users'
 	}, function(error, response, body) {

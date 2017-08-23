@@ -26,8 +26,12 @@ module.exports = function(req, res, next) {
 					//store the user object in req
 					req.user = user;
 
-					//send to the next middleware
-					next();
+					//update user timestamp
+					users.updateTimestamp(key, function() {
+
+						//send to the next middleware
+						next();
+					})
 				} else {
 					// No user with this name exists, respond back with a 401
 					return res.status(401).send({
@@ -36,7 +40,7 @@ module.exports = function(req, res, next) {
 				}
 			});
 
-		} catch (err) { 
+		} catch (err) {
 			return res.status(500).send({
 				"message": "Oops something went wrong",
 				"error": err

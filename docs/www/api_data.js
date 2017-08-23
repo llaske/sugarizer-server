@@ -1223,7 +1223,7 @@ define({ "api": [
       },
       "examples": [
         {
-          "title": "Success-Response(Student):",
+          "title": "Success-Response:",
           "content": " HTTP/1.1 200 OK\n[\n  {\n   \"user_id\"         : \"592d4445cc8be9187abb284f\",\n   \"user_agent\"      : \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36\",\n   \"user_ip\"         : \"122.34.42.165\",\n   \"client_type\"     : \"mobile\",\n   \"event_source\"    : \"sugarizer\",\n   \"event_object\"    : \"home_view\",\n   \"event_action\"    : \"search\",\n   \"event_label\"     : \"q=stopwatch\",\n   \"event_value\"     : null,\n   \"timestamp\"       : 6712375127,\n   \"_id\"             : \"59541db5a297accf5b9003da\"\n  }\n]",
           "type": "json"
         }
@@ -1497,15 +1497,22 @@ define({ "api": [
             "group": "Success 200",
             "type": "Number",
             "optional": false,
-            "field": "timestamp",
+            "field": "created_time",
             "description": "<p>when the user was created on the server</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "timestamp",
+            "description": "<p>when the user last accessed the server</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n {\n   \"name\": \"Tarun\",\n   \"role\": \"student\",\n   \"color\": {\n     \"stroke\": \"#00A0FF\",\n     \"fill\": \"#00B20D\"\n   },\n   \"favorites\": [\n      \"org.olpcfrance.Abecedarium\",\n      \"org.sugarlabs.ChatPrototype\",\n      \"org.sugarlabs.Clock\",\n      \"org.olpcfrance.FoodChain\",\n      \"org.sugarlabs.GearsActivity\",\n      \"org.sugarlabs.GTDActivity\",\n      \"org.olpcfrance.Gridpaint\",\n      \"org.olpc-france.LOLActivity\",\n      \"org.sugarlabs.Markdown\",\n      \"org.sugarlabs.MazeWebActivity\",\n      \"org.sugarlabs.PaintActivity\"\n   ],\n   \"language\": \"en\",\n   \"password\": \"xxx\",\n   \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n   \"shared_journal\": \"536d30874326e55f2a22816f\",\n   \"timestamp\": 1423341000747,\n   \"_id\": \"5569f4b019e0b4c9525b3c97\"\n}",
+          "content": " HTTP/1.1 200 OK\n {\n   \"name\": \"Tarun\",\n   \"role\": \"student\",\n   \"color\": {\n     \"stroke\": \"#00A0FF\",\n     \"fill\": \"#00B20D\"\n   },\n   \"favorites\": [\n      \"org.olpcfrance.Abecedarium\",\n      \"org.sugarlabs.ChatPrototype\",\n      \"org.sugarlabs.Clock\",\n      \"org.olpcfrance.FoodChain\",\n      \"org.sugarlabs.GearsActivity\",\n      \"org.sugarlabs.GTDActivity\",\n      \"org.olpcfrance.Gridpaint\",\n      \"org.olpc-france.LOLActivity\",\n      \"org.sugarlabs.Markdown\",\n      \"org.sugarlabs.MazeWebActivity\",\n      \"org.sugarlabs.PaintActivity\"\n   ],\n   \"language\": \"en\",\n   \"password\": \"xxx\",\n   \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n   \"shared_journal\": \"536d30874326e55f2a22816f\",\n   \"created_time\": 1423341000747,\n   \"timestamp\": 1423341000747,\n   \"_id\": \"5569f4b019e0b4c9525b3c97\"\n}",
           "type": "json"
         }
       ]
@@ -1657,7 +1664,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n {\n \"users\":[\n   {\n     \"name\": \"Tarun Singhal\",\n     \"role\": \"student\",\n     \"color\": {\n       \"stroke\": \"#005FE4\",\n       \"fill\": \"#FF2B34\"\n     },\n     \"favorites\": [\n       \"org.sugarlabs.GearsActivity\",\n       \"org.sugarlabs.MazeWebActivity\",\n     ],\n     \"language\": \"en\",\n     \"password\": \"xxx\",\n     \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n     \"shared_journal\": \"536d30874326e55f2a22816f\",\n     \"timestamp\": 1423341000747,\n     \"_id\": \"536dd30aadcd557f2a9d648b\"\n  },\n  ...\n ],\n \"limit\": 10,\n \"offset\": 20,\n \"total\": 200,\n \"sort\": \"+name\",\n \"links\": {\n \t\"prev_page\": \"/api/v1/users?limit=10&offset=10\",\n \t\"next_page\": \"/api/v1/users?limit=10&offset=30\"\n }\n}",
+          "content": " HTTP/1.1 200 OK\n {\n \"users\":[\n   {\n     \"name\": \"Tarun Singhal\",\n     \"role\": \"student\",\n     \"color\": {\n       \"stroke\": \"#005FE4\",\n       \"fill\": \"#FF2B34\"\n     },\n     \"favorites\": [\n       \"org.sugarlabs.GearsActivity\",\n       \"org.sugarlabs.MazeWebActivity\",\n     ],\n     \"language\": \"en\",\n     \"password\": \"xxx\",\n     \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n     \"shared_journal\": \"536d30874326e55f2a22816f\",\n     \"created_time\": 1423341000747,\n     \"timestamp\": 1423341000747,\n     \"_id\": \"536dd30aadcd557f2a9d648b\"\n  },\n  ...\n ],\n \"limit\": 10,\n \"offset\": 20,\n \"total\": 200,\n \"sort\": \"+name\",\n \"links\": {\n \t\"prev_page\": \"/api/v1/users?limit=10&offset=10\",\n \t\"next_page\": \"/api/v1/users?limit=10&offset=30\"\n }\n}",
           "type": "json"
         }
       ]
@@ -1777,15 +1784,22 @@ define({ "api": [
             "group": "Success 200",
             "type": "Number",
             "optional": false,
-            "field": "timestamp",
+            "field": "created_time",
             "description": "<p>when the user was created on the server</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "timestamp",
+            "description": "<p>when the user last accessed the server</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n {\n   \"name\": \"Tarun\",\n   \"role\": \"student\",\n   \"color\": {\n     \"stroke\": \"#00A0FF\",\n     \"fill\": \"#00B20D\"\n   },\n   \"favorites\": [\n      \"org.olpcfrance.Abecedarium\",\n      \"org.sugarlabs.ChatPrototype\",\n      \"org.sugarlabs.Clock\",\n      \"org.olpcfrance.FoodChain\",\n      \"org.sugarlabs.GearsActivity\",\n      \"org.sugarlabs.GTDActivity\",\n      \"org.olpcfrance.Gridpaint\",\n      \"org.olpc-france.LOLActivity\",\n      \"org.sugarlabs.Markdown\",\n      \"org.sugarlabs.MazeWebActivity\",\n      \"org.sugarlabs.PaintActivity\"\n   ],\n   \"language\": \"en\",\n   \"password\": \"xxx\",\n   \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n   \"shared_journal\": \"536d30874326e55f2a22816f\",\n   \"timestamp\": 1423341000747,\n   \"_id\": \"5569f4b019e0b4c9525b3c97\"\n}",
+          "content": " HTTP/1.1 200 OK\n {\n   \"name\": \"Tarun\",\n   \"role\": \"student\",\n   \"color\": {\n     \"stroke\": \"#00A0FF\",\n     \"fill\": \"#00B20D\"\n   },\n   \"favorites\": [\n      \"org.olpcfrance.Abecedarium\",\n      \"org.sugarlabs.ChatPrototype\",\n      \"org.sugarlabs.Clock\",\n      \"org.olpcfrance.FoodChain\",\n      \"org.sugarlabs.GearsActivity\",\n      \"org.sugarlabs.GTDActivity\",\n      \"org.olpcfrance.Gridpaint\",\n      \"org.olpc-france.LOLActivity\",\n      \"org.sugarlabs.Markdown\",\n      \"org.sugarlabs.MazeWebActivity\",\n      \"org.sugarlabs.PaintActivity\"\n   ],\n   \"language\": \"en\",\n   \"password\": \"xxx\",\n   \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n   \"shared_journal\": \"536d30874326e55f2a22816f\",\n   \"created_time\": 1423341000747,\n   \"timestamp\": 1423341000747,\n   \"_id\": \"5569f4b019e0b4c9525b3c97\"\n}",
           "type": "json"
         }
       ]
@@ -1958,15 +1972,22 @@ define({ "api": [
             "group": "Success 200",
             "type": "Number",
             "optional": false,
-            "field": "timestamp",
+            "field": "created_time",
             "description": "<p>when the user was created on the server</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "timestamp",
+            "description": "<p>when the user last accessed the server</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n {\n   \"name\": \"Tarun\",\n   \"role\": \"student\",\n   \"color\": {\n     \"stroke\": \"#00A0FF\",\n     \"fill\": \"#00B20D\"\n   },\n   \"favorites\": [\n      \"org.olpcfrance.Abecedarium\",\n      \"org.sugarlabs.ChatPrototype\",\n      \"org.sugarlabs.Clock\",\n      \"org.olpcfrance.FoodChain\",\n      \"org.sugarlabs.GearsActivity\",\n      \"org.sugarlabs.GTDActivity\",\n      \"org.olpcfrance.Gridpaint\",\n      \"org.olpc-france.LOLActivity\",\n      \"org.sugarlabs.Markdown\",\n      \"org.sugarlabs.MazeWebActivity\",\n      \"org.sugarlabs.PaintActivity\"\n   ],\n   \"language\": \"en\",\n   \"password\": \"xxx\",\n   \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n   \"shared_journal\": \"536d30874326e55f2a22816f\",\n   \"timestamp\": 1423341000747,\n   \"_id\": \"5569f4b019e0b4c9525b3c97\"\n}",
+          "content": " HTTP/1.1 200 OK\n {\n   \"name\": \"Tarun\",\n   \"role\": \"student\",\n   \"color\": {\n     \"stroke\": \"#00A0FF\",\n     \"fill\": \"#00B20D\"\n   },\n   \"favorites\": [\n      \"org.olpcfrance.Abecedarium\",\n      \"org.sugarlabs.ChatPrototype\",\n      \"org.sugarlabs.Clock\",\n      \"org.olpcfrance.FoodChain\",\n      \"org.sugarlabs.GearsActivity\",\n      \"org.sugarlabs.GTDActivity\",\n      \"org.olpcfrance.Gridpaint\",\n      \"org.olpc-france.LOLActivity\",\n      \"org.sugarlabs.Markdown\",\n      \"org.sugarlabs.MazeWebActivity\",\n      \"org.sugarlabs.PaintActivity\"\n   ],\n   \"language\": \"en\",\n   \"password\": \"xxx\",\n   \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n   \"shared_journal\": \"536d30874326e55f2a22816f\",\n   \"created_time\": 1423341000747,\n   \"timestamp\": 1423341001747,\n   \"_id\": \"5569f4b019e0b4c9525b3c97\"\n}",
           "type": "json"
         }
       ]

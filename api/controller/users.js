@@ -48,7 +48,8 @@ exports.init = function(settings, callback) {
  * @apiSuccess {String} password password of the user
  * @apiSuccess {String} private_journal Id of the private journal on the server
  * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
- * @apiSuccess {Number} timestamp when the user was created on the server
+ * @apiSuccess {Number} created_time when the user was created on the server
+ * @apiSuccess {Number} timestamp when the user last accessed the server
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -76,6 +77,7 @@ exports.init = function(settings, callback) {
  *       "password": "xxx",
  *       "private_journal": "5569f4b019e0b4c9525b3c96",
  *       "shared_journal": "536d30874326e55f2a22816f",
+ *       "created_time": 1423341000747,
  *       "timestamp": 1423341000747,
  *       "_id": "5569f4b019e0b4c9525b3c97"
  *    }
@@ -146,6 +148,7 @@ exports.findById = function(req, res) {
  *         "password": "xxx",
  *         "private_journal": "5569f4b019e0b4c9525b3c96",
  *         "shared_journal": "536d30874326e55f2a22816f",
+ *         "created_time": 1423341000747,
  *         "timestamp": 1423341000747,
  *         "_id": "536dd30aadcd557f2a9d648b"
  *      },
@@ -311,7 +314,8 @@ function addQuery(filter, params, query, default_val) {
  * @apiSuccess {String} password password of the user
  * @apiSuccess {String} private_journal Id of the private journal on the server
  * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
- * @apiSuccess {Number} timestamp when the user was created on the server
+ * @apiSuccess {Number} created_time when the user was created on the server
+ * @apiSuccess {Number} timestamp when the user last accessed the server
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -339,6 +343,7 @@ function addQuery(filter, params, query, default_val) {
  *       "password": "xxx",
  *       "private_journal": "5569f4b019e0b4c9525b3c96",
  *       "shared_journal": "536d30874326e55f2a22816f",
+ *       "created_time": 1423341000747,
  *       "timestamp": 1423341000747,
  *       "_id": "5569f4b019e0b4c9525b3c97"
  *    }
@@ -357,6 +362,7 @@ exports.addUser = function(req, res) {
 	var user = JSON.parse(req.body.user);
 
 	//add timestamp & language
+	user.created_time = +new Date();
 	user.timestamp = +new Date();
 	user.role = (user.role ? user.role.toLowerCase() : 'student');
 
@@ -447,7 +453,8 @@ exports.addUser = function(req, res) {
  * @apiSuccess {String} password password of the user
  * @apiSuccess {String} private_journal Id of the private journal on the server
  * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
- * @apiSuccess {Number} timestamp when the user was created on the server
+ * @apiSuccess {Number} created_time when the user was created on the server
+ * @apiSuccess {Number} timestamp when the user last accessed the server
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -475,7 +482,8 @@ exports.addUser = function(req, res) {
  *       "password": "xxx",
  *       "private_journal": "5569f4b019e0b4c9525b3c96",
  *       "shared_journal": "536d30874326e55f2a22816f",
- *       "timestamp": 1423341000747,
+ *       "created_time": 1423341000747,
+ *       "timestamp": 1423341001747,
  *       "_id": "5569f4b019e0b4c9525b3c97"
  *    }
  **/
@@ -619,6 +627,30 @@ exports.removeUser = function(req, res) {
 						'error': 'Inexisting user id'
 					});
 				}
+			}
+		});
+	});
+}
+
+//update user's time stamp
+exports.updateUserTimestamp = function(uid, callback) {
+
+	db.collection(usersCollection, function(err, collection) {
+		collection.update({
+			'_id': new BSON.ObjectID(uid)
+		}, {
+			$set: {
+				timestamp: +new Date()
+			}
+		}, {
+			safe: true
+		}, function(err, result) {
+			if (err) {
+				res.status(500).send({
+					'error': 'An error has occurred while updating timestamp'
+				});
+			} else {
+				callback()
 			}
 		});
 	});

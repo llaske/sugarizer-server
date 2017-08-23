@@ -66,6 +66,22 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-black label-floating">
+                                    <label class="control-label">Created Time</label>
+                                    <input class="form-control" readonly value="<% if(typeof user == 'object'){ %><%= moment(user.created_time).calendar() %><% } %>" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-black label-floating">
+                                    <label class="control-label">Last Seen</label>
+                                    <input class="form-control" readonly value="<% if(typeof user == 'object'){ %><%= moment(user.timestamp).calendar() %><% } %>" type="text">
+                                </div>
+                            </div>
+                        </div>
                         <button class="btn pull-right btn-round" type="submit">Save</button>
                         <a class="btn pull-right btn-round" href="/dashboard/users">Cancel</a>
                         <div class="clearfix"></div>
