@@ -13,7 +13,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
-                                    <label class="control-label">Name</label>
+                                    <label class="control-label" data-l10n-id="name"></label>
                                     <input class="form-control" name="name" value="<% if(typeof user == 'object'){ %><%= user.name %><% } %>" type="text">
                                     <span class="material-input"></span>
                                 </div>
@@ -22,7 +22,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
-                                    <label class="control-label">Language</label>
+                                    <label class="control-label" data-l10n-id="language"></label>
                                     <select class="form-control" name="language">
                                         <option value="en" <% if(typeof user == 'object' &&  user.language=='en'){ %> selected="selected" <% } %>>English</option>
                                         <option value="fr" <% if(typeof user == 'object' &&  user.language=='fr'){ %> selected="selected" <% } %>>French</option>
@@ -33,7 +33,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
-                                    <label class="control-label">Role</label>
+                                    <label class="control-label" data-l10n-id="role"></label>
                                     <select class="form-control" name="role" onchange="show_user_fields(this.value)">
                                         <option value="admin" <% if(typeof user == 'object' &&  user.role=='admin'){ %> selected="selected" <% } %> >Admin</option>
                                         <option value="student" <% if(typeof user == 'object' &&  user.role=='student'){ %> selected="selected" <% } %> >Student</option>
@@ -44,7 +44,7 @@
                         <div class="row color_input">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
-                                    <label class="control-label">Color</label>
+                                    <label class="control-label" data-l10n-id="color"></label>
                                     <select class="form-control" name="color" id="color-select2">
                                         <% for(var i=0; i< xocolors.length; i++){ %>
                                           <% if(typeof user == 'object' && typeof user.color == 'object' && xocolors[i].stroke == user.color.stroke && xocolors[i].fill == user.color.fill){ %>
@@ -60,7 +60,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
-                                    <label class="control-label">Password</label>
+                                    <label class="control-label" data-l10n-id="password"></label>
                                     <input class="form-control" name="password" value="<% if(typeof user == 'object'){ %><%= user.password %><% } %>" type="text">
                                     <span class="material-input"></span>
                                 </div>
@@ -69,7 +69,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
-                                    <label class="control-label">Created Time</label>
+                                    <label class="control-label" data-l10n-id="createdTime"></label>
                                     <input class="form-control" readonly value="<% if(typeof user == 'object'){ %><%= moment(user.created_time).calendar() %><% } %>" type="text">
                                 </div>
                             </div>
@@ -77,13 +77,13 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
-                                    <label class="control-label">Last Seen</label>
+                                    <label class="control-label" data-l10n-id="lastSeen"></label>
                                     <input class="form-control" readonly value="<% if(typeof user == 'object'){ %><%= moment(user.timestamp).calendar() %><% } %>" type="text">
                                 </div>
                             </div>
                         </div>
-                        <button class="btn pull-right btn-round" type="submit">Save</button>
-                        <a class="btn pull-right btn-round" href="/dashboard/users">Cancel</a>
+                        <button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
+                        <a class="btn pull-right btn-round" href="/dashboard/users" data-l10n-id="cancel"></a>
                         <div class="clearfix"></div>
                     </form>
                 </div>
