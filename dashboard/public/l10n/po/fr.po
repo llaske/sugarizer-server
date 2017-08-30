@@ -1,0 +1,181 @@
+#. extracted from ../locales.ini
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: Wed Aug 30 2017 13:15:31 GMT+0200 (CEST)\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: ini2po 0.0.1\n"
+
+#: users
+msgctxt "users"
+msgid "Users"
+msgstr "Utilisateurs"
+
+#: dashboard
+msgctxt "dashboard"
+msgid "Home"
+msgstr "Accueil"
+
+#: journals
+msgctxt "journals"
+msgid "Journals"
+msgstr "Journaux"
+
+#: activities
+msgctxt "activities"
+msgid "Activities"
+msgstr "Activités"
+
+#: icon
+msgctxt "icon"
+msgid "Icon"
+msgstr "Icône"
+
+#: name
+msgctxt "name"
+msgid "Name"
+msgstr "Prénom"
+
+#: activity
+msgctxt "activity"
+msgid "Activity"
+msgstr "Activité"
+
+#: version
+msgctxt "version"
+msgid "Version"
+msgstr "Version"
+
+#: favorite
+msgctxt "favorite"
+msgid "favorite"
+msgstr "Préféré"
+
+#: action
+msgctxt "action"
+msgid "Action"
+msgstr "Action"
+
+#: role
+msgctxt "role"
+msgid "role"
+msgstr "Rôle"
+
+#: title
+msgctxt "title"
+msgid "Title"
+msgstr "titre"
+
+#: language
+msgctxt "language"
+msgid "Language"
+msgstr "langue"
+
+#: timestamp
+msgctxt "timestamp"
+msgid "Timestamp"
+msgstr "horodatage"
+
+#: searchActivity.placeholder
+msgctxt "searchActivity.placeholder"
+msgid "Search Activity..."
+msgstr "Activité de recherche ..."
+
+#: successActivityUpdate
+msgctxt "successActivityUpdate"
+msgid "Activities successfully updated!"
+msgstr "Activités mises à jour avec succès!"
+
+#: viewAllUsers
+msgctxt "viewAllUsers"
+msgid "View all users"
+msgstr "Voir tous les utilisateurs"
+
+#: viewAllActivities
+msgctxt "viewAllActivities"
+msgid "View all activities"
+msgstr "Voir toutes les activités"
+
+#: viewAllJournal
+msgctxt "viewAllJournal"
+msgid "View all journal entries"
+msgstr "Voir toutes les entrées de journal"
+
+#: noEntryText
+msgctxt "noEntryText"
+msgid "There are no entries available for this user"
+msgstr "Il n'y a pas d'entrées disponibles pour cet utilisateur"
+
+#: selectUserText
+msgctxt "selectUserText"
+msgid "Please select a user and click on show results!"
+msgstr "Sélectionnez un utilisateur et cliquez sur Afficher les résultats!"
+
+#: showResults
+msgctxt "showResults"
+msgid "Show Results"
+msgstr "Afficher les résultats"
+
+#: nextPage
+msgctxt "nextPage"
+msgid "next page >>"
+msgstr "page suivante >>"
+
+#: prevPage
+msgctxt "prevPage"
+msgid "<< prev page"
+msgstr "<< Page précédente"
+
+#. Do not translate {{offset}} {{to}} {{total}}
+#: showingResults
+msgctxt "showingResults"
+msgid "Showing results {{offset}}-{{to}} out of {{total}}"
+msgstr "Résultats affichés {{offset}}-{{to}} sur {{total}}"
+
+#: private
+msgctxt "private"
+msgid "Private"
+msgstr "Privé"
+
+#: shared
+msgctxt "shared"
+msgid "Shared"
+msgstr "partagé"
+
+#: addUser
+msgctxt "addUser"
+msgid "Add User"
+msgstr "Ajouter un utilisateur"
+
+#: sugarizerDashboardLogin
+msgctxt "sugarizerDashboardLogin"
+msgid "Sugarizer Dashboard"
+msgstr "Sugarizer Dashboard"
+
+#: username
+msgctxt "username"
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: password
+msgctxt "password"
+msgid "Password"
+msgstr "mot de passe"
+
+#: login
+msgctxt "login"
+msgid "Login"
+msgstr "s'identifier"
+
+#: noGraphDataText
+msgctxt "noGraphDataText"
+msgid "Not Enough Data"
+msgstr "Données insuffisantes"
+

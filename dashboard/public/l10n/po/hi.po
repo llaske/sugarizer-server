@@ -1,0 +1,186 @@
+#. extracted from ../locales.ini
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: Wed Aug 30 2017 13:15:31 GMT+0200 (CEST)\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: ini2po 0.0.1\n"
+
+#: users
+msgctxt "users"
+msgid "Users"
+msgstr "उपयोगकर्ता"
+
+#: dashboard
+msgctxt "dashboard"
+msgid "Home"
+msgstr "घर"
+
+#: journals
+msgctxt "journals"
+msgid "Journals"
+msgstr "पत्रिकाओं"
+
+#: activities
+msgctxt "activities"
+msgid "Activities"
+msgstr "क्रियाएँ"
+
+#: stats
+msgctxt "stats"
+msgid "Statistics"
+msgstr "आंकड़े"
+
+#: icon
+msgctxt "icon"
+msgid "Icon"
+msgstr "आइकन"
+
+#: name
+msgctxt "name"
+msgid "Name"
+msgstr "नाम"
+
+#: activity
+msgctxt "activity"
+msgid "Activity"
+msgstr "गतिविधि"
+
+#: version
+msgctxt "version"
+msgid "Version"
+msgstr "संस्करण"
+
+#: favorite
+msgctxt "favorite"
+msgid "favorite"
+msgstr "पसंदीदा"
+
+#: action
+msgctxt "action"
+msgid "Action"
+msgstr "कार्य"
+
+#: role
+msgctxt "role"
+msgid "role"
+msgstr "भूमिका"
+
+#: language
+msgctxt "language"
+msgid "Language"
+msgstr "भाषा"
+
+#: timestamp
+msgctxt "timestamp"
+msgid "Timestamp"
+msgstr "समय-चिह्न"
+
+#: title
+msgctxt "title"
+msgid "Title"
+msgstr "शीर्षक"
+
+#: searchActivity.placeholder
+msgctxt "searchActivity.placeholder"
+msgid "Search Activity..."
+msgstr "खोज गतिविधि ..."
+
+#: successActivityUpdate
+msgctxt "successActivityUpdate"
+msgid "Activities successfully updated!"
+msgstr "गतिविधियां सफलतापूर्वक अपडेट की गईं!"
+
+#: viewAllUsers
+msgctxt "viewAllUsers"
+msgid "View all users"
+msgstr "सभी उपयोगकर्ताओं को देखें"
+
+#: viewAllActivities
+msgctxt "viewAllActivities"
+msgid "View all activities"
+msgstr "सभी गतिविधियां देखें"
+
+#: viewAllJournal
+msgctxt "viewAllJournal"
+msgid "View all journal entries"
+msgstr "सभी पत्रिका प्रविष्टियां देखें"
+
+#: noEntryText
+msgctxt "noEntryText"
+msgid "There are no entries available for this user"
+msgstr "इस उपयोगकर्ता के लिए कोई प्रविष्टियां उपलब्ध नहीं हैं"
+
+#: selectUserText
+msgctxt "selectUserText"
+msgid "Please select a user and click on show results!"
+msgstr "कृपया एक उपयोगकर्ता का चयन करें और शो परिणामों पर क्लिक करें!"
+
+#: showResults
+msgctxt "showResults"
+msgid "Show Results"
+msgstr "परिणाम दिखाओ"
+
+#: nextPage
+msgctxt "nextPage"
+msgid "next page >>"
+msgstr "अगले पृष्ठ >>"
+
+#: prevPage
+msgctxt "prevPage"
+msgid "<< prev page"
+msgstr "<< पिछला पृष्ठ"
+
+#. Do not translate {{offset}} {{to}} {{total}}
+#: showingResults
+msgctxt "showingResults"
+msgid "Showing results {{offset}}-{{to}} out of {{total}}"
+msgstr "{{total}} में से {{offset}}-{{to}} परिणाम दिखा रहा है"
+
+#: private
+msgctxt "private"
+msgid "Private"
+msgstr "निजी"
+
+#: shared
+msgctxt "shared"
+msgid "Shared"
+msgstr "साझा"
+
+#: addUser
+msgctxt "addUser"
+msgid "Add User"
+msgstr "उपयोगकर्ता जोड़ें"
+
+#: sugarizerDashboardLogin
+msgctxt "sugarizerDashboardLogin"
+msgid "Sugarizer Dashboard"
+msgstr "शुगरइज़र डैशबोर्ड"
+
+#: username
+msgctxt "username"
+msgid "Username"
+msgstr "उपयोगकर्ता नाम"
+
+#: password
+msgctxt "password"
+msgid "Password"
+msgstr "पासवर्ड"
+
+#: login
+msgctxt "login"
+msgid "Login"
+msgstr "लॉग इन करें"
+
+#: noGraphDataText
+msgctxt "noGraphDataText"
+msgid "Not Enough Data"
+msgstr "पर्याप्त डाटा नहीं"
+
