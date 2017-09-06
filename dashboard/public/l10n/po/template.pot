@@ -16,171 +16,171 @@ msgstr ""
 #: users
 msgctxt "users"
 msgid "Users"
-msgstr "Users"
+msgstr ""
 
 #: dashboard
 msgctxt "dashboard"
 msgid "Home"
-msgstr "Home"
+msgstr ""
 
 #: journals
 msgctxt "journals"
 msgid "Journals"
-msgstr "Journals"
+msgstr ""
 
 #: activities
 msgctxt "activities"
 msgid "Activities"
-msgstr "Activities"
+msgstr ""
 
 #: stats
 msgctxt "stats"
 msgid "Statistics"
-msgstr "Statistics"
+msgstr ""
 
 #: icon
 msgctxt "icon"
 msgid "Icon"
-msgstr "Icon"
+msgstr ""
 
 #: name
 msgctxt "name"
 msgid "Name"
-msgstr "Name"
+msgstr ""
 
 #: activity
 msgctxt "activity"
 msgid "Activity"
-msgstr "Activity"
+msgstr ""
 
 #: version
 msgctxt "version"
 msgid "Version"
-msgstr "Version"
+msgstr ""
 
 #: favorite
 msgctxt "favorite"
 msgid "favorite"
-msgstr "favorite"
+msgstr ""
 
 #: action
 msgctxt "action"
 msgid "Action"
-msgstr "Action"
+msgstr ""
 
 #: role
 msgctxt "role"
 msgid "role"
-msgstr "role"
+msgstr ""
 
 #: language
 msgctxt "language"
 msgid "Language"
-msgstr "Language"
+msgstr ""
 
 #: timestamp
 msgctxt "timestamp"
 msgid "Timestamp"
-msgstr "Timestamp"
+msgstr ""
 
 #: title
 msgctxt "title"
 msgid "Title"
-msgstr "Title"
+msgstr ""
 
 #: searchActivity.placeholder
 msgctxt "searchActivity.placeholder"
 msgid "Search Activity..."
-msgstr "Search Activity..."
+msgstr ""
 
 #: successActivityUpdate
 msgctxt "successActivityUpdate"
 msgid "Activities successfully updated!"
-msgstr "Activities successfully updated!"
+msgstr ""
 
 #: viewAllUsers
 msgctxt "viewAllUsers"
 msgid "View all users"
-msgstr "View all users"
+msgstr ""
 
 #: viewAllActivities
 msgctxt "viewAllActivities"
 msgid "View all activities"
-msgstr "View all activities"
+msgstr ""
 
 #: viewAllJournal
 msgctxt "viewAllJournal"
 msgid "View all journal entries"
-msgstr "View all journal entries"
+msgstr ""
 
 #: noEntryText
 msgctxt "noEntryText"
 msgid "There are no entries available for this user"
-msgstr "There are no entries available for this user"
+msgstr ""
 
 #: selectUserText
 msgctxt "selectUserText"
 msgid "Please select a user and click on show results!"
-msgstr "Please select a user and click on show results!"
+msgstr ""
 
 #: showResults
 msgctxt "showResults"
 msgid "Show Results"
-msgstr "Show Results"
+msgstr ""
 
 #: nextPage
 msgctxt "nextPage"
 msgid "next page >>"
-msgstr "next page >>"
+msgstr ""
 
 #: prevPage
 msgctxt "prevPage"
 msgid "<< prev page"
-msgstr "<< prev page"
+msgstr ""
 
 #. Do not translate {{offset}} {{to}} {{total}}
 #: showingResults
 msgctxt "showingResults"
 msgid "Showing results {{offset}}-{{to}} out of {{total}}"
-msgstr "Showing results {{offset}}-{{to}} out of {{total}}"
+msgstr ""
 
 #: private
 msgctxt "private"
 msgid "Private"
-msgstr "Private"
+msgstr ""
 
 #: shared
 msgctxt "shared"
 msgid "Shared"
-msgstr "Shared"
+msgstr ""
 
 #: addUser
 msgctxt "addUser"
 msgid "Add User"
-msgstr "Add User"
+msgstr ""
 
 #: sugarizerDashboardLogin
 msgctxt "sugarizerDashboardLogin"
 msgid "Sugarizer Dashboard"
-msgstr "Sugarizer Dashboard"
+msgstr ""
 
 #: username
 msgctxt "username"
 msgid "Username"
-msgstr "Username"
+msgstr ""
 
 #: password
 msgctxt "password"
 msgid "Password"
-msgstr "Password"
+msgstr ""
 
 #: login
 msgctxt "login"
 msgid "Login"
-msgstr "Login"
+msgstr ""
 
 #: noGraphDataText
 msgctxt "noGraphDataText"
 msgid "Not Enough Data"
-msgstr "Not Enough Data"
+msgstr ""
 
