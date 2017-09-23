@@ -72,7 +72,9 @@ exports.init = function(settings, callback) {
 exports.addStats = function(req, res) {
 
 	//check if ststs api is active
-	isStatsActive(req, res)
+	if (!isStatsActive(req, res)) {
+		return;
+	}
 
 	//validate
 	if (!req.body.stats) {
@@ -276,8 +278,10 @@ function getClientIP(req) {
 //check active status of status api
 function isStatsActive(req, res) {
 	if (!isActive) {
-		return res.status(401).send({
+		res.status(401).send({
 			'error': 'Statistics API is inactive'
 		});
+		return false;
 	}
+	return true;
 }
