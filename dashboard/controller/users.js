@@ -101,6 +101,7 @@ exports.addUser = function(req, res) {
 		res.render('addEditUser', {
 			module: 'users',
 			xocolors: xocolors,
+			moment: moment,
 			account: req.session.user
 		});
 	}
@@ -161,6 +162,7 @@ exports.editUser = function(req, res) {
 					res.render('addEditUser', {
 						module: 'users',
 						user: body,
+						moment: moment,
 						xocolors: xocolors,
 						account: req.session.user
 					});

@@ -160,41 +160,24 @@ function getTopActivities(req, res) {
 function getRecentUsers(req, res) {
 
 	//get all entries
-	getAllEntriesList(req, res, 1, function(allEntries) {
+	dashboard.getAllUsers(req, res, function(users) {
 
-		//sort
-		allEntries.sort(function(a, b) {
-			if (a.metadata.timestamp > b.metadata.timestamp)
-				return -1;
-			if (a.metadata.timestamp < b.metadata.timestamp)
-				return 1;
-			return 0;
-		});
-
-		// remove duplicates
-		var allEntriesNew = [];
-		var doneArr = [];
-		for (var i = 0; i < allEntries.length; i++) {
-			if (doneArr.indexOf(allEntries[i].metadata.user_id) == -1) {
-				allEntriesNew.push(allEntries[i])
-				doneArr.push(allEntries[i].metadata.user_id)
-			}
-		}
-		allEntries = allEntriesNew
-
+		//get users object
+		users = users.users
+		console.log(users);
 		//limit 5
-		allEntries = allEntries.splice(0, 5);
+		users = users.splice(0, 5);
 
 		var data = '';
-		for (var i = 0; i < allEntries.length; i++) {
+		for (var i = 0; i < users.length; i++) {
 
-			var url = '/dashboard/journal/' + allEntries[i].journalId + '?uid=' + allEntries[i].metadata.user_id + '&type=private'
+			var url = '/dashboard/journal/' + users[i].private_journal + '?uid=' + users[i]._id + '&type=private'
 			data += '<tr onclick="window.document.location=\'' + url + '\'">\
 									<td>' + (i + 1) + '</td>\
-									<td><div class="color" id="' + allEntries[i].metadata.user_id + i.toString() + '"><div class="xo-icon"></div></div></td>\
-									<script>new icon().load("/public/img/owner-icon.svg", ' + JSON.stringify(allEntries[i].metadata.buddy_color) + ', "' + allEntries[i].metadata.user_id + i.toString() + '")</script>\
-									<td title="' + allEntries[i].metadata.buddy_name + '">' + allEntries[i].metadata.buddy_name + '</td>\
-									<td class="text-muted">' + moment(allEntries[i].metadata.timestamp).calendar(); + '</td>\
+									<td><div class="color" id="' + users[i]._id + i.toString() + '"><div class="xo-icon"></div></div></td>\
+									<script>new icon().load("/public/img/owner-icon.svg", ' + JSON.stringify(users[i].color) + ', "' + users[i]._id + i.toString() + '")</script>\
+									<td title="' + users[i].name + '">' + users[i].name + '</td>\
+									<td class="text-muted">' + moment(users[i].timestamp).calendar(); + '</td>\
 							</tr>'
 		}
 

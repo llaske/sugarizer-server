@@ -163,6 +163,13 @@ exports.validateUser = function(uid, callback) {
 	});
 };
 
+//update user time stamp function
+exports.updateTimestamp = function(uid, callback) {
+
+	//update user time stamp function
+	users.updateUserTimestamp(uid, callback)
+}
+
 // private method
 function genToken(user) {
 	var expires = expiresIn(7); // 7 days

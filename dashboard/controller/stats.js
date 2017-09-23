@@ -94,6 +94,9 @@ function getHowOftenUserChangeSettings(req, res) {
 			data.labels.push('Name/Color Settings')
 			data.data.push(body.length)
 
+			// node data
+			if(JSON.stringify(data.data) == JSON.stringify([0, 0]))data.data = []
+
 			//return
 			return res.json({
 				data: {
@@ -134,6 +137,8 @@ function getLogsData(req, res, query, callback) {
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 			callback(body)
+		}else{
+			callback([])
 		}
 	});
 }
