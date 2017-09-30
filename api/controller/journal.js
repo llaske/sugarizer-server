@@ -148,7 +148,8 @@ exports.addJournal = function(req, res) {
 	exports.createJournal(function(err, result) {
 		if (err) {
 			res.status(500).send({
-				'error': 'An error has occurred'
+				'error': 'An error has occurred',
+				'code': 10
 			});
 		} else {
 			res.send(result[0]);
@@ -250,7 +251,8 @@ exports.findJournalContent = function(req, res) {
 	//validate journal  id
 	if (!BSON.ObjectID.isValid(req.params.jid)) {
 		res.status(401).send({
-			'error': 'Invalid journal id'
+			'error': 'Invalid journal id',
+			'code': 11
 		});
 		return;
 	}
@@ -268,7 +270,8 @@ exports.findJournalContent = function(req, res) {
 			//check for errors
 			if (err) {
 				return res.status(500).send({
-					'error': err
+					'error': err,
+					'code': 5
 				});
 			}
 
@@ -459,7 +462,8 @@ exports.addEntryInJournal = function(req, res) {
 	// Get parameter
 	if (!BSON.ObjectID.isValid(req.params.jid) || !req.body.journal) {
 		res.status(401).send({
-			'error': 'Invalid journal id or entry'
+			'error': 'Invalid journal id or entry',
+			'code': 12
 		});
 		return;
 	}
@@ -491,14 +495,16 @@ exports.addEntryInJournal = function(req, res) {
 					}, function(err, result) {
 						if (err) {
 							return res.status(500).send({
-								'error': 'An error has occurred'
+								'error': 'An error has occurred',
+								'code': 10
 							});
 						} else {
 							if (result) {
 								return res.send(journal);
 							} else {
 								return res.status(401).send({
-									'error': 'An error has occurred'
+									'error': 'An error has occurred',
+									'code': 10
 								});
 							}
 						}
@@ -570,7 +576,8 @@ exports.addEntryInJournal = function(req, res) {
 exports.updateEntryInJournal = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.jid) || !req.query.oid) {
 		res.status(401).send({
-			'error': 'Invalid journal or object id'
+			'error': 'Invalid journal or object id',
+			'code': 13
 		});
 		return;
 	}
@@ -596,7 +603,8 @@ exports.updateEntryInJournal = function(req, res) {
 		}, function(err, result) {
 			if (err) {
 				return res.status(500).send({
-					'error': 'An error has occurred'
+					'error': 'An error has occurred',
+					'code': 10
 				});
 			} else {
 				// Add the updated entry
@@ -642,7 +650,8 @@ exports.updateEntryInJournal = function(req, res) {
 exports.removeInJournal = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.jid)) {
 		res.status(401).send({
-			'error': 'Invalid journal id'
+			'error': 'Invalid journal id',
+			'code': 11
 		});
 		return;
 	}
@@ -661,7 +670,8 @@ exports.removeInJournal = function(req, res) {
 			}, function(err, result) {
 				if (err) {
 					return res.status(500).send({
-						'error': 'An error has occurred'
+						'error': 'An error has occurred',
+						'code': 10
 					});
 				} else {
 					if (result) {
@@ -670,7 +680,8 @@ exports.removeInJournal = function(req, res) {
 						});
 					} else {
 						return res.status(401).send({
-							'error': 'Error while deleting journal!'
+							'error': 'Error while deleting journal!',
+							'code': 14
 						});
 					}
 				}
@@ -692,7 +703,8 @@ exports.removeInJournal = function(req, res) {
 				}, function(err, result) {
 					if (err) {
 						return res.status(500).send({
-							'error': 'An error has occurred'
+							'error': 'An error has occurred',
+							'code': 10
 						});
 					} else {
 						if (result) {
@@ -701,7 +713,8 @@ exports.removeInJournal = function(req, res) {
 							});
 						} else {
 							return res.status(401).send({
-								'error': 'Error while deleting journal entry!'
+								'error': 'Error while deleting journal entry!',
+								'code': 15
 							});
 						}
 
@@ -710,7 +723,8 @@ exports.removeInJournal = function(req, res) {
 			});
 		} else {
 			return res.status(401).send({
-				'error': 'Invalid Object ID'
+				'error': 'Invalid Object ID',
+				'code': 16
 			});
 		}
 	}
@@ -722,7 +736,8 @@ var validateUser = function(req, res) {
 	if (req.user.role == 'student') {
 		if ([req.user.private_journal.toString(), req.user.shared_journal.toString()].indexOf(req.params.jid) == -1) {
 			return res.status(401).send({
-				'error': 'You don\'t have permission to remove this journal'
+				'error': 'You don\'t have permission to remove this journal',
+				'code': 8
 			});
 		}
 	}

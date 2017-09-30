@@ -327,7 +327,8 @@ exports.updateActivities = function(req, res) {
 	// validate on the basis of user's role
 	if (req.user.role == 'student') {
 		return res.status(401).send({
-			'error': 'You don\'t have permission to remove this journal'
+			'error': 'You don\'t have permission to remove this journal',
+			'code': 8
 		});
 	}
 
@@ -336,7 +337,8 @@ exports.updateActivities = function(req, res) {
 		settingsData.activities.favorites = req.body.favorites;
 	} else {
 		return res.status(401).send({
-			'error': 'Invalid favorites variable'
+			'error': 'Invalid favorites variable',
+			'code': 9
 		});
 	}
 

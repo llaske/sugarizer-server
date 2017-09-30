@@ -99,6 +99,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
+					res.body.code.should.be.eql(12);
 					done();
 				});
 		});
@@ -114,6 +115,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
+					res.body.code.should.be.eql(8);
 					done();
 				});
 		});
@@ -159,6 +161,7 @@ describe('Journal', function() {
 				.set('x-key', fakeUser.student.user._id)
 				.end((err, res) => {
 					res.should.have.status(401);
+					res.body.code.should.be.eql(11);
 					done();
 				});
 		});
@@ -170,6 +173,7 @@ describe('Journal', function() {
 				.set('x-key', fakeUser.student.user._id)
 				.end((err, res) => {
 					res.should.have.status(401);
+					res.body.code.should.be.eql(8);
 					done();
 				});
 		});
@@ -366,6 +370,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
+					res.body.code.should.be.eql(13);
 					done();
 				});
 		});
@@ -383,6 +388,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
+					res.body.code.should.be.eql(8);
 					done();
 				});
 		});
@@ -454,6 +460,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
+					res.body.code.should.be.eql(11);
 					done();
 				});
 		});
@@ -468,6 +475,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
+					res.body.code.should.be.eql(8);
 					done();
 				});
 		});

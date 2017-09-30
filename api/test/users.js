@@ -98,6 +98,7 @@ describe('Users', function() {
 				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(401);
+					res.body.code.should.be.eql(18);
 					done();
 				});
 		});
@@ -236,6 +237,7 @@ describe('Users', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
+					res.body.code.should.be.eql(18);
 					done();
 				});
 		});
@@ -251,6 +253,7 @@ describe('Users', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
+					res.body.code.should.be.eql(23);
 					done();
 				});
 		});
@@ -292,6 +295,7 @@ describe('Users', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
+					res.body.code.should.be.eql(22);
 					done();
 				});
 		});
@@ -307,6 +311,7 @@ describe('Users', function() {
 				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(401);
+					res.body.code.should.be.eql(18);
 					done();
 				});
 		});
@@ -319,6 +324,7 @@ describe('Users', function() {
 				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(401);
+					res.body.code.should.be.eql(23);
 					done();
 				});
 		});

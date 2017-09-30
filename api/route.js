@@ -50,9 +50,10 @@ module.exports = function(app, ini) {
 	// If no route is matched by now, it must be a 404
 	app.use('/api/v1/*', function(req, res, next) {
 		return res.status(404).res.json({
-			"status": 404,
-			"message": "Route Not Found!",
-			"url": req.protocol + '://' + req.get('host') + req.originalUrl
+			'status': 404,
+			'error': "Route Not Found!",
+			'code': 7,
+			'url': req.protocol + '://' + req.get('host') + req.originalUrl
 		});
 	});
 };

@@ -14,7 +14,8 @@ module.exports = function(req, res, next) {
 
 			if (decoded.exp <= Date.now()) {
 				return res.status(400).send({
-					"message": "Token Expired"
+					'error': "Token Expired",
+					'code': 3
 				});
 			}
 
@@ -35,20 +36,22 @@ module.exports = function(req, res, next) {
 				} else {
 					// No user with this name exists, respond back with a 401
 					return res.status(401).send({
-						"message": "Invalid User"
+						'error': "Invalid User",
+						'code': 4
 					});
 				}
 			});
 
 		} catch (err) {
 			return res.status(500).send({
-				"message": "Oops something went wrong",
-				"error": err
+				'error': err,
+				'code': 5
 			});
 		}
 	} else {
 		return res.status(401).send({
-			"message": "Invalid Token or Key"
+			'error': "Invalid Token or Key",
+			'code': 6
 		});
 	}
 };

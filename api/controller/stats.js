@@ -79,7 +79,8 @@ exports.addStats = function(req, res) {
 	//validate
 	if (!req.body.stats) {
 		res.status(401).send({
-			'error': 'Stats object not defined!'
+			'error': 'Stats object not defined!',
+			'code': 17
 		});
 		return;
 	}
@@ -101,7 +102,8 @@ exports.addStats = function(req, res) {
 		}, function(err, result) {
 			if (err) {
 				res.status(500).send({
-					'error': 'An error has occurred'
+					'error': 'An error has occurred',
+					'code': 10
 				});
 			} else {
 				res.send(result);
@@ -133,7 +135,8 @@ exports.deleteStats = function(req, res) {
 	//validate
 	if (!req.query.uid) {
 		res.status(401).send({
-			'error': 'Invalid user id'
+			'error': 'Invalid user id',
+			'code': 18
 		});
 		return;
 	}
@@ -142,7 +145,8 @@ exports.deleteStats = function(req, res) {
 	if (req.user.role == 'student') {
 		if (req.user._id != req.query.uid) {
 			return res.status(401).send({
-				'error': 'You don\'t have permission to perform this action'
+				'error': 'You don\'t have permission to perform this action',
+				'code': 19
 			});
 		}
 	}
@@ -153,7 +157,8 @@ exports.deleteStats = function(req, res) {
 		}, function(err, result) {
 			if (err) {
 				res.status(500).send({
-					'error': 'An error has occurred'
+					'error': 'An error has occurred',
+					'code': 10
 				});
 			} else {
 				res.send({
@@ -279,7 +284,8 @@ function getClientIP(req) {
 function isStatsActive(req, res) {
 	if (!isActive) {
 		res.status(401).send({
-			'error': 'Statistics API is inactive'
+			'error': 'Statistics API is inactive',
+			'code': 20
 		});
 		return false;
 	}

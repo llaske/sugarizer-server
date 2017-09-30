@@ -87,7 +87,8 @@ exports.login = function(req, res) {
 
 		} else {
 			res.status(401).send({
-				"message": "Invalid credentials"
+				'error': "Invalid credentials",
+				'code': 1
 			});
 		}
 		return;

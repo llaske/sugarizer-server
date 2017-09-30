@@ -85,7 +85,8 @@ exports.init = function(settings, callback) {
 exports.findById = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.uid)) {
 		res.status(401).send({
-			'error': 'Invalid user id'
+			'error': 'Invalid user id',
+			'code': 18
 		});
 		return;
 	}
@@ -353,7 +354,8 @@ exports.addUser = function(req, res) {
 	//validate
 	if (!req.body.user) {
 		res.status(401).send({
-			'error': 'User object not defined!'
+			'error': 'User object not defined!',
+			'code': 21
 		});
 		return;
 	}
@@ -369,7 +371,8 @@ exports.addUser = function(req, res) {
 	//validation for fields [password, name]
 	if (!user.password || !user.name) {
 		res.status(401).send({
-			"message": "Invalid user object!"
+			'error': "Invalid user object!",
+			'code': 2
 		});
 	}
 
@@ -377,7 +380,8 @@ exports.addUser = function(req, res) {
 	if (req.user) {
 		if (req.user.role == 'student') {
 			return res.status(401).send({
-				'error': 'You don\'t have permission to perform this action'
+				'error': 'You don\'t have permission to perform this action',
+				'code': 19
 			});
 		}
 	}
@@ -395,7 +399,8 @@ exports.addUser = function(req, res) {
 					}, function(err, result) {
 						if (err) {
 							res.status(500).send({
-								'error': 'An error has occurred'
+								'error': 'An error has occurred',
+								'code': 10
 							});
 						} else {
 							res.send(result[0]);
@@ -415,7 +420,8 @@ exports.addUser = function(req, res) {
 						}, function(err, result) {
 							if (err) {
 								res.status(500).send({
-									'error': 'An error has occurred'
+									'error': 'An error has occurred',
+									'code': 10
 								});
 							} else {
 								res.send(result[0]);
@@ -427,7 +433,8 @@ exports.addUser = function(req, res) {
 
 		} else {
 			res.status(401).send({
-				'error': 'User with same name already exist'
+				'error': 'User with same name already exist',
+				'code': 22
 			});
 		}
 	});
@@ -490,7 +497,8 @@ exports.addUser = function(req, res) {
 exports.updateUser = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.uid)) {
 		res.status(401).send({
-			'error': 'Invalid user id'
+			'error': 'Invalid user id',
+			'code': 18
 		});
 		return;
 	}
@@ -498,7 +506,8 @@ exports.updateUser = function(req, res) {
 	//validate
 	if (!req.body.user) {
 		res.status(401).send({
-			'error': 'User object not defined!'
+			'error': 'User object not defined!',
+			'code': 21
 		});
 		return;
 	}
@@ -510,7 +519,8 @@ exports.updateUser = function(req, res) {
 	if (req.user.role == 'student') {
 		if (req.user._id != uid) {
 			res.status(401).send({
-				'error': 'You don\'t have permission to perform this action'
+				'error': 'You don\'t have permission to perform this action',
+				'code': 19
 			});
 			return;
 		}
@@ -531,7 +541,8 @@ exports.updateUser = function(req, res) {
 				updateUser(uid, user, res);
 			} else {
 				res.status(401).send({
-					'error': 'User with same name already exist'
+					'error': 'User with same name already exist',
+					'code': 22
 				});
 			}
 		});
@@ -553,7 +564,8 @@ function updateUser(uid, user, res) {
 		}, function(err, result) {
 			if (err) {
 				res.status(500).send({
-					'error': 'An error has occurred'
+					'error': 'An error has occurred',
+					'code': 10
 				});
 			} else {
 				if (result) {
@@ -566,7 +578,8 @@ function updateUser(uid, user, res) {
 					});
 				} else {
 					res.status(401).send({
-						'error': 'Inexisting user id'
+						'error': 'Inexisting user id',
+						'code': 23
 					});
 				}
 			}
@@ -593,7 +606,8 @@ function updateUser(uid, user, res) {
 exports.removeUser = function(req, res) {
 	if (!BSON.ObjectID.isValid(req.params.uid)) {
 		res.status(401).send({
-			'error': 'Invalid user id'
+			'error': 'Invalid user id',
+			'code': 18
 		});
 		return;
 	}
@@ -602,7 +616,8 @@ exports.removeUser = function(req, res) {
 	if (req.user.role == 'student') {
 		if (req.user._id != req.params.uid) {
 			res.status(401).send({
-				'error': 'You don\'t have permission to perform this action'
+				'error': 'You don\'t have permission to perform this action',
+				'code': 19
 			});
 			return;
 		}
@@ -615,7 +630,8 @@ exports.removeUser = function(req, res) {
 		}, function(err, result) {
 			if (err) {
 				res.status(500).send({
-					'error': 'An error has occurred'
+					'error': 'An error has occurred',
+					'code': 10
 				});
 			} else {
 				if (result) {
@@ -624,7 +640,8 @@ exports.removeUser = function(req, res) {
 					});
 				} else {
 					res.status(401).send({
-						'error': 'Inexisting user id'
+						'error': 'Inexisting user id',
+						'code': 23
 					});
 				}
 			}
@@ -647,7 +664,8 @@ exports.updateUserTimestamp = function(uid, callback) {
 		}, function(err, result) {
 			if (err) {
 				res.status(500).send({
-					'error': 'An error has occurred while updating timestamp'
+					'error': 'An error has occurred while updating timestamp',
+					'code': 24
 				});
 			} else {
 				callback()
