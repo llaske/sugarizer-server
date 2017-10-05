@@ -83,8 +83,8 @@ exports.login = function(req, res) {
 			user = users[0];
 
 			// If authentication is success, we will generate a token and dispatch it to the client
-			res.send(genToken(user));
-
+			var maxAge = req.iniconfig.cookie.max_age;
+			res.send(genToken(user, maxAge));
 		} else {
 			res.status(401).send({
 				'error': "Invalid credentials",
@@ -172,8 +172,8 @@ exports.updateTimestamp = function(uid, callback) {
 }
 
 // private method
-function genToken(user) {
-	var expires = expiresIn(7); // 7 days
+function genToken(user, age) {
+	var expires = expiresIn(age);
 	var token = jwt.encode({
 		exp: expires
 	}, require('../../config/secret')());
@@ -185,7 +185,7 @@ function genToken(user) {
 	};
 }
 
-function expiresIn(numDays) {
+function expiresIn(numMs) {
 	var dateObj = new Date();
-	return dateObj.setDate(dateObj.getDate() + numDays);
+	return dateObj.setTime(dateObj.getTime() + parseInt(numMs));
 }

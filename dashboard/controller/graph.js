@@ -164,7 +164,7 @@ function getRecentUsers(req, res) {
 
 		//get users object
 		users = users.users
-		console.log(users);
+
 		//limit 5
 		users = users.splice(0, 5);
 
