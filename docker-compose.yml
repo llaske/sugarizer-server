@@ -17,20 +17,10 @@ services:
       dockerfile: Dockerfile-server
     restart: always
     volumes:
-      - ./:/sugarizer-repo
+      - ./:/sugarizer-server
+      - ../sugarizer:/sugarizer-client
     links:
       - mongodb
     ports:
       - 8039:8039
-
-  http:
-    build:
-      context: ./docker
-      dockerfile: Dockerfile-http
-    restart: always
-    volumes:
-      - ./:/sugarizer-repo
-    ports:
-      - 80:80
-    links:
-      - server
+      - 8080:80

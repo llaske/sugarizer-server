@@ -13,11 +13,15 @@ exports.load = function(settings, callback) {
 	activities = []
 	settingsData = settings;
 	var activitiesDirName = settings.activities.activities_directory_name;
-	var activitiesPath = settings.activities.activities_path;
 	var templateDirName = settings.activities.template_directory_name;
 	var activityInfoPath = settings.activities.activity_info_path;
 	var favorites = settings.activities.favorites ? settings.activities.favorites.split(',') : [];
 	var favoritesLength = favorites.length;
+	var activitiesPath = settings.client.path;
+	if (activitiesPath[0] != '/') {
+		activitiesPath = __dirname + '/../../' + settings.client.path;
+	}
+	activitiesPath += (activitiesPath[activitiesPath.length-1] == '/' ? '' : '/') + activitiesDirName;
 
 	// Read activities directory
 	fs.readdir(activitiesPath, function(err, files) {

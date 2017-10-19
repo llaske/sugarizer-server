@@ -2,7 +2,11 @@
 var express = require('express'),
 	settings = require('./config/settings'),
 	app = express(),
-	ini = settings.load();
+	ini = settings.load(),
+	common = require('./dashboard/helper/common');
+
+// init common
+common.init(ini);
 
 //configure app setting
 require('./config/main')(app, ini);

@@ -1,35 +1,217 @@
+![](images/dashboard_capture1.png)
+
 # Sugarizer Server
 
-Repository for Sugarizer Server API and Dashboard.
+[Sugarizer](https://github.com/llaske/sugarizer) is the open source learning platform based on Sugar that began in the famous One Laptop Per Child project.
 
-## Requirements
+Sugarizer Server allow deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed on any computer with Node.js and MongoDB, or in a Docker container.
 
-This project require npm 4+.
 
-## Installation
+##Running using Docker
 
-Run following command in `terminal`.
+To run Sugarizer Server with a few command lines using Docker and Docker Compose:
 
-    npm install
+**Clone Sugarizer Client and Sugarizer Server**
 
-To test the API, run the following command in `terminal`.
+	git clone -b dev https://github.com/llaske/sugarizer
+	git clone https://github.com/llaske/sugarizer-server
 
-    npm test
+**Install Docker and Docker Compose on Ubuntu**
+
+	curl -fsSL https://get.docker.com/ | sh
+
+Install Docker Compose
+
+	curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" > /usr/local/bin/docker-compose
+	chmod +x /usr/local/bin/docker-compose
+
+To install Docker Compose on ARM architectures (e.g. for the Raspberry Pi 3), the link above will not work.  You need to use [arm-compose](https://github.com/hypriot/arm-compose) instead.
+
+You can find more details about the installation of **Docker** [here](https://docker.github.io/engine/installation/)
+
+You can	find more details about	the installation of **Docker Compose** [here](https://docs.docker.com/compose/install/)
+
+After that, go to the Sugarizer Server folder and launch
+
+	cd sugarizer-server
+	sh generate-docker-compose.sh
+	docker-compose up -d
+
+Your Sugarizer server will start automatically and will be accessible on http://127.0.0.1:8080 and your public IP. The database will be persisted inside the folder docker/db.
+
+##Running the server using the classic way
+
+To run Sugarizer Server **without Docker**, follow the step behind. Commands are shown from a new Debian Linux machine and could be different for other platforms or for an already installed machine:
+
+
+**Install Node.js**: Install Node.js and npm to manage packages. See [here](http://nodejs.org/ "here") more information.
+
+    sudo apt-get install nodejs
+
+**Install MongoDB**: Don't forget to create a /data/db directory to store databases. See [here](http://www.mongodb.org/ "here") more information.
+
+    sudo apt-get install mongodb
+    sudo mkdir -p /data/db
+
+**Install Sugarizer Client and Server**: If need, you could update sugarizer-server/sugarizer.ini file (update port for web, mongodb or presence)
+
+    sudo apt-get install git
+    cd /home/root
+    sudo git clone -b dev https://github.com/llaske/sugarizer
+    sudo git clone https://github.com/llaske/sugarizer-server
+    cd /home/root/sugarizer-server
+    sudo npm install
+
+**Run MongoDB and Sugarizer Server**:Run mongo daemon and Sugarizer a background process.
+
+    sudo mongod --fork --port 27018 --logpath /home/root/mongo.log
+    sudo nohup node sugarizer.js > /home/root/sugarizer.log &
+
+
+**Check your install**: To check your install, run "http://127.0.0.1:8080" in your browser:
+
+* you should see the home with all activities,
+* once a new user created, go to Journal view, you should see at the bottom of the screen the two icons to switch to private/shared journal,
+* go to the neighborhood view, you should see one icon for the server and one for you.
+
+
+##Server settings
+
+If needed, Sugarizer Server settings could be changed using the [sugarizer.ini](env/sugarizer.ini) config file (you could use another name for this file: just pass the new name
+as [sugarizer.js](sugarizer.js) parameter).
+
+
+	[web]
+	port = 8080
+
+	[cookie]
+	max_age = 172800000
+
+	[client]
+	path = ../sugarizer/
+	
+	[presence]
+	port = 8039
+
+	[database]
+	server = localhost
+	port = 27018
+	name = sugarizer
+
+	[collections]
+	users = users
+	journal = journal
+
+	[statistics]
+	active = true
+	
+	[activities]
+	activities_directory_name = activities
+	template_directory_name = ActivityTemplate
+	activity_info_path = activity/activity.info
+	favorites = org.sugarlabs.GearsActivity,org.sugarlabs.MazeWebActivity,org.olpcfrance.PaintActivity,org.olpcfrance.TamTamMicro,org.olpcfrance.MemorizeActivity,org.olpg-france.physicsjs,org.sugarlabs.CalculateActivity,org.sugarlabs.TurtleBlocksJS,org.sugarlabs.Clock,org.olpcfrance.RecordActivity,org.olpcfrance.Abecedarium,org.olpcfrance.KAView,org.olpcfrance.FoodChain,org.olpc-france.labyrinthjs,org.olpcfrance.TankOp,org.sugarlabs.ChatPrototype,org.olpcfrance.Gridpaint,org.olpc-france.LOLActivity,org.sugarlabs.StopwatchActivity,org.sugarlabs.GTDActivity,org.sugarlabs.Markdown,org.laptop.WelcomeWebActivity
+
+The **[web]** section describe the settings of the node.js process. By default, the web server is on the port 8080. 
+
+The **[cookie]** is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours).  
+
+The **[client]** indicate the place where is located Sugarizer Client. Sugarizer Client is need by the server. WARNING: currently, only the **dev** branch of Sugarizer repository works with Sugarizer Server.
+
+The **[presence]** section describe the settings of the presence server. By default, a web socket is created on port 8039. You need to change this value if you want to use another port.
+WARNING: presence.js in activities hardcode this port today.
+
+The **[database]** and **[collections]** sections are for MongoDB settings. You could update the server name (by default MongoDB run locally) and the server port. Names of the database and collections had no reason to be changed.
+
+The **[statistics]** section indicate if the server will log client usage.
+
+The **[activities]** section describe information on where to find embedded activities. The favorites value list ids of activities that Web Application users will find by default on the home page. All values are self explained and had no reason to be changed.
+
+
+## Dashboard
+
+Sugarizer Server Dashboard is an admin tool for teachers and deployment administrator. This dashboard can be used to control and manage the work of learners and manage and analyze all activities on a Sugarizer Server. The Dashboard have following features:
+
+* Users: how many users have been registered on the server, recent users, top users on the server, create/edit/remove a user.
+* Journal: how many Journals and how many entries in Journal on the server, last Journal, and last entries, edit a journal (see/update/remove) entries.
+* Activities: how many activities are available on the server, change activities visibility from Client, update order and way to appear in the favorite view.
+* Graphic and request: display graphics and report on previous data.
+
+To login to the Dashboard the first time, you will have to create an admin account using this command:
+
+	sh add-admin.sh admin password http://127.0.0.1:8080/api/auth/signup
+
+Where **admin** is the login for the new admin account and **password** is the password.
+
+Once the admin account is created, you could access Sugarizer Dashboard on http://127.0.0.1:8080/dashboard.
+
+## Server API
+
+To implement the above functionalities, the sugarizer backend expose an API. The API routes look as follows:
+
+#### ACTIVITIES ROUTES
+ 
+        [GET]  /api/v1/activities/org.olpcfrance.Abecedarium
+        [GET]  /api/v1/activities/org.olpcfrance.Abecedarium?fields=id,name,icon
+        [GET]  /api/v1/activities/
+        [GET]  /api/v1/activities?q=Abece
+        [GET]  /api/v1/activities?favorite=true
+        [GET]  /api/v1/activities?version=2
+        [GET]  /api/v1/activities?name=Gears
+        [GET]  /api/v1/activities?favorite=true&version=2 
+        [GET]  /api/v1/activities?fields=id,name,icon
+        [GET]  /api/v1/activities?fields=id,name,icon&sort=-name
+        [GET]  /api/v1/activities?fields=id,name,icon&favorite=true&sort=name
+
+#### USERS ROUTES
+
+        [POST]  /auth/login
+        [POST]  /auth/signup
+        [GET]   /api/v1/users
+        [GET]   /api/v1/users/:uid
+        [POST]  /api/v1/users
+        [PUT]   /api/v1/users/:uid
+        [GET]   /api/v1/adminusers
+        [GET]   /api/v1/adminusers/:uid
+        [POST]  /api/v1/adminusers
+        [PUT]   /api/v1/adminusers/:uid
+        [GET]   /api/v1/users?q=tarun&language=fr&page=3&limit=20
+
+#### JOURNAL ROUTES
+
+        [GET]    api/v1/journal/
+        [GET]    api/v1/journal/type=shared
+        [GET]    api/v1/journal/:jid
+        [GET]    api/v1/journal/:jid?fields=metadata,text
+        [GET]    api/v1/journal/:jid?aid=:aid
+        [GET]    api/v1/journal/:jid?aid=:aid&fields=metadata,text
+        [GET]    api/v1/journal/:jid?aid=:aid&fields=metadata,text&page=3&limit=20&sort=-timestamp
+        [GET]    api/v1/journal/:jid?uid=:uid
+        [GET]    api/v1/journal/:jid?uid=:uid&fields=metadata,text
+        [GET]    api/v1/journal/:jid?uid=:uid&fields=metadata,text&page=3&limit=20
+        [GET]    api/v1/journal/:jid?uid=:uid&aid=:aid&fields=metadata,text&page=3&limit=20&sort=-timestamp
+        [GET]    api/v1/journal/:jid?oid=:oid
+        [POST]   api/v1/journal/:jid
+        [GET]    api/v1/journal/:jid?oid=:oid
+        [PUT]    api/v1/journal/:jid?oid=:oid
+        [DELETE] api/v1/journal/:jid?oid=:oid
+
+
+#### STATS ROUTES
+
+        [GET]    api/v1/stats?user_id=592d4445cc8be9187abb284f
+        [GET]    api/v1/stats?event_object=home_view
+        [GET]    api/v1/stats?user_id=592d4445cc8be9187abb284f&sort=-timestamp
+        [POST]   api/v1/stats/
+        [DELETE] api/v1/stats/
+
+
+A full documentation of the API is available in http://127.0.0.1:8080/docs.
 
 To generate docs, run the following command in `terminal`.
 
     apidoc -i api/controller -o docs/www/
 
-## Running the server
-
-Run following command in `terminal`.
-
-    node sugarizer.js
-
-To access sugarizer dashboard, navigate to http://127.0.0.1:8080/.
-
-To view API documentation, navigate to http://127.0.0.1:8080/docs.
 
 ## License
 
-This project is licensed under `Apache` License. See LICENSE for full license text.
+This project is licensed under `Apache v2` License. See [LICENSE](LICENSE) for full license text.

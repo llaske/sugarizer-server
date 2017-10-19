@@ -15,7 +15,6 @@ case "$ARCH" in
 	;;
 esac
 
-sed  "s/{ARCH}/$TAG/g" docker/Dockerfile-http.tpl > docker/Dockerfile-http
 sed  "s/{ARCH}/$TAG/g" docker/Dockerfile-mongodb.tpl > docker/Dockerfile-mongodb
 sed  "s/{ARCH}/$TAG/g" docker/Dockerfile-server.tpl > docker/Dockerfile-server
 

@@ -1,3 +1,9 @@
+var ini = null;
+
+exports.init = function(settings) {
+	ini = settings;
+}
+
 exports.getHeaders = function(req) {
 
 	// headers
@@ -9,5 +15,5 @@ exports.getHeaders = function(req) {
 }
 
 exports.getAPIUrl = function(req) {
-	return req.protocol + '://' + req.get('host') + '/';
+	return 'http://localhost:' + ini.web.port + '/';
 }
