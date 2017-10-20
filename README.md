@@ -7,7 +7,7 @@
 Sugarizer Server allow deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed on any computer with Node.js and MongoDB, or in a Docker container.
 
 
-##Running using Docker
+## Running using Docker
 
 To run Sugarizer Server with a few command lines using Docker and Docker Compose:
 
@@ -39,7 +39,7 @@ After that, go to the Sugarizer Server folder and launch
 
 Your Sugarizer server will start automatically and will be accessible on http://127.0.0.1:8080 and your public IP. The database will be persisted inside the folder docker/db.
 
-##Running the server using the classic way
+## Running the server using the classic way
 
 To run Sugarizer Server **without Docker**, follow the step behind. Commands are shown from a new Debian Linux machine and could be different for other platforms or for an already installed machine:
 
@@ -75,7 +75,7 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
 * go to the neighborhood view, you should see one icon for the server and one for you.
 
 
-##Server settings
+## Server settings
 
 If needed, Sugarizer Server settings could be changed using the [sugarizer.ini](env/sugarizer.ini) config file (you could use another name for this file: just pass the new name
 as [sugarizer.js](sugarizer.js) parameter).
@@ -89,7 +89,7 @@ as [sugarizer.js](sugarizer.js) parameter).
 
 	[client]
 	path = ../sugarizer/
-	
+
 	[presence]
 	port = 8039
 
@@ -104,14 +104,14 @@ as [sugarizer.js](sugarizer.js) parameter).
 
 	[statistics]
 	active = true
-	
+
 	[activities]
 	activities_directory_name = activities
 	template_directory_name = ActivityTemplate
 	activity_info_path = activity/activity.info
 	favorites = org.sugarlabs.GearsActivity,org.sugarlabs.MazeWebActivity,org.olpcfrance.PaintActivity,org.olpcfrance.TamTamMicro,org.olpcfrance.MemorizeActivity,org.olpg-france.physicsjs,org.sugarlabs.CalculateActivity,org.sugarlabs.TurtleBlocksJS,org.sugarlabs.Clock,org.olpcfrance.RecordActivity,org.olpcfrance.Abecedarium,org.olpcfrance.KAView,org.olpcfrance.FoodChain,org.olpc-france.labyrinthjs,org.olpcfrance.TankOp,org.sugarlabs.ChatPrototype,org.olpcfrance.Gridpaint,org.olpc-france.LOLActivity,org.sugarlabs.StopwatchActivity,org.sugarlabs.GTDActivity,org.sugarlabs.Markdown,org.laptop.WelcomeWebActivity
 
-The **[web]** section describe the settings of the node.js process. By default, the web server is on the port 8080. 
+The **[web]** section describe the settings of the node.js process. By default, the web server is on the port 8080.
 
 The **[cookie]** is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours).  
 
@@ -149,7 +149,7 @@ Once the admin account is created, you could access Sugarizer Dashboard on http:
 To implement the above functionalities, the sugarizer backend expose an API. The API routes look as follows:
 
 #### ACTIVITIES ROUTES
- 
+
         [GET]  /api/v1/activities/org.olpcfrance.Abecedarium
         [GET]  /api/v1/activities/org.olpcfrance.Abecedarium?fields=id,name,icon
         [GET]  /api/v1/activities/
@@ -157,7 +157,7 @@ To implement the above functionalities, the sugarizer backend expose an API. The
         [GET]  /api/v1/activities?favorite=true
         [GET]  /api/v1/activities?version=2
         [GET]  /api/v1/activities?name=Gears
-        [GET]  /api/v1/activities?favorite=true&version=2 
+        [GET]  /api/v1/activities?favorite=true&version=2
         [GET]  /api/v1/activities?fields=id,name,icon
         [GET]  /api/v1/activities?fields=id,name,icon&sort=-name
         [GET]  /api/v1/activities?fields=id,name,icon&favorite=true&sort=name
