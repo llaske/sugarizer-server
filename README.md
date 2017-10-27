@@ -149,6 +149,11 @@ Once the admin account is created, you could access Sugarizer Dashboard on http:
 
 To implement the above functionalities, the sugarizer backend expose an API. The API routes look as follows:
 
+
+#### INFORMATION ROUTE
+
+        [GET]  /api/
+
 #### ACTIVITIES ROUTES
 
         [GET]  /api/v1/activities/org.olpcfrance.Abecedarium
@@ -210,7 +215,7 @@ A full documentation of the API is available in http://127.0.0.1:8080/docs.
 
 To generate docs, run the following command in `terminal`.
 
-    apidoc -i api/controller -o docs/www/
+    apidoc -i api/controller  -i dashboard/helper -o docs/www/
 
 
 ## Unit testing

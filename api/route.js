@@ -5,7 +5,8 @@ var activities = require('./controller/activities'),
 	auth = require('./controller/auth'),
 	stats = require('./controller/stats'),
 	validate = require('./middleware/validateRequest'),
-	presence = require('./middleware/presence');
+	presence = require('./middleware/presence'),
+	common = require('../dashboard/helper/common');
 
 module.exports = function(app, ini) {
 
@@ -20,6 +21,7 @@ module.exports = function(app, ini) {
 	stats.init(ini);
 
 	// Routes that can be accessed by any one
+	app.get('/api', common.getAPIInfo);
 	app.post('/auth/login', auth.login);
 	app.post('/auth/signup', auth.signup);
 

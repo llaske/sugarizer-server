@@ -13,6 +13,7 @@
 		"filename": "docs/docfooter.md"
 	},
 	"order": [
+		"Information",
 		"Auth",
 		"Users",
 		"Activities",

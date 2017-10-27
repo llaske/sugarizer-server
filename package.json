@@ -26,7 +26,7 @@
 	},
 	"scripts": {
 		"test": "mocha api/test/",
-		"docs": "apidoc -i api/controller -o docs/www/",
+		"docs": "apidoc -i api/controller -i dashboard/helper -o docs/www/",
 		"start": "node sugarizer.js"
 	}
 }
