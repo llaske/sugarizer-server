@@ -32,6 +32,7 @@ exports.getAPIUrl = function(req) {
  * @apiSuccess {String} settings.web Server web port
  * @apiSuccess {String} settings.presence Server presence port
  * @apiSuccess {Object} settings.options Server options
+ * @apiSuccess {String} settings.options.min-password-size Minimum size for password
  * @apiSuccess {Boolean} settings.options.statistics Statistics active or not
  * @apiSuccess {String} settings.options.cooke-age Expiration time for authentication token
  *
@@ -44,6 +45,7 @@ exports.getAPIUrl = function(req) {
  *       "presence": "8039",
  *       "options":
  *       {
+ *         "min-password-size": "4",
  *         "statistics": true,
  *         "cookie-age": "172800000"
  *       }
@@ -56,8 +58,9 @@ exports.getAPIInfo = function(req, res) {
 		"web": ini.web.port,
 		"presence": ini.presence.port,
 		"options": {
+			"min-password-size": ini.security.min_password_size,
 			"statistics": ini.statistics.active,
-			"cookie-age": ini.cookie.max_age
+			"cookie-age": ini.security.max_age
 		}
 	});
 }

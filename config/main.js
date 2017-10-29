@@ -16,7 +16,7 @@ module.exports = function(app, ini) {
 	app.use(expressSession({
 		secret: require('./secret')(),
 		cookie: {
-			maxAge: parseInt(ini.cookie.max_age) //2 day
+			maxAge: parseInt(ini.security.max_age)
 		},
 		resave: true,
 		saveUninitialized: true

@@ -88,7 +88,8 @@ as [sugarizer.js](sugarizer.js) parameter).
 	[web]
 	port = 8080
 
-	[cookie]
+	[security]
+	min_password_size = 4
 	max_age = 172800000
 
 	[client]
@@ -120,7 +121,7 @@ The **[information]** section is for describing your server. It could be useful 
 
 The **[web]** section describe the settings of the node.js process. By default, the web server is on the port 8080.
 
-The **[cookie]** is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours).  
+The **[security]** section regroup security settings. min_password_size is the minimum number of characters for the password. max_age is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours).  
 
 The **[client]** indicate the place where is located Sugarizer Client. Sugarizer Client is need by the server. WARNING: currently, only the **dev** branch of Sugarizer repository works with Sugarizer Server.
 

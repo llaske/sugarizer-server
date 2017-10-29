@@ -83,7 +83,7 @@ exports.login = function(req, res) {
 			user = users[0];
 
 			// If authentication is success, we will generate a token and dispatch it to the client
-			var maxAge = req.iniconfig.cookie.max_age;
+			var maxAge = req.iniconfig.security.max_age;
 			res.send(genToken(user, maxAge));
 		} else {
 			res.status(401).send({
