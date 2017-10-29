@@ -81,6 +81,10 @@ If needed, Sugarizer Server settings could be changed using the [sugarizer.ini](
 as [sugarizer.js](sugarizer.js) parameter).
 
 
+	[information]
+	name = Sugarizer Server
+	description = Your Sugarizer Server
+
 	[web]
 	port = 8080
 
@@ -111,6 +115,8 @@ as [sugarizer.js](sugarizer.js) parameter).
 	template_directory_name = ActivityTemplate
 	activity_info_path = activity/activity.info
 	favorites = org.sugarlabs.GearsActivity,org.sugarlabs.MazeWebActivity,org.olpcfrance.PaintActivity,org.olpcfrance.TamTamMicro,org.olpcfrance.MemorizeActivity,org.olpg-france.physicsjs,org.sugarlabs.CalculateActivity,org.sugarlabs.TurtleBlocksJS,org.sugarlabs.Clock,org.olpcfrance.RecordActivity,org.olpcfrance.Abecedarium,org.olpcfrance.KAView,org.olpcfrance.FoodChain,org.olpc-france.labyrinthjs,org.olpcfrance.TankOp,org.sugarlabs.ChatPrototype,org.olpcfrance.Gridpaint,org.olpc-france.LOLActivity,org.sugarlabs.StopwatchActivity,org.sugarlabs.GTDActivity,org.sugarlabs.Markdown,org.laptop.WelcomeWebActivity
+
+The **[information]** section is for describing your server. It could be useful for clients connected to the server.
 
 The **[web]** section describe the settings of the node.js process. By default, the web server is on the port 8080.
 

@@ -27,6 +27,8 @@ exports.getAPIUrl = function(req) {
  * @apiVersion 1.0.0
  *
  * @apiSuccess {Object} settings Settings object
+ * @apiSuccess {String} settings.name Server name
+ * @apiSuccess {String} settings.description Server description
  * @apiSuccess {String} settings.web Server web port
  * @apiSuccess {String} settings.presence Server presence port
  * @apiSuccess {Object} settings.options Server options
@@ -36,6 +38,8 @@ exports.getAPIUrl = function(req) {
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
+ *       "name": "Sugarizer Server",
+ *       "description": "Your Sugarizer Server",
  *       "web": "8080",
  *       "presence": "8039",
  *       "options":
@@ -47,6 +51,8 @@ exports.getAPIUrl = function(req) {
  **/
 exports.getAPIInfo = function(req, res) {
 	res.send({
+		"name": ini.information.name,
+		"description": ini.information.description,
 		"web": ini.web.port,
 		"presence": ini.presence.port,
 		"options": {
