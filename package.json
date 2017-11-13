@@ -8,6 +8,7 @@
 		"express": "3.x",
 		"http": "0.0.x",
 		"ini": "1.1.x",
+		"cors": "2.8.x",
     "moment": "2.x.x",
 		"jwt-simple": "^0.2.0",
 		"mongodb": "1.4.x",

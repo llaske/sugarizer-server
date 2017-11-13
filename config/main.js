@@ -6,7 +6,8 @@ var express = require('express'),
 	expressSession = require('express-session'),
 	cookieParser = require('cookie-parser'),
 	flash = require('express-flash'),
-	expressValidator = require('express-validator')
+	expressValidator = require('express-validator'),
+	cors = require('cors');
 
 // configure app settings
 module.exports = function(app, ini) {
@@ -43,11 +44,16 @@ module.exports = function(app, ini) {
 		app.use(express.logger('dev'));
 	}
 
+	// Handle CORS request
+	app.use(cors());
+	
 	// Add headers
 	app.use(function(req, res, next) {
-		res.setHeader('Access-Control-Allow-Origin', '*');
-		res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-		res.setHeader('Access-Control-Allow-Headers', 'x-key,x-access-token');
+		if (!res.headersSent) {
+			res.setHeader('Access-Control-Allow-Origin', '*');
+			res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+			res.setHeader('Access-Control-Allow-Headers', 'x-key,x-access-token');
+		}
 		next();
 	});
 
