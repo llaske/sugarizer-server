@@ -18,6 +18,7 @@ services:
     restart: always
     volumes:
       - ./:/sugarizer-server
+      - ../:/sugarizer-certificate
       - ../sugarizer:/sugarizer-client
     links:
       - mongodb

@@ -1,6 +1,8 @@
 // websocket and http servers
 var webSocketServer = require('websocket').server;
 var http = require('http');
+var https = require('https');
+var common = require('../../dashboard/helper/common');
 
 exports.init = function(settings) {
 	/**
@@ -28,9 +30,19 @@ exports.init = function(settings) {
 	/**
 	 * HTTP server
 	 */
-	var server = http.createServer(function(request, response) {});
+	var server = null;
+	if (settings.security.https) {
+		var credentials = common.loadCredentials(settings);
+	 	if (!credentials) {
+	 		console.log("Error reading HTTPS credentials");
+	 		process.exit(-1);
+	 	}
+	 	server = https.createServer(credentials, function(request, response) {});
+	 } else {
+	 	server = http.createServer(function(request, response) {});
+	 }
 	server.listen(settings.presence.port, function() {
-		console.log("Presence Server is listening on port " + settings.presence.port + "...");
+		console.log("Presence Server is listening on"+(settings.security.https ? " secure":"")+" port " + settings.presence.port + "...");
 	});
 
 	/**

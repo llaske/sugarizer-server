@@ -91,6 +91,10 @@ as [sugarizer.js](sugarizer.js) parameter).
 	[security]
 	min_password_size = 4
 	max_age = 172800000
+	https = false
+	certificate_file = ../server.crt
+	key_file = ../server.key
+	strict_ssl = false
 
 	[client]
 	path = ../sugarizer/
@@ -121,7 +125,7 @@ The **[information]** section is for describing your server. It could be useful 
 
 The **[web]** section describe the settings of the node.js process. By default, the web server is on the port 8080.
 
-The **[security]** section regroup security settings. min_password_size is the minimum number of characters for the password. max_age is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours).  
+The **[security]** section regroup security settings. `min_password_size` is the minimum number of characters for the password. `max_age` is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours). Parameters `https`, `certificate_file`, `key_file` and `strict_ssl` are explain above. 
 
 The **[client]** indicate the place where is located Sugarizer Client. Sugarizer Client is need by the server. WARNING: currently, only the **dev** branch of Sugarizer repository works with Sugarizer Server.
 
@@ -146,7 +150,7 @@ Sugarizer Server Dashboard is an admin tool for teachers and deployment administ
 
 To login to the Dashboard the first time, you will have to create an admin account using this command:
 
-	sh add-admin.sh admin password http://127.0.0.1:8080/api/auth/signup
+	sh add-admin.sh admin password http://127.0.0.1:8080/auth/signup
 
 Where **admin** is the login for the new admin account and **password** is the password.
 
@@ -223,6 +227,16 @@ A full documentation of the API is available in http://127.0.0.1:8080/docs.
 To generate docs, run the following command in `terminal`.
 
     apidoc -i api/controller  -i dashboard/helper -o docs/www/
+
+
+## Running Server securely using SSL
+
+Sugarizer Server could be run securely using SSL. 
+Few parameters in the **[security]** section of the setting file are dedicated to that.
+
+* To run the server securely set `https` parameter to `true`.
+* `certificate_file` and `key_file` are path to certificate and key file to sign requests.
+* `strict_ssl` should be set to `false` if your certificate is a self signed certificate or is a certificate not signed by a trusted authority. 
 
 
 ## Unit testing

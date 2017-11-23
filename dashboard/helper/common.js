@@ -1,7 +1,25 @@
+var fs = require('fs');
 var ini = null;
 
 exports.init = function(settings) {
 	ini = settings;
+}
+
+exports.loadCredentials = function(settings) {
+	if (!settings.security.certificate_file || !settings.security.key_file) {
+		return null;
+	}
+	var cert, key;
+	try {
+		cert = fs.readFileSync(settings.security.certificate_file);
+		key = fs.readFileSync(settings.security.key_file);
+		if (!settings.security.strict_ssl) {
+			process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+		}
+	} catch(err) {
+		return null;
+	}
+	return {cert: cert, key: key};
 }
 
 exports.getHeaders = function(req) {
@@ -15,7 +33,7 @@ exports.getHeaders = function(req) {
 }
 
 exports.getAPIUrl = function(req) {
-	return 'http://localhost:' + ini.web.port + '/';
+	return (ini.security.https ? 'https' : 'http' ) + "://localhost:" + ini.web.port + '/';
 }
 
 
