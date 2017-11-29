@@ -26,6 +26,7 @@ exports.init = function(settings) {
 	var msgOnConnectionClosed = 6;
 	var msgOnSharedActivityUserChanged = 7;
 	var msgSendMessage = 8;
+	var msgListSharedActivityUsers = 9;
 
 	/**
 	 * HTTP server
@@ -170,6 +171,30 @@ exports.init = function(settings) {
 								// Update group
 								var groupId = rjson.group;
 								removeUserFromGroup(groupId, userId);
+								break;
+							}
+
+							// MESSAGE: listSharedActivityUsers
+						case msgListSharedActivityUsers:
+							{
+								// Get group
+								var groupId = rjson.group;
+
+								// Compute connected user list
+								var connectedUsers = listUsersFromGroup(groupId);
+								var usersList = [];
+								for (var i = 0; i < connectedUsers.length; i++) {
+									var j = findClient(connectedUsers[i]);
+									if (j != -1) {
+										usersList.push(clients[j].settings);
+									}
+								}
+
+								// Send the list
+								connection.sendUTF(JSON.stringify({
+									type: msgListSharedActivityUsers,
+									data: usersList
+								}));
 								break;
 							}
 
@@ -408,5 +433,16 @@ exports.init = function(settings) {
 			var connection = clients[clientIndex].connection;
 			connection.sendUTF(JSON.stringify(json));
 		}
+	}
+
+	// List users for a group
+	function listUsersFromGroup(groupId) {
+		// Find the group
+		var groupIndex = findGroup(groupId);
+		if (groupIndex == -1)
+			return [];
+
+		// Return users in group
+		return sharedActivities[groupIndex].users;
 	}
 }
