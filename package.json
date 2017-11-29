@@ -9,7 +9,7 @@
 		"http": "0.0.x",
 		"ini": "1.1.x",
 		"cors": "2.8.x",
-    "moment": "2.x.x",
+    "moment": "2.11.2",
 		"jwt-simple": "^0.2.0",
 		"mongodb": "1.4.x",
 		"nodemon": "^1.11.0",
