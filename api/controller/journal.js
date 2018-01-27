@@ -184,6 +184,7 @@ exports.addJournal = function(req, res) {
  * @apiParam {String} [fields=metadata] field limiting <code>e.g. fields=text,metadata </code>
  * @apiParam {String} [sort=+timestamp] Order of results <code>e.g. sort=-timestamp or sort=-creation_time</code>
  * @apiParam {Number} [stime] results starting from stime in ms <code>e.g. stime=712786812367</code>
+ * @apiParam {Boolean} [favorite] filter on favorite field <code>e.g. favorite=true or favorite=false</code>
  * @apiParam {String} [offset=0] Offset in results <code>e.g. offset=15</code>
  * @apiParam {String} [limit=10] Limit results <code>e.g. limit=5</code>*
  *
@@ -386,10 +387,29 @@ function getOptions(req) {
 		options.push({
 			$match: {
 				'metadata.timestamp': {
-					$gt: parseInt(req.query.stime)
+					$gte: parseInt(req.query.stime)
 				}
 			}
 		});
+	}
+
+	// check for favorite filter
+	if (req.query.favorite) {
+		if (req.query.favorite == 'true') {
+			options.push({
+				$match: {
+					'metadata.keep': 1
+				}
+			});
+		} else {
+			options.push({
+				$match: {
+					'metadata.keep': {
+						$ne: 1
+					}
+				}
+			});
+		}
 	}
 
 	//sorting

@@ -262,6 +262,54 @@ describe('Journal', function() {
 				});
 		});
 
+		it('it should return all entries when not filtered on favorite', (done) => {
+			chai.request(server)
+				.get('/api/v1/journal/' + fakeUser.student.user.private_journal)
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user._id)
+				.query({
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.entries.length.should.be.eql(2);
+					done();
+				});
+		});
+
+		it('it should return favorite entry when filtered on favorite', (done) => {
+			chai.request(server)
+				.get('/api/v1/journal/' + fakeUser.student.user.private_journal)
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user._id)
+				.query({
+					'favorite': true
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.entries.length.should.be.eql(1);
+					res.body.entries[0].should.have.property('metadata');
+					res.body.entries[0].metadata.should.have.property('keep').eql(1);
+					done();
+				});
+		});
+
+		it('it should return non favorite entry when filtered on not favorite', (done) => {
+			chai.request(server)
+				.get('/api/v1/journal/' + fakeUser.student.user.private_journal)
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user._id)
+				.query({
+					'favorite': false
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.entries.length.should.be.eql(1);
+					res.body.entries[0].should.have.property('metadata');
+					res.body.entries[0].metadata.should.not.have.property('keep');
+					done();
+				});
+		});
+
 		it('it should return filtered entries with fields[text,metadata] and filter on activity id', (done) => {
 			chai.request(server)
 				.get('/api/v1/journal/' + fakeUser.student.user.private_journal)
@@ -577,6 +625,7 @@ function genFakeJournalEntry(i, text) {
 		"text": ("Entry_" + i.toString() + (text ? text : '')),
 		"metadata": {
 			'user_id': fakeUser.student.user._id,
+			'keep': ((i % 2 == 0) ? 1 : undefined),
 			"timestamp": (+new Date() - parseInt(1000 * Math.random())),
 			"activity": (i.toString() + ".mocha.org")
 		}
