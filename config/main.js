@@ -25,11 +25,11 @@ module.exports = function(app, ini) {
 
 	//include body parser
 	app.use(bodyParser.urlencoded({
-		limit: '5mb',
+		limit: '8mb',
 		extended: false
 	}))
 	app.use(bodyParser.json({
-		limit: '5mb',
+		limit: '8mb',
 		type: '*/*'
 	}))
 
@@ -46,7 +46,7 @@ module.exports = function(app, ini) {
 
 	// Handle CORS request
 	app.use(cors());
-	
+
 	// Add headers
 	app.use(function(req, res, next) {
 		if (!res.headersSent) {
