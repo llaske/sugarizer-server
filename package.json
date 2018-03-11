@@ -9,16 +9,16 @@
 		"http": "0.0.x",
 		"ini": "1.1.x",
 		"cors": "2.8.x",
-    "moment": "2.11.2",
+		"moment": "2.19.3",
 		"jwt-simple": "^0.2.0",
 		"mongodb": "1.4.x",
 		"nodemon": "^1.11.0",
 		"websocket": "1.0.x",
-    "ejs": "^1.0.0",
-    "express-flash": "~0.0.2",
-    "express-validator": "~1.0.1",
-    "synchronize": "*",
-    "request" : "*"
+		"ejs": "~>2.5.5",
+		"express-flash": "~0.0.2",
+		"express-validator": "~1.0.1",
+		"synchronize": "*",
+		"request" : "*"
 	},
 	"devDependencies": {
 		"chai": "*",
