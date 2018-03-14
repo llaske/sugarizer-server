@@ -88,7 +88,7 @@
 																		</div>
 																	</td>
 																	<script>
-																		new icon().load("<%= iconList[entries.entries[i].metadata.activity] %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
+																		new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
 																	</script>
 																	<td><%= entries.entries[i].metadata.title %></td>
 																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>
