@@ -120,6 +120,7 @@ function getJournalEntries(req, res, query, callback) {
 			uid: query.uid,
 			offset: query.offset,
 			limit: query.limit,
+			sort: "-timestamp",
 		},
 		uri: common.getAPIUrl(req) + 'api/v1/journal/' + query.journal
 	}, function(error, response, body) {
