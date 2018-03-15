@@ -28,8 +28,7 @@
 						<script>
 						window.addEventListener('localized', function() {  // HACK: Force localization of student combo
 							var selection = document.getElementsByClassName("select2-selection__rendered");
-							if (selection && selection[0]) selection[0].innerHTML = document.webL10n.get("student");
-						});
+							if (selection && selection[0] && selection[0].title == "Student") selection[0].innerHTML = document.webL10n.get("student");						});
 						</script>
                         <div class="col-md-6">
 													<a class="btn btn-round pull-right " href="users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>

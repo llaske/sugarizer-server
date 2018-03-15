@@ -37,6 +37,12 @@
 								<div class="col-md-4 text-right">
 									<button class="btn btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
 								</div>
+								<script>
+								window.addEventListener('localized', function() {  // HACK: Force localization of private combo
+									var selection = document.getElementsByClassName("select2-selection__rendered");
+									if (selection && selection[1]) selection[1].innerHTML = document.webL10n.get("private");
+								});
+								</script>
 							</form>
 					</div>
 				</div>
