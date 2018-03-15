@@ -35,8 +35,8 @@
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="role"></label>
                                     <select class="form-control" name="role" onchange="show_user_fields(this.value)">
-                                        <option value="admin" <% if(typeof user == 'object' &&  user.role=='admin'){ %> selected="selected" <% } %> >Admin</option>
-                                        <option value="student" <% if(typeof user == 'object' &&  user.role=='student'){ %> selected="selected" <% } %> >Student</option>
+                                        <option data-l10n-id="admin" value="admin" <% if(typeof user == 'object' &&  user.role=='admin'){ %> selected="selected" <% } %> >Admin</option>
+                                        <option data-l10n-id="student" value="student" <% if(typeof user == 'object' &&  user.role=='student'){ %> selected="selected" <% } %> >Student</option>
                                     </select>
                                 </div>
                             </div>
