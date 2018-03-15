@@ -31,9 +31,10 @@
                 <div class="form-group form-black label-floating is-empty">
                     <label class="control-label" data-l10n-id="password">Password</label>
                     <input class="form-control" name="password" type="password">
+					<input id="formlang" type="hidden" name="lang">
                     <span class="material-input"></span>
                 </div>
-                <button class="btn pull-right" type="submit" data-l10n-id="login">Login<div class="ripple-container"></div></button>
+                <button class="btn pull-right" type="submit" onclick="updateLanguage()" data-l10n-id="login">Login<div class="ripple-container"></div></button>
                 <div class="clearfix"></div>
               </form>
             </div>
@@ -43,5 +44,10 @@
     </div>
   </div>
 </div>
+<script>
+function updateLanguage() {
+	document.getElementById('formlang').value = document.getElementById('languageSelection').value;
+}
+</script>
 
 <% include includes/footer %>

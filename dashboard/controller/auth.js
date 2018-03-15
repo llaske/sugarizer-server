@@ -62,7 +62,7 @@ exports.postLogin = function(req, res, next) {
 				req.session.user = response.body
 
 				// redirect to dashboard
-				return res.redirect('/dashboard');
+				return res.redirect('/dashboard'+(req.body && req.body.lang ? "?lang="+req.body.lang : ""));
 			} else {
 				req.flash('errors', {
 					msg: body.message

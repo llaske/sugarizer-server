@@ -5,6 +5,12 @@ var request = require('request'),
 
 // main landing page
 exports.index = function(req, res) {
+
+	// reinit momemt with locale
+	if (req.query && req.query.lang) {
+		moment.locale(req.query.lang);
+	}
+
 	getUsers(req, res, function(users) {
 		res.render('journal', {
 			module: 'journals',

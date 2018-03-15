@@ -47,6 +47,12 @@
     <!--  chart.min.js -->
     <script src="/public/js/Chart.min.js"></script>
 
+	<!-- jump to an url with language as argument -->
+	<script>
+	function jumpTo(url) {
+		location.href = url + "?lang="+document.getElementById('languageSelection').value;
+	}
+	</script>
 </head>
 
 <body>

@@ -6,6 +6,11 @@ var request = require('request'),
 // main landing page
 exports.index = function(req, res) {
 
+	// reinit momemt with locale
+	if (req.query && req.query.lang) {
+		moment.locale(req.query.lang);
+	}
+
 	var data = {};
 
 	//get all users
