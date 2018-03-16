@@ -23,10 +23,8 @@
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="language"></label>
-                                    <select class="form-control" name="language">
-                                        <option value="en" <% if(typeof user == 'object' &&  user.language=='en'){ %> selected="selected" <% } %>>English</option>
-                                        <option value="fr" <% if(typeof user == 'object' &&  user.language=='fr'){ %> selected="selected" <% } %>>French</option>
-                                    </select>
+									<input class="form-control" name="language" value="<% if(typeof user == 'object'){ %><%= user.language %><% } %>" type="text">
+                                    <span class="material-input"></span>
                                 </div>
                             </div>
                         </div>

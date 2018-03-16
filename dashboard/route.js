@@ -9,6 +9,9 @@ var authController = require('./controller/auth'),
 
 module.exports = function(app, ini) {
 
+	// init routes using settings
+	usersController.init(ini);
+
 	// add routes
 	app.get('/dashboard/login', authController.getLogin);
 	app.post('/dashboard/login', authController.postLogin);

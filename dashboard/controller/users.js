@@ -4,6 +4,13 @@ var request = require('request'),
 	common = require('../helper/common'),
 	xocolors = require('../helper/xocolors')();
 
+
+// init settings
+var ini = null;
+exports.init = function(settings) {
+	ini = settings;
+}
+
 // main landing page
 exports.index = function(req, res) {
 
@@ -65,8 +72,9 @@ exports.addUser = function(req, res) {
 		// validate
 		req.body.name = req.body.name.trim();
 		req.body.password = req.body.password.trim();
+		req.body.color = JSON.parse(req.body.color);
 		req.assert('name', 'Name should be alphanumeric').isAlphanumeric();
-		req.assert('password', 'Password should have 6 to 20 characters').len(6, 20);
+		req.assert('password', 'Password should have at least '+ini.security.min_password_size+' characters').len(ini.security.min_password_size);
 
 		// get errors
 		var errors = req.validationErrors();
@@ -120,8 +128,9 @@ exports.editUser = function(req, res) {
 			// validate
 			req.body.name = req.body.name.trim();
 			req.body.password = req.body.password.trim();
+			req.body.color = JSON.parse(req.body.color);
 			req.assert('name', 'Name should be alphanumeric').isAlphanumeric();
-			req.assert('password', 'Password should have 6 to 20 characters').len(6, 20);
+			req.assert('password', 'Password should have at least '+ini.security.min_password_size+' characters').len(ini.security.min_password_size);
 
 			// get errors
 			var errors = req.validationErrors();
