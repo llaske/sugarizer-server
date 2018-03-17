@@ -2,6 +2,12 @@
 var request = require('request'),
 	common = require('../helper/common');
 
+// init settings
+var ini = null;
+exports.init = function(settings) {
+	ini = settings;
+}
+
 // main landing page
 exports.index = function(req, res) {
 
@@ -30,7 +36,8 @@ exports.index = function(req, res) {
 				headers: common.getHeaders(req),
 				account: req.session.user,
 				url: common.getAPIUrl(req),
-				search: (req.query.search ? req.query.search.trim() : '')
+				search: (req.query.search ? req.query.search.trim() : ''),
+				server: ini.information
 			});
 
 		} else {

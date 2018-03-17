@@ -55,7 +55,8 @@ exports.index = function(req, res) {
 				moment: moment,
 				query: query,
 				data: body,
-				account: req.session.user
+				account: req.session.user,
+				server: ini.information
 			});
 
 		} else {

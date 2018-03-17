@@ -3,6 +3,15 @@ var request = require('request'),
 	moment = require('moment'),
 	common = require('../helper/common');
 
+
+
+// init settings
+var ini = null;
+exports.init = function(settings) {
+	ini = settings;
+}
+
+
 // main landing page
 exports.index = function(req, res) {
 
@@ -22,7 +31,8 @@ exports.index = function(req, res) {
 				type: 'private'
 			},
 			users: users,
-			account: req.session.user
+			account: req.session.user,
+			server: ini.information
 		});
 	});
 };

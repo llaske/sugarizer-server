@@ -10,7 +10,12 @@ var authController = require('./controller/auth'),
 module.exports = function(app, ini) {
 
 	// init routes using settings
+	authController.init(ini);
 	usersController.init(ini);
+	activitiesController.init(ini);
+	journalController.init(ini);
+	dashboardController.init(ini);
+	statsController.init(ini);
 
 	// add routes
 	app.get('/dashboard/login', authController.getLogin);

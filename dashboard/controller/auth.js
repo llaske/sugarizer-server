@@ -2,6 +2,12 @@
 var request = require('request'),
 	common = require('../helper/common');
 
+// init settings
+var ini = null;
+exports.init = function(settings) {
+	ini = settings;
+}
+
 /**
  * GET /login
  * Login page.
@@ -14,7 +20,8 @@ exports.getLogin = function(req, res) {
 	} else {
 		// send to login page
 		res.render('login', {
-			title: 'Login'
+			title: 'Login',
+			server: ini.information
 		});
 	}
 };
@@ -29,7 +36,6 @@ exports.getLogin = function(req, res) {
 exports.postLogin = function(req, res, next) {
 
 	// reinit l10n with locale
-console.log(req.body.lang);
 	if (req.body && req.body.lang) {
 		common.l10n.setLanguage(req.body.lang);
 	}
