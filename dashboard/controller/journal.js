@@ -6,8 +6,9 @@ var request = require('request'),
 // main landing page
 exports.index = function(req, res) {
 
-	// reinit momemt with locale
+	// reinit l10n and moment with locale
 	if (req.query && req.query.lang) {
+		common.l10n.setLanguage(req.query.lang);
 		moment.locale(req.query.lang);
 	}
 
@@ -42,13 +43,13 @@ exports.deleteEntry = function(req, res) {
 		if (response.statusCode == 200) {
 			// return back
 			req.flash('success', {
-				msg: 'Entry Successfully deleted!'
+				msg: common.l10n.get('EntryDeleted')
 			});
 			return res.redirect('/dashboard/journal/' + req.params.jid + '?uid=' + req.query.uid + '&offset=' + (req.query.offset ? req.query.offset : 0) + '&limit=' + (req.query.limit ? req.query.limit : 10));
 
 		} else {
 			req.flash('errors', {
-				msg: body.error
+				msg: common.l10n.get('ErrorCode'+body.code)
 			});
 			return res.redirect('/dashboard/journal/' + req.params.jid + '?uid=' + req.query.uid + '&offset=' + (req.query.offset ? req.query.offset : 0) + '&limit=' + (req.query.limit ? req.query.limit : 10));
 		}
@@ -108,7 +109,7 @@ function getActivities(req, res, callback) {
 			callback(body);
 		} else {
 			req.flash('errors', {
-				msg: body.error
+				msg: common.l10n.get('ErrorCode'+body.code)
 			});
 			return res.redirect('/dashboard/journal');
 		}
@@ -136,7 +137,7 @@ function getJournalEntries(req, res, query, callback) {
 			callback(body);
 		} else {
 			req.flash('errors', {
-				msg: body.error
+				msg: common.l10n.get('ErrorCode'+body.code)
 			});
 			return res.redirect('/dashboard/journal');
 		}
@@ -160,7 +161,7 @@ function getUsers(req, res, callback) {
 			callback(body.users);
 		} else {
 			req.flash('errors', {
-				msg: body.error
+				msg: common.l10n.get('ErrorCode'+body.code)
 			});
 			return res.redirect('/dashboard/journal');
 		}

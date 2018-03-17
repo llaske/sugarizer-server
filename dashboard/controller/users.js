@@ -14,8 +14,9 @@ exports.init = function(settings) {
 // main landing page
 exports.index = function(req, res) {
 
-	// reinit momemt with locale
+	// reinit l10n and moment with locale
 	if (req.query && req.query.lang) {
+		common.l10n.setLanguage(req.query.lang);
 		moment.locale(req.query.lang);
 	}
 
@@ -73,8 +74,8 @@ exports.addUser = function(req, res) {
 		req.body.name = req.body.name.trim();
 		req.body.password = req.body.password.trim();
 		req.body.color = JSON.parse(req.body.color);
-		req.assert('name', 'Name should be alphanumeric').isAlphanumeric();
-		req.assert('password', 'Password should have at least '+ini.security.min_password_size+' characters').len(ini.security.min_password_size);
+		req.assert('name', common.l10n.get('NameNotAlphanumeric')).isAlphanumeric();
+		req.assert('password', common.l10n.get('PasswordAtLeast', {count:ini.security.min_password_size})).len(ini.security.min_password_size);
 
 		// get errors
 		var errors = req.validationErrors();
@@ -94,7 +95,7 @@ exports.addUser = function(req, res) {
 
 					// send to users page
 					req.flash('success', {
-						msg: 'User has been successfully created!'
+						msg: common.l10n.get('UserCreated')
 					});
 					return res.redirect('/dashboard/users/edit/' + body._id);
 				} else {
@@ -129,8 +130,8 @@ exports.editUser = function(req, res) {
 			req.body.name = req.body.name.trim();
 			req.body.password = req.body.password.trim();
 			req.body.color = JSON.parse(req.body.color);
-			req.assert('name', 'Name should be alphanumeric').isAlphanumeric();
-			req.assert('password', 'Password should have at least '+ini.security.min_password_size+' characters').len(ini.security.min_password_size);
+			req.assert('name', common.l10n.get('NameNotAlphanumeric')).isAlphanumeric();
+			req.assert('password', common.l10n.get('PasswordAtLeast', {count:ini.security.min_password_size})).len(ini.security.min_password_size);
 
 			// get errors
 			var errors = req.validationErrors();
@@ -149,7 +150,7 @@ exports.editUser = function(req, res) {
 
 						// send back
 						req.flash('success', {
-							msg: 'User has been successfully updated!'
+							msg: common.l10n.get('UserUpdated')
 						});
 						return res.redirect('/dashboard/users/edit/' + req.params.uid);
 					} else {
@@ -190,7 +191,7 @@ exports.editUser = function(req, res) {
 		}
 	} else {
 		req.flash('errors', {
-			msg: 'There is some error!'
+			msg: common.l10n.get('ThereIsError')
 		});
 		return res.redirect('/dashboard/users');
 	}
@@ -209,7 +210,7 @@ exports.deleteUser = function(req, res) {
 
 				// send to users page
 				req.flash('success', {
-					msg: 'User has been successfully deleted!'
+					msg: common.l10n.get('UserDeleted')
 				});
 			} else {
 				req.flash('errors', {
@@ -220,7 +221,7 @@ exports.deleteUser = function(req, res) {
 		});
 	} else {
 		req.flash('errors', {
-			msg: 'There is some error!'
+			msg: common.l10n.get('ThereIsError')
 		});
 		return res.redirect('/dashboard/users');
 	}

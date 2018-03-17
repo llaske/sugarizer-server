@@ -5,6 +5,11 @@ var request = require('request'),
 // main landing page
 exports.index = function(req, res) {
 
+	// reinit l10n with locale
+	if (req.query && req.query.lang) {
+		common.l10n.setLanguage(req.query.lang);
+	}
+
 	// call
 	request({
 		headers: common.getHeaders(req),
@@ -41,7 +46,7 @@ exports.fakeLaunch = function(req, res) {
 	//validate
 	if (!req.query.aid) {
 		req.flash('errors', {
-			msg: 'Invalid aid!'
+			msg: common.l10n.get('InvalidAid')
 		});
 		return res.redirect('/dashboard/activities');
 	}
@@ -84,7 +89,7 @@ exports.launch = function(req, res) {
 	//validate
 	if (!req.query.oid || !req.params.jid) {
 		req.flash('errors', {
-			msg: 'Invalid oid or jid!'
+			msg: common.l10n.get('InvalidOidJid')
 		});
 		return res.redirect('/dashboard/' + (req.query.source ? req.query.source : 'journal'));
 	}
@@ -105,7 +110,7 @@ exports.launch = function(req, res) {
 			//validate
 			if (body.entries.length == 0) {
 				req.flash('errors', {
-					msg: 'Object Not Found!'
+					msg: common.l10n.get('ObjectNotFound')
 				});
 				return res.redirect('/dashboard/' + (req.query.source ? req.query.source : 'journal'));
 			}

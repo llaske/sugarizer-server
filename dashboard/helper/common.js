@@ -1,8 +1,35 @@
 var fs = require('fs');
 var ini = null;
+var language = '*';
 
 exports.init = function(settings) {
 	ini = settings;
+}
+
+// language features
+exports.l10n = {
+	setLanguage: function(lang) {
+		language = lang;
+	},
+
+	getLanguage: function() {
+		return language;
+	},
+
+	get: function(text, params) {
+		var locales = ini.locales[language];
+		if (!locales) {
+			locales = ini.locales['*'];
+		}
+		if (!locales[text]) {
+			return text;
+		}
+		var translate = locales[text];
+		for (var param in params) {
+			translate = translate.replace('{{'+param+'}}', params[param]);
+		}
+		return translate;
+	}
 }
 
 exports.loadCredentials = function(settings) {

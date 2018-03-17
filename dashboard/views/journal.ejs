@@ -100,7 +100,7 @@
 																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>
 																	<td>
 																		<a href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
-																		<a data-l10n-id="deleteEntry" title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>" onclick="return confirm('Are you really want to delete the entry?')"><i class="material-icons text-muted">delete_forever</i></a>
+																		<a data-l10n-id="deleteEntry" title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteEntry'))"><i class="material-icons text-muted">delete_forever</i></a>
 																	</td>
 															</tr>
 														<% } %>

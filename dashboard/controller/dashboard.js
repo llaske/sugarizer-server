@@ -6,8 +6,9 @@ var request = require('request'),
 // main landing page
 exports.index = function(req, res) {
 
-	// reinit momemt with locale
+	// reinit l10n and moment with locale
 	if (req.query && req.query.lang) {
+		common.l10n.setLanguage(req.query.lang);
 		moment.locale(req.query.lang);
 	}
 
@@ -66,7 +67,7 @@ exports.getAllJournals = function(req, res, callback) {
 
 		} else {
 			req.flash('errors', {
-				msg: body.message
+				msg: common.l10n.get('ErrorCode'+body.code)
 			});
 		}
 	})
@@ -87,7 +88,7 @@ exports.getAllActivities = function(req, res, callback) {
 
 		} else {
 			req.flash('errors', {
-				msg: body.message
+				msg: common.l10n.get('ErrorCode'+body.code)
 			});
 		}
 	})
@@ -111,7 +112,7 @@ exports.getAllUsers = function(req, res, callback) {
 
 		} else {
 			req.flash('errors', {
-				msg: body.message
+				msg: common.l10n.get('ErrorCode'+body.code)
 			});
 		}
 	});

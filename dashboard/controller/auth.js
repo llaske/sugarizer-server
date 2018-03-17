@@ -28,9 +28,15 @@ exports.getLogin = function(req, res) {
 
 exports.postLogin = function(req, res, next) {
 
+	// reinit l10n with locale
+console.log(req.body.lang);
+	if (req.body && req.body.lang) {
+		common.l10n.setLanguage(req.body.lang);
+	}
+
 	// validate
-	req.assert('username', 'Username is not valid').notEmpty();
-	req.assert('password', 'Password cannot be blank').notEmpty();
+	req.assert('username', common.l10n.get('UsernameInvalid')).notEmpty();
+	req.assert('password', common.l10n.get('PasswordBlank')).notEmpty();
 
 	// get errors
 	var errors = req.validationErrors();
@@ -65,7 +71,7 @@ exports.postLogin = function(req, res, next) {
 				return res.redirect('/dashboard'+(req.body && req.body.lang ? "?lang="+req.body.lang : ""));
 			} else {
 				req.flash('errors', {
-					msg: body.message
+					msg: common.l10n.get('ErrorCode'+body.code)
 				});
 				return res.redirect('/dashboard/login');
 			}
