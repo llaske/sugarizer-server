@@ -249,6 +249,16 @@
   animation: pace-spinner 400ms linear infinite;
 }
 
+@font-face {
+	font-family: "Noto Emoji";
+	src: url("../fonts/NotoEmoji.woff") format('woff');
+}
+
+.emojis {
+	font-size: 12pt;
+	font-family: "Noto Emoji";
+}
+
 @-webkit-keyframes pace-spinner {
   0% {
     -webkit-transform: rotate(0deg);

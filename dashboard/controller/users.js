@@ -2,7 +2,8 @@
 var request = require('request'),
 	moment = require('moment'),
 	common = require('../helper/common'),
-	xocolors = require('../helper/xocolors')();
+	xocolors = require('../helper/xocolors')(),
+	emoji = require('../public/js/emoji');
 
 
 // init settings
@@ -117,6 +118,7 @@ exports.addUser = function(req, res) {
 			module: 'users',
 			xocolors: xocolors,
 			moment: moment,
+			emoji: emoji,
 			account: req.session.user
 		});
 	}
@@ -179,6 +181,7 @@ exports.editUser = function(req, res) {
 						module: 'users',
 						user: body,
 						moment: moment,
+						emoji: emoji,
 						xocolors: xocolors,
 						account: req.session.user
 					});
