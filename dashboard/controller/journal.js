@@ -99,7 +99,8 @@ exports.getEntries = function(req, res) {
 					iconList: hashList,
 					query: query,
 					users: users,
-					account: req.session.user
+					account: req.session.user,
+					server: ini.information
 				});
 			});
 		})
@@ -161,7 +162,7 @@ function getUsers(req, res, callback) {
 		json: true,
 		method: 'GET',
 		qs: {
-			sort: '+name',
+			sort: '-timestamp',
 			role: 'student'
 		},
 		uri: common.getAPIUrl(req) + 'api/v1/users'
