@@ -60,7 +60,7 @@ exports.index = function(req, res) {
 
 		} else {
 			req.flash('errors', {
-				msg: body.message
+				msg: common.l10n.get('ErrorCode'+body.code)
 			});
 		}
 	});
@@ -100,7 +100,7 @@ exports.addUser = function(req, res) {
 					return res.redirect('/dashboard/users/edit/' + body._id);
 				} else {
 					req.flash('errors', {
-						msg: body.error
+						msg: common.l10n.get('ErrorCode'+body.code)
 					});
 					return res.redirect('/dashboard/users/add');
 				}
@@ -155,7 +155,7 @@ exports.editUser = function(req, res) {
 						return res.redirect('/dashboard/users/edit/' + req.params.uid);
 					} else {
 						req.flash('errors', {
-							msg: body.error
+							msg: common.l10n.get('ErrorCode'+body.code)
 						});
 						return res.redirect('/dashboard/users/edit/' + req.params.uid);
 					}
@@ -183,7 +183,7 @@ exports.editUser = function(req, res) {
 					});
 				} else {
 					req.flash('errors', {
-						msg: body.error
+						msg: common.l10n.get('ErrorCode'+body.code)
 					});
 					return res.redirect('/dashboard/users');
 				}
@@ -214,7 +214,7 @@ exports.deleteUser = function(req, res) {
 				});
 			} else {
 				req.flash('errors', {
-					msg: body.error
+					msg: common.l10n.get('ErrorCode'+body.code)
 				});
 			}
 			return res.redirect('/dashboard/users');

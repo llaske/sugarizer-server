@@ -35,7 +35,7 @@ exports.index = function(req, res) {
 
 		} else {
 			req.flash('errors', {
-				msg: body.message
+				msg: common.l10n.get('ErrorCode'+body.code)
 			});
 			return res.redirect('/dashboard/activities');
 		}
@@ -161,7 +161,7 @@ exports.launch = function(req, res) {
 			});
 		} else {
 			req.flash('errors', {
-				msg: body.error
+				msg: common.l10n.get('ErrorCode'+body.code)
 			});
 			return res.redirect('/dashboard/' + (req.query.source ? req.query.source : 'journal'));
 		}
