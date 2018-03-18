@@ -221,6 +221,38 @@ describe('Users', function() {
 					done();
 				});
 		});
+
+		it('it should return all users after a timestamp', (done) => {
+
+			chai.request(server)
+				.get('/api/v1/users')
+				.set('x-access-token', fakeUser.admin.token)
+				.set('x-key', fakeUser.admin.user._id)
+				.query({
+					stime: fakeUser.student.timestamp
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.users.length.should.be.gte(1);
+					done();
+				});
+		});
+
+		it('it should not return users for a future timestamp', (done) => {
+
+			chai.request(server)
+				.get('/api/v1/users')
+				.set('x-access-token', fakeUser.admin.token)
+				.set('x-key', fakeUser.admin.user._id)
+				.query({
+					stime: 1+fakeUser.student.timestamp
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.users.length.should.be.gte(0);
+					done();
+				});
+		});
 	});
 
 

@@ -119,6 +119,7 @@ exports.findById = function(req, res) {
  * @apiParam {Boolean} [language] To get users of specific language <code>e.g. language=fr</code>
  * @apiParam {String} [role=student] To filter users based on role <code>e.g. role=admin or role= student</code>
  * @apiParam {String} [q] Fuzzy Search <code>e.g. q=tar</code> to search user with name "Tarun"
+ * @apiParam {Number} [stime] results starting from stime in ms <code>e.g. stime=712786812367</code>
  * @apiParam {String} [sort=+name] Order of results <code>e.g. sort=-name or sort=+role</code>
  * @apiParam {String} [offset=0] Offset in results <code>e.g. offset=15</code>
  * @apiParam {String} [limit=10] Limit results <code>e.g. limit=5</code>
@@ -172,7 +173,12 @@ exports.findAll = function(req, res) {
 	query = addQuery('name', req.query, query);
 	query = addQuery('language', req.query, query);
 	query = addQuery('role', req.query, query, 'student');
-	query = addQuery('q', req.query, query)
+	query = addQuery('q', req.query, query);
+	if (req.query.stime) {
+		query['timestamp'] = {
+			'$gte': parseInt(req.query.stime)
+		};
+	}
 
 	// add filter and pagination
 	db.collection(usersCollection, function(err, collection) {
