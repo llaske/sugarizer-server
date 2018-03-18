@@ -219,6 +219,7 @@ exports.findAll = function(req, res) {
 	query = addQuery('event_source', req.query, query);
 	query = addQuery('event_object', req.query, query);
 	query = addQuery('event_action', req.query, query);
+	query = addQuery('event_label', req.query, query);
 
 	//get options
 	var options = getOptions(req, '+timestamp');

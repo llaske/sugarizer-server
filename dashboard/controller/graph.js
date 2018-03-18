@@ -70,7 +70,7 @@ function getTopContributors(req, res) {
 				data: {
 					labels: labels,
 					datasets: [{
-						label: '# of Entries',
+						label: common.l10n.get('CountEntries'),
 						data: data,
 						backgroundColor: [
 							'rgba(155, 99, 132, 0.8)',
@@ -140,7 +140,7 @@ function getTopActivities(req, res) {
 			data: {
 				labels: labels,
 				datasets: [{
-					label: '# of Entries',
+					label: common.l10n.get('CountEntries'),
 					data: data,
 					backgroundColor: [
 						'rgba(205, 99, 132, 0.8)',

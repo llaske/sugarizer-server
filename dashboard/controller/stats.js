@@ -74,8 +74,11 @@ function getHowUserLaunchActivity(req, res) {
 					datasets: [{
 						data: ddata,
 						backgroundColor: [
+							'rgba(155, 99, 132, 0.8)',
+							'rgba(54, 162, 235, 0.8)',
 							'rgba(255, 206, 86, 0.8)',
-							'rgba(75, 192, 192, 0.8)'
+							'rgba(75, 192, 192, 0.8)',
+							'rgba(153, 102, 255, 0.8)'
 						]
 					}]
 				},
@@ -96,43 +99,65 @@ function getHowOftenUserChangeSettings(req, res) {
 
 	// get data
 	getLogsData(req, res, {
-		event_object: 'my_settings_language'
+		event_object: 'my_settings',
+		event_action: 'click',
+		event_label: 'about_me'
 	}, function(body) {
-		data.labels.push('Language Settings')
-		data.data.push(body.length)
+		data.labels.push(common.l10n.get('NameColorSettings'));
+		data.data.push(body.length);
 		getLogsData(req, res, {
-			event_object: 'my_settings_about_me'
+			event_object: 'my_settings',
+			event_action: 'click',
+			event_label: 'language'
 		}, function(body) {
-			data.labels.push('Name/Color Settings')
-			data.data.push(body.length)
+			data.labels.push(common.l10n.get('LanguageSettings'));
+			data.data.push(body.length);
+			getLogsData(req, res, {
+				event_object: 'my_settings',
+				event_action: 'click',
+				event_label: 'security'
+			}, function(body) {
+				data.labels.push(common.l10n.get('SecuritySettings'));
+				data.data.push(body.length);
+				getLogsData(req, res, {
+					event_object: 'my_settings',
+					event_action: 'click',
+					event_label: 'privacy'
+				}, function(body) {
+					data.labels.push(common.l10n.get('PrivacySettings'));
+					data.data.push(body.length);
 
-			// node data
-			if(JSON.stringify(data.data) == JSON.stringify([0, 0]))data.data = []
+					// node data
+					if(JSON.stringify(data.data) == JSON.stringify([0, 0]))data.data = []
 
-			//return
-			return res.json({
-				data: {
-					labels: data.labels,
-					datasets: [{
-						label: '# of times settings changed',
-						data: data.data,
-						backgroundColor: [
-							'rgba(255, 206, 86, 0.8)',
-							'rgba(75, 192, 192, 0.8)'
-						]
-					}]
-				},
-				element: req.query.element,
-				graph: 'bar',
-				options: {
-					scales: {
-						yAxes: [{
-							ticks: {
-								min: 0
+					//return
+					return res.json({
+						data: {
+							labels: data.labels,
+							datasets: [{
+								label: common.l10n.get('CountSettingsChanged'),
+								data: data.data,
+								backgroundColor: [
+									'rgba(54, 162, 235, 0.8)',
+									'rgba(255, 206, 86, 0.8)',
+									'rgba(75, 192, 192, 0.8)',
+									'rgba(153, 102, 255, 0.8)'
+								]
+							}]
+						},
+						element: req.query.element,
+						graph: 'bar',
+						options: {
+							scales: {
+								yAxes: [{
+									ticks: {
+										min: 0
+									}
+								}]
 							}
-						}]
-					}
-				}
+						}
+					})
+				})
 			})
 		})
 	})
