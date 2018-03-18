@@ -48,11 +48,59 @@ function initDragDrop() {
 
 function launch_activity(callurl) {
 	$.get((callurl), function(response) {
+		// backup current storage and create a virtual context in local storage
+		var keyHistory = [];
+		var datastorePrefix = 'sugar_datastore';
+		for (var i = 0 ; i < localStorage.length ; i++) {
+			var key = localStorage.key(i);
+			if (key.indexOf(datastorePrefix) == 0) {
+				keyHistory.push(key);
+			}
+		}
+		var lsBackup = [];
 		for (var index in response.lsObj) {
+			lsBackup[index] = localStorage.getItem(index);
 			localStorage.setItem(index, response.lsObj[index])
 		}
-		var win = window.open(response.url, '_blank');
-		win.focus();
+
+		// open window
+		var win = window.open(response.url+"&sa=1", '_blank');
+		if (win) {
+			win.focus();
+			win.onbeforeunload = function(){
+				// restore old context
+				for (var index in lsBackup) {
+					if (lsBackup[index] == null) {
+						localStorage.removeItem(index);
+					} else {
+						localStorage.setItem(index, lsBackup[index]);
+					}
+				}
+
+				// remove created storage
+				for (var i = 0 ; i < localStorage.length ; i++) {
+					var key = localStorage.key(i);
+					if (key.indexOf(datastorePrefix) == -1) {
+						continue;
+					}
+					var found = false;
+					for (var j = 0 ; !found && j < keyHistory.length ; j++) {
+						if (keyHistory[j] == key) {
+							found = true;
+						}
+					}
+					if (!found) {
+						localStorage.removeItem(key);
+					}
+				}
+			}
+		} else {
+			$.notify({
+				message: document.webL10n.get('CantOpenWindow')
+			},{
+				type: 'danger'
+			});
+		}
 	});
 }
 

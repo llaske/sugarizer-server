@@ -64,8 +64,8 @@ exports.fakeLaunch = function(req, res) {
 	lsObj['sugar_settings'].name = req.session.user.name;
 	lsObj['sugar_settings'].color = 128;
 	lsObj['sugar_settings'].colorvalue = {
-		stroke: '#fff',
-		fill: '#uuu'
+		stroke: "#005FE4",
+		fill: "#FF2B34"
 	};
 	lsObj['sugar_settings'].connected = false;
 	lsObj['sugar_settings'].language = req.session.user.language;

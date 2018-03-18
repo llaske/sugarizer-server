@@ -60,7 +60,7 @@
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="password"></label>
                                     <input class="form-control" name="password" id="password" value="<% if(typeof user == 'object'){ %><%= user.password %><% } %>" type="text" oninput="document.getElementById('passemoji').innerHTML = getHtmlForEmoji(document.getElementById('password').value);">
-                                    <span class="form-control emojis" id="passemoji"><%- emoji.getHtml(user.password) %></span>
+                                    <span class="form-control emojis" id="passemoji"><%- (typeof user == 'object') ? emoji.getHtml(user.password) : '' %></span>
                                     <span class="material-input"></span>
                                 </div>
                             </div>
