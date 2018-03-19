@@ -29,9 +29,10 @@ exports.index = function(req, res) {
 exports.getGraph = function(req, res) {
 	if (req.query.type == 'how-user-launch-activities') {
 		getHowUserLaunchActivity(req, res);
-	}
-	if (req.query.type == 'how-often-user-change-settings') {
+	} else if (req.query.type == 'how-often-user-change-settings') {
 		getHowOftenUserChangeSettings(req, res);
+	} else if (req.query.type == 'how-users-are-active') {
+		getHowUsersAreActive(req, res);
 	}
 
 }
@@ -164,6 +165,47 @@ function getHowOftenUserChangeSettings(req, res) {
 }
 
 
+function getHowUsersAreActive(req, res) {
+
+	//data
+	var data = {
+		labels: [],
+		data: []
+	}
+	var total = 0;
+
+	// get data
+	getUsers(req, res, { role: 'student' }, function(body) {
+		total = body.total;
+		data.data.push(body.total);
+		data.labels.push(common.l10n.get('UserActive'));
+
+		getUsers(req, res, { role: 'student', stime: moment().subtract('months', 1).valueOf() }, function(body) {
+			data.data.push(body.total);
+			data.labels.push(common.l10n.get('UserNotActive'));
+
+			data.data[0] = total - data.data[1];
+			data.data[1] = total - data.data[0];
+			
+			//return
+			return res.json({
+				data: {
+					labels: data.labels,
+					datasets: [{
+						data: data.data,
+						backgroundColor: [
+							'rgba(54, 162, 235, 0.8)',
+							'rgba(155, 99, 132, 0.8)'
+						]
+					}]
+				},
+				element: req.query.element,
+				graph: 'pie'
+			})
+		})
+	})
+}
+
 function getLogsData(req, res, query, callback) {
 	request({
 		headers: common.getHeaders(req),
@@ -176,6 +218,26 @@ function getLogsData(req, res, query, callback) {
 			callback(body)
 		}else{
 			callback([])
+		}
+	});
+}
+
+function getUsers(req, res, query, callback) {
+	request({
+		headers: common.getHeaders(req),
+		json: true,
+		method: 'GET',
+		qs: query,
+		uri: common.getAPIUrl(req) + 'api/v1/users'
+	}, function(error, response, body) {
+		if (response.statusCode == 200) {
+			//callback
+			callback(body);
+
+		} else {
+			req.flash('errors', {
+				msg: common.l10n.get('ErrorCode'+body.code)
+			});
 		}
 	});
 }
