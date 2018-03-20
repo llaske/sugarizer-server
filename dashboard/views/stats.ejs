@@ -14,14 +14,14 @@
 							</div>
 						</div>
 					</div>
-					<!--div class="col-md-6">
+					<div class="col-md-6">
 						<div class="card" style="margin-top:0px;">
 							<div class="card-content">
-								<p class="title text-muted" data-l10n-id="HowOftenUsersAreChangingTheirProfileSettings"></p><hr>
-								<canvas id="how-often-user-change-settings-chart" width="400" height="250"></canvas>
+								<p class="title text-muted" data-l10n-id="WhatTypeOfClientConnected"></p><hr>
+								<canvas id="what-type-of-client-connected-chart" width="400" height="250"></canvas>
 							</div>
 						</div>
-					</div-->
+					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-6">
@@ -48,5 +48,6 @@
 <% include includes/footer %>
 
 <script>createGraph('how-users-are-active', 'how-users-are-active-chart', 'stats/graph');</script>
+<script>createGraph('what-type-of-client-connected', 'what-type-of-client-connected-chart', 'stats/graph');</script>
 <script>createGraph('how-user-launch-activities', 'how-user-launch-activities-chart', 'stats/graph');</script>
 <script>createGraph('how-often-user-change-settings', 'how-often-user-change-settings-chart', 'stats/graph');</script>

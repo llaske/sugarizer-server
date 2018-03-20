@@ -33,6 +33,8 @@ exports.getGraph = function(req, res) {
 		getHowOftenUserChangeSettings(req, res);
 	} else if (req.query.type == 'how-users-are-active') {
 		getHowUsersAreActive(req, res);
+	} else if (req.query.type == 'what-type-of-client-connected') {
+		getWhatTypeOfClientConnected(req, res);
 	}
 
 }
@@ -186,7 +188,46 @@ function getHowUsersAreActive(req, res) {
 
 			data.data[0] = total - data.data[1];
 			data.data[1] = total - data.data[0];
-			
+
+			//return
+			return res.json({
+				data: {
+					labels: data.labels,
+					datasets: [{
+						data: data.data,
+						backgroundColor: [
+							'rgba(54, 162, 235, 0.8)',
+							'rgba(155, 99, 132, 0.8)'
+						]
+					}]
+				},
+				element: req.query.element,
+				graph: 'pie'
+			})
+		})
+	})
+}
+
+function getWhatTypeOfClientConnected(req, res) {
+
+	//data
+	var data = {
+		labels: [],
+		data: []
+	}
+
+	// get data
+	getLogsData(req, res, {
+		client_type: 'Web App'
+	}, function(body) {
+		data.labels.push('Web App');
+		data.data.push(body.length);
+		getLogsData(req, res, {
+			client_type: 'App'
+		}, function(body) {
+			data.labels.push('App');
+			data.data.push(body.length);
+
 			//return
 			return res.json({
 				data: {
