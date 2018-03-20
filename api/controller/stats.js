@@ -182,6 +182,7 @@ exports.deleteStats = function(req, res) {
  * @apiParam {String} [event_source] Name of the Event Source
  * @apiParam {String} [event_object] Name of the Event Object
  * @apiParam {String} [event_action] Name of the Event Action
+ * @apiParam {String} [client_type] Client type <code>e.g. client_type=App or client_type=Web App</code>
  * @apiParam {String} [sort=+timestamp] Order of results <code>e.g. sort=-action or sort=+timestamp</code>
  *
  * @apiExample Example usage:
@@ -199,7 +200,7 @@ exports.deleteStats = function(req, res) {
  *       "user_id"         : "592d4445cc8be9187abb284f",
  *       "user_agent"      : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
  *       "user_ip"         : "122.34.42.165",
- *       "client_type"     : "mobile",
+ *       "client_type"     : "App",
  *       "event_source"    : "sugarizer",
  *       "event_object"    : "home_view",
  *       "event_action"    : "search",
@@ -216,6 +217,7 @@ exports.findAll = function(req, res) {
 	//form query
 	var query = {};
 	query = addQuery('uid', req.query, query);
+	query = addQuery('client_type', req.query, query);
 	query = addQuery('event_source', req.query, query);
 	query = addQuery('event_object', req.query, query);
 	query = addQuery('event_action', req.query, query);
@@ -256,6 +258,8 @@ function addQuery(filter, params, query, default_val) {
 
 		if (filter == 'uid') {
 			query['user_id'] = params[filter];
+		} else if (filter == 'client_type') {
+			query['client_type'] = params[filter];
 		} else {
 			query[filter] = {
 				$regex: new RegExp("^" + params[filter] + "$", "i")
