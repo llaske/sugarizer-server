@@ -1,7 +1,8 @@
 // include libraries
 var request = require('request'),
 	moment = require('moment'),
-	common = require('../helper/common');
+	common = require('../helper/common'),
+	graph = require('../controller/graph');
 
 // init settings
 var ini = null;
@@ -35,6 +36,8 @@ exports.getGraph = function(req, res) {
 		getHowUsersAreActive(req, res);
 	} else if (req.query.type == 'what-type-of-client-connected') {
 		getWhatTypeOfClientConnected(req, res);
+	} else if (req.query.type == 'how-many-entries-by-journal') {
+		getHowManyEntriesByJournal(req, res);
 	}
 
 }
@@ -244,6 +247,46 @@ function getWhatTypeOfClientConnected(req, res) {
 				graph: 'pie'
 			})
 		})
+	})
+}
+
+function getHowManyEntriesByJournal(req, res) {
+
+	//data
+	var data = {
+		labels: [],
+		data: []
+	}
+
+	data.labels.push(common.l10n.get('AverageEntries'));
+	data.data.push(graph.getAverageEntries());
+
+	// node data
+	if(JSON.stringify(data.data) == JSON.stringify([0, 0]))data.data = []
+
+	//return
+	return res.json({
+		data: {
+			labels: data.labels,
+			datasets: [{
+				label: common.l10n.get('CountEntries'),
+				data: data.data,
+				backgroundColor: [
+					'rgba(255, 206, 86, 0.8)'
+				]
+			}]
+		},
+		element: req.query.element,
+		graph: 'bar',
+		options: {
+			scales: {
+				yAxes: [{
+					ticks: {
+						min: 0
+					}
+				}]
+			}
+		}
 	})
 }
 

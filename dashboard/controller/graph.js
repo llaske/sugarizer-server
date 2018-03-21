@@ -21,6 +21,11 @@ exports.getGraph = function(req, res) {
 	}
 }
 
+var averageEntries = 0.0;
+exports.getAverageEntries = function() {
+	return averageEntries;
+}
+
 function getTopContributors(req, res) {
 
 	//get all users
@@ -36,13 +41,16 @@ function getTopContributors(req, res) {
 		dashboard.getAllJournals(req, res, function(journals) {
 
 			//get name mapping
+			var totalEntries = 0;
 			var j2 = [];
 			for (var i = 0; i < journals.length; i++) {
 				if (hashList[journals[i]._id] != undefined) {
 					journals[i].user = hashList[journals[i]._id].name;
 					j2.push(journals[i]);
+					totalEntries += journals[i].count;
 				}
 			}
+			averageEntries = (totalEntries / journals.length).toFixed(2);
 			journals = j2;
 
 			//separate out top users
