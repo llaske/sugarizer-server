@@ -95,13 +95,14 @@
 <% include includes/footer %>
 <script>
 function show_user_fields(val) {
-  if(val == 'student'){
-    $('.color_input').removeClass('hide');
-    $('.color_input input').removeAttr('disabled');
+  if(val == 'admin'){
+	  $('.color_input').addClass('hide');
+      $('.color_input input').attr('disabled', '');
 
   }else{
-    $('.color_input').addClass('hide');
-    $('.color_input input').attr('disabled', '');
+	  $('.color_input').removeClass('hide');
+      $('.color_input input').removeAttr('disabled');
+
   }
 }
 show_user_fields('<% if(typeof user == "object"){ %><%= user.role %><% } %>')
