@@ -337,8 +337,10 @@ exports.updateActivities = function(req, res) {
 	}
 
 	//do changes
+	var locales = settingsData.locales;
 	if (req.body.favorites) {
 		settingsData.activities.favorites = req.body.favorites;
+		settingsData.locales = {};
 	} else {
 		return res.status(401).send({
 			'error': 'Invalid favorites variable',
@@ -349,6 +351,7 @@ exports.updateActivities = function(req, res) {
 	// write it back to ini
 	var file = "./env/" + (process.env.NODE_ENV ? process.env.NODE_ENV : 'sugarizer') + ".ini";
 	fs.writeFileSync(file, ini.stringify(settingsData));
+	settingsData.locales = locales;
 
 	//update activities list and return
 	exports.load(settingsData, function() {
