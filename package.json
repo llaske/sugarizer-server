@@ -17,6 +17,7 @@
 		"ejs": "~>2.5.5",
 		"express-flash": "~0.0.2",
 		"express-validator": "~1.0.1",
+		"sleep": "5.1.x",
 		"synchronize": "*",
 		"request" : "*"
 	},
