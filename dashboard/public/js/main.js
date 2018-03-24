@@ -64,42 +64,44 @@ function launch_activity(callurl) {
 		}
 
 		// open window
-		var win = window.open(response.url+"&sa=1", '_blank');
-		if (win) {
-			win.focus();
-			win.onbeforeunload = function(){
-				// restore old context
-				for (var index in lsBackup) {
-					if (lsBackup[index] == null) {
-						localStorage.removeItem(index);
-					} else {
-						localStorage.setItem(index, lsBackup[index]);
-					}
-				}
-
-				// remove created storage
-				for (var i = 0 ; i < localStorage.length ; i++) {
-					var key = localStorage.key(i);
-					if (key.indexOf(datastorePrefix) == -1) {
-						continue;
-					}
-					var found = false;
-					for (var j = 0 ; !found && j < keyHistory.length ; j++) {
-						if (keyHistory[j] == key) {
-							found = true;
+		if (response.url) {
+			var win = window.open(response.url+"&sa=1", '_blank');
+			if (win) {
+				win.focus();
+				win.onbeforeunload = function(){
+					// restore old context
+					for (var index in lsBackup) {
+						if (lsBackup[index] == null) {
+							localStorage.removeItem(index);
+						} else {
+							localStorage.setItem(index, lsBackup[index]);
 						}
 					}
-					if (!found) {
-						localStorage.removeItem(key);
+
+					// remove created storage
+					for (var i = 0 ; i < localStorage.length ; i++) {
+						var key = localStorage.key(i);
+						if (key.indexOf(datastorePrefix) == -1) {
+							continue;
+						}
+						var found = false;
+						for (var j = 0 ; !found && j < keyHistory.length ; j++) {
+							if (keyHistory[j] == key) {
+								found = true;
+							}
+						}
+						if (!found) {
+							localStorage.removeItem(key);
+						}
 					}
 				}
+			} else {
+				$.notify({
+					message: document.webL10n.get('CantOpenWindow')
+				},{
+					type: 'danger'
+				});
 			}
-		} else {
-			$.notify({
-				message: document.webL10n.get('CantOpenWindow')
-			},{
-				type: 'danger'
-			});
 		}
 	});
 }

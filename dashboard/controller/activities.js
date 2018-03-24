@@ -149,6 +149,9 @@ exports.launch = function(req, res) {
 				lsObj['sugar_settings'].activities = [];
 
 				getActivity(req, body.entries[0].metadata.activity, function(activity) {
+					if (!activity) {
+						return res.redirect('/dashboard/' + (req.query.source ? req.query.source : 'journal'));
+					}
 
 					activity.instances = [body.entries[0]];
 					lsObj['sugar_settings'].activities.push(activity);
