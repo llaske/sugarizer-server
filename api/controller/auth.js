@@ -1,10 +1,7 @@
 var jwt = require('jwt-simple'),
 	users = require('./users.js'),
 	mongo = require('mongodb'),
-	sleep = require('sleep'),
 	journal = require('./journal');
-
-var doADelayOf = 0;
 
 var BSON = mongo.BSONPure;
 
@@ -154,11 +151,6 @@ exports.signup = function(req, res) {
 };
 
 exports.validateUser = function(uid, callback) {
-
-	// HACK: create an artificial delay to simulate answer on a slow network 
-	if (doADelayOf) {
-		sleep.msleep(doADelayOf);
-	}
 
 	//parse response
 	users.getAllUsers({
