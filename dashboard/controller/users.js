@@ -133,7 +133,6 @@ exports.editUser = function(req, res) {
 			req.body.name = req.body.name.trim();
 			req.body.password = req.body.password.trim();
 			req.body.color = JSON.parse(req.body.color);
-			req.assert('name', common.l10n.get('NameNotAlphanumeric')).isAlphanumeric();
 			req.assert('password', common.l10n.get('PasswordAtLeast', {count:ini.security.min_password_size})).len(ini.security.min_password_size);
 
 			// get errors
