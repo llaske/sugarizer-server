@@ -16,22 +16,22 @@ msgstr ""
 #: users
 msgctxt "users"
 msgid "Users"
-msgstr "Usuarios"
+msgstr "Users"
 
 #: dashboard
 msgctxt "dashboard"
 msgid "Home"
-msgstr "Casa"
+msgstr "Home"
 
 #: journals
 msgctxt "journals"
 msgid "Journals"
-msgstr "Revistas"
+msgstr "Journals"
 
 #: activities
 msgctxt "activities"
 msgid "Activities"
-msgstr "Ocupaciones"
+msgstr "Activities"
 
 #: stats
 msgctxt "stats"
@@ -41,193 +41,193 @@ msgstr "Statistics"
 #: icon
 msgctxt "icon"
 msgid "Icon"
-msgstr "Icono"
+msgstr "Icon"
 
 #: name
 msgctxt "name"
 msgid "Name"
-msgstr "Nombre"
+msgstr "Name"
 
 #: activity
 msgctxt "activity"
 msgid "Activity"
-msgstr "Actividad"
+msgstr "Activity"
 
 #: version
 msgctxt "version"
 msgid "Version"
-msgstr "Versión"
+msgstr "Version"
 
 #: favorite
 msgctxt "favorite"
 msgid "favorite"
-msgstr "Favorito"
+msgstr "favorite"
 
 #: action
 msgctxt "action"
 msgid "Action"
-msgstr "Acción"
+msgstr "Action"
 
 #: role
 msgctxt "role"
 msgid "role"
-msgstr "Papel"
-
-#: title
-msgctxt "title"
-msgid "Title"
-msgstr "título"
+msgstr "role"
 
 #: language
 msgctxt "language"
 msgid "Language"
-msgstr "Guardar"
+msgstr "Language"
 
 #: timestamp
 msgctxt "timestamp"
 msgid "Timestamp"
-msgstr "fecha y hora"
+msgstr "Timestamp"
+
+#: title
+msgctxt "title"
+msgid "Title"
+msgstr "Title"
 
 #: searchActivity.placeholder
 msgctxt "searchActivity.placeholder"
 msgid "Search Activity..."
-msgstr "Actividad de búsqueda ..."
+msgstr "Search Activity..."
 
 #: successActivityUpdate
 msgctxt "successActivityUpdate"
 msgid "Activities successfully updated!"
-msgstr "Actividades actualizadas con éxito!"
+msgstr "Activities successfully updated!"
 
 #: viewAllUsers
 msgctxt "viewAllUsers"
 msgid "View all users"
-msgstr "Ver todos los usuarios"
+msgstr "View all users"
 
 #: viewAllActivities
 msgctxt "viewAllActivities"
 msgid "View all activities"
-msgstr "Ver todas las actividades"
+msgstr "View all activities"
 
 #: viewAllJournal
 msgctxt "viewAllJournal"
 msgid "View all journal entries"
-msgstr "Ver todas las entradas de diario"
+msgstr "View all journal entries"
 
 #: noEntryText
 msgctxt "noEntryText"
 msgid "There are no entries available for this user"
-msgstr "No hay entradas disponibles para este usuario"
+msgstr "There are no entries available for this user"
 
 #: selectUserText
 msgctxt "selectUserText"
 msgid "Please select a user and click on show results!"
-msgstr "Por favor, seleccione un usuario y haga clic mostramos los resultados!"
+msgstr "Please select a user and click on show results!"
 
 #: showResults
 msgctxt "showResults"
 msgid "Show Results"
-msgstr "Mostrar resultados"
+msgstr "Show Results"
 
 #: nextPage
 msgctxt "nextPage"
 msgid "next page >>"
-msgstr "página siguiente >>"
+msgstr "next page >>"
 
 #: prevPage
 msgctxt "prevPage"
 msgid "<< prev page"
-msgstr "<< página Anterior"
+msgstr "<< prev page"
 
 #. Do not translate {{offset}} {{to}} {{total}}
 #: showingResults
 msgctxt "showingResults"
 msgid "Showing results {{offset}}-{{to}} out of {{total}}"
-msgstr "Se muestran resultados {{offset}}-{{to}} de {{total}}"
+msgstr "Showing results {{offset}}-{{to}} out of {{total}}"
 
 #: private
 msgctxt "private"
 msgid "Private"
-msgstr "Privado"
+msgstr "Private"
 
 #: shared
 msgctxt "shared"
 msgid "Shared"
-msgstr "Compartido"
+msgstr "Shared"
 
 #: addUser
 msgctxt "addUser"
 msgid "Add User"
-msgstr "Agregar usuario"
+msgstr "Add User"
 
 #: sugarizerDashboardLogin
 msgctxt "sugarizerDashboardLogin"
 msgid "Sugarizer Dashboard"
-msgstr "Sugarizer Tablero"
+msgstr "Sugarizer Dashboard"
 
 #: username
 msgctxt "username"
 msgid "Username"
-msgstr "Nombre de usuario"
+msgstr "Username"
 
 #: password
 msgctxt "password"
 msgid "Password"
-msgstr "contraseña"
+msgstr "Password"
 
 #: login
 msgctxt "login"
 msgid "Login"
-msgstr "iniciar sesión"
+msgstr "Login"
 
 #: logout
 msgctxt "logout"
 msgid "Logout"
-msgstr "Salir"
+msgstr "Logout"
 
 #: noGraphDataText
 msgctxt "noGraphDataText"
 msgid "Not Enough Data"
-msgstr "No hay datos suficientes"
+msgstr "Not Enough Data"
 
 #: HowUsersAreLaunchingActivities
 msgctxt "HowUsersAreLaunchingActivities"
 msgid "How users are launching activities?"
-msgstr "Cómo los usuarios están poniendo en marcha actividades?"
+msgstr "How users are launching activities?"
 
 #: HowOftenUsersAreChangingTheirProfileSettings
 msgctxt "HowOftenUsersAreChangingTheirProfileSettings"
 msgid "How often users are changing their profile settings?"
-msgstr "¿Con qué frecuencia a los usuarios Hey cambiar su configuración de perfil?"
+msgstr "How often users are changing their profile settings?"
 
 #: TopContributors
 msgctxt "TopContributors"
 msgid "Top Contributors"
-msgstr "Top Contribyutrs"
+msgstr "Top Contributors"
 
 #: TopActivities
 msgctxt "TopActivities"
 msgid "Top Activities"
-msgstr "arriba Actividades"
+msgstr "Top Activities"
 
 #: RecentUsers
 msgctxt "RecentUsers"
 msgid "Recent Users"
-msgstr "Usuarios recientes"
+msgstr "Recent Users"
 
 #: RecentEntries
 msgctxt "RecentEntries"
 msgid "Recent Entries"
-msgstr "entradas recientes"
+msgstr "Recent Entries"
 
 #: SugarizerDashboard
 msgctxt "SugarizerDashboard"
 msgid "Sugarizer Dashboard"
-msgstr "Sugarizer tablero de instrumentos"
+msgstr "Sugarizer Dashboard"
 
 #: buddy
 msgctxt "buddy"
 msgid "Buddy"
-msgstr "amigo"
+msgstr "Buddy"
 
 #: color
 msgctxt "color"
@@ -237,22 +237,22 @@ msgstr "Color"
 #: createdTime
 msgctxt "createdTime"
 msgid "Created Time"
-msgstr "Hora Creada"
+msgstr "Created Time"
 
 #: lastSeen
 msgctxt "lastSeen"
 msgid "Last Seen"
-msgstr "Visto por última vez"
+msgstr "Last Seen"
 
 #: cancel
 msgctxt "cancel"
 msgid "Cancel"
-msgstr "Cancelar"
+msgstr "Cancel"
 
 #: save
 msgctxt "save"
 msgid "Save"
-msgstr "Guardar"
+msgstr "Save"
 
 #: deleteEntry.title
 msgctxt "deleteEntry.title"
@@ -293,6 +293,12 @@ msgstr "Student"
 msgctxt "admin"
 msgid "Admin"
 msgstr "Admin"
+
+#. Do not translate {{count}}
+#: PasswordAtLeast
+msgctxt "PasswordAtLeast"
+msgid "Password should have at least {{count}} characters"
+msgstr "Password should have at least {{count}} characters"
 
 #: UserUpdated
 msgctxt "UserUpdated"

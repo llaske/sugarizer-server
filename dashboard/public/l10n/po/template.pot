@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: Wed Aug 30 2017 13:15:31 GMT+0200 (CEST)\n"
+"POT-Creation-Date: Sat Mar 24 2018 10:47:08 GMT+0100 (CET)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -179,8 +179,330 @@ msgctxt "login"
 msgid "Login"
 msgstr ""
 
+#: logout
+msgctxt "logout"
+msgid "Logout"
+msgstr ""
+
 #: noGraphDataText
 msgctxt "noGraphDataText"
 msgid "Not Enough Data"
+msgstr ""
+
+#: HowUsersAreLaunchingActivities
+msgctxt "HowUsersAreLaunchingActivities"
+msgid "How users are launching activities?"
+msgstr ""
+
+#: HowOftenUsersAreChangingTheirProfileSettings
+msgctxt "HowOftenUsersAreChangingTheirProfileSettings"
+msgid "How often users are changing their profile settings?"
+msgstr ""
+
+#: TopContributors
+msgctxt "TopContributors"
+msgid "Top Contributors"
+msgstr ""
+
+#: TopActivities
+msgctxt "TopActivities"
+msgid "Top Activities"
+msgstr ""
+
+#: RecentUsers
+msgctxt "RecentUsers"
+msgid "Recent Users"
+msgstr ""
+
+#: RecentEntries
+msgctxt "RecentEntries"
+msgid "Recent Entries"
+msgstr ""
+
+#: SugarizerDashboard
+msgctxt "SugarizerDashboard"
+msgid "Sugarizer Dashboard"
+msgstr ""
+
+#: buddy
+msgctxt "buddy"
+msgid "Buddy"
+msgstr ""
+
+#: color
+msgctxt "color"
+msgid "Color"
+msgstr ""
+
+#: createdTime
+msgctxt "createdTime"
+msgid "Created Time"
+msgstr ""
+
+#: lastSeen
+msgctxt "lastSeen"
+msgid "Last Seen"
+msgstr ""
+
+#: cancel
+msgctxt "cancel"
+msgid "Cancel"
+msgstr ""
+
+#: save
+msgctxt "save"
+msgid "Save"
+msgstr ""
+
+#: deleteEntry.title
+msgctxt "deleteEntry.title"
+msgid "Delete Entry"
+msgstr ""
+
+#: launch.title
+msgctxt "launch.title"
+msgid "Launch"
+msgstr ""
+
+#: seeJournalEntries.title
+msgctxt "seeJournalEntries.title"
+msgid "See Journal Entries"
+msgstr ""
+
+#: editUser.title
+msgctxt "editUser.title"
+msgid "Edit User"
+msgstr ""
+
+#: deleteUser.title
+msgctxt "deleteUser.title"
+msgid "Delete User"
+msgstr ""
+
+#: john.placeholder
+msgctxt "john.placeholder"
+msgid "Search User..."
+msgstr ""
+
+#: student
+msgctxt "student"
+msgid "Student"
+msgstr ""
+
+#: admin
+msgctxt "admin"
+msgid "Admin"
+msgstr ""
+
+#. Do not translate {{count}}
+#: PasswordAtLeast
+msgctxt "PasswordAtLeast"
+msgid "Password should have at least {{count}} characters"
+msgstr ""
+
+#: UserUpdated
+msgctxt "UserUpdated"
+msgid "User has been successfully updated!"
+msgstr ""
+
+#: UserCreated
+msgctxt "UserCreated"
+msgid "User has been successfully created!"
+msgstr ""
+
+#: UserDeleted
+msgctxt "UserDeleted"
+msgid "User has been successfully deleted!"
+msgstr ""
+
+#: EntryDeleted
+msgctxt "EntryDeleted"
+msgid "Entry Successfully deleted!"
+msgstr ""
+
+#: DoYouWantDeleteEntry
+msgctxt "DoYouWantDeleteEntry"
+msgid "Are you really want to delete the entry?"
+msgstr ""
+
+#. Do not translate {{user}}
+#: DoYouWantDeleteUser
+msgctxt "DoYouWantDeleteUser"
+msgid "Are you really want to delete the user {{user}}?"
+msgstr ""
+
+#: ThereIsError
+msgctxt "ThereIsError"
+msgid "There is some error!"
+msgstr ""
+
+#: InvalidAid
+msgctxt "InvalidAid"
+msgid "Invalid activity!"
+msgstr ""
+
+#: InvalidOidJid
+msgctxt "InvalidOidJid"
+msgid "Invalid item or journal!"
+msgstr ""
+
+#: ObjectNotFound
+msgctxt "ObjectNotFound"
+msgid "Object Not Found!"
+msgstr ""
+
+#: UsernameInvalid
+msgctxt "UsernameInvalid"
+msgid "Username is not valid"
+msgstr ""
+
+#: PasswordBlank
+msgctxt "PasswordBlank"
+msgid "Password cannot be blank"
+msgstr ""
+
+#: CantOpenWindow
+msgctxt "CantOpenWindow"
+msgid "Can't open window, check your browser for popup blocker"
+msgstr ""
+
+#: ErrorCode1
+msgctxt "ErrorCode1"
+msgid "Invalid username or password"
+msgstr ""
+
+#: ErrocCode5
+msgctxt "ErrocCode5"
+msgid "Server error"
+msgstr ""
+
+#: ErrorCode8
+msgctxt "ErrorCode8"
+msgid "You don't have permission to remove this journal"
+msgstr ""
+
+#: ErrorCode10
+msgctxt "ErrorCode10"
+msgid "An error has occurred"
+msgstr ""
+
+#: ErrorCode11
+msgctxt "ErrorCode11"
+msgid "Invalid journal"
+msgstr ""
+
+#: ErrorCode12
+msgctxt "ErrorCode12"
+msgid "Invalid journal or entry"
+msgstr ""
+
+#: ErrorCode13
+msgctxt "ErrorCode13"
+msgid "Invalid journal or object"
+msgstr ""
+
+#: ErrorCode14
+msgctxt "ErrorCode14"
+msgid "Error while deleting journal!"
+msgstr ""
+
+#: ErrorCode15
+msgctxt "ErrorCode15"
+msgid "Error while deleting journal entry!"
+msgstr ""
+
+#: ErrorCode16
+msgctxt "ErrorCode16"
+msgid "Invalid object"
+msgstr ""
+
+#: ErrorCode18
+msgctxt "ErrorCode18"
+msgid "Invalid user id"
+msgstr ""
+
+#: ErrorCode19
+msgctxt "ErrorCode19"
+msgid "You don't have permission to perform this action"
+msgstr ""
+
+#: ErrorCode21
+msgctxt "ErrorCode21"
+msgid "User not defined!"
+msgstr ""
+
+#: ErrorCode22
+msgctxt "ErrorCode22"
+msgid "An user with same name already exist"
+msgstr ""
+
+#: ErrorCode23
+msgctxt "ErrorCode23"
+msgid "Inexisting user"
+msgstr ""
+
+#: ErrorCode24
+msgctxt "ErrorCode24"
+msgid "An error has occurred while updating timestamp"
+msgstr ""
+
+#: LanguageSettings
+msgctxt "LanguageSettings"
+msgid "Language"
+msgstr ""
+
+#: NameColorSettings
+msgctxt "NameColorSettings"
+msgid "Name/Color"
+msgstr ""
+
+#: SecuritySettings
+msgctxt "SecuritySettings"
+msgid "Security"
+msgstr ""
+
+#: PrivacySettings
+msgctxt "PrivacySettings"
+msgid "Privacy"
+msgstr ""
+
+#: CountSettingsChanged
+msgctxt "CountSettingsChanged"
+msgid "# of times settings changed"
+msgstr ""
+
+#: CountEntries
+msgctxt "CountEntries"
+msgid "# of Entries"
+msgstr ""
+
+#: HowUsersAreActive
+msgctxt "HowUsersAreActive"
+msgid "How many users actives during last month?"
+msgstr ""
+
+#: UserActive
+msgctxt "UserActive"
+msgid "Active"
+msgstr ""
+
+#: UserNotActive
+msgctxt "UserNotActive"
+msgid "Inactive"
+msgstr ""
+
+#: WhatTypeOfClientConnected
+msgctxt "WhatTypeOfClientConnected"
+msgid "What type of client connected?"
+msgstr ""
+
+#: HowManyEntriesByJournal
+msgctxt "HowManyEntriesByJournal"
+msgid "How many entries by user?"
+msgstr ""
+
+#: AverageEntries
+msgctxt "AverageEntries"
+msgid "Average entries"
 msgstr ""
 
