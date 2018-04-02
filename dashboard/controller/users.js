@@ -78,6 +78,7 @@ exports.addUser = function(req, res) {
 		req.body.color = JSON.parse(req.body.color);
 		req.assert('name', common.l10n.get('NameNotAlphanumeric')).isAlphanumeric();
 		req.assert('password', common.l10n.get('PasswordAtLeast', {count:ini.security.min_password_size})).len(ini.security.min_password_size);
+		req.body.options = { sync: true, stats: true };
 
 		// get errors
 		var errors = req.validationErrors();
