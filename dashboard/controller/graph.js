@@ -107,60 +107,71 @@ function getTopContributors(req, res) {
 
 function getTopActivities(req, res) {
 
-	//get all entries
-	getAllEntriesList(req, res, 10000000, function(allEntries) {
-		var freq = {};
-		var freq2 = [];
-		for (var i = 0; i < allEntries.length; i++) {
-			if (freq[allEntries[i].metadata.activity] == undefined) {
-				freq[allEntries[i].metadata.activity] = {
-					id: allEntries[i].metadata.activity,
-					count: 1
-				};
-			} else {
-				freq[allEntries[i].metadata.activity].count++;
+	//get activities
+	getActivities(req, res, function(activities) {
+
+		//get all entries
+		getAllEntriesList(req, res, 10000000, function(allEntries) {
+			var freq = {};
+			var freq2 = [];
+			for (var i = 0; i < allEntries.length; i++) {
+				if (freq[allEntries[i].metadata.activity] == undefined) {
+					freq[allEntries[i].metadata.activity] = {
+						id: allEntries[i].metadata.activity,
+						count: 1
+					};
+				} else {
+					freq[allEntries[i].metadata.activity].count++;
+				}
 			}
-		}
-		for (var key in freq) {
-			freq2.push(freq[key]);
-		}
-		freq2.sort(function(a, b) {
-			if (a.count > b.count)
-				return -1;
-			if (a.count < b.count)
-				return 1;
-			return 0;
-		});
+			for (var key in freq) {
+				freq2.push(freq[key]);
+			}
+			freq2.sort(function(a, b) {
+				if (a.count > b.count)
+					return -1;
+				if (a.count < b.count)
+					return 1;
+				return 0;
+			});
 
-		//take 5 entries
-		freq2 = freq2.slice(0, 5);
+			//take 5 entries
+			freq2 = freq2.slice(0, 5);
 
-		//get labels & data
-		var labels = [];
-		var data = [];
-		for (var i = 0; i < freq2.length; i++) {
-			labels.push(freq2[i].id.split('.')[2]);
-			data.push(freq2[i].count);
-		}
+			//get labels & data
+			var labels = [];
+			var data = [];
+			for (var i = 0; i < freq2.length; i++) {
+				var label = freq2[i].id;
+				for (var j = 0 ; j < activities.length ; j++) {
+					if (label == activities[j].id) {
+						label = activities[j].name;
+						break;
+					}
+				}
+				labels.push(label);
+				data.push(freq2[i].count);
+			}
 
-		//return data
-		return res.json({
-			data: {
-				labels: labels,
-				datasets: [{
-					label: common.l10n.get('CountEntries'),
-					data: data,
-					backgroundColor: [
-						'rgba(205, 99, 132, 0.8)',
-						'rgba(54, 162, 235, 0.8)',
-						'rgba(255, 206, 86, 0.8)',
-						'rgba(75, 192, 192, 0.8)',
-						'rgba(153, 102, 255, 0.8)'
-					]
-				}]
-			},
-			element: req.query.element,
-			graph: 'doughnut'
+			//return data
+			return res.json({
+				data: {
+					labels: labels,
+					datasets: [{
+						label: common.l10n.get('CountEntries'),
+						data: data,
+						backgroundColor: [
+							'rgba(205, 99, 132, 0.8)',
+							'rgba(54, 162, 235, 0.8)',
+							'rgba(255, 206, 86, 0.8)',
+							'rgba(75, 192, 192, 0.8)',
+							'rgba(153, 102, 255, 0.8)'
+						]
+					}]
+				},
+				element: req.query.element,
+				graph: 'doughnut'
+			})
 		})
 	})
 }
@@ -202,7 +213,7 @@ function getRecentActivities(req, res) {
 	//get all entries
 	getAllEntriesList(req, res, 1000000, function(allEntries) {
 
-		//get activties
+		//get activities
 		getActivities(req, res, function(activities) {
 
 			//make hashlist
