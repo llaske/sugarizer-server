@@ -274,7 +274,9 @@ function getAllEntriesList(req, res, limit, callback) {
 				}, sync.defer())))
 
 				//merge data
-				allEntries = allEntries.concat(d.body.entries)
+				if (d.body.entries) {
+					allEntries = allEntries.concat(d.body.entries);
+				}
 			}
 
 			//for each user
@@ -295,7 +297,9 @@ function getAllEntriesList(req, res, limit, callback) {
 				}, sync.defer())))
 
 				//merge data
-				allEntries = allEntries.concat(d.body.entries)
+				if (d.body.entries) {
+					allEntries = allEntries.concat(d.body.entries);
+				}
 			}
 			callback(allEntries);
 		})
