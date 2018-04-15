@@ -8,9 +8,17 @@ var express = require('express'),
 	flash = require('express-flash'),
 	expressValidator = require('express-validator'),
 	cors = require('cors');
+var artificialDelay = 0;
 
 // configure app settings
 module.exports = function(app, ini) {
+
+	// add an artificial delay for debug
+	if (artificialDelay) {
+		app.use(function(req,res,next) {
+			setTimeout(next, artificialDelay)
+		});
+	}
 
 	// must use cookieParser before express Session
 	app.use(cookieParser());
