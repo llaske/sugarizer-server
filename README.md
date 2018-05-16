@@ -13,7 +13,7 @@ To run Sugarizer Server with a few command lines using Docker and Docker Compose
 
 **Clone Sugarizer Client and Sugarizer Server**
 
-	git clone -b dev https://github.com/llaske/sugarizer
+	git clone https://github.com/llaske/sugarizer
 	git clone https://github.com/llaske/sugarizer-server
 
 **Install Docker and Docker Compose on Ubuntu**
@@ -57,7 +57,7 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
 
     sudo apt-get install git
     cd /home/root
-    sudo git clone -b dev https://github.com/llaske/sugarizer
+    sudo git clone https://github.com/llaske/sugarizer
     sudo git clone https://github.com/llaske/sugarizer-server
     cd /home/root/sugarizer-server
     sudo npm install
