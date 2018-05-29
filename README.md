@@ -111,6 +111,7 @@ as [sugarizer.js](sugarizer.js) parameter).
 	users = users
 	journal = journal
 	stats = stats
+	waitdb = 1
 
 	[statistics]
 	active = true
@@ -131,7 +132,7 @@ The **[client]** indicate the place where is located Sugarizer Client. Sugarizer
 
 The **[presence]** section describe the settings of the presence server. By default, a web socket is created on port 8039. You need to change this value if you want to use another port.
 
-The **[database]** and **[collections]** sections are for MongoDB settings. You could update the server name (by default MongoDB run locally) and the server port. Names of the database and collections had no reason to be changed.
+The **[database]** and **[collections]** sections are for MongoDB settings. You could update the server name (by default MongoDB run locally) and the server port. Names of the database and collections had no reason to be changed. The `waitdb` parameter allow you to force server to wait for the database.
 
 The **[statistics]** section indicate if the server will log client usage.
 
