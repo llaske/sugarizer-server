@@ -1,2 +1,2 @@
 FROM mikkl/multiarch-mongodb:{ARCH}
-CMD mongod
+CMD mongod --repair; mongod
