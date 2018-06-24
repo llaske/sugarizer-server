@@ -76,6 +76,7 @@ exports.getAPIUrl = function(req) {
  * @apiSuccess {String} settings.description Server description
  * @apiSuccess {String} settings.web Server web port
  * @apiSuccess {String} settings.presence Server presence port
+ * @apiSuccess {String} settings.secure Server is secured using SSL
  * @apiSuccess {Object} settings.options Server options
  * @apiSuccess {String} settings.options.min-password-size Minimum size for password
  * @apiSuccess {Boolean} settings.options.statistics Statistics active or not
@@ -88,6 +89,7 @@ exports.getAPIUrl = function(req) {
  *       "description": "Your Sugarizer Server",
  *       "web": "8080",
  *       "presence": "8039",
+ *       "secure": false,
  *       "options":
  *       {
  *         "min-password-size": "4",
@@ -102,6 +104,7 @@ exports.getAPIInfo = function(req, res) {
 		"description": ini.information.description,
 		"web": ini.web.port,
 		"presence": ini.presence.port,
+		"secure": ini.security.https,
 		"options": {
 			"min-password-size": ini.security.min_password_size,
 			"statistics": ini.statistics.active,
