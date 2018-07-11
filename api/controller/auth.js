@@ -3,8 +3,6 @@ var jwt = require('jwt-simple'),
 	mongo = require('mongodb'),
 	journal = require('./journal');
 
-var BSON = mongo.BSONPure;
-
 
 
 /**
@@ -154,7 +152,7 @@ exports.validateUser = function(uid, callback) {
 
 	//parse response
 	users.getAllUsers({
-		'_id': new BSON.ObjectID(uid)
+		'_id': new mongo.ObjectID(uid)
 	}, {}, function(users) {
 		if (users.length > 0) {
 			callback(users[0]);

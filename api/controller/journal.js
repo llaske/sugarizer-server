@@ -3,8 +3,7 @@ var mongo = require('mongodb'),
 	users = require('./users');
 
 var Server = mongo.Server,
-	Db = mongo.Db,
-	BSON = mongo.BSONPure;
+	Db = mongo.Db;
 
 var server;
 var db;
@@ -41,7 +40,7 @@ exports.init = function(settings, callback) {
 						}, {
 							safe: true
 						}, function(err, result) {
-							shared = result[0];
+							shared = result.ops[0];
 						});
 					}
 
@@ -119,8 +118,8 @@ exports.findAll = function(req, res) {
 	if (req.user.role == 'student') {
 		options._id = {
 			$in: [
-				new BSON.ObjectID(req.user.private_journal),
-				new BSON.ObjectID(req.user.shared_journal)
+				new mongo.ObjectID(req.user.private_journal),
+				new mongo.ObjectID(req.user.shared_journal)
 			]
 		}
 	}
@@ -152,7 +151,7 @@ exports.addJournal = function(req, res) {
 				'code': 10
 			});
 		} else {
-			res.send(result[0]);
+			res.send(result.ops[0]);
 		}
 	});
 }
@@ -251,7 +250,7 @@ exports.addJournal = function(req, res) {
 exports.findJournalContent = function(req, res) {
 
 	//validate journal  id
-	if (!BSON.ObjectID.isValid(req.params.jid)) {
+	if (!mongo.ObjectID.isValid(req.params.jid)) {
 		res.status(401).send({
 			'error': 'Invalid journal id',
 			'code': 11
@@ -322,7 +321,7 @@ function getOptions(req) {
 	//form object with journal id
 	var options = [{
 		$match: {
-			'_id': new BSON.ObjectID(req.params.jid)
+			'_id': new mongo.ObjectID(req.params.jid)
 		}
 	}];
 
@@ -493,7 +492,7 @@ function getOptions(req) {
  **/
 exports.addEntryInJournal = function(req, res) {
 	// Get parameter
-	if (!BSON.ObjectID.isValid(req.params.jid) || !req.body.journal) {
+	if (!mongo.ObjectID.isValid(req.params.jid) || !req.body.journal) {
 		res.status(401).send({
 			'error': 'Invalid journal id or entry',
 			'code': 12
@@ -508,7 +507,7 @@ exports.addEntryInJournal = function(req, res) {
 
 	// Look for existing entry with the same objectId
 	var filter = {
-		'_id': new BSON.ObjectID(jid),
+		'_id': new mongo.ObjectID(jid),
 		'content.objectId': journal.objectId
 	};
 	db.collection(journalCollection, function(err, collection) {
@@ -522,7 +521,7 @@ exports.addEntryInJournal = function(req, res) {
 				};
 				db.collection(journalCollection, function(err, collection) {
 					collection.update({
-						'_id': new BSON.ObjectID(jid)
+						'_id': new mongo.ObjectID(jid)
 					}, newcontent, {
 						safe: true
 					}, function(err, result) {
@@ -532,7 +531,7 @@ exports.addEntryInJournal = function(req, res) {
 								'code': 10
 							});
 						} else {
-							if (result) {
+							if (result && result.result && result.result.n == 1) {
 								return res.send(journal);
 							} else {
 								return res.status(401).send({
@@ -607,7 +606,7 @@ exports.addEntryInJournal = function(req, res) {
  *    }
  **/
 exports.updateEntryInJournal = function(req, res) {
-	if (!BSON.ObjectID.isValid(req.params.jid) || !req.query.oid) {
+	if (!mongo.ObjectID.isValid(req.params.jid) || !req.query.oid) {
 		res.status(401).send({
 			'error': 'Invalid journal or object id',
 			'code': 13
@@ -630,7 +629,7 @@ exports.updateEntryInJournal = function(req, res) {
 	};
 	db.collection(journalCollection, function(err, collection) {
 		collection.update({
-			'_id': new BSON.ObjectID(jid)
+			'_id': new mongo.ObjectID(jid)
 		}, deletecontent, {
 			safe: true
 		}, function(err, result) {
@@ -681,7 +680,7 @@ exports.updateEntryInJournal = function(req, res) {
  *     }
  **/
 exports.removeInJournal = function(req, res) {
-	if (!BSON.ObjectID.isValid(req.params.jid)) {
+	if (!mongo.ObjectID.isValid(req.params.jid)) {
 		res.status(401).send({
 			'error': 'Invalid journal id',
 			'code': 11
@@ -699,7 +698,7 @@ exports.removeInJournal = function(req, res) {
 	if (type == 'full') {
 		db.collection(journalCollection, function(err, collection) {
 			collection.remove({
-				'_id': new BSON.ObjectID(jid)
+				'_id': new mongo.ObjectID(jid)
 			}, function(err, result) {
 				if (err) {
 					return res.status(500).send({
@@ -707,7 +706,7 @@ exports.removeInJournal = function(req, res) {
 						'code': 10
 					});
 				} else {
-					if (result) {
+					if (result && result.result && result.result.n == 1) {
 						return res.send({
 							'jid': jid
 						});
@@ -724,7 +723,7 @@ exports.removeInJournal = function(req, res) {
 		if (oid) {
 			db.collection(journalCollection, function(err, collection) {
 				collection.update({
-					'_id': new BSON.ObjectID(jid)
+					'_id': new mongo.ObjectID(jid)
 				}, {
 					$pull: {
 						content: {
@@ -740,7 +739,7 @@ exports.removeInJournal = function(req, res) {
 							'code': 10
 						});
 					} else {
-						if (result) {
+						if (result && result.result && result.result.n == 1) {
 							return res.send({
 								'objectId': oid
 							});

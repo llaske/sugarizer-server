@@ -2,8 +2,7 @@
 var mongo = require('mongodb');
 
 var Server = mongo.Server,
-	Db = mongo.Db,
-	BSON = mongo.BSONPure;
+	Db = mongo.Db;
 
 var server;
 var db;

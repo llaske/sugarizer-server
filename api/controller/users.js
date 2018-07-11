@@ -4,8 +4,7 @@ var mongo = require('mongodb'),
 	journal = require('./journal');
 
 var Server = mongo.Server,
-	Db = mongo.Db,
-	BSON = mongo.BSONPure;
+	Db = mongo.Db;
 
 var server;
 var db;
@@ -83,7 +82,7 @@ exports.init = function(settings, callback) {
  *    }
  **/
 exports.findById = function(req, res) {
-	if (!BSON.ObjectID.isValid(req.params.uid)) {
+	if (!mongo.ObjectID.isValid(req.params.uid)) {
 		res.status(401).send({
 			'error': 'Invalid user id',
 			'code': 18
@@ -92,7 +91,7 @@ exports.findById = function(req, res) {
 	}
 	db.collection(usersCollection, function(err, collection) {
 		collection.findOne({
-			'_id': new BSON.ObjectID(req.params.uid)
+			'_id': new mongo.ObjectID(req.params.uid)
 		}, function(err, item) {
 			res.send(item);
 		});
@@ -409,7 +408,7 @@ exports.addUser = function(req, res) {
 								'code': 10
 							});
 						} else {
-							res.send(result[0]);
+							res.send(result.ops[0]);
 						}
 					});
 				});
@@ -419,7 +418,7 @@ exports.addUser = function(req, res) {
 					// Create a new journal
 					journal.createJournal(function(err, result) {
 						// add journal to the new user
-						user.private_journal = result[0]._id;
+						user.private_journal = result.ops[0]._id;
 						user.shared_journal = journal.getShared()._id;
 						collection.insert(user, {
 							safe: true
@@ -430,7 +429,7 @@ exports.addUser = function(req, res) {
 									'code': 10
 								});
 							} else {
-								res.send(result[0]);
+								res.send(result.ops[0]);
 							}
 						});
 					});
@@ -501,7 +500,7 @@ exports.addUser = function(req, res) {
  *    }
  **/
 exports.updateUser = function(req, res) {
-	if (!BSON.ObjectID.isValid(req.params.uid)) {
+	if (!mongo.ObjectID.isValid(req.params.uid)) {
 		res.status(401).send({
 			'error': 'Invalid user id',
 			'code': 18
@@ -537,7 +536,7 @@ exports.updateUser = function(req, res) {
 		//check for unique user name validation
 		exports.getAllUsers({
 			'_id': {
-				$ne: new BSON.ObjectID(uid)
+				$ne: new mongo.ObjectID(uid)
 			},
 			'name': new RegExp("^" + user.name + "$", "i")
 		}, {}, function(item) {
@@ -562,7 +561,7 @@ exports.updateUser = function(req, res) {
 function updateUser(uid, user, res) {
 	db.collection(usersCollection, function(err, collection) {
 		collection.update({
-			'_id': new BSON.ObjectID(uid)
+			'_id': new mongo.ObjectID(uid)
 		}, {
 			$set: user
 		}, {
@@ -574,10 +573,10 @@ function updateUser(uid, user, res) {
 					'code': 10
 				});
 			} else {
-				if (result) {
+				if (result && result.result && result.result.n == 1) {
 					db.collection(usersCollection, function(err, collection) {
 						collection.findOne({
-							'_id': new BSON.ObjectID(uid)
+							'_id': new mongo.ObjectID(uid)
 						}, function(err, user) {
 							res.send(user);
 						});
@@ -610,7 +609,7 @@ function updateUser(uid, user, res) {
  *     }
  **/
 exports.removeUser = function(req, res) {
-	if (!BSON.ObjectID.isValid(req.params.uid)) {
+	if (!mongo.ObjectID.isValid(req.params.uid)) {
 		res.status(401).send({
 			'error': 'Invalid user id',
 			'code': 18
@@ -632,7 +631,7 @@ exports.removeUser = function(req, res) {
 	var uid = req.params.uid;
 	db.collection(usersCollection, function(err, collection) {
 		collection.remove({
-			'_id': new BSON.ObjectID(uid)
+			'_id': new mongo.ObjectID(uid)
 		}, function(err, result) {
 			if (err) {
 				res.status(500).send({
@@ -640,7 +639,7 @@ exports.removeUser = function(req, res) {
 					'code': 10
 				});
 			} else {
-				if (result) {
+				if (result && result.result && result.result.n == 1) {
 					res.send({
 						'user_id': uid
 					});
@@ -660,7 +659,7 @@ exports.updateUserTimestamp = function(uid, callback) {
 
 	db.collection(usersCollection, function(err, collection) {
 		collection.update({
-			'_id': new BSON.ObjectID(uid)
+			'_id': new mongo.ObjectID(uid)
 		}, {
 			$set: {
 				timestamp: +new Date()

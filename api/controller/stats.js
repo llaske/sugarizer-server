@@ -3,8 +3,7 @@
 var mongo = require('mongodb');
 
 var Server = mongo.Server,
-	Db = mongo.Db,
-	BSON = require('bson').BSONPure;
+	Db = mongo.Db;
 
 var server;
 var db;
