@@ -53,7 +53,7 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
     sudo apt-get install mongodb
     sudo mkdir -p /data/db
 
-**Install Sugarizer Client and Server**: If need, you could update sugarizer-server/sugarizer.ini file (update port for web, mongodb or presence)
+**Install Sugarizer Client and Server**: If need, you could update sugarizer-server/sugarizer.ini file (update port for web, mongodb or presence, see below)
 
     sudo apt-get install git
     cd /home/root
@@ -67,18 +67,22 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
     sudo mongod --fork --port 27018 --logpath /home/root/mongo.log
     sudo nohup node sugarizer.js > /home/root/sugarizer.log &
 
+*Warning:* If your server had an unclean shutdown on previous boot,  MongoDB could not start correctly telling that some files are locked. In that case, launch first:
+
+	sudo mongod --repair
 
 **Check your install**: To check your install, run "http://127.0.0.1:8080" in your browser:
 
-* you should see the home with all activities,
-* once a new user created, go to Journal view, you should see at the bottom of the screen the two icons to switch to private/shared journal,
+* once a new user created, you should see the home with all activities,
+* go to Journal view, you should see at the bottom of the screen the two icons to switch to private/shared journal,
 * go to the neighborhood view, you should see one icon for the server and one for you.
 
 
 ## Server settings
 
-If needed, Sugarizer Server settings could be changed using the [sugarizer.ini](env/sugarizer.ini) config file (you could use another name for this file: just pass the new name
-as [sugarizer.js](sugarizer.js) parameter).
+Sugarizer settings are load by default from file [env/sugarizer.ini](env/sugarizer.ini). You could change the name of this file by changing the value of environment variable ``NODE_ENV``. So if the ``NODE_ENV`` variable is set to ``production``, Sugarizer will try to load ``env/production.ini`` file.
+
+Following is the typical content of Sugarizer Server settings file:
 
 
 	[information]
@@ -128,7 +132,7 @@ The **[web]** section describe the settings of the node.js process. By default, 
 
 The **[security]** section regroup security settings. `min_password_size` is the minimum number of characters for the password. `max_age` is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours). Parameters `https`, `certificate_file`, `key_file` and `strict_ssl` are explain above.
 
-The **[client]** indicate the place where is located Sugarizer Client. Sugarizer Client is need by the server. WARNING: currently, only the **dev** branch of Sugarizer repository works with Sugarizer Server.
+The **[client]** indicate the place where is located Sugarizer Client. Sugarizer Client is need by the server.
 
 The **[presence]** section describe the settings of the presence server. By default, a web socket is created on port 8039. You need to change this value if you want to use another port.
 
