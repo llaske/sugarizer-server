@@ -39,7 +39,7 @@ After that, go to the Sugarizer Server folder and launch
 
 Your Sugarizer server will start automatically and will be accessible on http://127.0.0.1:8080 and your public IP. The database will be persisted inside the folder docker/db.
 
-## Running the server using the classic way
+## Running using the classic way
 
 To run Sugarizer Server **without Docker**, follow the step behind. Commands are shown from a new Debian Linux machine and could be different for other platforms or for an already installed machine:
 
@@ -76,6 +76,15 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
 * once a new user created, you should see the home with all activities,
 * go to Journal view, you should see at the bottom of the screen the two icons to switch to private/shared journal,
 * go to the neighborhood view, you should see one icon for the server and one for you.
+
+
+## Running from a Raspberry Pi
+
+To deploy Sugarizer Server from a Raspberry Pi, a specific packaging name [Sugarizer Schoolbox](https://github.com/llaske/sugarizer-school-box) is available [here](https://github.com/llaske/sugarizer-school-box).
+
+## Running from the cloud
+
+You could install on any existing cloud platform (Amazon, Micrsoft Azure, Google Cloud Platform, ...). Detail of settings for Google Cloud Platform is available [here](deploytoGCP.md). 
 
 
 ## Server settings
