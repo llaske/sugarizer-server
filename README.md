@@ -84,7 +84,7 @@ To deploy Sugarizer Server from a Raspberry Pi, a specific packaging name [Sugar
 
 ## Running from the cloud
 
-You could install on any existing cloud platform (Amazon, Micrsoft Azure, Google Cloud Platform, ...). Detail of settings for Google Cloud Platform is available [here](deploytoGCP.md). 
+You could install on any existing cloud platform (Amazon, Micrsoft Azure, Google Cloud Platform, ...). Detail of settings for Google Cloud Platform is available [here](docs/deploytoGCP.md). 
 
 
 ## Server settings
