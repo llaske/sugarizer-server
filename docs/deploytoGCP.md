@@ -30,10 +30,17 @@ Enable billing for the VM. Create Instance and allow HTTP and HTTPS. You can cho
 
 ![](images/9.png)
 
+![](images/10.png)
 
 *Step 6 :* Ingress Firewall Rule.
 
-![](images/10.png)
-
-
 To allow incoming http requests to our vm , we need to add a firewall rule. Click on 3 dashes in the top-left corner. Scroll down the list and  hover on “VPC network” and then click “Firewall rules”. click on “create firewall rule” and make settings same as the screenshots below.
+
+![](images/11.png)
+
+![](images/12.png)
+
+*Step 7 :* Copy the External IP of the vm (Suppose 35.227.60.150) , Sugarizer will be accessible at 35.227.60.150:8080.
+
+
+
