@@ -23,11 +23,14 @@
 	"devDependencies": {
 		"chai": "*",
 		"chai-http": "*",
+		"nodemon": "*",
+		"apidoc": "*",
 		"mocha": "*"
 	},
 	"scripts": {
 		"test": "mocha api/test/",
 		"docs": "apidoc -i api/controller -i dashboard/helper -o docs/www/",
-		"start": "node sugarizer.js"
+		"start": "node sugarizer.js",
+		"start:watch": "nodemon sugarizer.js"
 	}
 }
