@@ -1,10 +1,10 @@
 // classrooms handling
 
-var mongo = require('mongodb'),
-	users = require('./users');
+var mongo = require("mongodb"),
+  users = require("./users");
 
 var Server = mongo.Server,
-	Db = mongo.Db;
+  Db = mongo.Db;
 
 var server;
 var db;
@@ -13,26 +13,26 @@ var classroomsCollection;
 
 // Init database
 exports.init = function(settings, callback) {
-	classroomsCollection = settings.collections.classrooms;
-	server = new Server(settings.database.server, settings.database.port, {
-		auto_reconnect: true
-	});
-	db = new Db(settings.database.name, server, {
-		w: 1
-	});
+  classroomsCollection = settings.collections.classrooms;
+  server = new Server(settings.database.server, settings.database.port, {
+    auto_reconnect: true
+  });
+  db = new Db(settings.database.name, server, {
+    w: 1
+  });
 
-	db.open(function(err, db) {
-		if (err) {}
-		if (callback) callback();
-	});
-}
-
+  db.open(function(err, db) {
+    if (err) {
+    }
+    if (callback) callback();
+  });
+};
 
 /**
  * @api {post} api/v1/stats Add classroom
  * @apiName Addclassroom
  * @apiDescription Add classroom in the database. Returns the inserted classroom.
- * @apiGroup Classroom
+ * @apiGroup Classrooms
  * @apiVersion 1.0.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
@@ -63,47 +63,49 @@ exports.init = function(settings, callback) {
  *    ]
  *
  **/
-exports.addClassroom = function(req, res) { 
+exports.addClassroom = function(req, res) {
+  //validate
+  if (!req.body.classroom) {
+    res.status(401).send({
+      error: "Classroom object not defined!",
+      code: 22
+    });
+    return;
+  }
 
-	//validate
-	if (!req.body.classroom) {
-		res.status(401).send({
-			'error': 'Classroom object not defined!',
-			'code': 22
-		});
-		return;
-	}
+  //parse user details
+  var classroom = JSON.parse(req.body.classroom);
 
-	//parse user details
-	var classroom = JSON.parse(req.body.classroom);
+  //add timestamp & language
+  classroom.created_time = +new Date();
+  classroom.timestamp = +new Date();
 
-	//add timestamp & language
-	classroom.created_time = +new Date();
-	classroom.timestamp = +new Date();
-
-	// store
-	db.collection(classroomsCollection, function(err, collection) {
-		collection.insert(classroom, {
-			safe: true
-		}, function(err, result) {
-			if (err) {
-				res.status(500).send({
-					'error': 'An error has occurred',
-					'code': 10
-				});
-			} else {
-				res.send(result.ops[0]);
-			}
-		});
-	});
-}
-
+  // store
+  db.collection(classroomsCollection, function(err, collection) {
+    collection.insert(
+      classroom,
+      {
+        safe: true
+      },
+      function(err, result) {
+        if (err) {
+          res.status(500).send({
+            error: "An error has occurred",
+            code: 10
+          });
+        } else {
+          res.send(result.ops[0]);
+        }
+      }
+    );
+  });
+};
 
 /**
  * @api {delete} api/v1/classroom Remove classroom by id
  * @apiName RemoveClassroom
  * @apiDescription Remove the classroom by id.
- * @apiGroup Classroom
+ * @apiGroup Classrooms
  * @apiVersion 1.0.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
@@ -116,40 +118,43 @@ exports.addClassroom = function(req, res) {
  *       "id": "5569f4b019e0b4c9525b3c97"
  *     }
  **/
-exports.removeClassroom = function(req, res) { 
-	//validate
-	if (!mongo.ObjectID.isValid(req.params.classid)) {
-		res.status(401).send({
-			'error': 'Invalid classroom id',
-			'code': 23
-		});
-		return;
-	} 
+exports.removeClassroom = function(req, res) {
+  //validate
+  if (!mongo.ObjectID.isValid(req.params.classid)) {
+    res.status(401).send({
+      error: "Invalid classroom id",
+      code: 23
+    });
+    return;
+  }
 
-	db.collection(classroomsCollection, function(err, collection) {
-		collection.remove({
-			'_id': new mongo.ObjectID(req.params.classid)
-		}, function(err, result) {
-			if (err) {
-				res.status(500).send({
-					'error': 'An error has occurred',
-					'code': 10
-				});
-			} else {
-				if (result && result.result && result.result.n == 1) {
-					res.send({
-						'id': req.params.classid
-					});
-				} else {
-					res.status(401).send({
-						'error': 'Inexisting classroom id',
-						'code': 23
-					});
-				} 
-			}
-		});
-	});
-}
+  db.collection(classroomsCollection, function(err, collection) {
+    collection.remove(
+      {
+        _id: new mongo.ObjectID(req.params.classid)
+      },
+      function(err, result) {
+        if (err) {
+          res.status(500).send({
+            error: "An error has occurred",
+            code: 10
+          });
+        } else {
+          if (result && result.result && result.result.n == 1) {
+            res.send({
+              id: req.params.classid
+            });
+          } else {
+            res.status(401).send({
+              error: "Inexisting classroom id",
+              code: 23
+            });
+          }
+        }
+      }
+    );
+  });
+};
 
 /**
  * @api {get} api/v1/classrooms/ Get all classrooms
@@ -192,44 +197,56 @@ exports.removeClassroom = function(req, res) {
  *     }
  *    }
  **/
-exports.findAll = function(req, res) { 
+exports.findAll = function(req, res) {
+  //prepare condition
+  var query = {};
+  query = addQuery("name", req.query, query);
 
-	//prepare condition
-	var query = {};
-	query = addQuery('name', req.query, query);
+  // add filter and pagination
+  db.collection(classroomsCollection, function(err, collection) {
+    //count data
+    collection.count(query, function(err, count) {
+      //define var
+      var params = JSON.parse(JSON.stringify(req.query));
+      var route = req.route.path;
+      var options = getOptions(req, count, "+name");
 
-	// add filter and pagination
-	db.collection(classroomsCollection, function(err, collection) {
+      //get data
+      collection.find(query, {}, options).toArray(function(err, classrooms) {
+        //add pagination
+        var data = {
+          classrooms: classrooms,
+          offset: options.skip,
+          limit: options.limit,
+          total: options.total,
+          sort: options.sort[0][0] + "(" + options.sort[0][1] + ")",
+          links: {
+            prev_page:
+              options.skip - options.limit >= 0
+                ? formPaginatedUrl(
+                    route,
+                    params,
+                    options.skip - options.limit,
+                    options.limit
+                  )
+                : undefined,
+            next_page:
+              options.skip + options.limit < options.total
+                ? formPaginatedUrl(
+                    route,
+                    params,
+                    options.skip + options.limit,
+                    options.limit
+                  )
+                : undefined
+          }
+        };
 
-		//count data
-		collection.count(query, function(err, count) {
-
-			//define var
-			var params = JSON.parse(JSON.stringify(req.query));
-			var route = req.route.path;
-			var options = getOptions(req, count, "+name");
-
-			//get data
-			collection.find(query, {}, options).toArray(function(err,classrooms) {
-
-				//add pagination
-				var data = {
-					'classrooms': classrooms,
-					'offset': options.skip,
-					'limit': options.limit,
-					'total': options.total,
-					'sort': (options.sort[0][0] + '(' + options.sort[0][1] + ')'),
-					'links': {
-						'prev_page': ((options.skip - options.limit) >= 0) ? formPaginatedUrl(route, params, (options.skip - options.limit), options.limit) : undefined,
-						'next_page': ((options.skip + options.limit) < options.total) ? formPaginatedUrl(route, params, (options.skip + options.limit), options.limit) : undefined,
-					},
-				}
-
-				// Return
-				res.send(data);
-			});
-		})
-	});
+        // Return
+        res.send(data);
+      });
+    });
+  });
 };
 
 /**
@@ -295,40 +312,44 @@ exports.findAll = function(req, res) {
  *      }
  **/
 exports.findById = function(req, res) {
-	if (!mongo.ObjectID.isValid(req.params.classid)) {
-		res.status(401).send({
-			'error': 'Invalid classroom id',
-			'code': 23
-		});
-		return;
-	}
-	db.collection(classroomsCollection, function(err, collection) {
-		collection.findOne({
-			'_id': new mongo.ObjectID(req.params.classid)
-		}, function(err, classroom) {
+  if (!mongo.ObjectID.isValid(req.params.classid)) {
+    res.status(401).send({
+      error: "Invalid classroom id",
+      code: 23
+    });
+    return;
+  }
+  db.collection(classroomsCollection, function(err, collection) {
+    collection.findOne(
+      {
+        _id: new mongo.ObjectID(req.params.classid)
+      },
+      function(err, classroom) {
+        if (!classroom) {
+          res.status(401).send({});
+          return;
+        }
 
-			if(!classroom) {
-				res.status(401).send({});
-				return;
-			}
+        // get student mappings
+        users.getAllUsers(
+          {
+            _id: {
+              $in: classroom.students.map(id => new mongo.ObjectID(id))
+            }
+          },
+          {},
+          function(users) {
+            // append students
+            classroom.students = users;
 
-			// get student mappings
-			users.getAllUsers({
-				'_id': {
-					$in: classroom.students.map((id) => new mongo.ObjectID(id))
-				}
-			}, {}, function(users) {
-				
-				// append students
-				classroom.students = users;
-				
-				// return
-				res.send(classroom);
-			});
-		});
-	});
+            // return
+            res.send(classroom);
+          }
+        );
+      }
+    );
+  });
 };
-
 
 /**
  * @api {put} api/v1/classrooms/:id Update classroom
@@ -393,136 +414,144 @@ exports.findById = function(req, res) {
  *      }
  **/
 exports.updateClassroom = function(req, res) {
-	if (!mongo.ObjectID.isValid(req.params.classid)) {
-		res.status(401).send({
-			'error': 'Invalid classroom id',
-			'code': 23
-		});
-		return;
-	}
+  if (!mongo.ObjectID.isValid(req.params.classid)) {
+    res.status(401).send({
+      error: "Invalid classroom id",
+      code: 23
+    });
+    return;
+  }
 
-	//validate
-	if (!req.body.classroom) {
-		res.status(401).send({
-			'error': 'Classroom object not defined!',
-			'code': 22
-		});
-		return;
-	}
+  //validate
+  if (!req.body.classroom) {
+    res.status(401).send({
+      error: "Classroom object not defined!",
+      code: 22
+    });
+    return;
+  }
 
-	var classid = req.params.classid;
-	var classroom = JSON.parse(req.body.classroom);
+  var classid = req.params.classid;
+  var classroom = JSON.parse(req.body.classroom);
 
-	//add timestamp & language
-	classroom.timestamp = +new Date();
+  //add timestamp & language
+  classroom.timestamp = +new Date();
 
-	//update the classroom
-	db.collection(classroomsCollection, function(err, collection) {
-		collection.update({
-			'_id': new mongo.ObjectID(classid)
-		}, {
-			$set: classroom
-		}, {
-			safe: true
-		}, function(err, result) {
-			if (err) {
-				res.status(500).send({
-					'error': 'An error has occurred',
-					'code': 10
-				});
-			} else {
+  //update the classroom
+  db.collection(classroomsCollection, function(err, collection) {
+    collection.update(
+      {
+        _id: new mongo.ObjectID(classid)
+      },
+      {
+        $set: classroom
+      },
+      {
+        safe: true
+      },
+      function(err, result) {
+        if (err) {
+          res.status(500).send({
+            error: "An error has occurred",
+            code: 10
+          });
+        } else {
+          if (result && result.result && result.result.n == 1) {
+            collection.findOne(
+              {
+                _id: new mongo.ObjectID(classid)
+              },
+              function(err, classroomResponse) {
+                // get student mappings
+                users.getAllUsers(
+                  {
+                    _id: {
+                      $in: classroomResponse.students.map(
+                        id => new mongo.ObjectID(id)
+                      )
+                    }
+                  },
+                  {},
+                  function(users) {
+                    // append students
+                    classroomResponse.students = users;
 
-				if (result && result.result && result.result.n == 1) {
-					collection.findOne({
-						'_id': new mongo.ObjectID(classid)
-					}, function(err, classroomResponse) {
-						// get student mappings
-						users.getAllUsers({
-							'_id': {
-								$in: classroomResponse.students.map((id) => new mongo.ObjectID(id))
-							}
-						}, {}, function(users) {
-
-							// append students
-							classroomResponse.students = users;
-							
-							// return
-							res.send(classroomResponse);
-						});
-					});
-					
-				} else {
-					res.status(401).send({
-						'error': 'Inexisting classroom id',
-						'code': 23
-					});
-				} 
-				
-			}
-		});
-	});
-}
+                    // return
+                    res.send(classroomResponse);
+                  }
+                );
+              }
+            );
+          } else {
+            res.status(401).send({
+              error: "Inexisting classroom id",
+              code: 23
+            });
+          }
+        }
+      }
+    );
+  });
+};
 
 //private function for filtering and sorting
 function getOptions(req, count, def_sort) {
+  //prepare options
+  var sort_val = typeof req.query.sort === "string" ? req.query.sort : def_sort;
+  var sort_type = sort_val.indexOf("-") == 0 ? "desc" : "asc";
+  var options = {
+    sort: [[sort_val.substring(1), sort_type]],
+    skip: req.query.offset || 0,
+    total: count,
+    limit: req.query.limit || 10
+  };
 
-	//prepare options
-	var sort_val = (typeof req.query.sort === "string" ? req.query.sort : def_sort);
-	var sort_type = sort_val.indexOf("-") == 0 ? 'desc' : 'asc';
-	var options = {
-		sort: [
-			[sort_val.substring(1), sort_type]
-		],
-		skip: req.query.offset || 0,
-		total: count,
-		limit: req.query.limit || 10
-	}
+  //cast to int
+  options.skip = parseInt(options.skip);
+  options.limit = parseInt(options.limit);
 
-	//cast to int
-	options.skip = parseInt(options.skip);
-	options.limit = parseInt(options.limit);
-
-	//return
-	return options;
+  //return
+  return options;
 }
 
 function addQuery(filter, params, query, default_val) {
+  //check default case
+  query = query || {};
 
-	//check default case
-	query = query || {};
+  //validate
+  if (
+    typeof params[filter] != "undefined" &&
+    typeof params[filter] === "string"
+  ) {
+    if (filter == "q") {
+      query["name"] = {
+        $regex: new RegExp(params[filter], "i")
+      };
+    } else {
+      query[filter] = {
+        $regex: new RegExp("^" + params[filter] + "$", "i")
+      };
+    }
+  } else {
+    //default case
+    if (typeof default_val != "undefined") {
+      query[filter] = default_val;
+    }
+  }
 
-	//validate
-	if (typeof params[filter] != "undefined" && typeof params[filter] === "string") {
-
-		if (filter == 'q') {
-			query['name'] = {
-				$regex: new RegExp(params[filter], "i")
-			};
-		} else {
-			query[filter] = {
-				$regex: new RegExp("^" + params[filter] + "$", "i")
-			};
-		}
-	} else {
-		//default case
-		if (typeof default_val != "undefined") {
-			query[filter] = default_val;
-		}
-	}
-
-	//return
-	return query;
+  //return
+  return query;
 }
 
 //form query params
 function formPaginatedUrl(route, params, offset, limit) {
-	//set params
-	params.offset = offset;
-	params.limit = limit;
-	var str = [];
-	for (var p in params)
-		if (params.hasOwnProperty(p)) {
-			str.push((p) + "=" + (params[p]));
-		}
-	return '?' + str.join("&");
+  //set params
+  params.offset = offset;
+  params.limit = limit;
+  var str = [];
+  for (var p in params)
+    if (params.hasOwnProperty(p)) {
+      str.push(p + "=" + params[p]);
+    }
+  return "?" + str.join("&");
 }
