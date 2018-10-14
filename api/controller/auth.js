@@ -169,6 +169,19 @@ exports.updateTimestamp = function(uid, callback) {
 	users.updateUserTimestamp(uid, callback)
 }
 
+//check admin
+exports.checkAdmin = function(req, res, next) {
+	if (req.user.role == 'student') {
+		if (req.user._id != req.query.uid) {
+			return res.status(401).send({
+				'error': 'You don\'t have permission to perform this action',
+				'code': 19
+			});
+		}
+	}
+	next();
+}
+
 // private method
 function genToken(user, age) {
 	var expires = expiresIn(age);

@@ -2,6 +2,7 @@
 var activities = require('./controller/activities'),
 	journal = require('./controller/journal'),
 	users = require('./controller/users'),
+	classrooms = require('./controller/classrooms'),
 	auth = require('./controller/auth'),
 	stats = require('./controller/stats'),
 	validate = require('./middleware/validateRequest'),
@@ -19,6 +20,7 @@ module.exports = function(app, ini) {
 	users.init(ini);
 	presence.init(ini);
 	stats.init(ini);
+	classrooms.init(ini);
 
 	// Routes that can be accessed by any one
 	app.get('/api', common.getAPIInfo);
@@ -48,6 +50,13 @@ module.exports = function(app, ini) {
 	app.post("/api/v1/journal/:jid", journal.addEntryInJournal);
 	app.put("/api/v1/journal/:jid", journal.updateEntryInJournal);
 	app.delete("/api/v1/journal/:jid", journal.removeInJournal);
+
+	// Register classroom API
+	app.get("/api/v1/classrooms", auth.checkAdmin, classrooms.findAll);
+	app.get("/api/v1/classrooms/:classid", auth.checkAdmin, classrooms.findById);
+	app.post("/api/v1/classrooms", auth.checkAdmin, classrooms.addClassroom);
+	app.put("/api/v1/classrooms/:classid", auth.checkAdmin, classrooms.updateClassroom);
+	app.delete("/api/v1/classrooms/:classid", auth.checkAdmin, classrooms.removeClassroom);
 
 	// If no route is matched by now, it must be a 404
 	app.use('/api/v1/*', function(req, res, next) {
