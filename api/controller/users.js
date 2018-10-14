@@ -1,6 +1,7 @@
 // User handling
 
 var mongo = require('mongodb'),
+	classroom = require('./classrooms'),
 	journal = require('./journal');
 
 var Server = mongo.Server,
@@ -170,6 +171,7 @@ exports.findAll = function(req, res) {
 	//prepare condition
 	var query = {};
 	query = addQuery('name', req.query, query);
+	query = addQuery('classid', req.query, query);
 	query = addQuery('language', req.query, query);
 	query = addQuery('role', req.query, query, 'student');
 	query = addQuery('q', req.query, query);
@@ -178,7 +180,7 @@ exports.findAll = function(req, res) {
 			'$gte': parseInt(req.query.stime)
 		};
 	}
-
+	console.log(query)
 	// add filter and pagination
 	db.collection(usersCollection, function(err, collection) {
 
@@ -282,6 +284,10 @@ function addQuery(filter, params, query, default_val) {
 		if (filter == 'q') {
 			query['name'] = {
 				$regex: new RegExp(params[filter], "i")
+			};
+		} else if (filter == 'classid') {
+			query['_id'] = {
+				$in: params[filter].split(',').map(id => new mongo.ObjectID(id))
 			};
 		} else {
 			query[filter] = {

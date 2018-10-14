@@ -200,7 +200,7 @@ exports.removeClassroom = function(req, res) {
 exports.findAll = function(req, res) {
   //prepare condition
   var query = {};
-  query = addQuery("name", req.query, query);
+  query = addQuery("q", req.query, query);
 
   // add filter and pagination
   db.collection(classroomsCollection, function(err, collection) {

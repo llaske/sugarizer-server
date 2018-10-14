@@ -58,6 +58,16 @@
 					<p data-l10n-id="stats">Statistics</p>
 				</a>
 			</li>
+			<%if (module == 'classrooms') { %>
+				<li class="active">
+			<% } else {%>
+				<li>
+			<% }%>
+				<a onclick="jumpTo('/dashboard/classrooms')">
+					<i class="custom-icon stats-icon"></i>
+					<p data-l10n-id="classrooms">Classrooms</p>
+				</a>
+			</li>
 		</ul>
 	</div>
 </div>
