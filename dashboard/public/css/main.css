@@ -144,6 +144,10 @@
   background-image: url('/public/img/stat-icon.svg')
 }
 
+.classroom-icon {
+  background-image: url('/public/img/classroom-icon.svg')
+}
+
 .material-icons.dp24 {
   font-size: 24px;
   line-height: 36px;
