@@ -5,6 +5,7 @@ var authController = require('./controller/auth'),
 	journalController = require('./controller/journal'),
 	dashboardController = require('./controller/dashboard'),
 	graphController = require('./controller/graph'),
+	classroomsController = require('./controller/classrooms'),
 	statsController = require('./controller/stats');
 
 module.exports = function(app, ini) {
@@ -16,6 +17,7 @@ module.exports = function(app, ini) {
 	journalController.init(ini);
 	dashboardController.init(ini);
 	statsController.init(ini);
+	classroomsController.init(ini);
 
 	// add routes
 	app.get('/dashboard/login', authController.getLogin);
@@ -37,6 +39,14 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/stats', authController.validateSession, statsController.index);
 	app.get('/dashboard/stats/graph', authController.validateSession, statsController.getGraph);
 	app.get('/dashboard/graph', authController.validateSession, graphController.getGraph);
+
+	// classrooms routes
+	app.get('/dashboard/classrooms', authController.validateSession, classroomsController.index);
+	app.get('/dashboard/classrooms/add', authController.validateSession, classroomsController.addClassroom);
+	app.post('/dashboard/classrooms/add', authController.validateSession, classroomsController.addClassroom);
+	app.get('/dashboard/classrooms/edit/:classid', authController.validateSession, classroomsController.editClassroom);
+	app.post('/dashboard/classrooms/edit/:classid', authController.validateSession, classroomsController.editClassroom);
+	// app.get('/dashboard/classrooms/delete/:classid', authController.validateSession, classroomsController.deleteClassroom);
 
 
 	// If no route is matched by now, it must be a 404

@@ -10,19 +10,30 @@
               <div class="col-md-12">
                   <div class="card">
                       <form method="get" id="user-form">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                           <div class="form-group form-black label-floating is-empty">
                               <input data-l10n-id="john" placeholder="John..." class="form-control" name="username" value="<% if(query.q){ %><%= query.q %><% } %>" type="text">
                               <span class="material-input"></span>
                           </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                           <div class="form-group form-black label-floating is-empty">
                               <select class="form-control" name="role">
                                  <option data-l10n-id="student" value="student" <% if(query.role=='student'){ %>selected="selected"<% } %> >Student</option>
                                  <option data-l10n-id="admin" value="admin" <% if(query.role=='admin'){ %>selected="selected"<% } %> >Admin</option>
                               </select>
-															<script>$('#user-form [name="role"]').select2()</script>
+							  <script>$('#user-form [name="role"]').select2().on("change", () => show_class_fields())</script>
+                          </div>
+                        </div>
+                        <div class="col-md-2">
+                          <div class="form-group form-black label-floating is-empty classroom_input">
+                                <select class="form-control" name="classid">
+                                    <option value="" selected="selected" >None</option>
+                                    <% for(var i=0; i < classrooms.length; i++) { %>
+                                        <option value="<%- classrooms[i].students.join(',') %>" <% if(query.classid== classrooms[i].students.join(',')){ %>selected="selected"<% } %> ><%= classrooms[i].name %></option>
+                                    <% } %>
+                                </select>
+                              <script> $('#user-form [name="classid"]').select2(); </script>
                           </div>
                         </div>
 						<script>
@@ -101,3 +112,16 @@
 	</div>
 </div>
 <% include includes/footer %>
+<script>
+function show_class_fields() {
+    console.log($('#user-form [name="role"]').select2('data')[0].id)
+    if($('#user-form [name="role"]').select2('data')[0].id == 'admin'){
+        $('.classroom_input').addClass('hide');
+        $('#user-form [name="classid"]').val('').trigger('change');
+
+    }else{
+        $('.classroom_input').removeClass('hide');
+    }
+}
+show_class_fields('<% if(typeof query == "object"){ %><%= query.role || "student" %><% } %>')
+</script>
