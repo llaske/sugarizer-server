@@ -12,7 +12,7 @@
                       <form method="get" id="user-form">
                         <div class="col-md-3">
                           <div class="form-group form-black label-floating is-empty">
-                              <input data-l10n-id="Class-A" placeholder="Class-A..." class="form-control" name="classroom" value="<% if(query.q){ %><%= query.q %><% } %>" type="text">
+                              <input placeholder="Class-A..." class="form-control" name="classroom" value="<% if(query.q){ %><%= query.q %><% } %>" type="text">
                               <span class="material-input"></span>
                           </div>
                         </div>
@@ -67,9 +67,9 @@
                                         <td><%= data.classrooms[i].students.length %></td>
                                         <td><%= moment(data.classrooms[i].timestamp).calendar() %></td>
                                         <td>
-										  <a data-l10n-id="viewStudents" title="View Students" href="users?role=student&classid=<%- data.classrooms[i].students.join(',') %>"><span class="journal-icon2"></span></a>
-                                          <a data-l10n-id="editClassroom" title="Edit Classroom" href="classrooms/edit/<%= data.classrooms[i]._id %>"><i class="material-icons text-muted">edit</i></a>
-                                          <a data-l10n-id="deleteClassroom" title="Delete Classroom" href="classrooms/delete/<%= data.classrooms[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom',{classroom:'<%= data.classrooms[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
+										  <a title="View Students" href="users?role=student&classid=<%- data.classrooms[i].students.join(',') %>"><span class="journal-icon2"></span></a>
+                                          <a title="Edit Classroom" href="classrooms/edit/<%= data.classrooms[i]._id %>"><i class="material-icons text-muted">edit</i></a>
+                                          <a title="Delete Classroom" href="classrooms/delete/<%= data.classrooms[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom',{classroom:'<%= data.classrooms[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
                                         </td>
                                     </tr>
                                   <% } %>
