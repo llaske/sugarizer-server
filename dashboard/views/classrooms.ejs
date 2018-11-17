@@ -67,9 +67,13 @@
                                         <td><%= data.classrooms[i].students.length %></td>
                                         <td><%= moment(data.classrooms[i].timestamp).calendar() %></td>
                                         <td>
-										  <a title="View Students" href="users?role=student&classid=<%- data.classrooms[i].students.join(',') %>"><span class="journal-icon2"></span></a>
-                                          <a title="Edit Classroom" href="classrooms/edit/<%= data.classrooms[i]._id %>"><i class="material-icons text-muted">edit</i></a>
-                                          <a title="Delete Classroom" href="classrooms/delete/<%= data.classrooms[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom',{classroom:'<%= data.classrooms[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
+                                            <% if(data.classrooms[i].students.length > 0) { %>
+										        <a title="View Students" href="users?role=student&classid=<%- data.classrooms[i].students.join(',') %>"><span class="journal-icon2"></span></a>
+                                            <% } else { %>
+										        <a title="View Students" style="pointer-events: none;"><span class="journal-icon2" style="opacity: 0.4;"></span></a>
+                                            <% } %>
+                                            <a title="Edit Classroom" href="classrooms/edit/<%= data.classrooms[i]._id %>"><i class="material-icons text-muted">edit</i></a>
+                                            <a title="Delete Classroom" href="classrooms/delete/<%= data.classrooms[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom',{classroom:'<%= data.classrooms[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
                                         </td>
                                     </tr>
                                   <% } %>
