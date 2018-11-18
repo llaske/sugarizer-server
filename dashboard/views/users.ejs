@@ -30,7 +30,9 @@
                                 <select class="form-control" name="classid">
                                     <option value="" selected="selected" >None</option>
                                     <% for(var i=0; i < classrooms.length; i++) { %>
-                                        <option value="<%- classrooms[i].students.join(',') %>" <% if(query.classid== classrooms[i].students.join(',')){ %>selected="selected"<% } %> ><%= classrooms[i].name %></option>
+                                        <% if(classrooms[i].students && classrooms[i].students.length > 0) { %>
+                                            <option value="<%- classrooms[i].students.join(',') %>" <% if(query.classid== classrooms[i].students.join(',')){ %>selected="selected"<% } %> ><%= classrooms[i].name %></option>
+                                        <% } %>
                                     <% } %>
                                 </select>
                               <script> $('#user-form [name="classid"]').select2(); </script>

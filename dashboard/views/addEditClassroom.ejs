@@ -21,10 +21,51 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="form-group form-black label-floating">
+                                <div class="form-group form-black" style="margin-top: -15px;">
                                     <label class="control-label" data-l10n-id="students"></label>
-									<input class="form-control" name="students" value="<% if(typeof classroom == 'object'){ %><%= classroom.student %><% } %>" type="text">
-                                    <span class="material-input"></span>
+                                    <select id='searchable-select-students' multiple='multiple' name="students" class="form-control">
+                                        <% for(var i=0; i < classroom.students.length; i++) { %>
+                                            <option <% if(classroom.students[i].is_member) { %> selected <% } %> value='<%= classroom.students[i]._id %>'><%= classroom.students[i].name %></option>
+                                        <% } %>
+                                    </select>
+                                    <script type="text/javascript">
+                                        // run multiSelect
+                                        $('#searchable-select-students').multiSelect({
+                                            selectableHeader: "<input type='text' class='form-control' data-l10n-id='john.placeholder' autocomplete='off' placeholder='search students'>",
+                                            selectionHeader: "<input type='text' class='form-control' data-l10n-id='john.placeholder' autocomplete='off' placeholder='search students'>",
+                                            afterInit: function(ms){
+                                                var that = this,
+                                                    $selectableSearch = that.$selectableUl.prev(),
+                                                    $selectionSearch = that.$selectionUl.prev(),
+                                                    selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
+                                                    selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+
+                                                that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+                                                    .on('keydown', function(e){
+                                                    if (e.which === 40){
+                                                        that.$selectableUl.focus();
+                                                        return false;
+                                                    }
+                                                });
+
+                                                that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+                                                    .on('keydown', function(e){
+                                                    if (e.which == 40){
+                                                        that.$selectionUl.focus();
+                                                        return false;
+                                                    }
+                                                });
+                                            },
+                                            afterSelect: function(){
+                                                this.qs1.cache();
+                                                this.qs2.cache();
+                                            },
+                                            afterDeselect: function(){
+                                                this.qs1.cache();
+                                                this.qs2.cache();
+                                            }
+                                        });
+                                    </script>
                                 </div>
                             </div>
                         </div>

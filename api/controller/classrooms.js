@@ -331,17 +331,18 @@ exports.findById = function(req, res) {
         }
 
         // get student mappings
-        users.getAllUsers(
-          {
-            _id: {
-              $in: classroom.students.map(id => new mongo.ObjectID(id))
-            }
-          },
-          {},
-          function(users) {
-            // append students
-            classroom.students = users;
-
+        users.getAllUsers({
+          role: 'student'
+        }, {}, function(users) {
+            // append all students with selected flag
+            var studentList = classroom.students;
+            classroom.students = users.map(function(student){
+              student.is_member = false;
+              if(studentList.indexOf(student._id.toString()) > -1){
+                student.is_member = true;
+              }
+              return student;
+            });
             // return
             res.send(classroom);
           }
