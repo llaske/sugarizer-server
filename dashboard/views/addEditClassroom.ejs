@@ -76,9 +76,9 @@
                                     <select class="form-control" name="color" id="color-select2">
                                         <% for(var i=0; i< xocolors.length; i++){ %>
                                           <% if(typeof classroom == 'object' && typeof classroom.color == 'object' && xocolors[i].stroke == classroom.color.stroke && xocolors[i].fill == classroom.color.fill){ %>
-                                            <option selected="selected" data-stroke="<%= xocolors[i].stroke %>" data-fill="<%= xocolors[i].fill %>" value='<%- JSON.stringify(xocolors[i]) %>'></option>
+                                            <option selected="selected" data-stroke="<%= xocolors[i].stroke %>" data-icon="classroom-icon" data-fill="<%= xocolors[i].fill %>" value='<%- JSON.stringify(xocolors[i]) %>'></option>
                                           <% }else{ %>
-                                            <option data-stroke="<%= xocolors[i].stroke %>" data-fill="<%= xocolors[i].fill %>" value='<%- JSON.stringify(xocolors[i]) %>'></option>
+                                            <option data-stroke="<%= xocolors[i].stroke %>" data-icon="classroom-icon" data-fill="<%= xocolors[i].fill %>" value='<%- JSON.stringify(xocolors[i]) %>'></option>
                                           <% } %>
                                         <% } %>
                                     </select>

@@ -162,7 +162,11 @@ function formatColorField(state) {
 			<div class="fill">Fill - ' + $(state.element).data('fill') + '</div>\
 		</div>'
 	);
-	new icon().load("/public/img/owner-icon.svg", JSON.parse($(state.element).val()), id);
+	if ($(state.element).data('icon')) {
+		new icon().load("/public/img/"+$(state.element).data('icon')+".svg", JSON.parse($(state.element).val()), id);
+	} else {
+		new icon().load("/public/img/owner-icon.svg", JSON.parse($(state.element).val()), id);
+	}
 	return $state;
 }
 
