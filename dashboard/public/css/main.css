@@ -136,6 +136,16 @@
   float: left;
 }
 
+.student-icon {
+  cursor: pointer;
+  background-image: url('/public/img/student-icon.svg');
+  background-size: 24px;
+  height: 24px;
+  width: 24px;
+  display: block;
+  float: left;
+}
+
 .shutdown-icon {
   background-image: url('/public/img/system-shutdown.svg')
 }
