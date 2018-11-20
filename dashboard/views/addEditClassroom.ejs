@@ -24,8 +24,14 @@
                                 <div class="form-group form-black" style="margin-top: -15px;">
                                     <label class="control-label" data-l10n-id="students"></label>
                                     <select id='searchable-select-students' multiple='multiple' name="students" class="form-control">
-                                        <% for(var i=0; i < classroom.students.length; i++) { %>
-                                            <option <% if(classroom.students[i].is_member) { %> selected <% } %> value='<%= classroom.students[i]._id %>'><%= classroom.students[i].name %></option>
+                                        <% if(typeof classroom == 'object') { %>
+                                            <% for(var i=0; i < classroom.students.length; i++) { %>
+                                                <option <% if(classroom.students[i].is_member) { %> selected <% } %> value='<%= classroom.students[i]._id %>'><%= classroom.students[i].name %></option>
+                                            <% } %>
+                                        <% } else { %>
+                                            <% for(var i=0; i < students.length; i++) { %>
+                                                <option value='<%= students[i]._id %>'><%= students[i].name %></option>
+                                            <% } %>
                                         <% } %>
                                     </select>
                                     <script type="text/javascript">

@@ -1,6 +1,7 @@
 // include libraries
 var request = require('request'),
 	moment = require('moment'),
+	dashboard = require('./dashboard')
 	common = require('../helper/common'),
 	xocolors = require('../helper/xocolors')(),
 	emoji = require('../public/js/emoji');
@@ -110,13 +111,17 @@ exports.addClassroom = function(req, res) {
 		}
 
 	} else {
-		// send to classroom page
-		res.render('addEditClassroom', {
-			module: 'classrooms',
-			xocolors: xocolors,
-			moment: moment,
-			emoji: emoji,
-			account: req.session.user
+		//get all users
+		dashboard.getAllUsers(req, res, function(users) {
+			// send to classroom page
+			res.render('addEditClassroom', {
+				module: 'classrooms',
+				xocolors: xocolors,
+				moment: moment,
+				students: users.users,
+				emoji: emoji,
+				account: req.session.user
+			});
 		});
 	}
 };
