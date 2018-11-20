@@ -30,7 +30,7 @@
                                             <% } %>
                                         <% } else { %>
                                             <% for(var i=0; i < students.length; i++) { %>
-                                                <option <% if(students[i].is_member) { %> selected <% } %> value='<%= students[i]._id %>'><%= students[i].name %></option>
+                                                <option value='<%= students[i]._id %>'><%= students[i].name %></option>
                                             <% } %>
                                         <% } %>
                                     </select>

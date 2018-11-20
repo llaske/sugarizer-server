@@ -118,10 +118,7 @@ exports.addClassroom = function(req, res) {
 				module: 'classrooms',
 				xocolors: xocolors,
 				moment: moment,
-				students: users.users.map(user => {
-					user.is_member = false;
-					return user;
-				}),
+				students: users.users,
 				emoji: emoji,
 				account: req.session.user
 			});
