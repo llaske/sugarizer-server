@@ -1,7 +1,8 @@
 var jwt = require('jwt-simple'),
 	users = require('./users.js'),
 	mongo = require('mongodb'),
-	journal = require('./journal');
+	journal = require('./journal'),
+	common = require('../../dashboard/helper/common');
 
 
 
@@ -178,6 +179,22 @@ exports.checkAdmin = function(req, res, next) {
 				'code': 19
 			});
 		}
+	}
+	next();
+}
+exports.checkAdminOrLocal = function(req, res, next) {
+	var whishedRole = 'student';
+	if (req.body && req.body.user) {
+		var user = JSON.parse(req.body.user);
+		whishedRole = user.role.toLowerCase();
+	}
+	var ip = common.getClientIP(req);
+
+	if (whishedRole == 'admin' && ip != "::1") {
+		return res.status(401).send({
+			'error': 'You don\'t have permission to perform this action',
+			'code': 19
+		});
 	}
 	next();
 }

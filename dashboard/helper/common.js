@@ -59,6 +59,14 @@ exports.getHeaders = function(req) {
 	}
 }
 
+exports.getClientIP = function(req) {
+
+	return req.headers['x-forwarded-for'] ||
+		req.connection.remoteAddress ||
+		req.socket.remoteAddress ||
+		req.connection.socket.remoteAddress;
+}
+
 exports.getAPIUrl = function(req) {
 	return (ini.security.https ? 'https' : 'http' ) + "://localhost:" + ini.web.port + '/';
 }

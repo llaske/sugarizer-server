@@ -25,7 +25,7 @@ module.exports = function(app, ini) {
 	// Routes that can be accessed by any one
 	app.get('/api', common.getAPIInfo);
 	app.post('/auth/login', auth.login);
-	app.post('/auth/signup', auth.signup);
+	app.post('/auth/signup', auth.checkAdminOrLocal, auth.signup);
 
 	// Register activities list API
 	app.get("/api/v1/activities", activities.findAll);

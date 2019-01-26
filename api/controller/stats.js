@@ -1,5 +1,7 @@
 // stats handling
 
+var common = require('../../dashboard/helper/common');
+
 var mongo = require('mongodb');
 
 var Server = mongo.Server,
@@ -90,10 +92,10 @@ exports.addStats = function(req, res) {
 	//add client IP
 	if (stats.constructor === Array) {
 		for (var i = 0; i < stats.length; i++) {
-			stats[i].user_ip = getClientIP(req);
+			stats[i].user_ip = common.getClientIP(req);
 		}
 	} else {
-		stats.user_ip = getClientIP(req);
+		stats.user_ip = common.getClientIP(req);
 	}
 	db.collection(statsCollection, function(err, collection) {
 		collection.insert(stats, {
@@ -274,15 +276,6 @@ function addQuery(filter, params, query, default_val) {
 	//return
 	return query;
 }
-
-//get client IP
-function getClientIP(req) {
-
-	return req.headers['x-forwarded-for'] ||
-		req.connection.remoteAddress ||
-		req.socket.remoteAddress ||
-		req.connection.socket.remoteAddress;
-};
 
 //check active status of status api
 function isStatsActive(req, res) {
