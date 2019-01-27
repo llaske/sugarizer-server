@@ -189,7 +189,8 @@ exports.checkAdminOrLocal = function(req, res, next) {
 		whishedRole = user.role.toLowerCase();
 	}
 	var ip = common.getClientIP(req);
-	if (whishedRole == 'admin' && (ip != "::1" && ip != "::ffff:127.0.0.1")) {
+	var serverIp = common.getServerIP();
+	if (whishedRole == 'admin' && serverIp.indexOf(ip) == -1) {
 		return res.status(401).send({
 			'error': 'You don\'t have permission to perform this action',
 			'code': 19
