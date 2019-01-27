@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Add classroom handling in dashboard
 
+### Changed
+- Improved welcome message: banner, version, settings
+
 ### Fixed
 - Admin can signup from remote address
 - Client IP is wrong when coming from nginx

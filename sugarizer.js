@@ -2,6 +2,7 @@
 var express = require('express'),
 	http = require('http'),
 	https = require('https'),
+	fs = require('fs'),
 	settings = require('./config/settings'),
 	wait4db = require('./config/wait4db'),
 	common = require('./dashboard/helper/common');
@@ -36,8 +37,19 @@ wait4db.waitConnection(ini, function() {
 	}
 
 	// Start listening
+	var info = JSON.parse(fs.readFileSync("./package.json", 'utf-8'));
+	console.log("   _____                        _              ");
+	console.log("  / ____|                      (_)             ");
+	console.log(" | (___  _   _  __ _  __ _ _ __ _ _______ _ __ ");
+	console.log("  \\___ \\| | | |/ _` |/ _` | '__| |_  / _ \\ '__|");
+	console.log("  ____) | |_| | (_| | (_| | |  | |/ /  __/ |   ");
+	console.log(" |_____/ \\__,_|\\__, |\\__,_|_|  |_/___\\___|_|   ");
+	console.log("                __/ |                          ");
+	console.log("               |___/                           ");
+	console.log(info.description+" v"+info.version);
+	console.log("Settings file './env/"+(process.env.NODE_ENV ? process.env.NODE_ENV : 'sugarizer')+".ini'");
 	server.listen(ini.web.port);
-	console.log("Sugarizer Server is listening on"+(ini.security.https ? " secure":"")+" port " + ini.web.port + "...");
+	console.log("API is listening on"+(ini.security.https ? " secure":"")+" port " + ini.web.port + "...");
 });
 
 //export app for testing

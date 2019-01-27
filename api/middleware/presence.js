@@ -43,7 +43,7 @@ exports.init = function(settings) {
 	 	server = http.createServer(function(request, response) {});
 	 }
 	server.listen(settings.presence.port, function() {
-		console.log("Presence Server is listening on"+(settings.security.https ? " secure":"")+" port " + settings.presence.port + "...");
+		console.log("Presence is listening on"+(settings.security.https ? " secure":"")+" port " + settings.presence.port + "...");
 	});
 
 	/**
