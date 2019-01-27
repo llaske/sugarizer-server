@@ -5,6 +5,7 @@ var express = require('express'),
 	bodyParser = require('body-parser'),
 	expressSession = require('express-session'),
 	cookieParser = require('cookie-parser'),
+	logger = require('morgan'),
 	flash = require('express-flash'),
 	expressValidator = require('express-validator'),
 	cors = require('cors');
@@ -49,7 +50,7 @@ module.exports = function(app, ini) {
 
 	//logger
 	if (process.env.NODE_ENV !== 'test') {
-		app.use(express.logger('dev'));
+		app.use(logger('dev'));
 	}
 
 	// Handle CORS request
