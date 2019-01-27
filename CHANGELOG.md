@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Admin can signup from remote address
+- Client IP is wrong when coming from nginx
 
 
 ## [1.0.1] - 2018-07-14
