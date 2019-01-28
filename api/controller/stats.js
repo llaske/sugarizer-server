@@ -4,10 +4,6 @@ var common = require('../../dashboard/helper/common');
 
 var mongo = require('mongodb');
 
-var Server = mongo.Server,
-	Db = mongo.Db;
-
-var server;
 var db;
 var isActive = true
 
@@ -17,14 +13,13 @@ var statsCollection;
 exports.init = function(settings, callback) {
 	statsCollection = settings.collections.stats;
 	isActive = settings.statistics.active
-	server = new Server(settings.database.server, settings.database.port, {
-		auto_reconnect: true
-	});
-	db = new Db(settings.database.name, server, {
-		w: 1
-	});
+	var client = new mongo.MongoClient(
+		'mongodb://'+settings.database.server+':'+settings.database.port+'/'+settings.database.name,
+		{auto_reconnect: false, w:1, useNewUrlParser: true});
 
-	db.open(function(err, db) {
+	// Open the db
+	client.connect(function(err, client) {
+		db = client.db(settings.database.name);
 		if (err) {}
 		if (callback) callback();
 	});

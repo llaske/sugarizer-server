@@ -1,12 +1,6 @@
 // Handle to wait for db connection
 var mongo = require('mongodb');
 
-var Server = mongo.Server,
-	Db = mongo.Db;
-
-var server;
-var db;
-
 
 //- Utility functions
 
@@ -15,16 +9,17 @@ exports.waitConnection = function(settings, callback) {
 	var waitTime = settings.database.waitdb;
 	if (waitTime) {
 		var timer = setInterval(function() {
-			server = new Server(settings.database.server, settings.database.port, {auto_reconnect: false});
-			db = new Db(settings.database.name, server, {
-				w: 1
-			});
+
+			var client = new mongo.MongoClient(
+				'mongodb://'+settings.database.server+':'+settings.database.port+'/'+settings.database.name,
+				{auto_reconnect: false, w:1, useNewUrlParser: true});
 
 			// Open the db
-			db.open(function(err, db) {
+			client.connect(function(err, client) {
+				var db = client.db(settings.database.name);
 				if (!err) {
 					clearInterval(timer);
-					db.close();
+					client.close();
 					callback();
 				} else {
 					console.log("Waiting for DB...");

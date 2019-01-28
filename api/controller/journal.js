@@ -2,10 +2,7 @@
 var mongo = require('mongodb'),
 	users = require('./users');
 
-var Server = mongo.Server,
-	Db = mongo.Db;
 
-var server;
 var db;
 
 var journalCollection;
@@ -16,16 +13,16 @@ var shared = null;
 
 // Init database
 exports.init = function(settings, callback) {
-	journalCollection = settings.collections.journal;
-	server = new Server(settings.database.server, settings.database.port, {
-		auto_reconnect: true
-	});
-	db = new Db(settings.database.name, server, {
-		w: 1
-	});
 
 	// Open the journal collection
-	db.open(function(err, db) {
+	journalCollection = settings.collections.journal;
+	var client = new mongo.MongoClient(
+		'mongodb://'+settings.database.server+':'+settings.database.port+'/'+settings.database.name,
+		{auto_reconnect: false, w:1, useNewUrlParser: true});
+
+	// Open the db
+	client.connect(function(err, client) {
+		db = client.db(settings.database.name);
 		if (!err) {
 			db.collection(journalCollection, function(err, collection) {
 				// Get the shared journal collection
@@ -266,37 +263,39 @@ exports.findJournalContent = function(req, res) {
 
 	//get data
 	db.collection(journalCollection, function(err, collection) {
-		collection.aggregate(options, function(err, items) {
+		collection.aggregate(options, function(err, cursor) {
+			cursor.toArray(function(err, items) {
 
-			//check for errors
-			if (err) {
-				return res.status(500).send({
-					'error': err,
-					'code': 5
-				});
-			}
-
-			//define var
-			var params = JSON.parse(JSON.stringify(req.query));
-			var route = req.route.path;
-			var skip = parseInt(req.query.offset || 0);
-			var limit = parseInt(req.query.limit || 10);
-			var total = items.length;
-
-			//apply pagination
-			items = items.slice(skip, (skip + limit));
-
-			// Return
-			return res.send({
-				'entries': items,
-				'offset': skip,
-				'limit': limit,
-				'total': total,
-				'links': {
-					'prev_page': ((skip - limit) >= 0) ? formPaginatedUrl(route, params, (skip - limit), limit) : undefined,
-					'curr_page': formPaginatedUrl(route, params, (skip), limit),
-					'next_page': ((skip + limit) < total) ? formPaginatedUrl(route, params, (skip + limit), limit) : undefined,
+				//check for errors
+				if (err) {
+					return res.status(500).send({
+						'error': err,
+						'code': 5
+					});
 				}
+
+				//define var
+				var params = JSON.parse(JSON.stringify(req.query));
+				var route = req.route.path;
+				var skip = parseInt(req.query.offset || 0);
+				var limit = parseInt(req.query.limit || 10);
+				var total = items.length;
+
+				//apply pagination
+				items = items.slice(skip, (skip + limit));
+
+				// Return
+				return res.send({
+					'entries': items,
+					'offset': skip,
+					'limit': limit,
+					'total': total,
+					'links': {
+						'prev_page': ((skip - limit) >= 0) ? formPaginatedUrl(route, params, (skip - limit), limit) : undefined,
+						'curr_page': formPaginatedUrl(route, params, (skip), limit),
+						'next_page': ((skip + limit) < total) ? formPaginatedUrl(route, params, (skip + limit), limit) : undefined,
+					}
+				});
 			});
 		});
 	});
