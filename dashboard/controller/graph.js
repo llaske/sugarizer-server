@@ -3,7 +3,7 @@ var request = require('request'),
 	dashboard = require('./dashboard'),
 	moment = require('moment'),
 	common = require('../helper/common'),
-	sync = require('synchronize');
+	async = require('async');
 
 exports.getGraph = function(req, res) {
 
@@ -266,54 +266,62 @@ function getAllEntriesList(req, res, limit, callback) {
 		//entries
 		var allEntries = [];
 
-		//setup sync fibre
-		sync.fiber(function() {
-
-			// //get shared entries
-			if (users.users.length > 0) {
-				// call
-				var d = (sync.await(request({
-					headers: common.getHeaders(req),
-					json: true,
-					method: 'GET',
-					qs: {
-						offset: 0,
-						limit: limit,
-						sort: '-timestamp'
-					},
-					uri: common.getAPIUrl(req) + 'api/v1/journal/' + users.users[0].shared_journal
-				}, sync.defer())))
-
-				//merge data
-				if (d.body.entries) {
-					allEntries = allEntries.concat(d.body.entries);
+		//async
+		async.series([
+			function(callback) {
+				if (users.users.length > 0) {
+					// call
+					request({
+						headers: common.getHeaders(req),
+						json: true,
+						method: 'GET',
+						qs: {
+							offset: 0,
+							limit: limit,
+							sort: '-timestamp'
+						},
+						uri: common.getAPIUrl(req) + 'api/v1/journal/' + users.users[0].shared_journal
+					}, function(error, response, body) {
+						//merge data
+						if (body.entries) {
+							allEntries = allEntries.concat(body.entries);
+						}
+						callback(null);
+					});
+				} else {
+					callback(null);
 				}
+			},
+			function(callback) {
+				//for each user
+				async.each(users.users, function(user, icallback) {
+					// call
+					request({
+						headers: common.getHeaders(req),
+						json: true,
+						method: 'GET',
+						qs: {
+							uid: user._id,
+							offset: 0,
+							limit: limit,
+							sort: '-timestamp'
+						},
+						uri: common.getAPIUrl(req) + 'api/v1/journal/' + user.private_journal
+					}, function(error, response, body) {
+						//merge data
+						if (body.entries) {
+							allEntries = allEntries.concat(body.entries);
+						}
+						icallback();
+					});
+				}, function() {
+					callback(null);
+				});
+
 			}
-
-			//for each user
-			for (var i = 0; i < users.users.length; i++) {
-
-				// call
-				var d = (sync.await(request({
-					headers: common.getHeaders(req),
-					json: true,
-					method: 'GET',
-					qs: {
-						uid: users.users[i]._id,
-						offset: 0,
-						limit: limit,
-						sort: '-timestamp'
-					},
-					uri: common.getAPIUrl(req) + 'api/v1/journal/' + users.users[i].private_journal
-				}, sync.defer())))
-
-				//merge data
-				if (d.body.entries) {
-					allEntries = allEntries.concat(d.body.entries);
-				}
-			}
+		], function() {
 			callback(allEntries);
-		})
+		});
 	})
 }
 

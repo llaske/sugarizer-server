@@ -20,7 +20,7 @@
 		"mongodb": "3.x.x",
 		"nodemon": "^1.18.6",
 		"request": "*",
-		"synchronize": "*",
+		"async": "2.6.1",
 		"websocket": "1.0.x"
 	},
 	"devDependencies": {
