@@ -175,7 +175,7 @@ exports.findAll = function(req, res) {
 			'$gte': parseInt(req.query.stime)
 		};
 	}
-	console.log(query)
+
 	// add filter and pagination
 	db.collection(usersCollection, function(err, collection) {
 
