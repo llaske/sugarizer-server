@@ -86,8 +86,8 @@ To deploy Sugarizer Server from a Raspberry Pi, a specific packaging name [Sugar
 
 You could install on any existing cloud platform (Amazon, Microsoft Azure, Google Cloud Platform, ...). Detail of settings for:
 
-* **Google Cloud Platform** is available [here](docs/deploytoGCP.md), 
-* **Amazon Web Services** is available [here](docs/deploytoAWS.md). 
+* **Google Cloud Platform** is available [here](docs/deploytoGCP.md),
+* **Amazon Web Services** is available [here](docs/deploytoAWS.md).
 
 
 ## Server settings
@@ -127,6 +127,7 @@ Following is the typical content of Sugarizer Server settings file:
 	users = users
 	journal = journal
 	stats = stats
+	classrooms = classrooms
 	waitdb = 1
 
 	[statistics]
@@ -228,6 +229,14 @@ To implement the above functionalities, the sugarizer backend expose an API. The
         [PUT]    api/v1/journal/:jid?oid=:oid
         [DELETE] api/v1/journal/:jid?oid=:oid
 
+
+#### CLASSROOM ROUTES
+
+        [GET]    api/v1/classrooms/
+        [GET]    api/v1/classrooms/:cid
+        [POST]   api/v1/classrooms/
+        [PUT]    api/v1/classrooms/:cid
+        [DELETE] api/v1/classrooms/
 
 #### STATS ROUTES
 

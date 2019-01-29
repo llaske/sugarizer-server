@@ -24,11 +24,11 @@ exports.init = function(settings, callback) {
 };
 
 /**
- * @api {post} api/v1/stats Add classroom
+ * @api {post} api/v1/classrooms Add classroom
  * @apiName Addclassroom
  * @apiDescription Add classroom in the database. Returns the inserted classroom.
  * @apiGroup Classrooms
- * @apiVersion 1.0.0
+ * @apiVersion 1.1.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
@@ -97,11 +97,11 @@ exports.addClassroom = function(req, res) {
 };
 
 /**
- * @api {delete} api/v1/classroom Remove classroom by id
+ * @api {delete} api/v1/classrooms Remove classroom
  * @apiName RemoveClassroom
  * @apiDescription Remove the classroom by id.
  * @apiGroup Classrooms
- * @apiVersion 1.0.0
+ * @apiVersion 1.1.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
@@ -156,7 +156,7 @@ exports.removeClassroom = function(req, res) {
  * @apiName GetAllclassrooms
  * @apiDescription Retrieve all classrooms data registered on the server.
  * @apiGroup Classrooms
- * @apiVersion 1.0.0
+ * @apiVersion 1.1.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
@@ -245,11 +245,11 @@ exports.findAll = function(req, res) {
 };
 
 /**
- * @api {get} api/v1/classrooms/:id Get classroom detail  by id
+ * @api {get} api/v1/classrooms/:id Get classroom detail
  * @apiName GetClassroom
  * @apiDescription Retrieve detail for a specific classroom.
  * @apiGroup Classrooms
- * @apiVersion 1.0.0
+ * @apiVersion 1.1.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
@@ -352,7 +352,7 @@ exports.findById = function(req, res) {
  * @apiName UpdateClassroom
  * @apiDescription Update an classroom. Return the classroom updated.
  * @apiGroup Classrooms
- * @apiVersion 1.0.0
+ * @apiVersion 1.1.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
