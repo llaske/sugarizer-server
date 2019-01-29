@@ -10,10 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Improved welcome message: banner, version, settings
+- node.js 4 is no longer supported, version 6 is the new minimum
 
 ### Fixed
 - Admin can signup from remote address
 - Client IP is wrong when coming from nginx
+- node.js 10 is now supported
 
 
 ## [1.0.1] - 2018-07-14
