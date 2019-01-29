@@ -16,7 +16,6 @@ exports.waitConnection = function(settings, callback) {
 
 			// Open the db
 			client.connect(function(err, client) {
-				var db = client.db(settings.database.name);
 				if (!err) {
 					clearInterval(timer);
 					client.close();
