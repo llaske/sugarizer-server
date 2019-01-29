@@ -185,7 +185,7 @@ function getHowUsersAreActive(req, res) {
 		data.data.push(body.total);
 		data.labels.push(common.l10n.get('UserActive'));
 
-		getUsers(req, res, { role: 'student', stime: moment().subtract('months', 1).valueOf() }, function(body) {
+		getUsers(req, res, { role: 'student', stime: moment().subtract(1, 'months').valueOf() }, function(body) {
 			data.data.push(body.total);
 			data.labels.push(common.l10n.get('UserNotActive'));
 

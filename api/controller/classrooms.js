@@ -77,7 +77,7 @@ exports.addClassroom = function(req, res) {
 
   // store
   db.collection(classroomsCollection, function(err, collection) {
-    collection.insert(
+    collection.insertOne(
       classroom,
       {
         safe: true
@@ -200,14 +200,14 @@ exports.findAll = function(req, res) {
   // add filter and pagination
   db.collection(classroomsCollection, function(err, collection) {
     //count data
-    collection.count(query, function(err, count) {
+    collection.countDocuments(query, function(err, count) {
       //define var
       var params = JSON.parse(JSON.stringify(req.query));
       var route = req.route.path;
       var options = getOptions(req, count, "+name");
 
       //get data
-      collection.find(query, {}, options).toArray(function(err, classrooms) {
+      collection.find(query, options).toArray(function(err, classrooms) {
         //add pagination
         var data = {
           classrooms: classrooms,
@@ -435,7 +435,7 @@ exports.updateClassroom = function(req, res) {
 
   //update the classroom
   db.collection(classroomsCollection, function(err, collection) {
-    collection.update(
+    collection.updateOne(
       {
         _id: new mongo.ObjectID(classid)
       },

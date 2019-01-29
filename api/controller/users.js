@@ -180,7 +180,7 @@ exports.findAll = function(req, res) {
 	db.collection(usersCollection, function(err, collection) {
 
 		//count data
-		collection.count(query, function(err, count) {
+		collection.countDocuments(query, function(err, count) {
 
 			//define var
 			var params = JSON.parse(JSON.stringify(req.query));
@@ -400,7 +400,7 @@ exports.addUser = function(req, res) {
 			//create user based on role
 			if (user.role == 'admin') {
 				db.collection(usersCollection, function(err, collection) {
-					collection.insert(user, {
+					collection.insertOne(user, {
 						safe: true
 					}, function(err, result) {
 						if (err) {
@@ -421,7 +421,7 @@ exports.addUser = function(req, res) {
 						// add journal to the new user
 						user.private_journal = result.ops[0]._id;
 						user.shared_journal = journal.getShared()._id;
-						collection.insert(user, {
+						collection.insertOne(user, {
 							safe: true
 						}, function(err, result) {
 							if (err) {
@@ -561,7 +561,7 @@ exports.updateUser = function(req, res) {
 //private function to update user
 function updateUser(uid, user, res) {
 	db.collection(usersCollection, function(err, collection) {
-		collection.update({
+		collection.updateOne({
 			'_id': new mongo.ObjectID(uid)
 		}, {
 			$set: user
@@ -659,7 +659,7 @@ exports.removeUser = function(req, res) {
 exports.updateUserTimestamp = function(uid, callback) {
 
 	db.collection(usersCollection, function(err, collection) {
-		collection.update({
+		collection.updateOne({
 			'_id': new mongo.ObjectID(uid)
 		}, {
 			$set: {

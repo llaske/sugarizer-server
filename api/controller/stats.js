@@ -93,7 +93,7 @@ exports.addStats = function(req, res) {
 		stats.user_ip = common.getClientIP(req);
 	}
 	db.collection(statsCollection, function(err, collection) {
-		collection.insert(stats, {
+		collection.insertMany(stats, {
 			safe: true
 		}, function(err, result) {
 			if (err) {
@@ -224,7 +224,7 @@ exports.findAll = function(req, res) {
 
 	//get data
 	db.collection(statsCollection, function(err, collection) {
-		collection.find(query, {}, options).toArray(function(err, data) {
+		collection.find(query, options).toArray(function(err, data) {
 			res.send(data);
 		});
 	});

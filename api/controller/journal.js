@@ -31,7 +31,7 @@ exports.init = function(settings, callback) {
 				}, function(err, item) {
 					// Not found, create one
 					if (!err && item == null) {
-						collection.insert({
+						collection.insertOne({
 							content: [],
 							shared: true
 						}, {
@@ -61,7 +61,7 @@ exports.getShared = function() {
 // Create a new journal
 exports.createJournal = function(callback) {
 	db.collection(journalCollection, function(err, collection) {
-		collection.insert({
+		collection.insertOne({
 			content: [],
 			shared: false
 		}, {
@@ -519,7 +519,7 @@ exports.addEntryInJournal = function(req, res) {
 					}
 				};
 				db.collection(journalCollection, function(err, collection) {
-					collection.update({
+					collection.updateOne({
 						'_id': new mongo.ObjectID(jid)
 					}, newcontent, {
 						safe: true
@@ -627,7 +627,7 @@ exports.updateEntryInJournal = function(req, res) {
 		}
 	};
 	db.collection(journalCollection, function(err, collection) {
-		collection.update({
+		collection.updateOne({
 			'_id': new mongo.ObjectID(jid)
 		}, deletecontent, {
 			safe: true
@@ -721,7 +721,7 @@ exports.removeInJournal = function(req, res) {
 	} else {
 		if (oid) {
 			db.collection(journalCollection, function(err, collection) {
-				collection.update({
+				collection.updateOne({
 					'_id': new mongo.ObjectID(jid)
 				}, {
 					$pull: {
