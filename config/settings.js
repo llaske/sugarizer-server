@@ -11,6 +11,14 @@ exports.load = function() {
 	//add directory
 	confFile = "./env/" + env + '.ini';
 
+	//check file
+	try {
+		fs.statSync(confFile);
+	} catch (err) {
+		console.log("Ooops! cannot load settings file '"+ confFile + "', error code "+err.code);
+		process.exit(-1);
+	}
+
 	//parse config
 	var settings = ini.parse(fs.readFileSync(confFile, 'utf-8'));
 

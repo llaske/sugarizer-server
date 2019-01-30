@@ -34,16 +34,19 @@ exports.init = function(settings) {
 	var server = null;
 	if (settings.security.https) {
 		var credentials = common.loadCredentials(settings);
-	 	if (!credentials) {
-	 		console.log("Error reading HTTPS credentials");
-	 		process.exit(-1);
-	 	}
-	 	server = https.createServer(credentials, function(request, response) {});
-	 } else {
-	 	server = http.createServer(function(request, response) {});
-	 }
+		if (!credentials) {
+			console.log("Error reading HTTPS credentials");
+			process.exit(-1);
+		}
+		server = https.createServer(credentials, function(request, response) {});
+	} else {
+		server = http.createServer(function(request, response) {});
+	}
 	server.listen(settings.presence.port, function() {
 		console.log("Presence is listening on"+(settings.security.https ? " secure":"")+" port " + settings.presence.port + "...");
+	}).on('error', function(err) {
+		console.log("Ooops! cannot launch presence on port "+ settings.presence.port + ", error code "+err.code);
+		process.exit(-1);
 	});
 
 	/**
