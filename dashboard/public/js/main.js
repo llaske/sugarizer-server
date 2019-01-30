@@ -60,7 +60,13 @@ function launch_activity(callurl) {
 		var lsBackup = [];
 		for (var index in response.lsObj) {
 			lsBackup[index] = localStorage.getItem(index);
-			localStorage.setItem(index, response.lsObj[index])
+			var encodedValue = response.lsObj[index];
+			var rawValue = JSON.parse(encodedValue);
+			if (rawValue.server) {
+				rawValue.server.url = window.location.protocol+"//"+window.location.hostname+":"+rawValue.server.web;
+				encodedValue = JSON.stringify(rawValue);
+			}
+			localStorage.setItem(index, encodedValue)
 		}
 
 		// open window
