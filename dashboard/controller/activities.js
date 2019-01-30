@@ -144,7 +144,15 @@ exports.launch = function(req, res) {
 				lsObj['sugar_settings'].connected = false;
 				lsObj['sugar_settings'].language = user.language;
 				lsObj['sugar_settings'].networkId = user._id;
-				lsObj['sugar_settings'].server = null;
+				lsObj['sugar_settings'].server = {
+					name: ini.information.name,
+					description: ini.information.description,
+					web: ini.web.port,
+					presence: ini.presence.port,
+					secure: ini.security.https,
+					options: {"min-password-size":ini.security.min_password_size, "statistics":ini.statistics.active, "cookie-age":ini.security.max_age},
+					url: (ini.security.https?"https":"http")+"://"+req.headers.host
+				};
 				lsObj['sugar_settings'].view = 0;
 				lsObj['sugar_settings'].activities = [];
 
