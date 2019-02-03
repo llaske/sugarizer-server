@@ -10,7 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Improved welcome message: banner, version, settings
+- Improved resilience, detect: missing settings file, port already in use, fatal error, ...
 - node.js 4 is no longer supported, version 6 is the new minimum
+- MongoDB 2.4 is no longer supported, version 2.6 is the new minimum
 
 ### Fixed
 - Admin can signup from remote address
