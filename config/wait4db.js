@@ -21,7 +21,7 @@ exports.waitConnection = function(settings, callback) {
 					client.close();
 					callback();
 				} else {
-					console.log("Waiting for DB...");
+					console.log("Waiting for DB... ("+err.name+")");
 				}
 			});
 		}, waitTime*1000);
