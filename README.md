@@ -90,6 +90,11 @@ You could install on any existing cloud platform (Amazon, Microsoft Azure, Googl
 * **Amazon Web Services** is available [here](docs/deploytoAWS.md).
 
 
+## Global architecture
+
+See [here](docs/architecture.md) for a global description of the Sugarizer Server architecture.
+
+
 ## Server settings
 
 Sugarizer settings are load by default from file [env/sugarizer.ini](env/sugarizer.ini). You could change the name of this file by changing the value of environment variable ``NODE_ENV``. So if the ``NODE_ENV`` variable is set to ``production``, Sugarizer will try to load ``env/production.ini`` file.
