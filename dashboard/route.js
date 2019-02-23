@@ -46,7 +46,7 @@ module.exports = function(app, ini) {
 	app.post('/dashboard/classrooms/add', authController.validateSession, classroomsController.addClassroom);
 	app.get('/dashboard/classrooms/edit/:classid', authController.validateSession, classroomsController.editClassroom);
 	app.post('/dashboard/classrooms/edit/:classid', authController.validateSession, classroomsController.editClassroom);
-	app.get('/dashboard/classrooms/delete/:classid', authController.validateSession, classroomsController.deleteClassroom);
+	// app.get('/dashboard/classrooms/delete/:classid', authController.validateSession, classroomsController.deleteClassroom);
 
 
 	// If no route is matched by now, it must be a 404
