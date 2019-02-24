@@ -85,6 +85,7 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
 * Run the downloaded Node.js .pkg Installer
 * Run the installer, including accepting the license, selecting the destination, and authenticating for the install.
 * To ensure Node.js has been installed, run node -v in your terminal - you should get something like v8.9.4
+* npm is distributed with Node.js- which means that when you install Node.js, you automatically get npm installed on your computer. 
 
 **Installing MongoDb**
 * Download the MongoDB .tar.gz tarball from [here](https://www.mongodb.com/download-center/community?jmp=docs "here").
@@ -94,6 +95,9 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
 * Before running mongod for the first time, ensure that the user account running mongod has read and write permissions for the directory.
 * If your system PATH variable includes the location of the mongod binary and if you use the default data directory (i.e., /data/db), simply enter " mongod " at the system prompt.
 * If your PATH does not include the location of the mongod binary, enter the full path to the mongod binary at the system prompt " <path to binary>/mongod " and you are done .
+
+**Install homebrew**
+        /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 **Install Sugarizer Client and Server**
 
