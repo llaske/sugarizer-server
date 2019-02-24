@@ -96,7 +96,9 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
 * If your system PATH variable includes the location of the mongod binary and if you use the default data directory (i.e., /data/db), simply enter " mongod " at the system prompt.
 * If your PATH does not include the location of the mongod binary, enter the full path to the mongod binary at the system prompt " <path to binary>/mongod " and you are done .
 
-**Install homebrew**
+**Install homebrew**:Run this command on terminal
+
+
         /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 **Install Sugarizer Client and Server**
