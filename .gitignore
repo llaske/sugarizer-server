@@ -2,3 +2,8 @@
 node_modules
 dashboard/node_modules
 api/test/fakestats.js
+
+# database and docker files
+docker/Dockerfile-mongodb
+docker/Dockerfile-server
+docker/db
