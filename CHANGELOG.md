@@ -17,7 +17,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Admin can signup from remote address
 - Client IP is wrong when coming from nginx
-- node.js 10 is now supported
+- node.js 10 is now supported #18
+- npm 6.2.0 says sugarizer-server has 1 "critical vulnerability" #10
+- Can't create a classroom with a space into the dashboard #19
+- Error in dashboard when deleting a classroom #20
+- Missing message string in dashboard on delete #21
 
 
 ## [1.0.1] - 2018-07-14
