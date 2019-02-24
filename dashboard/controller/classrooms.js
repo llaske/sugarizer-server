@@ -13,11 +13,6 @@ exports.init = function(settings) {
 	ini = settings;
 }
 
-function alphacheck(str){
-	if (/^[a-z\d\s]+$/i.test(str)) { return true;  }
-	else return false;
-}
-
 // main landing page
 exports.index = function(req, res) {
 
@@ -79,9 +74,7 @@ exports.addClassroom = function(req, res) {
 		req.body.name = req.body.name.trim();
 		req.body.students = req.body.students || [];
 		req.body.color = JSON.parse(req.body.color);
-		if(!alphacheck(req.body.name)){
-			req.assert('name', common.l10n.get('Not a valid name')).isAlphanumeric();
-		}
+		req.assert('name', common.l10n.get('NameNotAlphanumeric')).matches(/^[a-z0-9 ]+$/i);
 		req.body.options = { sync: true, stats: true };
 
 		// get errors
