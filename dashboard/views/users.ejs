@@ -93,7 +93,16 @@
 																					</script>
 																				<% } %>
                                         <td><%= data.users[i].name %></td>
-                                        <td><%= data.users[i].language %></td>
+                                        <% if(data.users[i].language =='en') {%> <td>English</td> <%} %>
+                                        <% if(data.users[i].language =='es') {%> <td>Spanish</td> <%} %>
+                                        <% if(data.users[i].language =='fr') {%> <td>French</td> <%} %>
+                                        <% if(data.users[i].language =='de') {%> <td>German</td> <%} %>
+                                        <% if(data.users[i].language =='pt') {%> <td>Portuguese</td> <%} %>
+                                        <% if(data.users[i].language =='ar') {%> <td>Arabic</td> <%} %>
+                                        <% if(data.users[i].language =='ja') {%> <td>Japanese</td> <%} %>
+                                        <% if(data.users[i].language =='pl') {%> <td>Polish</td> <%} %>
+                                        <% if(data.users[i].language =='ibo') {%> <td>Igbo</td> <%} %>
+                                        <% if(data.users[i].language =='yor') {%> <td>Yoruba</td> <%} %>
                                         <td><%= data.users[i].role %></td>
                                         <td><%= moment(data.users[i].timestamp).calendar() %></td>
                                         <td>
