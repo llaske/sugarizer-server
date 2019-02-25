@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Can't create a classroom with a space into the dashboard #19
 - Error in dashboard when deleting a classroom #20
 - Missing message string in dashboard on delete #21
+- Consistency in language of users #33
 
 
 ## [1.0.1] - 2018-07-14
