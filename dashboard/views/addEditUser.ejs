@@ -23,7 +23,18 @@
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="language"></label>
-									<input class="form-control" name="language" value="<% if(typeof user == 'object'){ %><%= user.language %><% } %>" type="text">
+                                    <select name="language" class="form-control">
+                                        <option value="en" <% if(typeof user == 'object' &&  user.language=='en'){ %> selected="selected" <% } %>>English</option>
+                                        <option value="es" <% if(typeof user == 'object' &&  user.language=='es'){ %> selected="selected" <% } %>>Spanish</option>
+                                        <option value="fr" <% if(typeof user == 'object' &&  user.language=='fr'){ %> selected="selected" <% } %>>French</option>
+                                        <option value="de" <% if(typeof user == 'object' &&  user.language=='de'){ %> selected="selected" <% } %>>German</option>
+                                        <option value="pt" <% if(typeof user == 'object' &&  user.language=='pt'){ %> selected="selected" <% } %>>Portuguese</option>
+                                        <option value="ar" <% if(typeof user == 'object' &&  user.language=='ar'){ %> selected="selected" <% } %>>Arabic</option>
+                                        <option value="ja" <% if(typeof user == 'object' &&  user.language=='ja'){ %> selected="selected" <% } %>>Japanese</option>
+                                        <option value="pl" <% if(typeof user == 'object' &&  user.language=='pl'){ %> selected="selected" <% } %>>Polish</option>
+                                        <option value="ibo" <% if(typeof user == 'object' &&  user.language=='ibo'){ %> selected="selected" <% } %>>Igbo</option>
+                                        <option value="yor" <% if(typeof user == 'object' &&  user.language=='yor'){ %> selected="selected" <% } %>>Yoruba</option>
+                                    </select>
                                     <span class="material-input"></span>
                                 </div>
                             </div>
