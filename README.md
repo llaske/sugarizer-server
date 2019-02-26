@@ -98,7 +98,8 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
 
 **Install and Run MongoDB with Homebrew**
 
-Open the Terminal and type 
+*Open the Terminal and type *
+
         brew install mongodb
 
 *After downloading Mongo, create the “db” directory. This is where the Mongo data files will live. You can create the directory in the default location by running*
