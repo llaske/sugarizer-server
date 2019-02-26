@@ -1,7 +1,7 @@
 // require files
 var authController = require('./controller/auth'),
 	usersController = require('./controller/users'),
-	activitiesController = require('./controller'),
+	activitiesController = require('./controller/activities'),
 	journalController = require('./controller/journal'),
 	dashboardController = require('./controller/dashboard'),
 	graphController = require('./controller/graph'),
