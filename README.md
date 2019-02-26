@@ -87,11 +87,12 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
         
         brew -v
 
-**Installing Node.js**
-In the terminal type the following command to install Node.
+**Installing Node.js**:In the terminal type the following command to install Node.
+        
         brew install node
 
-If everything installed successfully then you can type in the following command in the terminal to check the Node and NPM version.
+*If everything installed successfully then you can type in the following command in the terminal to check the Node and NPM version.*
+        
         node -v
         npm -v
 
@@ -100,10 +101,12 @@ If everything installed successfully then you can type in the following command 
 Open the Terminal and type 
         brew install mongodb
 
-After downloading Mongo, create the “db” directory. This is where the Mongo data files will live. You can create the directory in the default location by running 
+*After downloading Mongo, create the “db” directory. This is where the Mongo data files will live. You can create the directory in the default location by running*
+        
         mkdir -p /data/db
 
-Make sure that the /data/db directory has the right permissions by running
+*Make sure that the /data/db directory has the right permissions by running*
+        
         sudo chown -R `id -un` /data/db
 
 Run the Mongo daemon, in one of your terminal windows run " mongod ". This should start the Mongo server. 
