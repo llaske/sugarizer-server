@@ -1,6 +1,6 @@
 #### I am submitting a -
-- [] **Feature Request**
-- [] **Bug Report**
+* [] **Feature Request**
+* [] **Bug Report**
 
 #### Describe your bug/feature -
 
