@@ -77,6 +77,59 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
 * go to Journal view, you should see at the bottom of the screen the two icons to switch to private/shared journal,
 * go to the neighborhood view, you should see one icon for the server and one for you.
 
+## Running on Macosx:Installation on macosx machine
+
+**Install homebrew**:Run this command on terminal
+
+        /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+*To check the version type the following command.*
+        
+        brew -v
+
+**Installing Node.js**:In the terminal type the following command to install Node.
+        
+        brew install node
+
+*If everything installed successfully then you can type in the following command in the terminal to check the Node and NPM version.*
+        
+        node -v
+        npm -v
+
+**Install and Run MongoDB with Homebrew**
+
+*Open the Terminal and type*
+
+        brew install mongodb
+
+*After downloading Mongo, create the “db” directory. This is where the Mongo data files will live. You can create the directory in the default location by running*
+        
+        mkdir -p /data/db
+
+*Make sure that the /data/db directory has the right permissions by running*
+        
+        sudo chown -R `id -un` /data/db
+
+Run the Mongo daemon, in one of your terminal windows run " mongod ". This should start the Mongo server. 
+
+To stop the Mongo daemon hit ctrl-c
+
+
+**Install Sugarizer Client and Server**
+
+        brew install git
+        cd desktop
+        git clone https://github.com/llaske/sugarizer
+        git clone https://github.com/llaske/sugarizer-server
+        cd sugarizer-server
+        npm install
+
+**Run MongoDB and Sugarizer Server**:Run mongod and Sugarizer.
+
+        mongod
+        node sugarizer.js
+
+**Check your install**: To check your install, run "http://127.0.0.1:8080" in your browser:
 
 ## Running from a Raspberry Pi
 
