@@ -47,17 +47,24 @@ exports.index = function(req, res) {
 				//store
 				data.journal = d;
 
-				// send to login page
-				res.render('dashboard', {
-					title: 'dashboard',
-					module: 'dashboard',
-					data: data,
-					account: req.session.user,
-					server: ini.information
+				//get all classrooms
+				exports.getAllClassrooms(req, res, function(classroomResponse) {
+					
+					//store
+					data.classrooms = classroomResponse;
+
+					// send to login page
+					res.render('dashboard', {
+						title: 'dashboard',
+						module: 'dashboard',
+						data: data,
+						account: req.session.user,
+						server: ini.information
+					});
 				});
 			});
-		})
-	})
+		});
+	});
 };
 
 exports.getAllJournals = function(req, res, callback) {
@@ -115,6 +122,27 @@ exports.getAllUsers = function(req, res, callback) {
 		uri: common.getAPIUrl(req) + 'api/v1/users'
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
+			//callback
+			callback(body);
+
+		} else {
+			req.flash('errors', {
+				msg: common.l10n.get('ErrorCode'+body.code)
+			});
+		}
+	});
+}
+
+exports.getAllClassrooms = function(req, res, callback) {
+	// call
+	request({
+		headers: common.getHeaders(req),
+		json: true,
+		method: 'GET',
+		uri: common.getAPIUrl(req) + 'api/v1/classrooms'
+	}, function(error, response, body) {
+		if (response.statusCode == 200) {
+
 			//callback
 			callback(body);
 
