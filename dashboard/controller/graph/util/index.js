@@ -1,30 +1,9 @@
 // include libraries
 var request = require('request'),
-	dashboard = require('./dashboard'),
-	moment = require('moment'),
-	common = require('../helper/common'),
-	async = require('async');
-
-exports.getGraph = function(req, res) {
-
-	if (req.query.type == 'top-contributor') {
-		getTopContributors(req, res);
-	}
-	if (req.query.type == 'top-activities') {
-		getTopActivities(req, res);
-	}
-	if (req.query.type == 'recent-users') {
-		getRecentUsers(req, res);
-	}
-	if (req.query.type == 'recent-activities') {
-		getRecentActivities(req, res);
-	}
-}
-
-var averageEntries = 0.0;
-exports.getAverageEntries = function() {
-	return averageEntries;
-}
+    dashboard = require('../../dashboard'),
+    moment = require('moment'),
+    common = require('../../../helper/common'),
+    async = require('async');
 
 function getTopContributors(req, res) {
 
@@ -343,4 +322,13 @@ function getActivities(req, res, callback) {
 			return res.redirect('/dashboard/journal');
 		}
 	})
+}
+
+export {
+    getTopContributors,
+    getTopActivities,
+    getRecentUsers,
+    getRecentActivities,
+    getAllEntriesList,
+    getActivities
 }
