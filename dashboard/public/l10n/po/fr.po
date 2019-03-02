@@ -123,6 +123,11 @@ msgctxt "noClassroomText"
 msgid "No classroom found"
 msgstr "Aucune classe trouvée"
 
+#: noUserText
+msgctxt "noUserText"
+msgid "No user found"
+msgstr "Aucun utilisateur trouvé"
+
 #: selectUserText
 msgctxt "selectUserText"
 msgid "Please select a user and click on show results!"
