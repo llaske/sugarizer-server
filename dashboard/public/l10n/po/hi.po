@@ -118,6 +118,11 @@ msgctxt "noEntryText"
 msgid "There are no entries available for this user"
 msgstr "इस उपयोगकर्ता के लिए कोई प्रविष्टियां उपलब्ध नहीं हैं"
 
+#: noClassroomText
+msgctxt "noClassroomText"
+msgid "No classroom found"
+msgstr "कोई कक्षा नहीं मिली"
+
 #: selectUserText
 msgctxt "selectUserText"
 msgid "Please select a user and click on show results!"
