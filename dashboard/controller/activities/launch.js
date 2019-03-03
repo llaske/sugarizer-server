@@ -1,10 +1,13 @@
 // include libraries
 var request = require('request'),
-    common = require('../helper/common');
+	common = require('../../helper/common');
 
-var { getActivity, getUser, formQueryString} = require('./util')
+var _util = require('./util'),
+	getActivity = _util.getActivity,
+	getUser = _util.getUser,
+	formQueryString = _util.formQueryString;
 
-exports.launch = function(req, res) {
+module.exports = function launch(req, res) {
 
 	//validate
 	if (!req.query.oid || !req.params.jid) {
@@ -36,12 +39,12 @@ exports.launch = function(req, res) {
 			}
 
 			// process data and create context
-			var lsObj = {}
+			var lsObj = {};
 			lsObj['sugar_datastoretext_' + body.entries[0].objectId] = JSON.stringify(body.entries[0].text);
 
 			body.entries[0].text = {
 				link: 'sugar_datastoretext_' + body.entries[0].objectId
-			}
+			};
 			lsObj['sugar_datastore_' + body.entries[0].objectId] = JSON.stringify(body.entries[0]);
 
 			//sugar settings
@@ -80,7 +83,7 @@ exports.launch = function(req, res) {
 							n: activity.name
 						})
 					});
-				})
+				});
 			});
 		} else {
 			req.flash('errors', {
@@ -88,5 +91,5 @@ exports.launch = function(req, res) {
 			});
 			return res.redirect('/dashboard/' + (req.query.source ? req.query.source : 'journal'));
 		}
-	})
+	});
 };
