@@ -16,10 +16,19 @@
                               <span class="material-input"></span>
                           </div>
                         </div>
-                        <div class="col-md-3"></div>
+                        <div class="col-md-3">
+                            <div class="form-group form-black label-floating is-empty">
+                                <select class="form-control" id="sort-sel-classroom" name="sort">
+                                   <option value="" disabled selected>Sort by</option>
+                                   <option data-l10n-id="" value="+name">Name</option>
+                                   <option data-l10n-id="" value="+created_time">Created Time</option>
+                                   <option data-l10n-id="" value="+timestamp">Last Seen</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-6">
 						  <a class="btn btn-round pull-right " href="classrooms/add" data-l10n-id="addClassroom"><div class="ripple-container"></div></a>
-                          <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+                          <button class="btn pull-right btn-round" type="submit" onclick="reload()" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>
                       </form>
                   </div>
@@ -68,6 +77,21 @@
                                           </td>
                                           <script>
                                               new icon().load("/public/img/classroom-icon.svg", (<%- JSON.stringify(data.classrooms[i].color) %>), "<%= data.classrooms[i]._id %>");
+                                          </script>
+                                          <script>
+                                          function reload() {
+                                            sessionStorage.setItem('selectedVal',$('#sort-sel-classroom').val());
+                                            location.reload(true);
+                                            }
+
+                                            $( document ).ready(function() {
+                                                var selectedVal = sessionStorage.getItem('selectedVal');
+                                                if (selectedVal){
+                                                $('#sort-sel-classroom').val(selectedVal)
+                                                }
+                                                sessionStorage.removeItem("selectedVal");
+                                            
+                                            });
                                           </script>
                                           <td><%= data.classrooms[i].name %></td>
                                           <td><%= data.classrooms[i].students.length %></td>

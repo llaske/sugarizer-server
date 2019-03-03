@@ -23,7 +23,7 @@ exports.index = function(req, res) {
 
 	//query
 	var query = {
-		sort: '+name'
+		sort: '-name'
 	};
 
 	//get query params
@@ -41,6 +41,9 @@ exports.index = function(req, res) {
 	}
 	if (req.query.classid != '') {
 		query['classid'] = req.query.classid;
+	}
+	if(req.query.sort !=''){
+		query['sort'] = req.query.sort;
 	}
 
 	// call
