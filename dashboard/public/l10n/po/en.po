@@ -118,6 +118,16 @@ msgctxt "noEntryText"
 msgid "There are no entries available for this user"
 msgstr "There are no entries available for this user"
 
+#: noClassroomText
+msgctxt "noClassroomText"
+msgid "No classroom found"
+msgstr "No classroom found"
+
+#: noUserText
+msgctxt "noUserText"
+msgid "No user found"
+msgstr "No user found"
+
 #: selectUserText
 msgctxt "selectUserText"
 msgid "Please select a user and click on show results!"

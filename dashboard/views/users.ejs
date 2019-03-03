@@ -51,71 +51,79 @@
                   </div>
               </div>
               <div class="col-md-12">
-                  <div class="card">
-                      <div class="card-header row" data-background-color="black">
-                          <div class="col-md-4 col-sm-4 col-lg-4 text-left">
-                          <% if(data.links.prev_page) { %>
-                             <a href="<%= data.links.prev_page %>" data-l10n-id="prevPage"><< previous page</a>
-                          <% } %>
-                          </div>
-                          <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset + 1 %>", "to": "<%= data.offset + data.users.length %>", "total": "<%= data.total %>" }'></div>
-                          <div class="col-md-4 col-sm-4 col-lg-4 text-right">
-                          <% if(data.links.next_page) { %>
-                             <a href="<%= data.links.next_page %>" data-l10n-id="nextPage">next page >></a>
-                          <% } %>
-                          </div>
-                      </div>
-                      <div class="card-content table-responsive">
-                          <table class="table">
-                              <thead class="text-muted">
-                                  <tr>
-                                      <th>#</th>
-																			<% if(query.role != 'admin'){ %><th data-l10n-id="buddy">Buddy</th><% } %>
-                                      <th data-l10n-id="name">Name</th>
-                                      <th data-l10n-id="language">Language</th>
-                                      <th data-l10n-id="role">Role</th>
-                                      <th data-l10n-id="lastSeen">Timestamp</th>
-                                      <th data-l10n-id="action">Action</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                  <% for(var i=0; i < data.users.length; i++) { %>
-                                    <tr>
-                                        <td><%= data.offset + i + 1 %></td>
-																				<% if(query.role != 'admin'){ %>
-																					<td>
-																						<div class="color" id="<%= data.users[i]._id %>">
-																							<div class="xo-icon"></div>
-																						</div>
-																					</td>
-																					<script>
-																						new icon().load("/public/img/owner-icon.svg", (<%- JSON.stringify(data.users[i].color) %>), "<%= data.users[i]._id %>");
-																					</script>
-																				<% } %>
-                                        <td><%= data.users[i].name %></td>
-                                        <% if(data.users[i].language =='en') {%> <td>English</td> <%} %>
-                                        <% if(data.users[i].language =='es') {%> <td>Spanish</td> <%} %>
-                                        <% if(data.users[i].language =='fr') {%> <td>French</td> <%} %>
-                                        <% if(data.users[i].language =='de') {%> <td>German</td> <%} %>
-                                        <% if(data.users[i].language =='pt') {%> <td>Portuguese</td> <%} %>
-                                        <% if(data.users[i].language =='ar') {%> <td>Arabic</td> <%} %>
-                                        <% if(data.users[i].language =='ja') {%> <td>Japanese</td> <%} %>
-                                        <% if(data.users[i].language =='pl') {%> <td>Polish</td> <%} %>
-                                        <% if(data.users[i].language =='ibo') {%> <td>Igbo</td> <%} %>
-                                        <% if(data.users[i].language =='yor') {%> <td>Yoruba</td> <%} %>
-                                        <td><%= data.users[i].role %></td>
-                                        <td><%= moment(data.users[i].timestamp).calendar() %></td>
-                                        <td>
-																					<a data-l10n-id="seeJournalEntries" title="See Journal Entries" href="journal/<%= data.users[i].private_journal %>?uid=<%= data.users[i]._id %>&type=private"><span class="journal-icon2"></span></a>
-                                          <a data-l10n-id="editUser" title="Edit User" href="users/edit/<%= data.users[i]._id %>"><i class="material-icons text-muted">edit</i></a>
-                                          <a data-l10n-id="deleteUser" title="Delete User" href="users/delete/<%= data.users[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteUser',{user:'<%= data.users[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
-                                        </td>
-                                    </tr>
-                                  <% } %>
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
+                  <% if(data.users.length == 0) {%>
+                    <div class="text-center" style="margin-top:50px;">
+                            <i class="material-icons dp96">info_outline</i>
+                            <p data-l10n-id="noUserText"></p>
+                    </div>
+                    <%} 
+                    else {%>
+                    <div class="card">
+                            <div class="card-header row" data-background-color="black">
+                                <div class="col-md-4 col-sm-4 col-lg-4 text-left">
+                                <% if(data.links.prev_page) { %>
+                                   <a href="<%= data.links.prev_page %>" data-l10n-id="prevPage"><< previous page</a>
+                                <% } %>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset + 1 %>", "to": "<%= data.offset + data.users.length %>", "total": "<%= data.total %>" }'></div>
+                                <div class="col-md-4 col-sm-4 col-lg-4 text-right">
+                                <% if(data.links.next_page) { %>
+                                   <a href="<%= data.links.next_page %>" data-l10n-id="nextPage">next page >></a>
+                                <% } %>
+                                </div>
+                            </div>
+                            <div class="card-content table-responsive">
+                                <table class="table">
+                                    <thead class="text-muted">
+                                        <tr>
+                                            <th>#</th>
+                                                                                  <% if(query.role != 'admin'){ %><th data-l10n-id="buddy">Buddy</th><% } %>
+                                            <th data-l10n-id="name">Name</th>
+                                            <th data-l10n-id="language">Language</th>
+                                            <th data-l10n-id="role">Role</th>
+                                            <th data-l10n-id="lastSeen">Timestamp</th>
+                                            <th data-l10n-id="action">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for(var i=0; i < data.users.length; i++) { %>
+                                          <tr>
+                                              <td><%= data.offset + i + 1 %></td>
+                                                                                      <% if(query.role != 'admin'){ %>
+                                                                                          <td>
+                                                                                              <div class="color" id="<%= data.users[i]._id %>">
+                                                                                                  <div class="xo-icon"></div>
+                                                                                              </div>
+                                                                                          </td>
+                                                                                          <script>
+                                                                                              new icon().load("/public/img/owner-icon.svg", (<%- JSON.stringify(data.users[i].color) %>), "<%= data.users[i]._id %>");
+                                                                                          </script>
+                                                                                      <% } %>
+                                              <td><%= data.users[i].name %></td>
+                                              <% if(data.users[i].language =='en') {%> <td>English</td> <%} %>
+                                              <% if(data.users[i].language =='es') {%> <td>Spanish</td> <%} %>
+                                              <% if(data.users[i].language =='fr') {%> <td>French</td> <%} %>
+                                              <% if(data.users[i].language =='de') {%> <td>German</td> <%} %>
+                                              <% if(data.users[i].language =='pt') {%> <td>Portuguese</td> <%} %>
+                                              <% if(data.users[i].language =='ar') {%> <td>Arabic</td> <%} %>
+                                              <% if(data.users[i].language =='ja') {%> <td>Japanese</td> <%} %>
+                                              <% if(data.users[i].language =='pl') {%> <td>Polish</td> <%} %>
+                                              <% if(data.users[i].language =='ibo') {%> <td>Igbo</td> <%} %>
+                                              <% if(data.users[i].language =='yor') {%> <td>Yoruba</td> <%} %>
+                                              <td><%= data.users[i].role %></td>
+                                              <td><%= moment(data.users[i].timestamp).calendar() %></td>
+                                              <td>
+                                                                                          <a data-l10n-id="seeJournalEntries" title="See Journal Entries" href="journal/<%= data.users[i].private_journal %>?uid=<%= data.users[i]._id %>&type=private"><span class="journal-icon2"></span></a>
+                                                <a data-l10n-id="editUser" title="Edit User" href="users/edit/<%= data.users[i]._id %>"><i class="material-icons text-muted">edit</i></a>
+                                                <a data-l10n-id="deleteUser" title="Delete User" href="users/delete/<%= data.users[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteUser',{user:'<%= data.users[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
+                                              </td>
+                                          </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    <%}%>
               </div>
           </div>
 			</div>
