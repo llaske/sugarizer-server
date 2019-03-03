@@ -122,7 +122,6 @@ function getActivities(req, res, callback) {
 			req.flash('errors', {
 				msg: common.l10n.get('ErrorCode'+body.code)
 			});
-			return res.redirect('/dashboard/journal');
 		}
 	})
 }
@@ -150,7 +149,6 @@ function getJournalEntries(req, res, query, callback) {
 			req.flash('errors', {
 				msg: common.l10n.get('ErrorCode'+body.code)
 			});
-			return res.redirect('/dashboard/journal');
 		}
 	})
 }
@@ -174,7 +172,6 @@ function getUsers(req, res, callback) {
 			req.flash('errors', {
 				msg: common.l10n.get('ErrorCode'+body.code)
 			});
-			return res.redirect('/dashboard/journal');
 		}
 	})
 }
