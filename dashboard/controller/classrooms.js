@@ -24,7 +24,7 @@ exports.index = function(req, res) {
 
 	//query
 	var query = {
-	sort: '-name'
+		sort: '-name'
 	};
 
 	//get query params
