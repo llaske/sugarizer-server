@@ -106,7 +106,7 @@ function launch_activity(callurl) {
 	});
 }
 
-function updateActivities() {
+function updateActivities(nameOfActivity="") {
 
 	//get favorites
 	var list = []
@@ -123,7 +123,7 @@ function updateActivities() {
 	}))), data, function(response) {
 		$.notify({
 			icon: "notifications",
-			message: document.webL10n.get('successActivityUpdate')
+			message: nameOfActivity + document.webL10n.get('successActivityUpdate')
 		}, {
 			type: 'success',
 			timer: 2000,

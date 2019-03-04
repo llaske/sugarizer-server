@@ -45,9 +45,9 @@
 												<div class="favoriteBox">
 														<label data-id="<%= activities[i].id %>">
 																<% if(activities[i].favorite == true){ %>
-																	<input checked name="favoriteActivities" type="checkbox" onclick="updateActivities()">
+																	<input checked name="favoriteActivities" type="checkbox" onclick="updateActivities(`<%= activities[i].name %>`)">
 																<% }else{ %>
-																	<input name="favoriteActivities" type="checkbox" onclick="updateActivities()">
+																	<input name="favoriteActivities" type="checkbox" onclick="updateActivities(`<%= activities[i].name %>`)">
 																<% } %>
 																<span class="checkbox-material"></span>
 														</label>
