@@ -133,7 +133,12 @@ exports.editClassroom = function(req, res) {
 
 			// validate
 			req.body.name = req.body.name.trim();
-            req.body.students = req.body.students || [];
+			req.body.students = req.body.students || [];
+			
+			if (isString(req.body.students)) {
+				req.body.students = [req.body.students]
+			}
+
 			req.body.color = JSON.parse(req.body.color);
 
 			// get errors
@@ -198,6 +203,9 @@ exports.editClassroom = function(req, res) {
 			msg: common.l10n.get('ThereIsError')
 		});
 		return res.redirect('/dashboard/classrooms');
+	}
+	function isString(arg) {
+		return typeof arg === 'string';
 	}
 };
 
