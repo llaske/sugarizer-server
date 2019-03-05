@@ -26,7 +26,7 @@
 											</select>
 									</div>
 								</div>
-								<div class="col-md-4">
+								<div class="col-md-2">
 									<div class="form-group form-black label-floating is-empty">
 											<select class="form-control" id="journal-type-select2" name="type">
 												 <option data-l10n-id="private" <% if('private' == query.type){%> selected="selected" <% } %> value="private">Private</option>
@@ -34,8 +34,18 @@
 											</select>
 									</div>
 								</div>
+								<div class="col-md-2">
+									<div class="form-group form-black label-floating is-empty">
+										<select class="form-control" id="sort-sel-journal" name="sort">
+											<option value="" disabled selected>Sort by</option>
+											<option data-l10n-id="" value="+created_time">Created Time</option>
+											<option data-l10n-id="" value="+timestamp">Last seen</option>
+											<option data-l10n-id="" value="+file_size">Size</option>
+										 </select>
+									</div>
+								</div>
 								<div class="col-md-4 text-right">
-									<button class="btn btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+									<button class="btn btn-round" type="submit" onclick="reload()" data-l10n-id="showResults"><div class="ripple-container"></div></button>
 								</div>
 								<script>
 								window.addEventListener('localized', function() {  // HACK: Force localization of private combo
@@ -43,6 +53,21 @@
 									if (selection && selection[1]) selection[1].innerHTML = document.webL10n.get("private");
 								});
 								</script>
+								<script>
+									function reload() {
+									  sessionStorage.setItem('selectedVal',$('#sort-sel-journal').val());
+									  location.reload(true);
+									  }
+
+									  $( document ).ready(function() {
+										  var selectedVal = sessionStorage.getItem('selectedVal');
+										  if (selectedVal){
+										  $('#sort-sel-journal').val(selectedVal)
+										  }
+										  sessionStorage.removeItem("selectedVal");
+									  
+									  });
+									</script>
 							</form>
 					</div>
 				</div>
