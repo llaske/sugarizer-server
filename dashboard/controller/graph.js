@@ -1,6 +1,6 @@
 // include libraries
 var request = require('request'),
-	dashboard = require('./dashboard'),
+	dashboard_utils = require('./dashboard/util'),
 	moment = require('moment'),
 	common = require('../helper/common'),
 	async = require('async');
@@ -29,7 +29,7 @@ exports.getAverageEntries = function() {
 function getTopContributors(req, res) {
 
 	//get all users
-	dashboard.getAllUsers(req, res, function(users) {
+	dashboard_utils.getAllUsers(req, res, function(users) {
 
 		//make hashList
 		var hashList = {};
@@ -38,7 +38,7 @@ function getTopContributors(req, res) {
 		}
 
 		//get journal data
-		dashboard.getAllJournals(req, res, function(journals) {
+		dashboard_utils.getAllJournals(req, res, function(journals) {
 
 			//get name mapping
 			var totalEntries = 0;
@@ -179,7 +179,7 @@ function getTopActivities(req, res) {
 function getRecentUsers(req, res) {
 
 	//get all entries
-	dashboard.getAllUsers(req, res, function(users) {
+	dashboard_utils.getAllUsers(req, res, function(users) {
 
 		//get users object
 		users = users.users
@@ -261,7 +261,7 @@ function getRecentActivities(req, res) {
 function getAllEntriesList(req, res, limit, callback) {
 
 	//get all users
-	dashboard.getAllUsers(req, res, function(users) {
+	dashboard_utils.getAllUsers(req, res, function(users) {
 
 		//entries
 		var allEntries = [];
