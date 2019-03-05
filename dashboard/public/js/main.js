@@ -106,8 +106,7 @@ function launch_activity(callurl) {
 	});
 }
 
-function updateActivities() {
-
+function updateActivities(nameOfActivity="") {
 	//get favorites
 	var list = []
 	$.each($('[name="favoriteActivities"]:checked'), function(index, value) {
@@ -117,13 +116,20 @@ function updateActivities() {
 		favorites: list.join()
 	};
 
+	var message = "";
+	if(nameOfActivity == ""){
+		message = document.webL10n.get('successActivitiesUpdate');
+	}else{
+		message = nameOfActivity + " " + document.webL10n.get('successActivityUpdate')
+	}
+
 	$.post((url + 'api/v1/activities?' + decodeURIComponent($.param({
 		x_key: headers['x-key'],
 		access_token: headers['x-access-token']
 	}))), data, function(response) {
 		$.notify({
 			icon: "notifications",
-			message: document.webL10n.get('successActivityUpdate')
+			message: message
 		}, {
 			type: 'success',
 			timer: 2000,
