@@ -120,7 +120,8 @@ exports.addClassroom = function(req, res) {
 				moment: moment,
 				students: users.users,
 				emoji: emoji,
-				account: req.session.user
+				account: req.session.user,
+				server: ini.information
 			});
 		});
 	}
@@ -177,13 +178,14 @@ exports.editClassroom = function(req, res) {
 				if (response.statusCode == 200) {
 
 					// send to classrooms page
-					res.render('addEditclassroom', {
+					res.render('addEditClassroom', {
 						module: 'classrooms',
 						classroom: body,
 						moment: moment,
 						emoji: emoji,
 						xocolors: xocolors,
-						account: req.session.user
+						account: req.session.user,
+						server: ini.information
 					});
 				} else {
 					req.flash('errors', {
