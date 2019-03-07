@@ -81,6 +81,7 @@
 																<th data-l10n-id="icon" class="text-muted"></th>
 																<th data-l10n-id="title" class="text-muted"></th>
 																<th data-l10n-id="timestamp" class="text-muted"></th>
+																<th data-l10n-id="size" class="text-muted"></th>
 																<th data-l10n-id="action" class="text-muted"></th>
 														</tr>
 												</thead>
@@ -98,6 +99,7 @@
 																	</script>
 																	<td><%= entries.entries[i].metadata.title %></td>
 																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>
+																	<td><%= entries.entries[i].metadata.file_size %></td>
 																	<td>
 																		<a href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
 																		<a data-l10n-id="deleteEntry" title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteEntry'))"><i class="material-icons text-muted">delete_forever</i></a>
