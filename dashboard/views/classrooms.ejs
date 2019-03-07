@@ -18,7 +18,8 @@
                         </div>
                         <div class="col-md-3"></div>
                         <div class="col-md-6">
-						  <a class="btn btn-round pull-right " href="classrooms/add" data-l10n-id="addClassroom"><div class="ripple-container"></div></a>
+                            <button class="btn pull-right btn-round" id="download">downloadcsv<div class="ripple-container"></div></button>
+                          <a class="btn btn-round pull-right " href="classrooms/add" data-l10n-id="addClassroom"><div class="ripple-container"></div></a>
                           <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>
                       </form>
@@ -95,3 +96,26 @@
 	</div>
 </div>
 <% include includes/footer %>
+<script>
+    const downloadcsv = function(){
+        const csvRows = [];
+        const headers = ["name","student count"];
+        csvRows.push(headers.join(','));
+        <% for(var i=0; i < data.classrooms.length; i++) { %>
+        values = ["<%= data.classrooms[i].name %>","<%= data.classrooms[i].students.length %>"];
+        csvRows.push(values.join(','));
+        <% } %>
+        const result = csvRows.join('\n');
+        const blob = new Blob([result],{type:'text/csv'});
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.setAttribute('hidden','');
+        a.setAttribute('href',url);
+        a.setAttribute('download','classroom.csv');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+    document.getElementById("download").addEventListener("click",downloadcsv);
+    
+</script>

@@ -17,8 +17,8 @@
                           </div>
                         </div>
                         <div class="col-md-2">
-                          <div class="form-group form-black label-floating is-empty">
-                              <select class="form-control" name="role">
+                          <div class="form-group form-black label-floating is-empty">  
+                            <select class="form-control" name="role">
                                  <option data-l10n-id="student" value="student" <% if(query.role=='student'){ %>selected="selected"<% } %> >Student</option>
                                  <option data-l10n-id="admin" value="admin" <% if(query.role=='admin'){ %>selected="selected"<% } %> >Admin</option>
                               </select>
@@ -42,9 +42,10 @@
 						window.addEventListener('localized', function() {  // HACK: Force localization of student combo
 							var selection = document.getElementsByClassName("select2-selection__rendered");
 							if (selection && selection[0] && selection[0].title == "Student") selection[0].innerHTML = document.webL10n.get("student");						});
-						</script>
+                        </script>
                         <div class="col-md-6">
-													<a class="btn btn-round pull-right " href="users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
+                          <button class="btn pull-right btn-round" id="download">downloadcsv<div class="ripple-container"></div></button>
+                          <a class="btn btn-round pull-right " href="users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
                           <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>
                       </form>
@@ -131,6 +132,29 @@
 	</div>
 </div>
 <% include includes/footer %>
+<script>
+    const downloadcsv = function(){
+        const csvRows = [];
+        const headers = ["name","language","role"];
+        csvRows.push(headers.join(','));
+        <% for(var i=0; i < data.users.length; i++) { %>
+        values = ["<%= data.users[i].name %>","<%= data.users[i].language %>","<%= data.users[i].role %>"];
+        csvRows.push(values.join(','));
+        <% } %>
+        const result = csvRows.join('\n');
+        const blob = new Blob([result],{type:'text/csv'});
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.setAttribute('hidden','');
+        a.setAttribute('href',url);
+        a.setAttribute('download','users.csv');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+    document.getElementById("download").addEventListener("click",downloadcsv);
+    
+</script>
 <script>
 function show_class_fields() {
     console.log($('#user-form [name="role"]').select2('data')[0].id)
