@@ -12,6 +12,10 @@ exports.init = function(settings) {
 	ini = settings;
 };
 
+exports.ini = function() {
+	return ini;
+};
+
 // main landing page
 exports.index = function(req, res) {
 

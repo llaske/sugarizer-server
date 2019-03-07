@@ -6,6 +6,8 @@ var request = require('request'),
 	xocolors = require('../../helper/xocolors')(),
 	emoji = require('../../public/js/emoji');
 
+var classroom = require('./index');
+
 module.exports = function addClassroom(req, res) {
 
 	if (req.method == 'POST') {
@@ -60,7 +62,8 @@ module.exports = function addClassroom(req, res) {
 				students: users.users,
 				emoji: emoji,
 				xocolors: xocolors,
-				account: req.session.user
+				account: req.session.user,
+				server: classroom.ini().information
 			});
 		});
 	}

@@ -5,6 +5,8 @@ var request = require('request'),
 	xocolors = require('../../helper/xocolors')(),
 	emoji = require('../../public/js/emoji');
 
+var classroom = require('./index');
+
 module.exports = function editClassroom(req, res) {
 
 	if (req.params.classid) {
@@ -61,7 +63,8 @@ module.exports = function editClassroom(req, res) {
 						classroom: body,
 						emoji: emoji,
 						xocolors: xocolors,
-						account: req.session.user
+						account: req.session.user,
+						server: classroom.ini().information
 					});
 				} else {
 					req.flash('errors', {
