@@ -1,16 +1,14 @@
 // include libraries
 var request = require('request'),
-    common = require('../helper/common');
+	common = require('../../helper/common'),
+	fakeLaunch = require('./fakeLaunch'),
+	launch = require('./launch');
 
-export { fakeLaunch } from "./fakeLaunch";
-export { launch } from "./launch";
-
-	// init settings
+// init settings
 var ini=null;
 exports.init = function (setting) {
-    ini = setting;
-
-}
+	ini = setting;
+};
 
 // main landing page
 exports.index = function(req, res) {
@@ -50,47 +48,8 @@ exports.index = function(req, res) {
 			});
 			return res.redirect('/dashboard/activities');
 		}
-	})
+	});
 };
 
-exports.fakeLaunch = function(req, res) {
-	//validate
-	if (!req.query.aid) {
-		req.flash('errors', {
-			msg: common.l10n.get('InvalidAid')
-		});
-		return res.redirect('/dashboard/activities');
-	}
-
-	//make sugar context
-	var lsObj = {}
-	lsObj['sugar_settings'] = {};
-	lsObj['sugar_settings'].name = req.session.user.name;
-	lsObj['sugar_settings'].color = 128;
-	lsObj['sugar_settings'].colorvalue = {
-		stroke: "#005FE4",
-		fill: "#FF2B34"
-	};
-	lsObj['sugar_settings'].connected = false;
-	lsObj['sugar_settings'].language = req.session.user.language;
-	lsObj['sugar_settings'].networkId = req.session.user._id;
-	lsObj['sugar_settings'].server = null;
-	lsObj['sugar_settings'].view = 0;
-	lsObj['sugar_settings'].activities = [];
-
-	getActivity(req, req.query.aid, function(activity) {
-
-		activity.instances = [];
-		lsObj['sugar_settings'].activities.push(activity);
-		lsObj['sugar_settings'] = JSON.stringify(lsObj['sugar_settings']);
-
-		//launch url
-		res.json({
-			lsObj: lsObj,
-			url: '/' + activity.directory + '/index.html' + formQueryString({
-				a: activity.id,
-				n: activity.name
-			})
-		});
-	})
-}
+exports.fakeLaunch = fakeLaunch;
+exports.launch = launch;

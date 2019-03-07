@@ -1,8 +1,8 @@
 // include libraries
 var request = require('request'),
-    common = require('../helper/common');
+	common = require('../../../helper/common');
 
-function getActivity(req, aid, callback) {
+exports.getActivity = function(req, aid, callback) {
 	// call
 	request({
 		headers: common.getHeaders(req),
@@ -12,12 +12,12 @@ function getActivity(req, aid, callback) {
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 			// callback
-			callback(body)
+			callback(body);
 		}
 	});
-}
+};
 
-function getUser(req, uid, callback) {
+exports.getUser = function(req, uid, callback) {
 	// call
 	request({
 		headers: common.getHeaders(req),
@@ -27,22 +27,16 @@ function getUser(req, uid, callback) {
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 			// callback
-			callback(body)
+			callback(body);
 		}
 	});
-}
+};
 
-function formQueryString(params) {
+exports.formQueryString = function(params) {
 	var str = [];
 	for (var p in params)
 		if (params.hasOwnProperty(p)) {
 			str.push(encodeURIComponent(p) + "=" + encodeURIComponent(params[p]));
 		}
 	return '?' + str.join("&");
-}
-
-export {
-    getActivity,
-    getUser,
-    formQueryString
 };

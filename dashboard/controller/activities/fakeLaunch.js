@@ -1,10 +1,11 @@
 // include libraries
-var request = require('request'),
-    common = require('../helper/common');
+var common = require('../../helper/common');
 
-var { getActivity, formQueryString} = require('./util')
+var _util = require('./util'),
+	getActivity = _util.getActivity,
+	formQueryString = _util.formQueryString;
 
-exports.fakeLaunch = function(req, res) {
+module.exports = function fakeLaunch(req, res) {
 	//validate
 	if (!req.query.aid) {
 		req.flash('errors', {
@@ -14,7 +15,7 @@ exports.fakeLaunch = function(req, res) {
 	}
 
 	//make sugar context
-	var lsObj = {}
+	var lsObj = {};
 	lsObj['sugar_settings'] = {};
 	lsObj['sugar_settings'].name = req.session.user.name;
 	lsObj['sugar_settings'].color = 128;
@@ -43,5 +44,5 @@ exports.fakeLaunch = function(req, res) {
 				n: activity.name
 			})
 		});
-	})
-}
+	});
+};
