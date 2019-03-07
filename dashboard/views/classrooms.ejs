@@ -79,7 +79,7 @@
                                                   <a title="View Students" style="pointer-events: none;"><span class="student-icon" style="opacity: 0.4;"></span></a>
                                               <% } %>
                                               <a title="Edit Classroom" href="classrooms/edit/<%= data.classrooms[i]._id %>"><i class="material-icons text-muted">edit</i></a>
-                                              <a title="Delete Classroom" href="classrooms/delete/<%= data.classrooms[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom {classroom:<%= data.classrooms[i].name %>}'))"><i class="material-icons text-muted">delete_forever</i></a>
+                                              <a title="Delete Classroom" href="classrooms/delete/<%= data.classrooms[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom', {classroom:'<%= data.classrooms[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
                                           </td>
                                       </tr>
                                     <% } %>
