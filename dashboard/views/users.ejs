@@ -30,7 +30,7 @@
                                 <select class="form-control" name="classid">
                                     <option value="" selected="selected" >None</option>
                                     <% for(var i=0; i < classrooms.length; i++) { %>
-                                        <% if(classrooms[i].students && classrooms[i].students.length > 0) { %>
+                                        <% if(Array.isArray(classrooms[i].students) && classrooms[i].students && classrooms[i].students.length > 0) { %>
                                             <option value="<%- classrooms[i].students.join(',') %>" <% if(query.classid== classrooms[i].students.join(',')){ %>selected="selected"<% } %> ><%= classrooms[i].name %></option>
                                         <% } %>
                                     <% } %>
@@ -56,7 +56,7 @@
                             <i class="material-icons dp96">info_outline</i>
                             <p data-l10n-id="noUserText"></p>
                     </div>
-                    <%} 
+                    <%}
                     else {%>
                     <div class="card">
                             <div class="card-header row" data-background-color="black">

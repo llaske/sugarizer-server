@@ -73,7 +73,7 @@
                                           <td><%= data.classrooms[i].students.length %></td>
                                           <td><%= moment(data.classrooms[i].timestamp).calendar() %></td>
                                           <td>
-                                              <% if(data.classrooms[i].students.length > 0) { %>
+                                              <% if(Array.isArray(data.classrooms[i].students) && data.classrooms[i].students.length > 0) { %>
                                                   <a title="View Students" href="users?role=student&classid=<%- data.classrooms[i].students.join(',') %>"><span class="student-icon"></span></a>
                                               <% } else { %>
                                                   <a title="View Students" style="pointer-events: none;"><span class="student-icon" style="opacity: 0.4;"></span></a>
