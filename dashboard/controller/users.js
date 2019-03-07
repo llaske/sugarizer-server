@@ -127,7 +127,8 @@ exports.addUser = function(req, res) {
 			xocolors: xocolors,
 			moment: moment,
 			emoji: emoji,
-			account: req.session.user
+			account: req.session.user,
+			server: ini.information
 		});
 	}
 };
@@ -190,7 +191,8 @@ exports.editUser = function(req, res) {
 						moment: moment,
 						emoji: emoji,
 						xocolors: xocolors,
-						account: req.session.user
+						account: req.session.user,
+						server: ini.information
 					});
 				} else {
 					req.flash('errors', {
