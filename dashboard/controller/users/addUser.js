@@ -59,7 +59,8 @@ module.exports = function addUser(req, res) {
 			xocolors: xocolors,
 			moment: moment,
 			emoji: emoji,
-			account: req.session.user
+			account: req.session.user,
+			server: users.ini().information
 		});
 	}
 };

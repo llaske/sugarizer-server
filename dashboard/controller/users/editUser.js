@@ -65,7 +65,8 @@ module.exports = function editUser(req, res) {
 						moment: moment,
 						emoji: emoji,
 						xocolors: xocolors,
-						account: req.session.user
+						account: req.session.user,
+						server: users.ini().information
 					});
 				} else {
 					req.flash('errors', {
