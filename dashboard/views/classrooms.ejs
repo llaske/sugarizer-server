@@ -25,62 +25,69 @@
                   </div>
               </div>
               <div class="col-md-12">
-                  <div class="card">
-                      <div class="card-header row" data-background-color="black">
-                          <div class="col-md-4 col-sm-4 col-lg-4 text-left">
-                          <% if(data.links.prev_page) { %>
-                             <a href="<%= data.links.prev_page %>" data-l10n-id="prevPage"><< previous page</a>
-                          <% } %>
-                          </div>
-                          <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset + 1 %>", "to": "<%= data.offset + data.classrooms.length %>", "total": "<%= data.total %>" }'></div>
-                          <div class="col-md-4 col-sm-4 col-lg-4 text-right">
-                          <% if(data.links.next_page) { %>
-                             <a href="<%= data.links.next_page %>" data-l10n-id="nextPage">next page >></a>
-                          <% } %>
-                          </div>
-                      </div>
-                      <div class="card-content table-responsive">
-                          <table class="table">
-                              <thead class="text-muted">
-                                  <tr>
-                                      <th>#</th>
-                                      <th data-l10n-id="icon">Icon</th>
-                                      <th data-l10n-id="name">Name</th>
-                                      <th data-l10n-id="studentsCount">Students Count</th>
-                                      <th data-l10n-id="lastSeen">Timestamp</th>
-                                      <th data-l10n-id="action">Action</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                  <% for(var i=0; i < data.classrooms.length; i++) { %>
+                  <% if(data.classrooms.length == 0){%>
+                    <div class="text-center" style="margin-top:50px;">
+                            <i class="material-icons dp96">info_outline</i>
+                            <p data-l10n-id="noClassroomText"></p>
+                        </div>
+                  <% } else{%>
+                    <div class="card">
+                        <div class="card-header row" data-background-color="black">
+                            <div class="col-md-4 col-sm-4 col-lg-4 text-left">
+                            <% if(data.links.prev_page) { %>
+                               <a href="<%= data.links.prev_page %>" data-l10n-id="prevPage"><< previous page</a>
+                            <% } %>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset + 1 %>", "to": "<%= data.offset + data.classrooms.length %>", "total": "<%= data.total %>" }'></div>
+                            <div class="col-md-4 col-sm-4 col-lg-4 text-right">
+                            <% if(data.links.next_page) { %>
+                               <a href="<%= data.links.next_page %>" data-l10n-id="nextPage">next page >></a>
+                            <% } %>
+                            </div>
+                        </div>
+                        <div class="card-content table-responsive">
+                            <table class="table">
+                                <thead class="text-muted">
                                     <tr>
-                                        <td><%= data.offset + i + 1 %></td>
-                                        <td>
-                                            <div class="color" id="<%= data.classrooms[i]._id %>">
-                                                <div class="xo-icon"></div>
-                                            </div>
-                                        </td>
-                                        <script>
-                                            new icon().load("/public/img/classroom-icon.svg", (<%- JSON.stringify(data.classrooms[i].color) %>), "<%= data.classrooms[i]._id %>");
-                                        </script>
-                                        <td><%= data.classrooms[i].name %></td>
-                                        <td><%= data.classrooms[i].students.length %></td>
-                                        <td><%= moment(data.classrooms[i].timestamp).calendar() %></td>
-                                        <td>
-                                            <% if(data.classrooms[i].students.length > 0) { %>
-										        <a title="View Students" href="users?role=student&classid=<%- data.classrooms[i].students.join(',') %>"><span class="student-icon"></span></a>
-                                            <% } else { %>
-										        <a title="View Students" style="pointer-events: none;"><span class="student-icon" style="opacity: 0.4;"></span></a>
-                                            <% } %>
-                                            <a title="Edit Classroom" href="classrooms/edit/<%= data.classrooms[i]._id %>"><i class="material-icons text-muted">edit</i></a>
-                                            <a title="Delete Classroom" href="classrooms/delete/<%= data.classrooms[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom {classroom:<%= data.classrooms[i].name %>}'))"><i class="material-icons text-muted">delete_forever</i></a>
-                                        </td>
+                                        <th>#</th>
+                                        <th data-l10n-id="icon">Icon</th>
+                                        <th data-l10n-id="name">Name</th>
+                                        <th data-l10n-id="studentsCount">Students Count</th>
+                                        <th data-l10n-id="lastSeen">Timestamp</th>
+                                        <th data-l10n-id="action">Action</th>
                                     </tr>
-                                  <% } %>
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
+                                </thead>
+                                <tbody>
+                                    <% for(var i=0; i < data.classrooms.length; i++) { %>
+                                      <tr>
+                                          <td><%= data.offset + i + 1 %></td>
+                                          <td>
+                                              <div class="color" id="<%= data.classrooms[i]._id %>">
+                                                  <div class="xo-icon"></div>
+                                              </div>
+                                          </td>
+                                          <script>
+                                              new icon().load("/public/img/classroom-icon.svg", (<%- JSON.stringify(data.classrooms[i].color) %>), "<%= data.classrooms[i]._id %>");
+                                          </script>
+                                          <td><%= data.classrooms[i].name %></td>
+                                          <td><%= data.classrooms[i].students.length %></td>
+                                          <td><%= moment(data.classrooms[i].timestamp).calendar() %></td>
+                                          <td>
+                                              <% if(Array.isArray(data.classrooms[i].students) && data.classrooms[i].students.length > 0) { %>
+                                                  <a title="View Students" href="users?role=student&classid=<%- data.classrooms[i].students.join(',') %>"><span class="student-icon"></span></a>
+                                              <% } else { %>
+                                                  <a title="View Students" style="pointer-events: none;"><span class="student-icon" style="opacity: 0.4;"></span></a>
+                                              <% } %>
+                                              <a title="Edit Classroom" href="classrooms/edit/<%= data.classrooms[i]._id %>"><i class="material-icons text-muted">edit</i></a>
+                                              <a title="Delete Classroom" href="classrooms/delete/<%= data.classrooms[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom', {classroom:'<%= data.classrooms[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
+                                          </td>
+                                      </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <%}%>
               </div>
           </div>
 			</div>

@@ -74,7 +74,7 @@ exports.addClassroom = function(req, res) {
 		req.body.name = req.body.name.trim();
 		req.body.students = req.body.students || [];
 		req.body.color = JSON.parse(req.body.color);
-		req.assert('name', common.l10n.get('NameNotAlphanumeric')).matches(/^[a-z0-9 ]+$/i);
+		req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
 		req.body.options = { sync: true, stats: true };
 
 		// get errors
@@ -120,7 +120,8 @@ exports.addClassroom = function(req, res) {
 				moment: moment,
 				students: users.users,
 				emoji: emoji,
-				account: req.session.user
+				account: req.session.user,
+				server: ini.information
 			});
 		});
 	}
@@ -133,7 +134,12 @@ exports.editClassroom = function(req, res) {
 
 			// validate
 			req.body.name = req.body.name.trim();
-            req.body.students = req.body.students || [];
+			req.body.students = req.body.students || [];
+			
+			if (isString(req.body.students)) {
+				req.body.students = [req.body.students]
+			}
+
 			req.body.color = JSON.parse(req.body.color);
 
 			// get errors
@@ -177,13 +183,14 @@ exports.editClassroom = function(req, res) {
 				if (response.statusCode == 200) {
 
 					// send to classrooms page
-					res.render('addEditclassroom', {
+					res.render('addEditClassroom', {
 						module: 'classrooms',
 						classroom: body,
 						moment: moment,
 						emoji: emoji,
 						xocolors: xocolors,
-						account: req.session.user
+						account: req.session.user,
+						server: ini.information
 					});
 				} else {
 					req.flash('errors', {
@@ -198,6 +205,9 @@ exports.editClassroom = function(req, res) {
 			msg: common.l10n.get('ThereIsError')
 		});
 		return res.redirect('/dashboard/classrooms');
+	}
+	function isString(arg) {
+		return typeof arg === 'string';
 	}
 };
 

@@ -83,7 +83,7 @@ exports.addUser = function(req, res) {
 		req.body.name = req.body.name.trim();
 		req.body.password = req.body.password.trim();
 		req.body.color = JSON.parse(req.body.color);
-		req.assert('name', common.l10n.get('NameNotAlphanumeric')).matches(/^[a-z0-9 ]+$/i);
+		req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
 		req.assert('password', common.l10n.get('PasswordAtLeast', {count:ini.security.min_password_size})).len(ini.security.min_password_size);
 		req.body.options = { sync: true, stats: true };
 
@@ -127,7 +127,8 @@ exports.addUser = function(req, res) {
 			xocolors: xocolors,
 			moment: moment,
 			emoji: emoji,
-			account: req.session.user
+			account: req.session.user,
+			server: ini.information
 		});
 	}
 };
@@ -190,7 +191,8 @@ exports.editUser = function(req, res) {
 						moment: moment,
 						emoji: emoji,
 						xocolors: xocolors,
-						account: req.session.user
+						account: req.session.user,
+						server: ini.information
 					});
 				} else {
 					req.flash('errors', {

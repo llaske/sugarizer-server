@@ -1,10 +1,9 @@
 {
 	"name": "sugarizer-server",
-	"description": "Sugarizer Server",
+	"description": "Server for Sugarizer application",
 	"version": "1.1.0-alpha",
 	"repository": "https://github.com/llaske/sugarizer-server",
-    "author": "Lionel Laské <lionel@sugarizer.org>",
-    "description": "Server for Sugarizer application",
+	"author": "Lionel Laské <lionel@sugarizer.org>",
 	"license": "Apache-2.0",
 	"dependencies": {
 		"cors": "2.8.x",

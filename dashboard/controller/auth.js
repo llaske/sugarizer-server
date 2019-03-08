@@ -103,7 +103,7 @@ exports.logout = function(req, res) {
  */
 exports.validateSession = function(req, res, next) {
 	if (!req.session.user) {
-		res.redirect('/dashboard/login');
+		return res.redirect('/dashboard/login');
 	}
 	next();
 };
