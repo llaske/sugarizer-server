@@ -324,7 +324,7 @@ function getActivities(req, res, callback) {
 	})
 }
 
-export {
+module.export = {
     getTopContributors,
     getTopActivities,
     getRecentUsers,
