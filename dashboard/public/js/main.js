@@ -247,15 +247,20 @@ function highlight(text) {
 function onLocalized() {
 	var l10n = document.webL10n;
 	var lang = document.getElementById('languageSelection');
-
+	var moment = window.moment;
 	if (lang != null) {
 		if (lang.selectedIndex == -1) {
 			lang.value = l10n.getLanguage();
+			moment.locale(lang.value);
 		} else if (localStorage.getItem("languageSelection") == null) {
-			l10n.setLanguage(lang.options[lang.selectedIndex].value);
+			var selectedLang = lang.options[lang.selectedIndex].value;
+			l10n.setLanguage(selectedLang);
+			moment.locale(selectedLang);
 		} else {
-			l10n.setLanguage(localStorage.getItem("languageSelection"));
-			lang.value = localStorage.getItem("languageSelection");
+			var storedLang = localStorage.getItem("languageSelection");
+			l10n.setLanguage(storedLang);
+			moment.locale(storedLang);
+			lang.value = storedLang;
 		}
 		lang.onchange = function() {
 			l10n.setLanguage(this.value);
@@ -264,6 +269,32 @@ function onLocalized() {
 	}
 }
 document.webL10n.ready(onLocalized);
+
+// Translate timestamp
+function updateTimestamp(lang, timestamps) {
+	if (typeof timestamps == "string") {
+		timestamps = [timestamps];
+	}
+	window.moment.locale(lang);
+	for (var i=0; i < timestamps.length; i++) {
+		var el = document.getElementById(timestamps[i]);
+		if (el) {
+			el.innerHTML = window.moment(timestamps[i]).calendar();
+		}
+	}
+}
+
+// Get language
+function getDefaultLang() {
+	var lang = $('#languageSelection');
+	if (localStorage.getItem("languageSelection")) {
+		return localStorage.getItem("languageSelection");
+	} else if (lang.val()) {
+		return lang.val();
+	} else {
+		return 'en';
+	}
+}
 
 // graph create
 function createGraph(type, element, route) {

@@ -16,10 +16,9 @@ exports.init = function(settings) {
 // main landing page
 exports.index = function(req, res) {
 
-	// reinit l10n and moment with locale
+	// reinit l10n with locale
 	if (req.query && req.query.lang) {
 		common.l10n.setLanguage(req.query.lang);
-		moment.locale(req.query.lang);
 	}
 
 	//query

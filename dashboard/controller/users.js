@@ -18,7 +18,6 @@ exports.index = function(req, res) {
 	// reinit l10n and moment with locale
 	if (req.query && req.query.lang) {
 		common.l10n.setLanguage(req.query.lang);
-		moment.locale(req.query.lang);
 	}
 
 	//query

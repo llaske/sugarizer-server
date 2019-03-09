@@ -111,9 +111,9 @@
                                               <% if(data.users[i].language =='ibo') {%> <td>Igbo</td> <%} %>
                                               <% if(data.users[i].language =='yor') {%> <td>Yoruba</td> <%} %>
                                               <td><%= data.users[i].role %></td>
-                                              <td><%= moment(data.users[i].timestamp).calendar() %></td>
+                                              <td id="<%= data.users[i].timestamp %>"></td>
                                               <td>
-                                                                                          <a data-l10n-id="seeJournalEntries" title="See Journal Entries" href="journal/<%= data.users[i].private_journal %>?uid=<%= data.users[i]._id %>&type=private"><span class="journal-icon2"></span></a>
+                                                <a data-l10n-id="seeJournalEntries" title="See Journal Entries" href="journal/<%= data.users[i].private_journal %>?uid=<%= data.users[i]._id %>&type=private"><span class="journal-icon2"></span></a>
                                                 <a data-l10n-id="editUser" title="Edit User" href="users/edit/<%= data.users[i]._id %>"><i class="material-icons text-muted">edit</i></a>
                                                 <a data-l10n-id="deleteUser" title="Delete User" href="users/delete/<%= data.users[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteUser',{user:'<%= data.users[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
                                               </td>
@@ -143,4 +143,16 @@ function show_class_fields() {
     }
 }
 show_class_fields('<% if(typeof query == "object"){ %><%= query.role || "student" %><% } %>')
+</script>
+
+<% var timestamps = data.users.map(function(user) { return user.timestamp }) %>
+<script>
+    var timestamps = [<%= timestamps%>];
+    var lang = $('#languageSelection');
+    if (lang) {
+        updateTimestamp(getDefaultLang(), timestamps);
+        lang.on('change', function() {
+            updateTimestamp($(this).val(), timestamps);
+        })
+    }
 </script>

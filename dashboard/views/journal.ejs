@@ -98,7 +98,7 @@
 																		new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
 																	</script>
 																	<td><%= entries.entries[i].metadata.title %></td>
-																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>
+																	<td id="<%= entries.entries[i].metadata.timestamp %>"></td>
 																	<td><%= entries.entries[i].metadata.file_size %></td>
 																	<td>
 																		<a href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
@@ -118,3 +118,21 @@
 	</div>
 </div>
 <% include includes/footer %>
+
+<% 	
+	if (query.uid != -1 && typeof entries.entries == "object" && entries.entries.length != 0) {
+		var timestamps = entries.entries.map(function(entry) { return entry.metadata.timestamp });
+	}
+%>
+<script>
+	var timestamps = [<%= timestamps%>];
+	if (timestamps) {
+		var lang = $('#languageSelection');
+		if (lang) {
+			updateTimestamp(getDefaultLang(), timestamps);
+			lang.on('change', function() {
+				updateTimestamp($(this).val(), timestamps);
+			})
+		}
+	}
+</script>

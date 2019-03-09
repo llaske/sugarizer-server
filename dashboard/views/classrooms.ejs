@@ -71,7 +71,7 @@
                                           </script>
                                           <td><%= data.classrooms[i].name %></td>
                                           <td><%= data.classrooms[i].students.length %></td>
-                                          <td><%= moment(data.classrooms[i].timestamp).calendar() %></td>
+                                          <td id="<%= data.classrooms[i].timestamp %>"></td>
                                           <td>
                                               <% if(Array.isArray(data.classrooms[i].students) && data.classrooms[i].students.length > 0) { %>
                                                   <a title="View Students" href="users?role=student&classid=<%- data.classrooms[i].students.join(',') %>"><span class="student-icon"></span></a>
@@ -95,3 +95,14 @@
 	</div>
 </div>
 <% include includes/footer %>
+<% var timestamps = data.classrooms.map(function(classroom) { return classroom.timestamp }) %>
+<script>
+    var timestamps = [<%= timestamps%>];
+    var lang = $('#languageSelection');
+    if (lang) {
+        updateTimestamp(getDefaultLang(), timestamps);
+        lang.on('change', function() {
+            updateTimestamp($(this).val(), timestamps);
+        })
+    }
+</script>
