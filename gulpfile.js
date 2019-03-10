@@ -1,6 +1,6 @@
-var gulp = require('gulp'),
-var imagemin = require('gulp-imagemin'),
-var uglify = require('gulp-uglify');
+const gulp = require('gulp');
+const imagemin = require('gulp-imagemin');
+const uglify = require('gulp-uglify');
 
 gulp.task('message',function(){
     return console.log("Gulp is running");
