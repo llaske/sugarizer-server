@@ -16,7 +16,7 @@
                               <span class="material-input"></span>
                           </div>
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                           <div class="form-group form-black label-floating is-empty">
                               <select class="form-control" name="role">
                                  <option data-l10n-id="student" value="student" <% if(query.role=='student'){ %>selected="selected"<% } %> >Student</option>
@@ -26,21 +26,11 @@
                           </div>
                         </div>
                         <div class="col-md-2">
-                                <div class="form-group form-black label-floating is-empty">
-                                   <select class="form-control" id="sort-sel-user" name="sort">
-                                   <option value="" disabled selected>Sort by</option>
-                                   <option data-l10n-id="" value="+name">Name</option>
-                                   <option data-l10n-id="" value="+created_time">Created Time</option>
-                                   <option data-l10n-id="" value="+timestamp">Last Seen</option>
-                                    </select>
-                                </div>
-                              </div>
-                        <div class="col-md-1">
                           <div class="form-group form-black label-floating is-empty classroom_input">
                                 <select class="form-control" name="classid">
                                     <option value="" selected="selected" >None</option>
                                     <% for(var i=0; i < classrooms.length; i++) { %>
-                                        <% if(classrooms[i].students && classrooms[i].students.length > 0) { %>
+                                        <% if(Array.isArray(classrooms[i].students) && classrooms[i].students && classrooms[i].students.length > 0) { %>
                                             <option value="<%- classrooms[i].students.join(',') %>" <% if(query.classid== classrooms[i].students.join(',')){ %>selected="selected"<% } %> ><%= classrooms[i].name %></option>
                                         <% } %>
                                     <% } %>
@@ -52,35 +42,28 @@
 						window.addEventListener('localized', function() {  // HACK: Force localization of student combo
 							var selection = document.getElementsByClassName("select2-selection__rendered");
 							if (selection && selection[0] && selection[0].title == "Student") selection[0].innerHTML = document.webL10n.get("student");						});
-                        </script>
-                        <script>
-                                function reload() {
-                                  sessionStorage.setItem('selectedVal2',$('#sort-sel-user').val());
-                                  location.reload(true);
-                                  }
-
-                                  $( document ).ready(function() {
-                                      var selectedVal2 = sessionStorage.getItem('selectedVal2');
-                                      if (selectedVal2){
-                                      $('#sort-sel-user').val(selectedVal2)
-                                      }
-                                      sessionStorage.removeItem("selectedVal2");
-                                  });
-                                </script>
+						</script>
                         <div class="col-md-6">
 													<a class="btn btn-round pull-right " href="users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
-                          <button class="btn pull-right btn-round" type="submit" onclick="reload()" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+                          <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>
-                      </form>
+                      
                   </div>
               </div>
+              <div class="col-md-12">
+                    <div class="sortby">Sort By</div>           
+                   <label class="radio-inline"><input type="radio" name="sort" value="+name">Name</label>
+                   <label class="radio-inline"><input type="radio" name="sort" value="+created_time">Created Time</label>
+                   <label class="radio-inline"><input type="radio" name="sort" value="+timestamp">Last Seen</label>
+              </div>
+            </form>
               <div class="col-md-12">
                   <% if(data.users.length == 0) {%>
                     <div class="text-center" style="margin-top:50px;">
                             <i class="material-icons dp96">info_outline</i>
                             <p data-l10n-id="noUserText"></p>
                     </div>
-                    <%} 
+                    <%}
                     else {%>
                     <div class="card">
                             <div class="card-header row" data-background-color="black">
@@ -161,7 +144,6 @@ function show_class_fields() {
     if($('#user-form [name="role"]').select2('data')[0].id == 'admin'){
         $('.classroom_input').addClass('hide');
         $('#user-form [name="classid"]').val('').trigger('change');
-
     }else{
         $('.classroom_input').removeClass('hide');
     }
