@@ -37,6 +37,9 @@ exports.index = function(req, res) {
 	if (req.query.offset != '') {
 		query['offset'] = req.query.offset;
 	}
+	if(req.query.sort != ''){
+		query['sort'] = req.query.sort;
+	}
 
     // call
 	request({

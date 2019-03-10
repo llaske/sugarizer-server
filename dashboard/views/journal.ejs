@@ -43,8 +43,15 @@
 									if (selection && selection[1]) selection[1].innerHTML = document.webL10n.get("private");
 								});
 								</script>
-							</form>
+							
 					</div>
+					<div class="col-md-12">
+							<div class="sortby">Sort By</div>           
+						   <label class="radio-inline"><input type="radio" name="sort" value="+file_size">size</label>
+						   <label class="radio-inline"><input type="radio" name="sort" value="+created_time">Created Time</label>
+						   <label class="radio-inline"><input type="radio" name="sort" value="+timestamp">Last Seen</label>
+				    </div>
+						</form>	 
 				</div>
 				<div class="row">
 	        <div class="col-md-12 col-lg-12 col-sm-12">

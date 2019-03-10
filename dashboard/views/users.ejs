@@ -47,9 +47,16 @@
 													<a class="btn btn-round pull-right " href="users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
                           <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>
-                      </form>
+                      
                   </div>
               </div>
+              <div class="col-md-12">
+                    <div class="sortby">Sort By</div>           
+                   <label class="radio-inline"><input type="radio" name="sort" value="+name">Name</label>
+                   <label class="radio-inline"><input type="radio" name="sort" value="+created_time">Created Time</label>
+                   <label class="radio-inline"><input type="radio" name="sort" value="+timestamp">Last Seen</label>
+              </div>
+            </form>
               <div class="col-md-12">
                   <% if(data.users.length == 0) {%>
                     <div class="text-center" style="margin-top:50px;">
@@ -137,7 +144,6 @@ function show_class_fields() {
     if($('#user-form [name="role"]').select2('data')[0].id == 'admin'){
         $('.classroom_input').addClass('hide');
         $('#user-form [name="classid"]').val('').trigger('change');
-
     }else{
         $('.classroom_input').removeClass('hide');
     }

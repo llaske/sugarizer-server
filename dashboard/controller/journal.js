@@ -76,6 +76,7 @@ exports.getEntries = function(req, res) {
 			journal: req.params.jid,
 			type: req.query.type,
 			limit: (req.query.limit ? req.query.limit : 10),
+			sort: (req.query.sort ? req.query.sort : '-timestamp'),
 			offset: (req.query.offset ? req.query.offset : 0)
 		}
 
@@ -138,7 +139,7 @@ function getJournalEntries(req, res, query, callback) {
 			uid: query.uid,
 			offset: query.offset,
 			limit: query.limit,
-			sort: "-timestamp",
+			sort: query.sort,
 		},
 		uri: common.getAPIUrl(req) + 'api/v1/journal/' + query.journal
 	}, function(error, response, body) {

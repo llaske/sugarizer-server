@@ -16,14 +16,22 @@
                               <span class="material-input"></span>
                           </div>
                         </div>
-                        <div class="col-md-3"></div>
+                        <div class="col-md-3">
+                        </div>
                         <div class="col-md-6">
 						  <a class="btn btn-round pull-right " href="classrooms/add" data-l10n-id="addClassroom"><div class="ripple-container"></div></a>
                           <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>
-                      </form>
+                      
                   </div>
               </div>
+              <div class="col-md-12">
+                 <div class="sortby">Sort By</div>           
+                <label class="radio-inline"><input type="radio" name="sort" value="+name">Name</label>
+                <label class="radio-inline"><input type="radio" name="sort" value="+created_time">Created Time</label>
+                <label class="radio-inline"><input type="radio" name="sort" value="+timestamp">Last Seen</label>
+              </div>
+            </form>
               <div class="col-md-12">
                   <% if(data.classrooms.length == 0){%>
                     <div class="text-center" style="margin-top:50px;">
@@ -73,13 +81,13 @@
                                           <td><%= data.classrooms[i].students.length %></td>
                                           <td><%= moment(data.classrooms[i].timestamp).calendar() %></td>
                                           <td>
-                                              <% if(Array.isArray(data.classrooms[i].students) && data.classrooms[i].students.length > 0) { %>
+                                              <% if(data.classrooms[i].students.length > 0) { %>
                                                   <a title="View Students" href="users?role=student&classid=<%- data.classrooms[i].students.join(',') %>"><span class="student-icon"></span></a>
                                               <% } else { %>
                                                   <a title="View Students" style="pointer-events: none;"><span class="student-icon" style="opacity: 0.4;"></span></a>
                                               <% } %>
                                               <a title="Edit Classroom" href="classrooms/edit/<%= data.classrooms[i]._id %>"><i class="material-icons text-muted">edit</i></a>
-                                              <a title="Delete Classroom" href="classrooms/delete/<%= data.classrooms[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom', {classroom:'<%= data.classrooms[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
+                                              <a title="Delete Classroom" href="classrooms/delete/<%= data.classrooms[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom {classroom:<%= data.classrooms[i].name %>}'))"><i class="material-icons text-muted">delete_forever</i></a>
                                           </td>
                                       </tr>
                                     <% } %>
