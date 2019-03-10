@@ -25,11 +25,15 @@
 		"websocket": "1.0.x"
 	},
 	"devDependencies": {
+		"apidoc": "*",
 		"chai": "*",
 		"chai-http": "*",
-		"nodemon": "*",
-		"apidoc": "*",
-		"mocha": "*"
+		"gulp": "^4.0.0",
+		"gulp-imagemin": "^5.0.3",
+		"gulp-sass": "^4.0.2",
+		"gulp-uglify": "^3.0.2",
+		"mocha": "*",
+		"nodemon": "*"
 	},
 	"scripts": {
 		"test": "mocha api/test/",
