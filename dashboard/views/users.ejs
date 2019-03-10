@@ -78,10 +78,10 @@
                                         <tr>
                                             <th>#</th>
                                                                                   <% if(query.role != 'admin'){ %><th data-l10n-id="buddy">Buddy</th><% } %>
-                                            <th data-l10n-id="name">Name</th>
-                                            <th data-l10n-id="language">Language</th>
+                                            <th data-l10n-id="name" <% if(query.role == 'admin'){ %>onclick="sort(1)"<% }else{ %>onclick="sort(2)" <% } %>>Name</th>
+                                            <th data-l10n-id="language" <% if(query.role == 'admin'){ %>onclick="sort(2)"<% }else{ %>onclick="sort(3)" <% } %>>Language</th>
                                             <th data-l10n-id="role">Role</th>
-                                            <th data-l10n-id="lastSeen">Timestamp</th>
+                                            <th data-l10n-id="lastSeen" <% if(query.role == 'admin'){ %>onclick="sort(4)"<% }else{ %>onclick="sort(5)" <% } %>>Timestamp</th>
                                             <th data-l10n-id="action">Action</th>
                                         </tr>
                                     </thead>
@@ -111,6 +111,7 @@
                                               <% if(data.users[i].language =='ibo') {%> <td>Igbo</td> <%} %>
                                               <% if(data.users[i].language =='yor') {%> <td>Yoruba</td> <%} %>
                                               <td><%= data.users[i].role %></td>
+                                              <td style="display:none;"><%= data.users[i].timestamp %></td>
                                               <td><%= moment(data.users[i].timestamp).calendar() %></td>
                                               <td>
                                                                                           <a data-l10n-id="seeJournalEntries" title="See Journal Entries" href="journal/<%= data.users[i].private_journal %>?uid=<%= data.users[i]._id %>&type=private"><span class="journal-icon2"></span></a>
@@ -131,6 +132,7 @@
 	</div>
 </div>
 <% include includes/footer %>
+
 <script>
 function show_class_fields() {
     console.log($('#user-form [name="role"]').select2('data')[0].id)
@@ -143,4 +145,40 @@ function show_class_fields() {
     }
 }
 show_class_fields('<% if(typeof query == "object"){ %><%= query.role || "student" %><% } %>')
+
+let ascending; //used for sorting
+
+function sort(n) {
+  ascending = ascending === undefined ? 0 : ascending;
+  let table = document.querySelector("table"),
+    i,
+    doSwitch;
+  while (1) {
+    doSwitch = 0;
+    for (i = 1; i < table.rows.length - 1; i++) {
+      x = table.rows[i].getElementsByTagName("TD")[n].innerHTML.toLowerCase();
+      y = table.rows[i + 1]
+        .getElementsByTagName("TD")
+        [n].innerHTML.toLowerCase();
+      if (ascending) {
+        if (x > y) {
+          doSwitch += 1;
+          break;
+        }
+      } else {
+        if (x < y) {
+          doSwitch += 1;
+          break;
+        }
+      }
+    }
+    if (doSwitch) {
+      table.rows[i].parentNode.insertBefore(table.rows[i + 1], table.rows[i]);
+    }
+    if (!doSwitch) {
+      ascending = !ascending;
+      break;
+    }
+  }
+}
 </script>
