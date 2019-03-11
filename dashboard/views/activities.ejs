@@ -20,7 +20,8 @@
 						<div class="col-md-12">
 							<div class="card card-plain" style="margin:10px;">
 								<div class="card-content">
-									<div data-l10n-id="icon" class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Icon</div>
+									<div class="col-lg-1 col-md-1 col-sm-1"></div>
+									<div data-l10n-id="icon" class="text-center text-muted col-lg-1 col-md-1 col-sm-1">Icon</div>
 									<div data-l10n-id="name" class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Name</div>
 									<div data-l10n-id="activity" class="text-center text-muted col-lg-4 col-md-4 col-sm-4">Activity Id</div>
 									<div data-l10n-id="version" class="text-center text-muted col-lg-1 col-md-1 col-sm-1">Version</div>
@@ -35,7 +36,8 @@
 								<li>
 									<div class="card">
 										<div class="card-content">
-											<div class="text-center col-lg-2 col-md-2 col-sm-2">
+											<div class="col-lg-1 col-md-1 col-sm-1 draggable" style="line-height: 40px; color: darkgrey;"><i class="fa fa-ellipsis-v"></i></div>
+											<div class="text-center col-lg-1 col-md-1 col-sm-1 ">
 													<img style="width: 30px;height: 30px;margin: 5px;" src="/<%= activities[i].directory + '/' + activities[i].icon %>" />
 											</div>
 											<div class="text-center col-lg-2 col-md-2 col-sm-2 search_textbox" style="line-height: 40px;"><%= activities[i].name %></div>
@@ -59,6 +61,7 @@
 												</a>
 											</div>
 										</div>
+
 									</div>
 								</li>
 								<% } %>
