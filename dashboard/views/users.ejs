@@ -42,7 +42,8 @@
 						window.addEventListener('localized', function() {  // HACK: Force localization of student combo
 							var selection = document.getElementsByClassName("select2-selection__rendered");
 							if (selection && selection[0] && selection[0].title == "Student") selection[0].innerHTML = document.webL10n.get("student");						});
-						</script>
+                        </script>
+                        
                         <div class="col-md-6">
 													<a class="btn btn-round pull-right " href="users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
                           <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
@@ -50,13 +51,7 @@
                       
                   </div>
               </div>
-              <div class="col-md-12">
-                    <div class="sortby">Sort By</div>           
-                   <label class="radio-inline"><input type="radio" name="sort" value="+name">Name</label>
-                   <label class="radio-inline"><input type="radio" name="sort" value="+created_time">Created Time</label>
-                   <label class="radio-inline"><input type="radio" name="sort" value="+timestamp">Last Seen</label>
-              </div>
-            </form>
+              <input type="text" name="sort" id="sort" style="display: none">
               <div class="col-md-12">
                   <% if(data.users.length == 0) {%>
                     <div class="text-center" style="margin-top:50px;">
@@ -85,13 +80,14 @@
                                         <tr>
                                             <th>#</th>
                                                                                   <% if(query.role != 'admin'){ %><th data-l10n-id="buddy">Buddy</th><% } %>
-                                            <th data-l10n-id="name">Name</th>
+                                            <th data-l10n-id="name">Name <div id="sorter-1" style="display: inline"><button class="btn btn-default btn-xs" type="submit"><i class="arrow down"></i></button></div></th>
                                             <th data-l10n-id="language">Language</th>
                                             <th data-l10n-id="role">Role</th>
-                                            <th data-l10n-id="lastSeen">Timestamp</th>
+                                            <th data-l10n-id="lastSeen">Timestamp <div id="sorter-2" style="display: inline"><button class="btn btn-default btn-xs" type="submit"><i class="arrow down"></i></button></div></th>
                                             <th data-l10n-id="action">Action</th>
                                         </tr>
                                     </thead>
+                                </form>
                                     <tbody>
                                         <% for(var i=0; i < data.users.length; i++) { %>
                                           <tr>
@@ -149,4 +145,14 @@ function show_class_fields() {
     }
 }
 show_class_fields('<% if(typeof query == "object"){ %><%= query.role || "student" %><% } %>')
+</script>
+<script>
+        document.getElementById("sorter-1").addEventListener("click",function(){
+            document.getElementById("sort").setAttribute("value","+name");
+
+        });
+        document.getElementById("sorter-2").addEventListener("click",function(){
+            document.getElementById("sort").setAttribute("value","+timestamp");
+
+        });
 </script>

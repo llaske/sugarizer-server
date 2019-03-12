@@ -45,13 +45,7 @@
 								</script>
 							
 					</div>
-					<div class="col-md-12">
-							<div class="sortby">Sort By</div>           
-						   <label class="radio-inline"><input type="radio" name="sort" value="+file_size">size</label>
-						   <label class="radio-inline"><input type="radio" name="sort" value="+created_time">Created Time</label>
-						   <label class="radio-inline"><input type="radio" name="sort" value="+timestamp">Last Seen</label>
-				    </div>
-						</form>	 
+					<input type="text" name="sort" id="sort" style="display: none">
 				</div>
 				<div class="row">
 	        <div class="col-md-12 col-lg-12 col-sm-12">
@@ -87,10 +81,11 @@
 																<th class="text-muted">#</th>
 																<th data-l10n-id="icon" class="text-muted"></th>
 																<th data-l10n-id="title" class="text-muted"></th>
-																<th data-l10n-id="timestamp" class="text-muted"></th>
-																<th data-l10n-id="size" class="text-muted"></th>
+																<th data-l10n-id="timestamp" class="text-muted"> <div id="sorter-1" style="display: inline"><button class="btn btn-default btn-xs" type="submit"><i class="arrow down"></i></button></div></th>
+																<th data-l10n-id="size" class="text-muted"> <div id="sorter-2" style="display: inline"><button class="btn btn-default btn-xs" type="submit"><i class="arrow down"></i></button></div></th>
 																<th data-l10n-id="action" class="text-muted"></th>
 														</tr>
+													</form>
 												</thead>
 												<tbody>
 														<% for(var i=0; i < entries.entries.length; i++) { %>
@@ -103,6 +98,16 @@
 																	</td>
 																	<script>
 																		new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
+																	</script>
+																	<script>
+																			document.getElementById("sorter-2").addEventListener("click",function(){
+																				document.getElementById("sort").setAttribute("value","+file_size");
+																	
+																			});
+																			document.getElementById("sorter-1").addEventListener("click",function(){
+																				document.getElementById("sort").setAttribute("value","+timestamp");
+																	
+																			});
 																	</script>
 																	<td><%= entries.entries[i].metadata.title %></td>
 																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>

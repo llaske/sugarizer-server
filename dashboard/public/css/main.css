@@ -262,8 +262,15 @@
   -o-animation: pace-spinner 400ms linear infinite;
   animation: pace-spinner 400ms linear infinite;
 }
-.sortby {
-  font-size: 1.6rem;
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+.arrow {
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 3px;
 }
 @font-face {
 	font-family: "Noto Emoji";
