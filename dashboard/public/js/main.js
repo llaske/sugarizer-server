@@ -5,6 +5,7 @@ function initDragDrop() {
 	$("ol.simple_with_animation").sortable({
 		group: 'simple_with_animation',
 		pullPlaceholder: false,
+		placeholder: '<div class="placeholder"></div>',
 		// animation on drop
 		onDrop: function($item, container, _super) {
 			var $clonedItem = $('<li/>').css({
