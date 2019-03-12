@@ -1,7 +1,7 @@
 // include libraries
 var request = require('request'),
 	moment = require('moment'),
-	dashboard = require('./dashboard')
+	dashboard = require('./dashboard'),
 	common = require('../helper/common'),
 	xocolors = require('../helper/xocolors')(),
 	emoji = require('../public/js/emoji');
@@ -100,7 +100,7 @@ exports.addClassroom = function(req, res) {
 					req.flash('success', {
 						msg: common.l10n.get('ClassroomCreated')
 					});
-					return res.redirect('/dashboard/classrooms/edit/' + body._id);
+					return res.redirect('/dashboard/classrooms/');
 				} else {
 					req.flash('errors', {
 						msg: common.l10n.get('ErrorCode'+body.code)
@@ -164,7 +164,7 @@ exports.editClassroom = function(req, res) {
 						req.flash('success', {
 							msg: common.l10n.get('ClassroomUpdated')
 						});
-						return res.redirect('/dashboard/classrooms/edit/' + req.params.classid);
+						return res.redirect('/dashboard/classrooms/');
 					} else {
 						req.flash('errors', {
 							msg: common.l10n.get('ErrorCode'+body.code)

@@ -86,13 +86,14 @@
                                           <td><%= data.classrooms[i].students.length %></td>
                                           <td><%= moment(data.classrooms[i].timestamp).calendar() %></td>
                                           <td>
-                                              <% if(data.classrooms[i].students.length > 0) { %>
-                                                  <a title="View Students" href="users?role=student&classid=<%- data.classrooms[i].students.join(',') %>"><span class="student-icon"></span></a>
+
+                                              <% if(Array.isArray(data.classrooms[i].students) && data.classrooms[i].students.length > 0) { %>
+                                                  <a title="View Students" href="/dashboard/users?role=student&classid=<%- data.classrooms[i].students.join(',') %>"><span class="student-icon"></span></a>
                                               <% } else { %>
                                                   <a title="View Students" style="pointer-events: none;"><span class="student-icon" style="opacity: 0.4;"></span></a>
                                               <% } %>
-                                              <a title="Edit Classroom" href="classrooms/edit/<%= data.classrooms[i]._id %>"><i class="material-icons text-muted">edit</i></a>
-                                              <a title="Delete Classroom" href="classrooms/delete/<%= data.classrooms[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom {classroom:<%= data.classrooms[i].name %>}'))"><i class="material-icons text-muted">delete_forever</i></a>
+                                              <a title="Edit Classroom" href="/dashboard/classrooms/edit/<%= data.classrooms[i]._id %>"><i class="material-icons text-muted">edit</i></a>
+                                              <a title="Delete Classroom" href="/dashboard/classrooms/delete/<%= data.classrooms[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom', {classroom:'<%= data.classrooms[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
                                           </td>
                                       </tr>
                                     <% } %>

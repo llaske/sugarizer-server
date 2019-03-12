@@ -10,7 +10,7 @@ var request = require('request'),
 var ini = null;
 exports.init = function(settings) {
 	ini = settings;
-}
+};
 
 // main landing page
 exports.index = function(req, res) {
@@ -58,7 +58,7 @@ exports.index = function(req, res) {
 
 			// get classrooms list
 			getClassrooms(req, function(classrooms){
-			
+
 				// send to activities page
 				res.render('users', {
 					module: 'users',
@@ -110,7 +110,7 @@ exports.addUser = function(req, res) {
 					req.flash('success', {
 						msg: common.l10n.get('UserCreated')
 					});
-					return res.redirect('/dashboard/users/edit/' + body._id);
+					return res.redirect('/dashboard/users/');
 				} else {
 					req.flash('errors', {
 						msg: common.l10n.get('ErrorCode'+body.code)
@@ -166,7 +166,7 @@ exports.editUser = function(req, res) {
 						req.flash('success', {
 							msg: common.l10n.get('UserUpdated')
 						});
-						return res.redirect('/dashboard/users/edit/' + req.params.uid);
+						return res.redirect('/dashboard/users/');
 					} else {
 						req.flash('errors', {
 							msg: common.l10n.get('ErrorCode'+body.code)
@@ -258,8 +258,8 @@ function getClassrooms(req, callback){
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 
-			// return list of classrooms 
-			callback(body.classrooms); 
+			// return list of classrooms
+			callback(body.classrooms);
 		} else {
 			req.flash('errors', {
 				msg: common.l10n.get('ErrorCode'+body.code)
