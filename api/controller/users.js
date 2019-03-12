@@ -627,7 +627,16 @@ exports.removeUser = function(req, res) {
 			});
 			return;
 		}
+	} else{
+		if (req.user._id == req.params.uid) {
+			res.status(400).send({
+				'error': 'Please login with another admin account before deleting your account',
+				'code': 20
+			});
+			return;
+		}
 	}
+
 	//delete user from db
 	var uid = req.params.uid;
 	db.collection(usersCollection, function(err, collection) {
