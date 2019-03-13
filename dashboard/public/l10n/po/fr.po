@@ -264,6 +264,16 @@ msgctxt "save"
 msgid "Save"
 msgstr "Enregistrer"
 
+#: saveandexit
+msgctxt "saveandexit"
+msgid "Save and exit"
+msgstr "Sauvegarder et quitter"
+
+#: saveandcreate
+msgctxt "saveandcreate"
+msgid "Save and add another"
+msgstr "Enregistrer et ajouter un autre"
+
 #: deleteEntry.title
 msgctxt "deleteEntry.title"
 msgid "Delete Entry"

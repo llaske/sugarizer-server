@@ -107,7 +107,7 @@ exports.addUser = function(req, res) {
 					req.flash('success', {
 						msg: common.l10n.get('UserCreated')
 					});
-					return res.redirect('/dashboard/users/');
+					return req.body.create === "again" ? res.redirect('/dashboard/users/add') : res.redirect('/dashboard/users');
 				} else {
 					req.flash('errors', {
 						msg: common.l10n.get('ErrorCode'+body.code)

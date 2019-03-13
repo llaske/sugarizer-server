@@ -92,7 +92,8 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
+                        <% if (!(typeof user == 'object' &&  user.timestamp)){ %> <button class="btn pull-right btn-round" type="submit" name="create" value="again" data-l10n-id="saveandcreate"></button><%}%>
+                        <button class="btn pull-right btn-round" type="submit" name="create" value="not-again" data-l10n-id="saveandexit"></button>
                         <a class="btn pull-right btn-round" href="/dashboard/users" data-l10n-id="cancel"></a>
                         <div class="clearfix"></div>
                     </form>

@@ -97,7 +97,7 @@ exports.addClassroom = function(req, res) {
 					req.flash('success', {
 						msg: common.l10n.get('ClassroomCreated')
 					});
-					return res.redirect('/dashboard/classrooms/');
+					return req.body.create === "again" ? res.redirect('/dashboard/classrooms/add') : res.redirect('/dashboard/classrooms');
 				} else {
 					req.flash('errors', {
 						msg: common.l10n.get('ErrorCode'+body.code)
