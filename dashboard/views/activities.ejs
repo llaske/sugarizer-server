@@ -17,18 +17,21 @@
 		                </button>
 		            </div>
 						</div>
+					<form method="get" id="user-form">
+						<input type="text" name="sort" id="sort" style="display: none">
 						<div class="col-md-12">
 							<div class="card card-plain" style="margin:10px;">
 								<div class="card-content">
 									<div data-l10n-id="icon" class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Icon</div>
-									<div data-l10n-id="name" class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Name</div>
-									<div data-l10n-id="activity" class="text-center text-muted col-lg-4 col-md-4 col-sm-4">Activity Id</div>
+									<div data-l10n-id="name" class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Name <div id="sorter-1" style="display: inline"><button class="btn btn-default btn-xs" type="submit"><i class="arrow down"></i></button></div></div>
+									<div data-l10n-id="activity" class="text-center text-muted col-lg-4 col-md-4 col-sm-4">Activity Id <div id="sorter-2" style="display: inline"><button class="btn btn-default btn-xs" type="submit"><i class="arrow down"></i></button></div></div>
 									<div data-l10n-id="version" class="text-center text-muted col-lg-1 col-md-1 col-sm-1">Version</div>
 									<div data-l10n-id="favorite" class="text-center text-muted col-lg-1 col-md-1 col-sm-1">Favorite</div>
 									<div data-l10n-id="action" class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Action</div>
 								</div>
 							</div>
 						</div>
+					</form>
 				    <div class="col-md-12">
 							<ol class="simple_with_animation">
 								<% for(var i=0; i < activities.length; i++) { %>
@@ -79,4 +82,14 @@ var url = '<%= url %>';
 //init drag drop
 initDragDrop();
 
+</script>
+<script>
+        document.getElementById("sorter-1").addEventListener("click",function(){
+            document.getElementById("sort").setAttribute("value","+name");
+
+        });
+        document.getElementById("sorter-2").addEventListener("click",function(){
+            document.getElementById("sort").setAttribute("value","+id");
+
+		});
 </script>

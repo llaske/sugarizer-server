@@ -24,7 +24,7 @@ exports.index = function(req, res) {
 		json: true,
 		method: 'GET',
 		qs: {
-			sort: '+index',
+			sort: req.query.sort,
 			name: (req.query.search ? req.query.search.trim() : undefined)
 		},
 		uri: common.getAPIUrl(req) + 'api/v1/activities'
