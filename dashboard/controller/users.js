@@ -213,6 +213,12 @@ exports.editUser = function(req, res) {
 exports.deleteUser = function(req, res) {
 
 	if (req.params.uid) {
+		if (req.params.uid == common.getHeaders(req)['x-key']) {
+			req.flash('errors', {
+				msg: common.l10n.get('ErrorCode20')
+			});
+			return res.redirect('/dashboard/users');
+		}
 		request({
 			headers: common.getHeaders(req),
 			json: true,
