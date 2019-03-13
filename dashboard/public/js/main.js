@@ -5,6 +5,7 @@ function initDragDrop() {
 	$("ol.simple_with_animation").sortable({
 		group: 'simple_with_animation',
 		pullPlaceholder: false,
+		placeholder: '<div class="placeholder"></div>',
 		// animation on drop
 		onDrop: function($item, container, _super) {
 			var $clonedItem = $('<li/>').css({
@@ -318,6 +319,16 @@ function createGraph(type, element, route) {
 					data: response.data,
 					options: (response.options ? response.options : {})
 				});
+				myChart.options.onClick = function(e){
+					var activePoints = myChart.getElementsAtEvent(e);
+					// Avoid console erros when clicking on any white space in the chart
+					var index = activePoints.length ? activePoints[0]._index : -1;
+					if (index > -1 && response.graph === 'bar'){
+						window.location.href = `/dashboard/journal/${response.journalIDs[index]}?uid=${response.userIDs[index]}&type=private`;
+					}else if(index > -1 && response.graph === 'doughnut'){
+						window.location.href = `javascript:launch_activity('/dashboard/activities/launch?aid=${response.activityIDs[index]}')`;
+					}
+				}
 			}
 		});
 	})
