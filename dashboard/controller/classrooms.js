@@ -74,7 +74,7 @@ exports.addClassroom = function(req, res) {
 		req.body.name = req.body.name.trim();
 		req.body.students = req.body.students || [];
 		req.body.color = JSON.parse(req.body.color);
-		req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
+		req.assert('name', common.l10n.get('ClassnameInvalid')).matches(/^[a-z0-9 ]+$/i);
 		req.body.options = { sync: true, stats: true };
 
 		// get errors
@@ -135,7 +135,7 @@ exports.editClassroom = function(req, res) {
 			// validate
 			req.body.name = req.body.name.trim();
 			req.body.students = req.body.students || [];
-			
+			req.assert('name', common.l10n.get('ClassnameInvalid')).matches(/^[a-z0-9 ]+$/i);
 			if (isString(req.body.students)) {
 				req.body.students = [req.body.students]
 			}

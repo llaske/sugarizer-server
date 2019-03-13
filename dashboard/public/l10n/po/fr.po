@@ -366,6 +366,11 @@ msgctxt "UsernameInvalid"
 msgid "Username is not valid"
 msgstr "Nom d'utilisateur invalide"
 
+#: ClassnameInvalid
+msgctxt "ClassnameInvalid"
+msgid "Classname is not valid"
+msgstr "Nom de la classe n'est pas valide"
+
 #: PasswordBlank
 msgctxt "PasswordBlank"
 msgid "Password cannot be blank"
