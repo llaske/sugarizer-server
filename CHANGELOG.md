@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Improved resilience, detect: missing settings file, port already in use, fatal error, ...
 - node.js 4 is no longer supported, version 6 is the new minimum
 - MongoDB 2.4 is no longer supported, version 2.6 is the new minimum
-- Add size column in Dashboard Journal view
 - Go to User journal/Launch activity when clicked on Dashboard chart
 
 ### Fixed
@@ -26,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Missing message string in dashboard on delete #21
 - Consistency in language of users #33
 - Server hangs/crashes on when an admin delete its own account
+- Add size column in Dashboard Journal view #84
 
 
 ## [1.0.1] - 2018-07-14
