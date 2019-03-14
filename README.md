@@ -231,6 +231,8 @@ Where **admin** is the login for the new admin account and **password** is the p
 
 Once the admin account is created, you could access Sugarizer Dashboard on http://127.0.0.1:8080/dashboard.
 
+For windows users, the sh command is not normally available for the Powershell but you can install git and run the command on git bash.
+
 ## Server API
 
 To implement the above functionalities, the sugarizer backend expose an API. The API routes look as follows:
