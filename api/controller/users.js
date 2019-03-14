@@ -7,10 +7,13 @@ var mongo = require('mongodb'),
 var db;
 
 var usersCollection;
+var classroomsCollection;
+
 
 // Init database
 exports.init = function(settings, callback) {
 	usersCollection = settings.collections.users;
+	classroomsCollection = settings.collections.classrooms;
 	var client = new mongo.MongoClient(
 		'mongodb://'+settings.database.server+':'+settings.database.port+'/'+settings.database.name,
 		{auto_reconnect: false, w:1, useNewUrlParser: true});
@@ -628,6 +631,7 @@ exports.removeUser = function(req, res) {
 			return;
 		}
 	}
+
 	//delete user from db
 	var uid = req.params.uid;
 	db.collection(usersCollection, function(err, collection) {
@@ -641,8 +645,28 @@ exports.removeUser = function(req, res) {
 				});
 			} else {
 				if (result && result.result && result.result.n == 1) {
-					res.send({
-						'user_id': uid
+					// Remove user form classroom
+					db.collection(classroomsCollection, function(err, collection) {
+						collection.update({},
+							{
+								$pull: { students: uid}
+							},
+							{
+								multi: true
+							},
+							function(err, result) {
+								if (err) {
+									res.status(500).send({
+										error: "An error has occurred",
+										code: 10
+									});
+								} else {
+									res.send({
+										'user_id': uid
+									});
+								}
+							}
+						);
 					});
 				} else {
 					res.status(401).send({
