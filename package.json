@@ -35,6 +35,7 @@
 		"test": "mocha api/test/",
 		"docs": "apidoc -i api/controller -i dashboard/helper -o docs/www/",
 		"start": "node sugarizer.js",
-		"start:watch": "nodemon sugarizer.js"
+		"start:watch": "nodemon sugarizer.js",
+		"seed:db": "node seed.js"
 	}
 }
