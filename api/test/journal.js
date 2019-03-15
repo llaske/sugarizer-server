@@ -5,17 +5,17 @@ process.env.NODE_ENV = 'test';
 var server = require('../../sugarizer.js');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
-var should = chai.should();
 var timestamp = +new Date();
 
 //fake user for testing auth
 var fakeUser = {
 	'student': '{"name":"Sugarizer' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"pass","language":"fr"}',
-	'admin': '{"name":"TarunFake' + (timestamp.toString()) + '","password":"pokemon","role":"admin"}'
-}
+	'admin': '{"name":"TarunFake' + (timestamp.toString()) + '","password":"pokemon","language":"en","role":"admin"}'
+};
 
 //init server
 chai.use(chaiHttp);
+chai.should();
 
 describe('Journal', function() {
 
