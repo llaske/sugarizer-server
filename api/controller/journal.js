@@ -696,7 +696,7 @@ exports.removeInJournal = function(req, res) {
 	//whether or partial is deleted!
 	if (type == 'full') {
 		db.collection(journalCollection, function(err, collection) {
-			collection.remove({
+			collection.deleteOne({
 				'_id': new mongo.ObjectID(jid)
 			}, function(err, result) {
 				if (err) {
