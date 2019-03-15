@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Consistency in language of users #33
 - Server hangs/crashes on when an admin delete its own account
 - Add size column in Dashboard Journal view #84
+- Statistics page shows all users as inactive #95 
 
 
 ## [1.0.1] - 2018-07-14
