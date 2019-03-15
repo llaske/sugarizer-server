@@ -80,10 +80,10 @@
                                         <tr>
                                             <th>#</th>
                                                                                   <% if(query.role != 'admin'){ %><th data-l10n-id="buddy">Buddy</th><% } %>
-                                            <th data-l10n-id="name">Name <div id="sorter-1" style="display: inline"><button class="btn btn-default btn-xs sort" type="submit"><i class="arrow down"></i></button></div></th>
+                                            <th><button id="user-name" data-l10n-id="name"></button></th>
                                             <th data-l10n-id="language">Language</th>
                                             <th data-l10n-id="role">Role</th>
-                                            <th data-l10n-id="lastSeen">Timestamp <div id="sorter-2" style="display: inline"><button class="btn btn-default btn-xs sort" type="submit"><i class="arrow down"></i></button></div></th>
+                                            <th><button id="user-last" data-l10n-id="lastSeen"></button></th>
                                             <th data-l10n-id="action">Action</th>
                                         </tr>
                                     </thead>
@@ -147,12 +147,72 @@ function show_class_fields() {
 show_class_fields('<% if(typeof query == "object"){ %><%= query.role || "student" %><% } %>')
 </script>
 <script>
-        document.getElementById("sorter-1").addEventListener("click",function(){
-            document.getElementById("sort").setAttribute("value","+name");
+        document.getElementById("user-name").addEventListener("click",function(){
+            sessionStorage.removeItem("user-last-count");
+            if(sessionStorage.getItem("user-name-count")!=null){
+                var user_name_count = sessionStorage.getItem("user-name-count");
+                user_name_count++;
+                if(user_name_count==1){
+                    document.getElementById("sort").setAttribute("value","");
+                    sessionStorage.setItem("user-name-count",1);
+                    sessionStorage.setItem("cur","user-name-none");
+                }
+                else if(user_name_count==2){
+                    document.getElementById("sort").setAttribute("value","+name");
+                    sessionStorage.setItem("user-name-count",2);
+                    sessionStorage.setItem("cur","user-name-up");
+                } else if(user_name_count==3){
+                    document.getElementById("sort").setAttribute("value","-name");
+                    sessionStorage.setItem("user-name-count",0);
+                    sessionStorage.setItem("cur","user-name-down");
+                }
+            } else{
+                sessionStorage.setItem("user-name-count",2);
+                document.getElementById("sort").setAttribute("value","+name");
+                sessionStorage.setItem("cur","user-name-up");
+            }
+            
 
         });
-        document.getElementById("sorter-2").addEventListener("click",function(){
-            document.getElementById("sort").setAttribute("value","+timestamp");
+        document.getElementById("user-last").addEventListener("click",function(){
+            sessionStorage.removeItem("user-name-count");
+            if(sessionStorage.getItem("user-last-count")!=null){
+                var user_name_count = sessionStorage.getItem("user-last-count");
+                user_name_count++;
+                if(user_name_count==1){
+                    document.getElementById("sort").setAttribute("value","");
+                    sessionStorage.setItem("user-last-count",1);
+                    sessionStorage.setItem("cur","user-last-none");
+                }
+                else if(user_name_count==2){
+                    document.getElementById("sort").setAttribute("value","+timestamp");
+                    sessionStorage.setItem("user-last-count",2);
+                    sessionStorage.setItem("cur","user-last-up");
+                } else if(user_name_count==3){
+                    document.getElementById("sort").setAttribute("value","-timestamp");
+                    sessionStorage.setItem("user-last-count",0);
+                    sessionStorage.setItem("cur","user-last-down");
+                }
+            } else{
+                sessionStorage.setItem("user-last-count",2);
+                document.getElementById("sort").setAttribute("value","+timestamp");
+                sessionStorage.setItem("cur","user-last-up");
+            }
 
         });
+
+        if(sessionStorage.getItem("cur")!=null){
+            var cur = sessionStorage.getItem("cur");
+            if(cur=="user-name-up"){
+                document.getElementById("user-name").innerHTML = document.getElementById("user-name").innerHTML + '<i class="arrow up"></i>' ; 
+            } else if(cur=="user-name-down"){
+                document.getElementById("user-name").innerHTML = document.getElementById("user-name").innerHTML + '<i class="arrow down"></i>' ;
+            } else if(cur=="user-last-up"){
+                document.getElementById("user-last").innerHTML = document.getElementById("user-last").innerHTML + '<i class="arrow up"></i>' ;
+            } else if(cur=="user-last-down"){
+                document.getElementById("user-last").innerHTML = document.getElementById("user-last").innerHTML + '<i class="arrow down"></i>' ;
+            }
+            sessionStorage.removeItem("cur");
+        }
+
 </script>

@@ -81,8 +81,8 @@
 																<th class="text-muted">#</th>
 																<th data-l10n-id="icon" class="text-muted"></th>
 																<th data-l10n-id="title" class="text-muted"></th>
-																<th data-l10n-id="timestamp" class="text-muted"> <div id="sorter-1" style="display: inline"><button class="btn btn-default btn-xs sort" type="submit"><i class="arrow down"></i></button></div></th>
-																<th data-l10n-id="size" class="text-muted"> <div id="sorter-2" style="display: inline"><button class="btn btn-default btn-xs sort" type="submit"><i class="arrow down"></i></button></div></th>
+																<th class="text-muted"><button data-l10n-id="timestamp" id="journal-last"></button></th>
+																<th class="text-muted"><button data-l10n-id="size" id="journal-size"></button></th>
 																<th data-l10n-id="action" class="text-muted"></th>
 														</tr>
 													</form>
@@ -98,16 +98,6 @@
 																	</td>
 																	<script>
 																		new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
-																	</script>
-																	<script>
-																			document.getElementById("sorter-2").addEventListener("click",function(){
-																				document.getElementById("sort").setAttribute("value","+textsize");
-																	
-																			});
-																			document.getElementById("sorter-1").addEventListener("click",function(){
-																				document.getElementById("sort").setAttribute("value","+timestamp");
-																	
-																			});
 																	</script>
 																	<td><%= entries.entries[i].metadata.title %></td>
 																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>
@@ -130,3 +120,73 @@
 	</div>
 </div>
 <% include includes/footer %>
+<script>
+	document.getElementById("journal-size").addEventListener("click",function(){
+		sessionStorage.removeItem("journal-last-count");
+		if(sessionStorage.getItem("journal-size-count")!=null){
+			var user_name_count = sessionStorage.getItem("journal-size-count");
+			user_name_count++;
+			if(user_name_count==1){
+				document.getElementById("sort").setAttribute("value","");
+				sessionStorage.setItem("journal-size-count",1);
+				sessionStorage.setItem("cur","journal-size-none");
+			}
+			else if(user_name_count==2){
+				document.getElementById("sort").setAttribute("value","+textsize");
+				sessionStorage.setItem("journal-size-count",2);
+				sessionStorage.setItem("cur","journal-size-up");
+			} else if(user_name_count==3){
+				document.getElementById("sort").setAttribute("value","-textsize");
+				sessionStorage.setItem("journal-size-count",0);
+				sessionStorage.setItem("cur","journal-size-down");
+			}
+		} else{
+			sessionStorage.setItem("journal-size-count",2);
+			document.getElementById("sort").setAttribute("value","+textsize");
+			sessionStorage.setItem("cur","journal-size-up");
+		}
+		
+
+	});
+	document.getElementById("journal-last").addEventListener("click",function(){
+		sessionStorage.removeItem("journal-size-count");
+		if(sessionStorage.getItem("journal-last-count")!=null){
+			var user_name_count = sessionStorage.getItem("journal-last-count");
+			user_name_count++;
+			if(user_name_count==1){
+				document.getElementById("sort").setAttribute("value","");
+				sessionStorage.setItem("journal-last-count",1);
+				sessionStorage.setItem("cur","journal-last-none");
+			}
+			else if(user_name_count==2){
+				document.getElementById("sort").setAttribute("value","+timestamp");
+				sessionStorage.setItem("journal-last-count",2);
+				sessionStorage.setItem("cur","journal-last-up");
+			} else if(user_name_count==3){
+				document.getElementById("sort").setAttribute("value","-timestamp");
+				sessionStorage.setItem("journal-last-count",0);
+				sessionStorage.setItem("cur","journal-last-down");
+			}
+		} else{
+			sessionStorage.setItem("journal-last-count",2);
+			document.getElementById("sort").setAttribute("value","+timestamp");
+			sessionStorage.setItem("cur","journal-last-up");
+		}
+
+	});
+
+	if(sessionStorage.getItem("cur")!=null){
+		var cur = sessionStorage.getItem("cur");
+		if(cur=="journal-size-up"){
+			document.getElementById("journal-size").innerHTML = document.getElementById("journal-size").innerHTML + '<i class="arrow up"></i>' ; 
+		} else if(cur=="journal-size-down"){
+			document.getElementById("journal-size").innerHTML = document.getElementById("journal-size").innerHTML + '<i class="arrow down"></i>' ;
+		} else if(cur=="journal-last-up"){
+			document.getElementById("journal-last").innerHTML = document.getElementById("journal-last").innerHTML + '<i class="arrow up"></i>' ;
+		} else if(cur=="journal-last-down"){
+			document.getElementById("journal-last").innerHTML = document.getElementById("journal-last").innerHTML + '<i class="arrow down"></i>' ;
+		}
+		sessionStorage.removeItem("cur");
+	}
+
+</script>

@@ -266,11 +266,46 @@
   transform: rotate(45deg);
   -webkit-transform: rotate(45deg);
 }
+.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
 .arrow {
-  border: solid white;
+  border: solid black;
   border-width: 0 2px 2px 0;
   display: inline-block;
   padding: 3px;
+  margin-left: 5px;
+}
+#user-name{
+  border: none;
+}
+#user-last{
+  border: none;
+}
+#class-name{
+  border: none;
+}
+#class-last{
+  border: none;
+}
+#journal-last{
+  border: none;
+}
+#journal-size{
+  border: none;
+}
+#activity-id{
+  border: none;
+  background: none;
+}
+#activity-name{
+  border: none;
+  background: none;
+}
+#activity-version{
+  border: none;
+  background: none;
 }
 .sort{
   padding-top: 1px !important;
