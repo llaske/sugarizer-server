@@ -177,6 +177,25 @@ function formatColorField(state) {
 	return $state;
 }
 
+function matchColorField(params, data) {
+	if ($.trim(params.term) === '') {
+		return data;
+	}
+	params.term = params.term.toUpperCase();
+
+	if (typeof data.text === 'undefined') {
+		return null;
+	}
+
+	if (data.id.indexOf(params.term) > -1) {
+		var modifiedData = $.extend({}, data, true);
+		modifiedData.text += ' (matched)';
+		return modifiedData;
+	}
+
+	return null;
+}
+
 $(document).ready(function() {
 	if ($("#users-select2").length > 0) {
 		$("#users-select2").select2({
@@ -197,7 +216,8 @@ $(document).ready(function() {
 	if ($("#color-select2").length > 0) {
 		$("#color-select2").select2({
 			templateResult: formatColorField,
-			templateSelection: formatColorField
+			templateSelection: formatColorField,
+			matcher: matchColorField
 		})
 	}
 

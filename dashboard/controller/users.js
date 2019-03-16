@@ -102,12 +102,16 @@ exports.addUser = function(req, res) {
 				uri: common.getAPIUrl(req) + 'api/v1/users'
 			}, function(error, response, body) {
 				if (response.statusCode == 200) {
-
-					// send to users page
 					req.flash('success', {
 						msg: common.l10n.get('UserCreated')
 					});
-					return res.redirect('/dashboard/users/');
+					if (body.role == "admin") {
+						// send to admin page
+						return res.redirect('/dashboard/users/?role=admin');
+					} else {
+						// send to users page
+						return res.redirect('/dashboard/users/');
+					}
 				} else {
 					req.flash('errors', {
 						msg: common.l10n.get('ErrorCode'+body.code)
@@ -159,12 +163,16 @@ exports.editUser = function(req, res) {
 					uri: common.getAPIUrl(req) + 'api/v1/users/' + req.params.uid
 				}, function(error, response, body) {
 					if (response.statusCode == 200) {
-
-						// send back
 						req.flash('success', {
 							msg: common.l10n.get('UserUpdated')
 						});
-						return res.redirect('/dashboard/users/');
+						if (body.role == "admin") {
+							// send to admin page
+							return res.redirect('/dashboard/users/?role=admin');
+						} else {
+							// send to users page
+							return res.redirect('/dashboard/users/');
+						}
 					} else {
 						req.flash('errors', {
 							msg: common.l10n.get('ErrorCode'+body.code)
@@ -214,11 +222,12 @@ exports.editUser = function(req, res) {
 exports.deleteUser = function(req, res) {
 
 	if (req.params.uid) {
+		var role = req.query.role || 'student';
 		if (req.params.uid == common.getHeaders(req)['x-key']) {
 			req.flash('errors', {
 				msg: common.l10n.get('ErrorCode20')
 			});
-			return res.redirect('/dashboard/users');
+			return res.redirect('/dashboard/users/?role='+role);
 		}
 		request({
 			headers: common.getHeaders(req),
@@ -237,7 +246,7 @@ exports.deleteUser = function(req, res) {
 					msg: common.l10n.get('ErrorCode'+body.code)
 				});
 			}
-			return res.redirect('/dashboard/users');
+			return res.redirect('/dashboard/users?role='+role);
 		});
 	} else {
 		req.flash('errors', {

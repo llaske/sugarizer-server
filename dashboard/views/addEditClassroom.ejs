@@ -91,22 +91,26 @@
                                 </div>
                             </div>
                         </div>
+                        <% if(typeof classroom == 'object' && classroom.created_time) { %>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="createdTime"></label>
-                                    <input class="form-control" readonly value="<% if(typeof classroom == 'object'){ %><%= moment(classroom.created_time).calendar() %><% } %>" type="text">
+                                    <input class="form-control" readonly value="<%= moment(classroom.created_time).calendar() %>" type="text">
                                 </div>
                             </div>
                         </div>
+                        <% } %>
+                        <% if(typeof classroom == 'object' && classroom.timestamp) { %>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
-                                    <label class="control-label" data-l10n-id="lastSeen"></label>
-                                    <input class="form-control" readonly value="<% if(typeof classroom == 'object'){ %><%= moment(classroom.timestamp).calendar() %><% } %>" type="text">
+                                    <label class="control-label" data-l10n-id="lastUpdated"></label>
+                                    <input class="form-control" readonly value="<%= moment(classroom.timestamp).calendar() %>" type="text">
                                 </div>
                             </div>
                         </div>
+                        <% } %>
                         <button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
                         <a class="btn pull-right btn-round" href="/dashboard/classrooms" data-l10n-id="cancel"></a>
                         <div class="clearfix"></div>

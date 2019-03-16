@@ -124,7 +124,7 @@ exports.removeClassroom = function(req, res) {
   }
 
   db.collection(classroomsCollection, function(err, collection) {
-    collection.remove(
+    collection.deleteOne(
       {
         _id: new mongo.ObjectID(req.params.classid)
       },
