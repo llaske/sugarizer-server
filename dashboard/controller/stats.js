@@ -69,7 +69,7 @@ function getHowUserLaunchActivity(req, res) {
 			var labels = []
 			var ddata = []
 			for (var v in d) {
-				labels.push(v)
+				labels.push(common.l10n.get(v))
 				ddata.push(d[v])
 			}
 
@@ -221,12 +221,12 @@ function getWhatTypeOfClientConnected(req, res) {
 	getLogsData(req, res, {
 		client_type: 'Web App'
 	}, function(body) {
-		data.labels.push('Web App');
+		data.labels.push(common.l10n.get('WebApp'));
 		data.data.push(body.length);
 		getLogsData(req, res, {
 			client_type: 'App'
 		}, function(body) {
-			data.labels.push('App');
+			data.labels.push(common.l10n.get('App'));
 			data.data.push(body.length);
 
 			//return
