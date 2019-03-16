@@ -5,19 +5,19 @@ process.env.NODE_ENV = 'test';
 var server = require('../../sugarizer.js');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
-var should = chai.should();
 var timestamp = +new Date();
 
 //fake user for testing auth
 var fake = {
 	'student1': '{"name":"Sugarizer_1' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"pass","language":"fr"}',
 	'student2': '{"name":"Sugarizer_2' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"word","language":"en"}',
-	'admin': '{"name":"TarunFake_' + (timestamp.toString()) + '","password":"pokemon","role":"admin"}',
+	'admin': '{"name":"TarunFake_' + (timestamp.toString()) + '","password":"pokemon","language":"en","role":"admin"}',
 	'classroom': '{"name":"group_a_' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"students":[]}'
-}
+};
 
 //init server
 chai.use(chaiHttp);
+chai.should();
 
 describe('Classrooms', function() {
 
@@ -88,7 +88,7 @@ describe('Classrooms', function() {
 				.end((err, res) => {
 					res.should.have.status(200);
 					fake.classroom = res.body;
-					res.body.should.be.a('object');
+					res.body.should.be.an('object');
 					res.body.should.have.property('_id').not.eql(undefined);
 					res.body.should.have.property('name').eql("group_a_" + (timestamp.toString()));
 					res.body.should.have.property('color').not.eql(undefined);
@@ -188,7 +188,7 @@ describe('Classrooms', function() {
 				.set('x-key', fake.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.classrooms.should.be.a('array');
+					res.body.classrooms.should.be.an('array');
 					res.body.classrooms.length.should.be.above(0);
 					done();
 				});
@@ -203,7 +203,7 @@ describe('Classrooms', function() {
 				.end((err, res) => {
 					res.should.have.status(200);
 					for (var i = 0; i < res.body.classrooms.length; i++) {
-						res.body.classrooms[i].should.be.a('object');
+						res.body.classrooms[i].should.be.an('object');
 						res.body.classrooms[i].should.have.property('_id').not.eql(undefined);
 						res.body.classrooms[i].should.have.property('name').not.eql(undefined);
 						res.body.classrooms[i].should.have.property('color').not.eql(undefined);
@@ -275,7 +275,7 @@ describe('Classrooms', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.should.be.a('object');
+					res.body.should.be.an('object');
 					res.body.should.have.property('_id').eql(fake.classroom._id);
 					res.body.should.have.property('name').eql("group_new_a_" + (timestamp.toString()));
 					done();
