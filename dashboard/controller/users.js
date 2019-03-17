@@ -85,6 +85,7 @@ exports.addUser = function(req, res) {
 		req.body.color = JSON.parse(req.body.color);
 		req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
 		req.assert('password', common.l10n.get('PasswordAtLeast', {count:ini.security.min_password_size})).len(ini.security.min_password_size);
+		req.assert('password', common.l10n.get('PasswordInvalid')).matches(/^[a-z0-9]+$/i);
 		req.body.options = { sync: true, stats: true };
 
 		// get errors
@@ -146,7 +147,9 @@ exports.editUser = function(req, res) {
 			req.body.name = req.body.name.trim();
 			req.body.password = req.body.password.trim();
 			req.body.color = JSON.parse(req.body.color);
+			req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
 			req.assert('password', common.l10n.get('PasswordAtLeast', {count:ini.security.min_password_size})).len(ini.security.min_password_size);
+			req.assert('password', common.l10n.get('PasswordInvalid')).matches(/^[a-z0-9]+$/i);
 
 			// get errors
 			var errors = req.validationErrors();

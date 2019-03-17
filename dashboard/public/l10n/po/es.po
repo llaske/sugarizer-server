@@ -365,6 +365,11 @@ msgctxt "PasswordBlank"
 msgid "Password cannot be blank"
 msgstr "Password cannot be blank"
 
+#: PasswordInvalid
+msgctxt "PasswordInvalid"
+msgid "Password should contain alphanumeric characters only"
+msgstr "La contraseña debe contener caracteres alfanuméricos solamente"
+
 #: CantOpenWindow
 msgctxt "CantOpenWindow"
 msgid "Can't open window, check your browser for popup blocker"
