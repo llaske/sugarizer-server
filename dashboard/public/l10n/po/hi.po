@@ -436,6 +436,11 @@ msgctxt "ErrorCode19"
 msgid "You don't have permission to perform this action"
 msgstr "You don't have permission to perform this action"
 
+#: ErrorCode20
+msgctxt "ErrorCode20"
+msgid "Please login with another admin account before deleting your account"
+msgstr "Please login with another admin account before deleting your account"
+
 #: ErrorCode21
 msgctxt "ErrorCode21"
 msgid "User not defined!"

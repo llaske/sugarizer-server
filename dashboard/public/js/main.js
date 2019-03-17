@@ -5,6 +5,7 @@ function initDragDrop() {
 	$("ol.simple_with_animation").sortable({
 		group: 'simple_with_animation',
 		pullPlaceholder: false,
+		placeholder: '<div class="placeholder"></div>',
 		// animation on drop
 		onDrop: function($item, container, _super) {
 			var $clonedItem = $('<li/>').css({
@@ -176,6 +177,25 @@ function formatColorField(state) {
 	return $state;
 }
 
+function matchColorField(params, data) {
+	if ($.trim(params.term) === '') {
+		return data;
+	}
+	params.term = params.term.toUpperCase();
+
+	if (typeof data.text === 'undefined') {
+		return null;
+	}
+
+	if (data.id.indexOf(params.term) > -1) {
+		var modifiedData = $.extend({}, data, true);
+		modifiedData.text += ' (matched)';
+		return modifiedData;
+	}
+
+	return null;
+}
+
 $(document).ready(function() {
 	if ($("#users-select2").length > 0) {
 		$("#users-select2").select2({
@@ -196,7 +216,8 @@ $(document).ready(function() {
 	if ($("#color-select2").length > 0) {
 		$("#color-select2").select2({
 			templateResult: formatColorField,
-			templateSelection: formatColorField
+			templateSelection: formatColorField,
+			matcher: matchColorField
 		})
 	}
 
@@ -287,6 +308,16 @@ function createGraph(type, element, route) {
 					data: response.data,
 					options: (response.options ? response.options : {})
 				});
+				myChart.options.onClick = function(e){
+					var activePoints = myChart.getElementsAtEvent(e);
+					// Avoid console erros when clicking on any white space in the chart
+					var index = activePoints.length ? activePoints[0]._index : -1;
+					if (index > -1 && response.graph === 'bar'){
+						window.location.href = `/dashboard/journal/${response.journalIDs[index]}?uid=${response.userIDs[index]}&type=private`;
+					}else if(index > -1 && response.graph === 'doughnut'){
+						window.location.href = `javascript:launch_activity('/dashboard/activities/launch?aid=${response.activityIDs[index]}')`;
+					}
+				}
 			}
 		});
 	})

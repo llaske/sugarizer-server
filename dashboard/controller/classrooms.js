@@ -41,7 +41,7 @@ exports.index = function(req, res) {
 		query['sort'] = req.query.sort;
 	}
 
-    // call
+	// call
 	request({
 		headers: common.getHeaders(req),
 		json: true,
@@ -76,6 +76,9 @@ exports.addClassroom = function(req, res) {
 		// validate
 		req.body.name = req.body.name.trim();
 		req.body.students = req.body.students || [];
+		if (typeof req.body.students == 'string') {
+			req.body.students = [req.body.students];
+		}
 		req.body.color = JSON.parse(req.body.color);
 		req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
 		req.body.options = { sync: true, stats: true };
@@ -139,8 +142,8 @@ exports.editClassroom = function(req, res) {
 			req.body.name = req.body.name.trim();
 			req.body.students = req.body.students || [];
 			
-			if (isString(req.body.students)) {
-				req.body.students = [req.body.students]
+			if (typeof req.body.students == 'string') {
+				req.body.students = [req.body.students];
 			}
 
 			req.body.color = JSON.parse(req.body.color);
@@ -208,9 +211,6 @@ exports.editClassroom = function(req, res) {
 			msg: common.l10n.get('ThereIsError')
 		});
 		return res.redirect('/dashboard/classrooms');
-	}
-	function isString(arg) {
-		return typeof arg === 'string';
 	}
 };
 
