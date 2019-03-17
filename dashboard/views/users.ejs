@@ -64,13 +64,13 @@
                             <div class="card-header row" data-background-color="black">
                                 <div class="col-md-4 col-sm-4 col-lg-4 text-left">
                                 <% if(data.links.prev_page) { %>
-                                   <a href="<%= data.links.prev_page %>" data-l10n-id="prevPage"><< previous page</a>
+                                   <a href="<%= data.links.prev_page %>" id="page" data-l10n-id="prevPage"><< previous page</a>
                                 <% } %>
                                 </div>
                                 <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset + 1 %>", "to": "<%= data.offset + data.users.length %>", "total": "<%= data.total %>" }'></div>
                                 <div class="col-md-4 col-sm-4 col-lg-4 text-right">
                                 <% if(data.links.next_page) { %>
-                                   <a href="<%= data.links.next_page %>" data-l10n-id="nextPage">next page >></a>
+                                   <a href="<%= data.links.next_page %>" id="page" data-l10n-id="nextPage">next page >></a>
                                 <% } %>
                                 </div>
                             </div>
@@ -201,8 +201,16 @@ show_class_fields('<% if(typeof query == "object"){ %><%= query.role || "student
 
         });
 
+        document.getElementById("page").addEventListener("click",function(){
+            if((sessionStorage.getItem("rem")!=null)&&(sessionStorage.getItem("cur")==null)){
+                var rem = sessionStorage.getItem("rem");
+                sessionStorage.setItem("cur",rem);
+            }
+        });
+
         if(sessionStorage.getItem("cur")!=null){
             var cur = sessionStorage.getItem("cur");
+            sessionStorage.setItem("rem",cur);
             if(cur=="user-name-up"){
                 document.getElementById("user-name").innerHTML = document.getElementById("user-name").innerHTML + '<i class="arrow up"></i>' ; 
             } else if(cur=="user-name-down"){

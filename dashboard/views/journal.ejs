@@ -64,13 +64,13 @@
 								<div class="card-header row" data-background-color="">
 										<div class="col-md-4 col-sm-4 col-lg-4 text-left">
 										<% if(entries.links.prev_page) { %>
-											 <a data-l10n-id="prevPage" href="<%= query.journal %><%= entries.links.prev_page %>&type=<%= query.type %>"><< previous page</a>
+											 <a data-l10n-id="prevPage" id="page" href="<%= query.journal %><%= entries.links.prev_page %>&type=<%= query.type %>"><< previous page</a>
 										<% } %>
 										</div>
 										<div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= entries.offset + 1 %>", "to": "<%= entries.offset + entries.entries.length %>", "total": "<%= entries.total %>" }'></div>
 										<div class="col-md-4 col-sm-4 col-lg-4 text-right">
 										<% if(entries.links.next_page) { %>
-											 <a data-l10n-id="nextPage" href="<%= query.journal %><%= entries.links.next_page %>&type=<%= query.type %>">next page >></a>
+											 <a data-l10n-id="nextPage" id="page" href="<%= query.journal %><%= entries.links.next_page %>&type=<%= query.type %>">next page >></a>
 										<% } %>
 										</div>
 								</div>
@@ -175,8 +175,16 @@
 
 	});
 
+	document.getElementById("page").addEventListener("click",function(){
+            if((sessionStorage.getItem("rem")!=null)&&(sessionStorage.getItem("cur")==null)){
+                var rem = sessionStorage.getItem("rem");
+                sessionStorage.setItem("cur",rem);
+            }
+        });
+
 	if(sessionStorage.getItem("cur")!=null){
 		var cur = sessionStorage.getItem("cur");
+		sessionStorage.setItem("rem",cur);
 		if(cur=="journal-size-up"){
 			document.getElementById("journal-size").innerHTML = document.getElementById("journal-size").innerHTML + '<i class="arrow up"></i>' ; 
 		} else if(cur=="journal-size-down"){
