@@ -154,15 +154,19 @@
 
     });
 
-    document.getElementById("page").addEventListener("click",function(){
+    var page = document.getElementById("page");
+    if(page!=null){
+        document.getElementById("page").addEventListener("click",function(){
             if((sessionStorage.getItem("rem")!=null)&&(sessionStorage.getItem("cur")==null)){
                 var rem = sessionStorage.getItem("rem");
                 sessionStorage.setItem("cur",rem);
             }
         });
+    }
 
     if(sessionStorage.getItem("cur")!=null){
         var cur = sessionStorage.getItem("cur");
+        console.log(cur);
         sessionStorage.setItem("rem",cur);
         if(cur=="class-name-up"){
             document.getElementById("class-name").innerHTML = document.getElementById("class-name").innerHTML + '<i class="arrow up"></i>' ; 

@@ -23,9 +23,9 @@
 							<div class="card card-plain" style="margin:10px;">
 								<div class="card-content">
 									<div data-l10n-id="icon" class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Icon</div>
-									<div class="text-center text-muted col-lg-2 col-md-2 col-sm-2"><button data-l10n-id="name" id="activity-name"></button></div>
-									<div class="text-center text-muted col-lg-4 col-md-4 col-sm-4"><button id="activity-id" data-l10n-id="activity"></button></div>
-									<div class="text-center text-muted col-lg-2 col-md-2 col-sm-2"><button id="activity-version" data-l10n-id="version"></button></div>
+									<div data-l10n-id="name" class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Name</div>
+									<div data-l10n-id="activity" class="text-center text-muted col-lg-4 col-md-4 col-sm-4">Activity</div>
+									<div data-l10n-id="version" class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Version</div>
 									<div data-l10n-id="favorite" class="text-center text-muted col-lg-1 col-md-1 col-sm-1">Favorite</div>
 									<div data-l10n-id="action" class="text-center text-muted col-lg-1 col-md-1 col-sm-1">Action</div>
 								</div>
@@ -81,109 +81,5 @@ var url = '<%= url %>';
 
 //init drag drop
 initDragDrop();
-
-</script>
-<script>
-	document.getElementById("activity-name").addEventListener("click",function(){
-		sessionStorage.removeItem("activity-id-count");
-		sessionStorage.removeItem("activity-version-count");
-		if(sessionStorage.getItem("activity-name-count")!=null){
-			var user_name_count = sessionStorage.getItem("activity-name-count");
-			user_name_count++;
-			if(user_name_count==1){
-				document.getElementById("sort").setAttribute("value","");
-				sessionStorage.setItem("activity-name-count",1);
-				sessionStorage.setItem("cur","activity-name-none");
-			}
-			else if(user_name_count==2){
-				document.getElementById("sort").setAttribute("value","+name");
-				sessionStorage.setItem("activity-name-count",2);
-				sessionStorage.setItem("cur","activity-name-up");
-			} else if(user_name_count==3){
-				document.getElementById("sort").setAttribute("value","-name");
-				sessionStorage.setItem("activity-name-count",0);
-				sessionStorage.setItem("cur","activity-name-down");
-			}
-		} else{
-			sessionStorage.setItem("activity-name-count",2);
-			document.getElementById("sort").setAttribute("value","+name");
-			sessionStorage.setItem("cur","activity-name-up");
-		}
-		
-
-	});
-	document.getElementById("activity-id").addEventListener("click",function(){
-		sessionStorage.removeItem("activity-name-count");
-		sessionStorage.removeItem("activity-version-count");
-		if(sessionStorage.getItem("activity-id-count")!=null){
-			var user_name_count = sessionStorage.getItem("activity-id-count");
-			user_name_count++;
-			if(user_name_count==1){
-				document.getElementById("sort").setAttribute("value","");
-				sessionStorage.setItem("activity-id-count",1);
-				sessionStorage.setItem("cur","activity-id-none");
-			}
-			else if(user_name_count==2){
-				document.getElementById("sort").setAttribute("value","+id");
-				sessionStorage.setItem("activity-id-count",2);
-				sessionStorage.setItem("cur","activity-id-up");
-			} else if(user_name_count==3){
-				document.getElementById("sort").setAttribute("value","-id");
-				sessionStorage.setItem("activity-id-count",0);
-				sessionStorage.setItem("cur","activity-id-down");
-			}
-		} else{
-			sessionStorage.setItem("activity-id-count",2);
-			document.getElementById("sort").setAttribute("value","+id");
-			sessionStorage.setItem("cur","activity-id-up");
-		}
-
-	});
-
-	document.getElementById("activity-version").addEventListener("click",function(){
-		sessionStorage.removeItem("activity-name-count");
-		sessionStorage.removeItem("activity-id-count");
-		if(sessionStorage.getItem("activity-version-count")!=null){
-			var user_name_count = sessionStorage.getItem("activity-version-count");
-			user_name_count++;
-			if(user_name_count==1){
-				document.getElementById("sort").setAttribute("value","");
-				sessionStorage.setItem("activity-version-count",1);
-				sessionStorage.setItem("cur","activity-version-none");
-			}
-			else if(user_name_count==2){
-				document.getElementById("sort").setAttribute("value","+version");
-				sessionStorage.setItem("activity-version-count",2);
-				sessionStorage.setItem("cur","activity-version-up");
-			} else if(user_name_count==3){
-				document.getElementById("sort").setAttribute("value","-version");
-				sessionStorage.setItem("activity-version-count",0);
-				sessionStorage.setItem("cur","activity-version-down");
-			}
-		} else{
-			sessionStorage.setItem("activity-version-count",2);
-			document.getElementById("sort").setAttribute("value","+version");
-			sessionStorage.setItem("cur","activity-version-up");
-		}
-
-	});
-
-	if(sessionStorage.getItem("cur")!=null){
-		var cur = sessionStorage.getItem("cur");
-		if(cur=="activity-name-up"){
-			document.getElementById("activity-name").innerHTML = document.getElementById("activity-name").innerHTML + '<i class="arrow up"></i>' ; 
-		} else if(cur=="activity-name-down"){
-			document.getElementById("activity-name").innerHTML = document.getElementById("activity-name").innerHTML + '<i class="arrow down"></i>' ;
-		} else if(cur=="activity-id-up"){
-			document.getElementById("activity-id").innerHTML = document.getElementById("activity-id").innerHTML + '<i class="arrow up"></i>' ;
-		} else if(cur=="activity-id-down"){
-			document.getElementById("activity-id").innerHTML = document.getElementById("activity-id").innerHTML + '<i class="arrow down"></i>' ;
-		} else if(cur=="activity-version-up"){
-			document.getElementById("activity-version").innerHTML = document.getElementById("activity-version").innerHTML + '<i class="arrow up"></i>' ;
-		} else if(cur=="activity-version-down"){
-			document.getElementById("activity-version").innerHTML = document.getElementById("activity-version").innerHTML + '<i class="arrow down"></i>' ;
-		}
-		sessionStorage.removeItem("cur");
-	}
 
 </script>
