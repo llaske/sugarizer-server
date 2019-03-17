@@ -69,7 +69,7 @@ function getHowUserLaunchActivity(req, res) {
 			var labels = []
 			var ddata = []
 			for (var v in d) {
-				labels.push(v)
+				labels.push(common.l10n.get(v))
 				ddata.push(d[v])
 			}
 
@@ -182,15 +182,13 @@ function getHowUsersAreActive(req, res) {
 	// get data
 	getUsers(req, res, { role: 'student' }, function(body) {
 		total = body.total;
-		data.data.push(body.total);
 		data.labels.push(common.l10n.get('UserActive'));
 
 		getUsers(req, res, { role: 'student', stime: moment().subtract(1, 'months').valueOf() }, function(body) {
-			data.data.push(body.total);
 			data.labels.push(common.l10n.get('UserNotActive'));
 
-			data.data[0] = total - data.data[1];
-			data.data[1] = total - data.data[0];
+			data.data.push(body.total);
+			data.data.push(total - data.data[0]);
 
 			//return
 			return res.json({
@@ -223,12 +221,12 @@ function getWhatTypeOfClientConnected(req, res) {
 	getLogsData(req, res, {
 		client_type: 'Web App'
 	}, function(body) {
-		data.labels.push('Web App');
+		data.labels.push(common.l10n.get('WebApp'));
 		data.data.push(body.length);
 		getLogsData(req, res, {
 			client_type: 'App'
 		}, function(body) {
-			data.labels.push('App');
+			data.labels.push(common.l10n.get('App'));
 			data.data.push(body.length);
 
 			//return

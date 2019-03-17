@@ -76,22 +76,26 @@
                                 </div>
                             </div>
                         </div>
+                        <% if (typeof user == 'object' && user.created_time) { %>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="createdTime"></label>
-                                    <input class="form-control" readonly value="<% if(typeof user == 'object'){ %><%= moment(user.created_time).calendar() %><% } %>" type="text">
+                                    <input class="form-control" readonly value="<%= moment(user.created_time).calendar() %>" type="text">
                                 </div>
                             </div>
                         </div>
+                        <% } %>
+                        <% if (typeof user == 'object' && user.timestamp) { %>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="lastSeen"></label>
-                                    <input class="form-control" readonly value="<% if(typeof user == 'object'){ %><%= moment(user.timestamp).calendar() %><% } %>" type="text">
+                                    <input class="form-control" readonly value="<%= moment(user.timestamp).calendar() %>" type="text">
                                 </div>
                             </div>
                         </div>
+                        <% } %>
                         <button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
                         <a class="btn pull-right btn-round" href="/dashboard/users" data-l10n-id="cancel"></a>
                         <div class="clearfix"></div>

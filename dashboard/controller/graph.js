@@ -46,6 +46,7 @@ function getTopContributors(req, res) {
 			for (var i = 0; i < journals.length; i++) {
 				if (hashList[journals[i]._id] != undefined) {
 					journals[i].user = hashList[journals[i]._id].name;
+					journals[i].userID = hashList[journals[i]._id]._id;
 					j2.push(journals[i]);
 					totalEntries += journals[i].count;
 				}
@@ -65,12 +66,14 @@ function getTopContributors(req, res) {
 			//take 5 entries
 			journals = journals.slice(0, 5);
 
-			//get labels & data
-			var labels = [];
-			var data = [];
+			//get labels, data, journal IDs and user IDs
+			var labels = [], data = [], journalIDs = [], userIDs = [];
+
 			for (var i = 0; i < journals.length; i++) {
 				labels.push(journals[i].user);
 				data.push(journals[i].count);
+				journalIDs.push(journals[i]._id);
+				userIDs.push(journals[i].userID);
 			}
 
 			//return
@@ -99,7 +102,9 @@ function getTopContributors(req, res) {
 							}
 						}]
 					}
-				}
+				},
+				journalIDs: journalIDs,
+				userIDs: userIDs
 			})
 		})
 	})
@@ -138,9 +143,8 @@ function getTopActivities(req, res) {
 			//take 5 entries
 			freq2 = freq2.slice(0, 5);
 
-			//get labels & data
-			var labels = [];
-			var data = [];
+			//get labels, data & activity IDs
+			var labels = [], data = [], activityIDs = [];
 			for (var i = 0; i < freq2.length; i++) {
 				var label = freq2[i].id;
 				for (var j = 0 ; j < activities.length ; j++) {
@@ -151,6 +155,7 @@ function getTopActivities(req, res) {
 				}
 				labels.push(label);
 				data.push(freq2[i].count);
+				activityIDs.push(freq2[i].id);
 			}
 
 			//return data
@@ -170,7 +175,8 @@ function getTopActivities(req, res) {
 					}]
 				},
 				element: req.query.element,
-				graph: 'doughnut'
+				graph: 'doughnut',
+				activityIDs: activityIDs
 			})
 		})
 	})
