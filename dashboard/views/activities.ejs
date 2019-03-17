@@ -8,8 +8,9 @@
 				<div class="row">
 						<div class="col-md-12">
 								<div class="navbar-form navbar-right">
-		                <div class="form-group form-black is-empty" style="margin:0;">
-		                    <input class="form-control search_query" style="width: 300px;"  value="" data-l10n-id="searchActivity" placeholder="" type="text">
+										<div class="form-group form-black is-empty" style="margin:0;">
+												<label class="control-label hidden">Activity not found</label>
+		                    <input class="form-control search_query" style="width: 300px;" oninput="hideLabel(this.value)" onchange="highlight(this.value.trim())"  value="" data-l10n-id="searchActivity" placeholder="" type="text">
 		                    <span class="material-input"></span>
 		                <span class="material-input"></span></div>
 		                <button class="btn btn-white btn-round btn-just-icon" onclick="highlight($('.search_query').val().trim())">
