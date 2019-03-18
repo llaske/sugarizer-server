@@ -190,6 +190,10 @@
   border-radius: 1000px;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .color {
   margin: 0 0 5px 0;
   cursor: pointer;
