@@ -258,10 +258,31 @@ function highlight(text) {
 		$(this).html(inputText);
 	});
 
+	//show error
+  if (offset === -1 && text !== '') {
+    $('.control-label').removeClass('hidden');
+    $('.search_query')
+      .parent()
+      .addClass('label-floating has-error is-focused')
+      .removeClass('form-black is-empty');
+  } else {
+    $('.control-label').addClass('hidden');
+    $('.search_query')
+      .parent()
+      .removeClass('label-floating has-error is-focused');
+  }
 	//scroll
 	$('.main-panel').animate({
 		scrollTop: (offset - 30)
 	}, 500);
+}
+
+//hide label when input is empty
+function hideLabel(value) {
+  if (value === '') {
+    $('.control-label').addClass('hidden');
+    highlight('');
+  }
 }
 
 // localization
