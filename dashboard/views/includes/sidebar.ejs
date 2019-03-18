@@ -13,7 +13,7 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a onclick="jumpTo('/dashboard')">
+				<a onclick="sess_forget_jumpto('/dashboard')">
 					<i class="custom-icon home-icon"></i>
 					<p data-l10n-id="dashboard"></p>
 				</a>
@@ -23,7 +23,7 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a onclick="jumpTo('/dashboard/users')">
+				<a onclick="sess_forget_jumpto('/dashboard/users')">
 					<i class="custom-icon xo-icon"></i>
 					<p data-l10n-id="users"></p>
 				</a>
@@ -33,7 +33,7 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a onclick="jumpTo('/dashboard/activities')">
+				<a onclick="sess_forget_jumpto('/dashboard/activities')">
 					<i class="custom-icon activity-icon"></i>
 					<p data-l10n-id="activities"></p>
 				</a>
@@ -43,7 +43,7 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a onclick="jumpTo('/dashboard/journal')">
+				<a onclick="sess_forget_jumpto('/dashboard/journal')">
 					<i class="custom-icon journal-icon"></i>
 					<p data-l10n-id="journals"></p>
 				</a>
@@ -53,7 +53,7 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a onclick="jumpTo('/dashboard/classrooms')">
+				<a onclick="sess_forget_jumpto('/dashboard/classrooms')">
 					<i class="custom-icon classroom-icon"></i>
 					<p data-l10n-id="classrooms">Classrooms</p>
 				</a>
@@ -63,7 +63,7 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a onclick="jumpTo('/dashboard/stats')">
+				<a onclick="sess_forget_jumpto('/dashboard/stats')">
 					<i class="custom-icon stats-icon"></i>
 					<p data-l10n-id="stats">Statistics</p>
 				</a>
@@ -71,3 +71,9 @@
 		</ul>
 	</div>
 </div>
+<script>
+	function sess_forget_jumpto(path){
+		sessionStorage.removeItem("rem");
+		jumpTo(path);
+	}
+</script>

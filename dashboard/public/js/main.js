@@ -333,3 +333,7 @@ function createTable(type, element, route) {
 		});
 	})
 }
+
+function sess_forget(){
+	sessionStorage.removeItem("rem");
+}
