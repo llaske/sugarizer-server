@@ -63,7 +63,7 @@ function launch_activity(callurl) {
 			lsBackup[index] = localStorage.getItem(index);
 			var encodedValue = response.lsObj[index];
 			var rawValue = JSON.parse(encodedValue);
-			if (rawValue.server) {
+			if (rawValue && rawValue.server) {
 				rawValue.server.url = window.location.protocol+"//"+window.location.hostname+":"+rawValue.server.web;
 				encodedValue = JSON.stringify(rawValue);
 			}
