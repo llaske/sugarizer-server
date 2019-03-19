@@ -121,7 +121,21 @@ exports.addUser = function(req, res) {
 			});
 		} else {
 			req.flash('errors', errors);
-			return res.redirect('/dashboard/users/add');
+			return res.render('addEditUser', {
+				module: 'users',
+				user: {
+					name:req.body.name,
+					password: req.body.password,
+					color: req.body.color,
+					language:req.body.language,
+					role:req.body.role
+				},
+				xocolors: xocolors,
+				moment: moment,
+				emoji: emoji,
+				account: req.session.user,
+				server: ini.information
+			});
 		}
 
 	} else {
