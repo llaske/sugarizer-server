@@ -1,8 +1,8 @@
 <% include includes/header %>
 <div class="wrapper">
-	<% include includes/sidebar %>
+	<%- include includes/sidebar %>
 	<div class="main-panel">
-	<% include includes/navbar %>
+	<%- include includes/navbar %>
 		<div class="content">
 			<div class="container-fluid">
 				<div class="row">
@@ -55,7 +55,7 @@
 		</div>
 	</div>
 </div>
-<% include includes/footer %>
+<%- include includes/footer %>
 
 <script>createGraph('how-users-are-active', 'how-users-are-active-chart', 'stats/graph');</script>
 <script>createGraph('how-many-entries-by-journal', 'how-many-entries-by-journal-chart', 'stats/graph');</script>

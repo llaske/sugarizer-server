@@ -1,4 +1,4 @@
-<% include includes/header %>
+<%- include includes/header %>
 <nav class="navbar navbar-transparent navbar-absolute">
     <div class="container-fluid">
         <div class="collapse navbar-collapse">
@@ -22,7 +22,7 @@
         <h5 class="text-center"><%= server.description %></h5>
         <div class="card card-nav-tabs">
             <div class="card-content">
-              <% include includes/flash-errors %>
+              <%- include includes/flash-errors %>
               <form method="post" action="/dashboard/login">
                 <div class="form-group form-black label-floating is-empty">
                     <label class="control-label" data-l10n-id="username">Username</label>
@@ -51,4 +51,4 @@ function updateLanguage() {
 }
 </script>
 
-<% include includes/footer %>
+<%- include includes/footer %>

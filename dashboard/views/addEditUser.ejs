@@ -1,14 +1,14 @@
-<% include includes/header %>
+<%- include includes/header %>
   <div class="wrapper">
-  	<% include includes/sidebar %>
+  	<%- include includes/sidebar %>
     	<div class="main-panel">
-    	<% include includes/navbar %>
+    	<%- include includes/navbar %>
     		<div class="content">
     			<div class="container-fluid">
             <div class="col-md-8 col-lg-8 col-sm-12">
               <div class="card">
                 <div class="card-content">
-                    <% include includes/flash-errors %>
+                    <%- include includes/flash-errors %>
                     <form id="user-add-edit-form" method="post" <% if(typeof user == 'object'){ %> action="<%= user._id %>" <% } %>>
                         <div class="row">
                             <div class="col-md-12">
@@ -103,7 +103,7 @@
       </div>
     </div>
   </div>
-<% include includes/footer %>
+<%- include includes/footer %>
 <script>
 function show_user_fields(val) {
   if(val == 'admin'){
