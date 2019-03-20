@@ -148,7 +148,7 @@ exports.deleteStats = function(req, res) {
 	}
 
 	db.collection(statsCollection, function(err, collection) {
-		collection.remove({
+		collection.deleteOne({
 			'user_id': req.query.uid
 		}, function(err, result) {
 			if (err) {

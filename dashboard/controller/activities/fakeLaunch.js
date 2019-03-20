@@ -32,6 +32,11 @@ module.exports = function fakeLaunch(req, res) {
 
 	getActivity(req, req.query.aid, function(activity) {
 
+		if (!activity) {
+			// Could happen for Android activities
+			return res.redirect('/dashboard/');
+		}
+
 		activity.instances = [];
 		lsObj['sugar_settings'].activities.push(activity);
 		lsObj['sugar_settings'] = JSON.stringify(lsObj['sugar_settings']);

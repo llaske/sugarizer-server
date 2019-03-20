@@ -64,7 +64,7 @@ function launch_activity(callurl) {
 			lsBackup[index] = localStorage.getItem(index);
 			var encodedValue = response.lsObj[index];
 			var rawValue = JSON.parse(encodedValue);
-			if (rawValue.server) {
+			if (rawValue && rawValue.server) {
 				rawValue.server.url = window.location.protocol+"//"+window.location.hostname+":"+rawValue.server.web;
 				encodedValue = JSON.stringify(rawValue);
 			}
@@ -178,6 +178,25 @@ function formatColorField(state) {
 	return $state;
 }
 
+function matchColorField(params, data) {
+	if ($.trim(params.term) === '') {
+		return data;
+	}
+	params.term = params.term.toUpperCase();
+
+	if (typeof data.text === 'undefined') {
+		return null;
+	}
+
+	if (data.id.indexOf(params.term) > -1) {
+		var modifiedData = $.extend({}, data, true);
+		modifiedData.text += ' (matched)';
+		return modifiedData;
+	}
+
+	return null;
+}
+
 $(document).ready(function() {
 	if ($("#users-select2").length > 0) {
 		$("#users-select2").select2({
@@ -198,7 +217,8 @@ $(document).ready(function() {
 	if ($("#color-select2").length > 0) {
 		$("#color-select2").select2({
 			templateResult: formatColorField,
-			templateSelection: formatColorField
+			templateSelection: formatColorField,
+			matcher: matchColorField
 		})
 	}
 
@@ -280,7 +300,7 @@ function createGraph(type, element, route) {
 				var html = '<div class="text-center">\
 											<i class="material-icons dp96 text-muted">info_outline</i>\
 											<p data-l10n-id="noGraphDataText">' + document.webL10n.get('noGraphDataText') + '</p>\
-										</div>'
+										</div>';
 				$("#" + response.element).replaceWith(html);
 			} else {
 				var ctx = document.getElementById(response.element).getContext('2d');
@@ -289,19 +309,28 @@ function createGraph(type, element, route) {
 					data: response.data,
 					options: (response.options ? response.options : {})
 				});
-				myChart.options.onClick = function(e){
-					var activePoints = myChart.getElementsAtEvent(e);
-					// Avoid console erros when clicking on any white space in the chart
-					var index = activePoints.length ? activePoints[0]._index : -1;
-					if (index > -1 && response.graph === 'bar'){
-						window.location.href = `/dashboard/journal/${response.journalIDs[index]}?uid=${response.userIDs[index]}&type=private`;
-					}else if(index > -1 && response.graph === 'doughnut'){
-						window.location.href = `javascript:launch_activity('/dashboard/activities/launch?aid=${response.activityIDs[index]}')`;
-					}
+				if (type == 'top-contributor') {
+					myChart.options.onClick = function(e) {
+						var activePoints = myChart.getElementsAtEvent(e);
+						// Avoid console erros when clicking on any white space in the chart
+						var index = activePoints.length ? activePoints[0]._index : -1;
+						if (index > -1) {
+							window.location.href = "/dashboard/journal/" + response.journalIDs[index] + "?uid=" + response.userIDs[index] + "&type=private";
+						}
+					};
+				} else if (type == 'top-activities') {
+					myChart.options.onClick = function(e) {
+						var activePoints = myChart.getElementsAtEvent(e);
+						// Avoid console erros when clicking on any white space in the chart
+						var index = activePoints.length ? activePoints[0]._index : -1;
+						if (index > -1) {
+							window.location.href = "javascript:launch_activity('/dashboard/activities/launch?aid="+response.activityIDs[index]+"')";
+						}
+					};
 				}
 			}
 		});
-	})
+	});
 }
 
 function createTable(type, element, route) {

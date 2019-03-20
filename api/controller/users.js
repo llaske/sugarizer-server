@@ -635,7 +635,7 @@ exports.removeUser = function(req, res) {
 	//delete user from db
 	var uid = req.params.uid;
 	db.collection(usersCollection, function(err, collection) {
-		collection.remove({
+		collection.deleteOne({
 			'_id': new mongo.ObjectID(uid)
 		}, function(err, result) {
 			if (err) {
@@ -647,12 +647,11 @@ exports.removeUser = function(req, res) {
 				if (result && result.result && result.result.n == 1) {
 					// Remove user form classroom
 					db.collection(classroomsCollection, function(err, collection) {
-						collection.update({},
+						collection.updateMany({},
 							{
 								$pull: { students: uid}
-							},
-							{
-								multi: true
+							}, {
+								safe: true
 							},
 							function(err, result) {
 								if (err) {
