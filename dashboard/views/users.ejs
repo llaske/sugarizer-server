@@ -38,15 +38,15 @@
                               <script> $('#user-form [name="classid"]').select2(); </script>
                           </div>
                         </div>
-						<script>
-						window.addEventListener('localized', function() {  // HACK: Force localization of student combo
-							var selection = document.getElementsByClassName("select2-selection__rendered");
-							if (selection && selection[0] && typeof selection[0].innerHTML == "string") {
+			<script>
+			window.addEventListener('localized', function() {  // HACK: Force localization of student combo
+				var selection = document.getElementsByClassName("select2-selection__rendered");
+				if (selection && selection[0] && typeof selection[0].innerHTML == "string") {
                                 var user = document.getElementById("user-type-select2");
                                 var val = user.options[user.selectedIndex].value;
                                 selection[0].innerHTML = document.webL10n.get(val);
                             }});
-						</script>
+			</script>
                         <div class="col-md-6">
                             <a class="btn btn-round pull-right " href="/dashboard/users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
                             <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
