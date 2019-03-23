@@ -103,7 +103,7 @@ exports.addUser = function(req, res) {
 			}, function(error, response, body) {
 				if (response.statusCode == 200) {
 					req.flash('success', {
-						msg: common.l10n.get('UserCreated')
+						msg: common.l10n.get('UserCreated', {name: req.body.name})
 					});
 					if (body.role == "admin") {
 						// send to admin page
@@ -177,7 +177,7 @@ exports.editUser = function(req, res) {
 				}, function(error, response, body) {
 					if (response.statusCode == 200) {
 						req.flash('success', {
-							msg: common.l10n.get('UserUpdated')
+							msg: common.l10n.get('UserUpdated', {name: req.body.name})
 						});
 						if (body.role == "admin") {
 							// send to admin page
@@ -236,6 +236,7 @@ exports.deleteUser = function(req, res) {
 
 	if (req.params.uid) {
 		var role = req.query.role || 'student';
+		var name = req.query.name || 'user';
 		if (req.params.uid == common.getHeaders(req)['x-key']) {
 			req.flash('errors', {
 				msg: common.l10n.get('ErrorCode20')
@@ -252,7 +253,7 @@ exports.deleteUser = function(req, res) {
 
 				// send to users page
 				req.flash('success', {
-					msg: common.l10n.get('UserDeleted')
+					msg: common.l10n.get('UserDeleted', {name: name})
 				});
 			} else {
 				req.flash('errors', {
