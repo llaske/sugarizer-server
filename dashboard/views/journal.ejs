@@ -40,7 +40,11 @@
 								<script>
 								window.addEventListener('localized', function() {  // HACK: Force localization of selected field
 									var selection = document.getElementsByClassName("select2-selection__rendered");
-									if (selection && selection[1] && typeof selection[1].innerHTML == "string") selection[1].innerHTML = document.webL10n.get(selection[1].innerHTML.toLowerCase());
+									if (selection && selection[1] && typeof selection[1].innerHTML == "string") {
+										var journal_select_type = document.getElementById("journal-type-select2");
+										var val = journal_select_type.options[journal_select_type.selectedIndex].value;
+										selection[1].innerHTML = document.webL10n.get(val);
+									}
 								});
 								</script>
 							</form>
