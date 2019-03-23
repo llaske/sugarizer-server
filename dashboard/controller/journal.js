@@ -53,7 +53,7 @@ exports.deleteEntry = function(req, res) {
 		if (response.statusCode == 200) {
 			// return back
 			req.flash('success', {
-				msg: common.l10n.get('EntryDeleted')
+				msg: common.l10n.get('EntryDeleted', {activity: req.query.title})
 			});
 			return res.redirect('/dashboard/journal/' + req.params.jid + '?uid=' + req.query.uid + '&offset=' + (req.query.offset ? req.query.offset : 0) + '&limit=' + (req.query.limit ? req.query.limit : 10));
 
