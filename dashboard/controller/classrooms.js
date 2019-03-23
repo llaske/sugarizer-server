@@ -101,7 +101,7 @@ exports.addClassroom = function(req, res) {
 
 					// send to classrooms page
 					req.flash('success', {
-						msg: common.l10n.get('ClassroomCreated')
+						msg: common.l10n.get('ClassroomCreated', {name: req.body.name})
 					});
 					return res.redirect('/dashboard/classrooms/');
 				} else {
@@ -165,7 +165,7 @@ exports.editClassroom = function(req, res) {
 
 						// send back
 						req.flash('success', {
-							msg: common.l10n.get('ClassroomUpdated')
+							msg: common.l10n.get('ClassroomUpdated', {name: req.body.name})
 						});
 						return res.redirect('/dashboard/classrooms/');
 					} else {
@@ -217,6 +217,7 @@ exports.editClassroom = function(req, res) {
 exports.deleteClassroom = function(req, res) {
 
 	if (req.params.classid) {
+		var name = req.query.name || 'classroom';
 		request({
 			headers: common.getHeaders(req),
 			json: true,
@@ -227,7 +228,7 @@ exports.deleteClassroom = function(req, res) {
 
 				// send to classrooms page
 				req.flash('success', {
-					msg: common.l10n.get('ClassroomDeleted')
+					msg: common.l10n.get('ClassroomDeleted', {name: name})
 				});
 			} else {
 				req.flash('errors', {
