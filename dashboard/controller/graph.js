@@ -251,6 +251,7 @@ function getRecentActivities(req, res) {
 										<td><div class="color" id="' + allEntries[i].objectId + i.toString() + '"><div class="xo-icon"></div></div></td>\
 										<script>new icon().load("' +  (hashList[allEntries[i].metadata.activity] || '/public/img/application-x-generic.svg') + '", ' + JSON.stringify(allEntries[i].metadata.buddy_color) + ', "' + allEntries[i].objectId + i.toString() + '")</script>\
 										<td title="' + allEntries[i].metadata.title + '">' + allEntries[i].metadata.title + '</td>\
+										<td title="' + allEntries[i].metadata.buddy_name + '">' + allEntries[i].metadata.buddy_name + '</td>\
 										<td class="text-muted">' + moment(allEntries[i].metadata.timestamp).calendar() + '</td>\
 								</tr>'
 			}
