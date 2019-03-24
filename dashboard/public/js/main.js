@@ -3,6 +3,7 @@ function initDragDrop() {
 	var adjustment;
 
 	$("ol.simple_with_animation").sortable({
+		handle: '.draggable',
 		group: 'simple_with_animation',
 		pullPlaceholder: false,
 		placeholder: '<div class="placeholder"></div>',
