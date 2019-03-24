@@ -312,8 +312,8 @@ msgstr "Password should have at least {{count}} characters"
 
 #: PasswordInvalid
 msgctxt "PasswordInvalid"
-msgid "Password should contain alphanumeric characters only"
-msgstr "पासवर्ड में अल्फ़ान्यूमेरिक वर्ण ही होने चाहिए"
+msgid "Password is not valid"
+msgstr "पासवर्ड मान्य नहीं है"
 
 #: UserUpdated
 msgctxt "UserUpdated"

@@ -367,8 +367,8 @@ msgstr "Password cannot be blank"
 
 #: PasswordInvalid
 msgctxt "PasswordInvalid"
-msgid "Password should contain alphanumeric characters only"
-msgstr "La contraseña debe contener caracteres alfanuméricos solamente"
+msgid "Password is not valid"
+msgstr "La contraseña no es valida"
 
 #: CantOpenWindow
 msgctxt "CantOpenWindow"
