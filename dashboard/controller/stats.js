@@ -14,10 +14,7 @@ exports.init = function(settings) {
 exports.index = function(req, res) {
 
 	// reinit l10n and momemt with locale
-	if (req.query && req.query.lang) {
-		common.l10n.setLanguage(req.query.lang);
-		moment.locale(req.query.lang);
-	}
+	common.reinitLocale(req);
 
 	// send to login page
 	res.render('stats', {

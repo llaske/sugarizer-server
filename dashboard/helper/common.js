@@ -2,6 +2,7 @@ var fs = require('fs');
 var os = require('os');
 var ini = null;
 var language = '*';
+var moment = require('moment');
 
 exports.init = function(settings) {
 	ini = settings;
@@ -32,6 +33,14 @@ exports.l10n = {
 		return translate;
 	}
 }
+
+exports.reinitLocale = function(req) {
+	// reinit l10n and moment with locale
+	if (req.query && req.query.lang) {
+		exports.l10n.setLanguage(req.query.lang);
+		moment.locale(req.query.lang);
+	}
+};
 
 exports.loadCredentials = function(settings) {
 	if (!settings.security.certificate_file || !settings.security.key_file) {
