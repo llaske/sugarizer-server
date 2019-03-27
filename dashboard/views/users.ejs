@@ -27,8 +27,8 @@
                         </div>
                         <div class="col-md-2">
                           <div class="form-group form-black label-floating is-empty classroom_input">
-                                <select class="form-control" name="classid">
-                                    <option value="" selected="selected" >None</option>
+                                <select class="form-control" id="classroom_select" name="classid">
+                                    <option data-l10n-id="selectclassroom" value="" selected="selected" disabled></option>
                                     <% for(var i=0; i < classrooms.length; i++) { %>
                                         <% if(Array.isArray(classrooms[i].students) && classrooms[i].students && classrooms[i].students.length > 0) { %>
                                             <option value="<%- classrooms[i].students.join(',') %>" <% if(query.classid== classrooms[i].students.join(',')){ %>selected="selected"<% } %> ><%= classrooms[i].name %></option>
@@ -42,7 +42,18 @@
 						window.addEventListener('localized', function() {  // HACK: Force localization of student combo
 							var selection = document.getElementsByClassName("select2-selection__rendered");
 							if (selection && selection[0] && selection[0].title == "Student") selection[0].innerHTML = document.webL10n.get("student");						});
-						</script>
+                        </script>
+                        <script>
+                            window.addEventListener('localized', function() {  // HACK: Force localization of selected field
+                                var selection = document.getElementsByClassName("select2-selection__rendered");
+                                if (selection && selection[1] && typeof selection[1].innerHTML == "string") {
+                                    var classroom_select = document.getElementById("classroom_select");
+                                    if(classroom_select.selectedIndex == 0){
+                                        selection[1].innerHTML = document.webL10n.get("selectclassroom");
+                                    }
+                                }
+                            });
+                            </script>
                         <div class="col-md-6">
                             <a class="btn btn-round pull-right " href="/dashboard/users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
                             <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
