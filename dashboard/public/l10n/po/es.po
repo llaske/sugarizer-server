@@ -98,10 +98,10 @@ msgctxt "successActivityUpdate"
 msgid "Activities successfully updated!"
 msgstr "Actividades actualizadas con éxito!"
 
-#: viewAllUsers
-msgctxt "viewAllUsers"
-msgid "View all users"
-msgstr "Ver todos los usuarios"
+#: viewAllStudents
+msgctxt "viewAllStudents"
+msgid "View all students"
+msgstr "Ver todos los estudiantes"
 
 #: viewAllActivities
 msgctxt "viewAllActivities"
@@ -219,10 +219,10 @@ msgctxt "TopActivities"
 msgid "Top Activities"
 msgstr "arriba Actividades"
 
-#: RecentUsers
-msgctxt "RecentUsers"
-msgid "Recent Users"
-msgstr "Usuarios recientes"
+#: RecentStudents
+msgctxt "RecentStudents"
+msgid "Recent Students"
+msgstr "Estudiantes recientes"
 
 #: RecentEntries
 msgctxt "RecentEntries"

@@ -98,10 +98,10 @@ msgctxt "successActivityUpdate"
 msgid "Activities successfully updated!"
 msgstr "गतिविधियां सफलतापूर्वक अपडेट की गईं!"
 
-#: viewAllUsers
-msgctxt "viewAllUsers"
-msgid "View all users"
-msgstr "सभी उपयोगकर्ताओं को देखें"
+#: viewAllStudents
+msgctxt "viewAllStudents"
+msgid "View all students"
+msgstr "सभी छात्र देखें"
 
 #: viewAllActivities
 msgctxt "viewAllActivities"
@@ -219,10 +219,10 @@ msgctxt "TopActivities"
 msgid "Top Activities"
 msgstr "शीर्ष क्रियाएँ"
 
-#: RecentUsers
-msgctxt "RecentUsers"
-msgid "Recent Users"
-msgstr "हाल ही के उपयोगकर्ता"
+#: RecentStudents
+msgctxt "RecentStudents"
+msgid "Recent Students"
+msgstr "हाल ही के छात्र"
 
 #: RecentEntries
 msgctxt "RecentEntries"
