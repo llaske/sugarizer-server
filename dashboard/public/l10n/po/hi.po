@@ -70,7 +70,7 @@ msgstr "कार्य"
 
 #: role
 msgctxt "role"
-msgid "role"
+msgid "Role"
 msgstr "भूमिका"
 
 #: language

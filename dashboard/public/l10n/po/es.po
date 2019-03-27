@@ -70,7 +70,7 @@ msgstr "Acción"
 
 #: role
 msgctxt "role"
-msgid "role"
+msgid "Role"
 msgstr "Papel"
 
 #: title

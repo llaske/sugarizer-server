@@ -70,8 +70,8 @@ msgstr "Action"
 
 #: role
 msgctxt "role"
-msgid "role"
-msgstr "role"
+msgid "Role"
+msgstr "Role"
 
 #: language
 msgctxt "language"
