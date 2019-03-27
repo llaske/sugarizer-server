@@ -199,15 +199,15 @@ msgctxt "noGraphDataText"
 msgid "Not Enough Data"
 msgstr "पर्याप्त डाटा नहीं"
 
-#: HowUsersAreLaunchingActivities
-msgctxt "HowUsersAreLaunchingActivities"
-msgid "How users are launching activities?"
-msgstr "कैसे उन गतिविधियों की शुरूआत कर रहे हैं?"
+#: HowStudentsAreLaunchingActivities
+msgctxt "HowStudentsAreLaunchingActivities"
+msgid "How students are launching activities?"
+msgstr "छात्र कैसे गतिविधियाँ शुरू कर रहे हैं?"
 
-#: HowOftenUsersAreChangingTheirProfileSettings
-msgctxt "HowOftenUsersAreChangingTheirProfileSettings"
-msgid "How often users are changing their profile settings?"
-msgstr "कितनी बार उपयोगकर्ताओं को अपने प्रोफ़ाइल सेटिंग्स बदल रहे हैं?"
+#: HowOftenStudentsAreChangingTheirProfileSettings
+msgctxt "HowOftenStudentsAreChangingTheirProfileSettings"
+msgid "How often students are changing their profile settings?"
+msgstr "छात्र कितनी बार अपनी प्रोफ़ाइल सेटिंग बदल रहे हैं?"
 
 #: TopContributors
 msgctxt "TopContributors"
@@ -491,10 +491,10 @@ msgctxt "CountEntries"
 msgid "# of Entries"
 msgstr "# of Entries"
 
-#: HowUsersAreActive
-msgctxt "HowUsersAreActive"
-msgid "How many users actives during last month?"
-msgstr "How many users actives during last month?"
+#: HowStudentsAreActive
+msgctxt "HowStudentsAreActive"
+msgid "How many students active during last month?"
+msgstr "पिछले महीने के दौरान कितने छात्र सक्रिय थे?"
 
 #: UserActive
 msgctxt "UserActive"
@@ -513,8 +513,8 @@ msgstr "What type of client connected?"
 
 #: HowManyEntriesByJournal
 msgctxt "HowManyEntriesByJournal"
-msgid "How many entries by user?"
-msgstr "How many entries by user?"
+msgid "How many entries by student?"
+msgstr "किसी छात्र द्वारा कितनी एन्ट्री?"
 
 #: AverageEntries
 msgctxt "AverageEntries"
