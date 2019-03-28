@@ -70,7 +70,7 @@ msgstr ""
 
 #: role
 msgctxt "role"
-msgid "role"
+msgid "Role"
 msgstr ""
 
 #: language
@@ -98,9 +98,9 @@ msgctxt "successActivityUpdate"
 msgid "Activities successfully updated!"
 msgstr ""
 
-#: viewAllUsers
-msgctxt "viewAllUsers"
-msgid "View all users"
+#: viewAllStudents
+msgctxt "viewAllStudents"
+msgid "View all students"
 msgstr ""
 
 #: viewAllActivities
@@ -199,14 +199,14 @@ msgctxt "noGraphDataText"
 msgid "Not Enough Data"
 msgstr ""
 
-#: HowUsersAreLaunchingActivities
-msgctxt "HowUsersAreLaunchingActivities"
-msgid "How users are launching activities?"
+#: HowStudentsAreLaunchingActivities
+msgctxt "HowStudentsAreLaunchingActivities"
+msgid "How students are launching activities?"
 msgstr ""
 
-#: HowOftenUsersAreChangingTheirProfileSettings
-msgctxt "HowOftenUsersAreChangingTheirProfileSettings"
-msgid "How often users are changing their profile settings?"
+#: HowOftenStudentsAreChangingTheirProfileSettings
+msgctxt "HowOftenStudentsAreChangingTheirProfileSettings"
+msgid "How often students are changing their profile settings?"
 msgstr ""
 
 #: TopContributors
@@ -219,9 +219,9 @@ msgctxt "TopActivities"
 msgid "Top Activities"
 msgstr ""
 
-#: RecentUsers
-msgctxt "RecentUsers"
-msgid "Recent Users"
+#: RecentStudents
+msgctxt "RecentStudents"
+msgid "Recent Students"
 msgstr ""
 
 #: RecentEntries
@@ -486,9 +486,9 @@ msgctxt "CountEntries"
 msgid "# of Entries"
 msgstr ""
 
-#: HowUsersAreActive
-msgctxt "HowUsersAreActive"
-msgid "How many users actives during last month?"
+#: HowStudentsAreActive
+msgctxt "HowStudentsAreActive"
+msgid "How many students active during last month?"
 msgstr ""
 
 #: UserActive
@@ -508,7 +508,7 @@ msgstr ""
 
 #: HowManyEntriesByJournal
 msgctxt "HowManyEntriesByJournal"
-msgid "How many entries by user?"
+msgid "How many entries by student?"
 msgstr ""
 
 #: AverageEntries
