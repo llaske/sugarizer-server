@@ -110,7 +110,7 @@
                                               <% if(data.users[i].language =='pl') {%> <td>Polish</td> <%} %>
                                               <% if(data.users[i].language =='ibo') {%> <td>Igbo</td> <%} %>
                                               <% if(data.users[i].language =='yor') {%> <td>Yoruba</td> <%} %>
-                                              <td><%= data.users[i].role %></td>
+                                              <td data-l10n-id="<%= data.users[i].role %>">Student</td>
                                               <td><%= moment(data.users[i].timestamp).calendar() %></td>
                                               <td>
                                                 <% if(data.users[i].role == 'student') {%>
