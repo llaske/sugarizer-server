@@ -4812,6 +4812,7 @@ footer .btn {
     background-image: url('/public/img/system-shutdown.svg');
   }
   #languageSelection {
+    height: 35px !important;
     width: 200px !important;
     border: 1px solid #fff !important;
     border-radius: 100px !important;

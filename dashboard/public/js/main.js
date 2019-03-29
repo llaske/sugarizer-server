@@ -309,6 +309,17 @@ function onLocalized() {
 }
 document.webL10n.ready(onLocalized);
 
+// Initiate localization in mobile view
+$(document).ready(function() {
+	var toggle = document.getElementById('navbar-toggle');
+
+	if (toggle != null) {
+		toggle.addEventListener("click", function(){
+			document.webL10n.ready(onLocalized);
+		});
+	}
+});
+
 // graph create
 function createGraph(type, element, route) {
 	$(document).ready(function() {
