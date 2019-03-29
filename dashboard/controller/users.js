@@ -46,6 +46,11 @@ exports.index = function(req, res) {
 		query['sort'] = req.query.sort;
 	}
 
+	var classroom_id;
+	if (req.query.classroom_id) {
+		classroom_id = req.query.classroom_id;
+	}
+
 	// call
 	request({
 		headers: common.getHeaders(req),
@@ -65,6 +70,7 @@ exports.index = function(req, res) {
 					moment: moment,
 					query: query,
 					classrooms: classrooms,
+					classroom_id: classroom_id,
 					data: body,
 					account: req.session.user,
 					server: ini.information
