@@ -118,7 +118,7 @@ exports.addClassroom = function(req, res) {
 		dashboard.getAllUsers(req, res, function(users) {
 			// send to classroom page
 			res.render('addEditClassroom', {
-				module: 'classrooms',
+				module: 'addClassroom',
 				xocolors: xocolors,
 				moment: moment,
 				students: users.users,
@@ -187,7 +187,7 @@ exports.editClassroom = function(req, res) {
 
 					// send to classrooms page
 					res.render('addEditClassroom', {
-						module: 'classrooms',
+						module: 'editClassrooms',
 						classroom: body,
 						moment: moment,
 						emoji: emoji,

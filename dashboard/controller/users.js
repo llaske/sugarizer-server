@@ -147,7 +147,7 @@ exports.addUser = function(req, res) {
 	} else {
 		// send to activities page
 		res.render('addEditUser', {
-			module: 'users',
+			module: 'addUser',
 			xocolors: xocolors,
 			moment: moment,
 			emoji: emoji,
@@ -214,7 +214,7 @@ exports.editUser = function(req, res) {
 
 					// send to users page
 					res.render('addEditUser', {
-						module: 'users',
+						module: 'editUsers',
 						user: body,
 						moment: moment,
 						emoji: emoji,

@@ -18,7 +18,7 @@
 					<p data-l10n-id="dashboard"></p>
 				</a>
 			</li>
-			<%if (module == 'users') { %>
+			<%if (module == 'users' || module == 'addUser' || module == 'editUsers') { %>
 				<li class="active">
 			<% } else {%>
 				<li>
@@ -48,7 +48,7 @@
 					<p data-l10n-id="journals"></p>
 				</a>
 			</li>
-			<%if (module == 'classrooms') { %>
+			<%if (module == 'classrooms' || module == 'addClassroom' || module == 'editClassrooms') { %>
 				<li class="active">
 			<% } else {%>
 				<li>
