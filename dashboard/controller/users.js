@@ -16,10 +16,7 @@ exports.init = function(settings) {
 exports.index = function(req, res) {
 
 	// reinit l10n and moment with locale
-	if (req.query && req.query.lang) {
-		common.l10n.setLanguage(req.query.lang);
-		moment.locale(req.query.lang);
-	}
+	common.reinitLocale(req);
 
 	//query
 	var query = {
@@ -82,6 +79,9 @@ exports.index = function(req, res) {
 };
 
 exports.addUser = function(req, res) {
+
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
 
 	if (req.method == 'POST') {
 
@@ -158,6 +158,9 @@ exports.addUser = function(req, res) {
 };
 
 exports.editUser = function(req, res) {
+
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
 
 	if (req.params.uid) {
 		if (req.method == 'POST') {
