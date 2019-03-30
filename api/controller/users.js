@@ -14,6 +14,7 @@ var classroomsCollection;
 exports.init = function(settings, callback) {
 	usersCollection = settings.collections.users;
 	classroomsCollection = settings.collections.classrooms;
+	journalCollection = settings.collections.journal;
 	var client = new mongo.MongoClient(
 		'mongodb://'+settings.database.server+':'+settings.database.port+'/'+settings.database.name,
 		{auto_reconnect: false, w:1, useNewUrlParser: true});
@@ -635,16 +636,16 @@ exports.removeUser = function(req, res) {
 	//delete user from db
 	var uid = req.params.uid;
 	db.collection(usersCollection, function(err, collection) {
-		collection.deleteOne({
+		collection.findOneAndDelete({
 			'_id': new mongo.ObjectID(uid)
-		}, function(err, result) {
+		}, function(err, user) {
 			if (err) {
 				res.status(500).send({
 					'error': 'An error has occurred',
 					'code': 10
 				});
 			} else {
-				if (result && result.result && result.result.n == 1) {
+				if (user && user.ok && user.value) {
 					// Remove user form classroom
 					db.collection(classroomsCollection, function(err, collection) {
 						collection.updateMany({},
@@ -660,9 +661,32 @@ exports.removeUser = function(req, res) {
 										code: 10
 									});
 								} else {
-									res.send({
-										'user_id': uid
-									});
+									if (user.value.private_journal) {
+										db.collection(journalCollection, function(err, collection) {
+											collection.deleteMany({
+													_id: new mongo.ObjectID(user.value.private_journal)
+												}, {
+													safe: true
+												},
+												function(err, result) {
+													if (err) {
+														res.status(500).send({
+															error: "An error has occurred",
+															code: 10
+														});
+													} else {
+														res.send({
+															'user_id': uid
+														});
+													}
+												}
+											);
+										});
+									} else {
+										res.send({
+											'user_id': uid
+										});
+									}
 								}
 							}
 						);
