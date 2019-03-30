@@ -11,21 +11,12 @@ var classroomsCollection;
 
 
 // Init database
-exports.init = function(settings, callback) {
+exports.init = function(settings, database) {
 	usersCollection = settings.collections.users;
 	classroomsCollection = settings.collections.classrooms;
 	journalCollection = settings.collections.journal;
-	var client = new mongo.MongoClient(
-		'mongodb://'+settings.database.server+':'+settings.database.port+'/'+settings.database.name,
-		{auto_reconnect: false, w:1, useNewUrlParser: true});
-
-	// Open the db
-	client.connect(function(err, client) {
-		db = client.db(settings.database.name);
-		if (err) {}
-		if (callback) callback();
-	});
-}
+	db = database;
+};
 
 /**
  * @api {get} api/v1/users/:id Get user detail
