@@ -4812,6 +4812,7 @@ footer .btn {
     background-image: url('/public/img/system-shutdown.svg');
   }
   #languageSelection {
+    height: 35px !important;
     width: 200px !important;
     border: 1px solid #fff !important;
     border-radius: 100px !important;
@@ -4894,7 +4895,7 @@ footer .btn {
     z-index: 1032;
     visibility: visible;
     background-color: #282828;
-    overflow-y: visible;
+    overflow-y: scroll;
     border-top: none;
     text-align: left;
     padding-right: 0px;
