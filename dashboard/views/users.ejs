@@ -25,17 +25,27 @@
 							  <script>$('#user-form [name="role"]').select2().on("change", () => show_class_fields())</script>
                           </div>
                         </div>
+                        <input name="classroom_id" type="text" style="display:none" %>" value="<% if(classroom_id) { %><%= classroom_id %><% } %>" />
                         <div class="col-md-2">
                           <div class="form-group form-black label-floating is-empty classroom_input">
                                 <select class="form-control" id="classroom_select" name="classid">
                                     <option data-l10n-id="selectclassroom" value="" selected="selected" disabled></option>
                                     <% for(var i=0; i < classrooms.length; i++) { %>
                                         <% if(Array.isArray(classrooms[i].students) && classrooms[i].students && classrooms[i].students.length > 0) { %>
-                                            <option value="<%- classrooms[i].students.join(',') %>" <% if(query.classid== classrooms[i].students.join(',')){ %>selected="selected"<% } %> ><%= classrooms[i].name %></option>
+                                            <option id="<%- classrooms[i]._id %>" value="<%- classrooms[i].students.join(',') %>" <% if(classroom_id == classrooms[i]._id) { %>selected="selected"<% } %> ><%= classrooms[i].name %></option>
                                         <% } %>
                                     <% } %>
                                 </select>
-                              <script> $('#user-form [name="classid"]').select2(); </script>
+                                <script>
+                                    $('#user-form [name="classid"]').select2().on("select2:select", function(e) {
+                                        var inputField = $('#user-form [name="classroom_id"]');
+                                        var value = "";
+                                        if (inputField && e && e.params && e.params.data && e.params.data.element && e.params.data.element.id) {
+                                            value = e.params.data.element.id;
+                                        }
+                                        inputField.val(value);
+                                    });
+                                </script>
                           </div>
                         </div>
 						<script>
@@ -89,7 +99,7 @@
                                         <tr>
                                             <th>#</th>
                                                                                   <% if(query.role != 'admin'){ %><th data-l10n-id="buddy">Buddy</th><% } %>
-                                            <th data-l10n-id="name">Name</th>
+                                            <th data-l10n-id="username">Username</th>
                                             <th data-l10n-id="language">Language</th>
                                             <th data-l10n-id="role">Role</th>
                                             <th data-l10n-id="lastSeen">Timestamp</th>
@@ -121,7 +131,7 @@
                                               <% if(data.users[i].language =='pl') {%> <td>Polish</td> <%} %>
                                               <% if(data.users[i].language =='ibo') {%> <td>Igbo</td> <%} %>
                                               <% if(data.users[i].language =='yor') {%> <td>Yoruba</td> <%} %>
-                                              <td><%= data.users[i].role %></td>
+                                              <td data-l10n-id="<%= data.users[i].role %>">Student</td>
                                               <td><%= moment(data.users[i].timestamp).calendar() %></td>
                                               <td>
                                                 <% if(data.users[i].role == 'student') {%>

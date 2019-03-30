@@ -194,9 +194,16 @@
   cursor: pointer;
 }
 
+.dashboard-table-title {
+  position: fixed;
+}
+
+.dashboard-table {
+  margin-top: 20px;
+}
+
 .color {
   margin: 0 0 5px 0;
-  cursor: pointer;
 }
 
 .color .xo-icon {
