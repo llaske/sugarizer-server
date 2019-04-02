@@ -301,7 +301,6 @@ function onLocalized() {
 			lang.value = localStorage.getItem("languageSelection");
 		}
 		lang.onchange = function() {
-			l10n.setLanguage(this.value);
 			localStorage.setItem("languageSelection", this.value);
 			location.href = window.location.pathname + "?lang="+lang.value;
 		};
