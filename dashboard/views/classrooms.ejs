@@ -35,13 +35,13 @@
                         <div class="card-header row" data-background-color="black">
                             <div class="col-md-4 col-sm-4 col-lg-4 text-left">
                             <% if(data.links.prev_page) { %>
-                               <a href="<%= data.links.prev_page %>" data-l10n-id="prevPage"><< previous page</a>
+                               <a href="<%= data.links.prev_page %>" data-l10n-id="prevPage"><< Prev page</a>
                             <% } %>
                             </div>
                             <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset + 1 %>", "to": "<%= data.offset + data.classrooms.length %>", "total": "<%= data.total %>" }'></div>
                             <div class="col-md-4 col-sm-4 col-lg-4 text-right">
                             <% if(data.links.next_page) { %>
-                               <a href="<%= data.links.next_page %>" data-l10n-id="nextPage">next page >></a>
+                               <a href="<%= data.links.next_page %>" data-l10n-id="nextPage">Next page >></a>
                             <% } %>
                             </div>
                         </div>
@@ -74,7 +74,7 @@
                                           <td><%= moment(data.classrooms[i].timestamp).calendar() %></td>
                                           <td>
                                               <% if(Array.isArray(data.classrooms[i].students) && data.classrooms[i].students.length > 0) { %>
-                                                  <a data-l10n-id="viewStudents" title="View Students" href="/dashboard/users?role=student&classid=<%- data.classrooms[i].students.join(',') %>"><span class="student-icon"></span></a>
+                                                  <a data-l10n-id="viewStudents" title="View Students" href="/dashboard/users?role=student&classroom_id=<%- data.classrooms[i]._id %>&classid=<%- data.classrooms[i].students.join(',') %>"><span class="student-icon"></span></a>
                                               <% } else { %>
                                                   <a title="View Students" style="pointer-events: none;"><span class="student-icon" style="opacity: 0.4;"></span></a>
                                               <% } %>

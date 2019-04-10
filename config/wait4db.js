@@ -10,22 +10,36 @@ exports.waitConnection = function(settings, callback) {
 	if (waitTime) {
 		var timer = setInterval(function() {
 
-			var client = new mongo.MongoClient(
-				'mongodb://'+settings.database.server+':'+settings.database.port+'/'+settings.database.name,
-				{auto_reconnect: false, w:1, useNewUrlParser: true});
+			var client = createConnection(settings);
 
 			// Open the db
 			client.connect(function(err, client) {
 				if (!err) {
 					clearInterval(timer);
-					client.close();
-					callback();
+					var db = client.db(settings.database.name);
+					callback(db);
 				} else {
 					console.log("Waiting for DB... ("+err.name+")");
 				}
 			});
 		}, waitTime*1000);
 	} else {
-		callback();
+		var client = createConnection(settings);
+
+		// Open the db
+		client.connect(function(err, client) {
+			if (!err) {
+				var db = client.db(settings.database.name);
+				callback(db);
+			} else {
+				callback();
+			}
+		});
 	}
+};
+
+function createConnection(settings) {
+	return new mongo.MongoClient(
+		'mongodb://'+settings.database.server+':'+settings.database.port+'/'+settings.database.name,
+		{auto_reconnect: false, w:1, useNewUrlParser: true});
 }

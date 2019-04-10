@@ -67,13 +67,13 @@
 								<div class="card-header row" data-background-color="">
 										<div class="col-md-4 col-sm-4 col-lg-4 text-left">
 										<% if(entries.links.prev_page) { %>
-											 <a data-l10n-id="prevPage" href="<%= query.journal %><%= entries.links.prev_page %>&type=<%= query.type %>"><< previous page</a>
+											 <a data-l10n-id="prevPage" href="<%= query.journal %><%= entries.links.prev_page %>&type=<%= query.type %>"><< Prev page</a>
 										<% } %>
 										</div>
 										<div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= entries.offset + 1 %>", "to": "<%= entries.offset + entries.entries.length %>", "total": "<%= entries.total %>" }'></div>
 										<div class="col-md-4 col-sm-4 col-lg-4 text-right">
 										<% if(entries.links.next_page) { %>
-											 <a data-l10n-id="nextPage" href="<%= query.journal %><%= entries.links.next_page %>&type=<%= query.type %>">next page >></a>
+											 <a data-l10n-id="nextPage" href="<%= query.journal %><%= entries.links.next_page %>&type=<%= query.type %>">Next page >></a>
 										<% } %>
 										</div>
 								</div>

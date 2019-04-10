@@ -9,18 +9,18 @@ var activities = require('./controller/activities'),
 	presence = require('./middleware/presence'),
 	common = require('../dashboard/helper/common');
 
-module.exports = function(app, ini) {
+module.exports = function(app, ini, db) {
 
 	//Only the requests that start with /api/v1/* will be checked for the token.
 	app.all('/api/v1/*', [validate]);
 
 	// Init modules
 	activities.load(ini);
-	journal.init(ini);
-	users.init(ini);
-	presence.init(ini);
-	stats.init(ini);
-	classrooms.init(ini);
+	journal.init(ini, db);
+	users.init(ini, db);
+	presence.init(ini, db);
+	stats.init(ini, db);
+	classrooms.init(ini, db);
 
 	// Routes that can be accessed by any one
 	app.get('/api', common.getAPIInfo);
