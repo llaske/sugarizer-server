@@ -103,6 +103,10 @@
   display: inline-block;
 }
 
+.lang-combo{
+  font-size: 11px !important;
+}
+
 .xo-icon {
   background-image: url('/public/img/owner-icon.svg');
 }
