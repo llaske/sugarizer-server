@@ -3,6 +3,7 @@ function initDragDrop() {
 	var adjustment;
 
 	$("ol.simple_with_animation").sortable({
+		handle: '.draggable',
 		group: 'simple_with_animation',
 		pullPlaceholder: false,
 		placeholder: '<div class="placeholder"></div>',
@@ -258,10 +259,31 @@ function highlight(text) {
 		$(this).html(inputText);
 	});
 
+	//show error
+  if (offset === -1 && text !== '') {
+    $('.control-label').removeClass('hidden');
+    $('.search_query')
+      .parent()
+      .addClass('label-floating has-error is-focused')
+      .removeClass('form-black is-empty');
+  } else {
+    $('.control-label').addClass('hidden');
+    $('.search_query')
+      .parent()
+      .removeClass('label-floating has-error is-focused');
+  }
 	//scroll
 	$('.main-panel').animate({
 		scrollTop: (offset - 30)
 	}, 500);
+}
+
+//hide label when input is empty
+function hideLabel(value) {
+  if (value === '') {
+    $('.control-label').addClass('hidden');
+    highlight('');
+  }
 }
 
 // localization
@@ -279,12 +301,23 @@ function onLocalized() {
 			lang.value = localStorage.getItem("languageSelection");
 		}
 		lang.onchange = function() {
-			l10n.setLanguage(this.value);
 			localStorage.setItem("languageSelection", this.value);
+			location.href = window.location.pathname + "?lang="+lang.value;
 		};
 	}
 }
 document.webL10n.ready(onLocalized);
+
+// Initiate localization in mobile view
+$(document).ready(function() {
+	var toggle = document.getElementById('navbar-toggle');
+
+	if (toggle != null) {
+		toggle.addEventListener("click", function(){
+			document.webL10n.ready(onLocalized);
+		});
+	}
+});
 
 // graph create
 function createGraph(type, element, route) {

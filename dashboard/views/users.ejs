@@ -25,21 +25,31 @@
 							  <script>$('#user-form [name="role"]').select2().on("change", () => show_class_fields())</script>
                           </div>
                         </div>
+                        <input name="classroom_id" type="text" style="display:none" %>" value="<% if(classroom_id) { %><%= classroom_id %><% } %>" />
                         <div class="col-md-2">
                           <div class="form-group form-black label-floating is-empty classroom_input">
-                                <select class="form-control" name="classid">
-                                    <option value="" selected="selected" >None</option>
+                                <select class="form-control" id="classroom_select" name="classid">
+                                    <option data-l10n-id="selectclassroom" value="" selected="selected" disabled></option>
                                     <% for(var i=0; i < classrooms.length; i++) { %>
                                         <% if(Array.isArray(classrooms[i].students) && classrooms[i].students && classrooms[i].students.length > 0) { %>
-                                            <option value="<%- classrooms[i].students.join(',') %>" <% if(query.classid== classrooms[i].students.join(',')){ %>selected="selected"<% } %> ><%= classrooms[i].name %></option>
+                                            <option id="<%- classrooms[i]._id %>" value="<%- classrooms[i].students.join(',') %>" <% if(classroom_id == classrooms[i]._id) { %>selected="selected"<% } %> ><%= classrooms[i].name %></option>
                                         <% } %>
                                     <% } %>
                                 </select>
-                              <script> $('#user-form [name="classid"]').select2(); </script>
+                                <script>
+                                    $('#user-form [name="classid"]').select2().on("select2:select", function(e) {
+                                        var inputField = $('#user-form [name="classroom_id"]');
+                                        var value = "";
+                                        if (inputField && e && e.params && e.params.data && e.params.data.element && e.params.data.element.id) {
+                                            value = e.params.data.element.id;
+                                        }
+                                        inputField.val(value);
+                                    });
+                                </script>
                           </div>
                         </div>
 			<script>
-			window.addEventListener('localized', function() {  // HACK: Force localization of student combo
+			window.addEventListener('localized', function() {  // HACK: Force localization of role combo
 				var selection = document.getElementsByClassName("select2-selection__rendered");
 				if (selection && selection[0] && typeof selection[0].innerHTML == "string") {
                                 var user = document.getElementById("user-type-select2");
@@ -47,6 +57,22 @@
                                 selection[0].innerHTML = document.webL10n.get(val);
                             }});
 			</script>
+						<script>
+						window.addEventListener('localized', function() {  // HACK: Force localization of student combo
+							var selection = document.getElementsByClassName("select2-selection__rendered");
+							if (selection && selection[0] && selection[0].title == "Student") selection[0].innerHTML = document.webL10n.get("student");						});
+                        </script>
+                        <script>
+                            window.addEventListener('localized', function() {  // HACK: Force localization of selected field
+                                var selection = document.getElementsByClassName("select2-selection__rendered");
+                                if (selection && selection[1] && typeof selection[1].innerHTML == "string") {
+                                    var classroom_select = document.getElementById("classroom_select");
+                                    if(classroom_select.selectedIndex == 0){
+                                        selection[1].innerHTML = document.webL10n.get("selectclassroom");
+                                    }
+                                }
+                            });
+                            </script>
                         <div class="col-md-6">
                             <a class="btn btn-round pull-right " href="/dashboard/users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
                             <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
@@ -66,13 +92,13 @@
                             <div class="card-header row" data-background-color="black">
                                 <div class="col-md-4 col-sm-4 col-lg-4 text-left">
                                 <% if(data.links.prev_page) { %>
-                                   <a href="<%= data.links.prev_page %>" data-l10n-id="prevPage"><< previous page</a>
+                                   <a href="<%= data.links.prev_page %>" data-l10n-id="prevPage"><< Prev Page</a>
                                 <% } %>
                                 </div>
                                 <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset + 1 %>", "to": "<%= data.offset + data.users.length %>", "total": "<%= data.total %>" }'></div>
                                 <div class="col-md-4 col-sm-4 col-lg-4 text-right">
                                 <% if(data.links.next_page) { %>
-                                   <a href="<%= data.links.next_page %>" data-l10n-id="nextPage">next page >></a>
+                                   <a href="<%= data.links.next_page %>" data-l10n-id="nextPage">Next Page >></a>
                                 <% } %>
                                 </div>
                             </div>
@@ -82,7 +108,7 @@
                                         <tr>
                                             <th>#</th>
                                                                                   <% if(query.role != 'admin'){ %><th data-l10n-id="buddy">Buddy</th><% } %>
-                                            <th data-l10n-id="name">Name</th>
+                                            <th data-l10n-id="username">Username</th>
                                             <th data-l10n-id="language">Language</th>
                                             <th data-l10n-id="role">Role</th>
                                             <th data-l10n-id="lastSeen">Timestamp</th>
@@ -104,22 +130,24 @@
                                                                                           </script>
                                                                                       <% } %>
                                               <td><%= data.users[i].name %></td>
-                                              <% if(data.users[i].language =='en') {%> <td>English</td> <%} %>
-                                              <% if(data.users[i].language =='es') {%> <td>Spanish</td> <%} %>
-                                              <% if(data.users[i].language =='fr') {%> <td>French</td> <%} %>
-                                              <% if(data.users[i].language =='de') {%> <td>German</td> <%} %>
-                                              <% if(data.users[i].language =='pt') {%> <td>Portuguese</td> <%} %>
-                                              <% if(data.users[i].language =='ar') {%> <td>Arabic</td> <%} %>
-                                              <% if(data.users[i].language =='ja') {%> <td>Japanese</td> <%} %>
-                                              <% if(data.users[i].language =='pl') {%> <td>Polish</td> <%} %>
-                                              <% if(data.users[i].language =='ibo') {%> <td>Igbo</td> <%} %>
-                                              <% if(data.users[i].language =='yor') {%> <td>Yoruba</td> <%} %>
-                                              <td><%= data.users[i].role %></td>
+                                              <% if(data.users[i].language =='en') {%> <td data-l10n-id="english"></td> <%} %>
+                                              <% if(data.users[i].language =='es') {%> <td data-l10n-id="spanish"></td> <%} %>
+                                              <% if(data.users[i].language =='fr') {%> <td data-l10n-id="french"></td> <%} %>
+                                              <% if(data.users[i].language =='de') {%> <td data-l10n-id="german"></td> <%} %>
+                                              <% if(data.users[i].language =='pt') {%> <td data-l10n-id="portuguese"></td> <%} %>
+                                              <% if(data.users[i].language =='ar') {%> <td data-l10n-id="arabic"></td> <%} %>
+                                              <% if(data.users[i].language =='ja') {%> <td data-l10n-id="japanese"></td> <%} %>
+                                              <% if(data.users[i].language =='pl') {%> <td data-l10n-id="polish"></td> <%} %>
+                                              <% if(data.users[i].language =='ibo') {%> <td data-l10n-id="igbo"></td> <%} %>
+                                              <% if(data.users[i].language =='yor') {%> <td data-l10n-id="yoruba"></td> <%} %>
+                                              <td data-l10n-id="<%= data.users[i].role %>">Student</td>
                                               <td><%= moment(data.users[i].timestamp).calendar() %></td>
                                               <td>
+                                                <% if(data.users[i].role == 'student') {%>
                                                 <a data-l10n-id="seeJournalEntries" title="See Journal Entries" href="/dashboard/journal/<%= data.users[i].private_journal %>?uid=<%= data.users[i]._id %>&type=private"><span class="journal-icon2"></span></a>
+                                                <% } %>
                                                 <a data-l10n-id="editUser" title="Edit User" href="/dashboard/users/edit/<%= data.users[i]._id %>"><i class="material-icons text-muted">edit</i></a>
-                                                <a data-l10n-id="deleteUser" title="Delete User" href="/dashboard/users/delete/<%= data.users[i]._id %>?role=<%= data.users[i].role %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteUser',{user:'<%= data.users[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
+                                                <a data-l10n-id="deleteUser" title="Delete User" href="/dashboard/users/delete/<%= data.users[i]._id %>?role=<%= data.users[i].role %>&name=<%= data.users[i].name %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteUser',{user:'<%= data.users[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
                                               </td>
                                           </tr>
                                         <% } %>

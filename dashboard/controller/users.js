@@ -16,10 +16,7 @@ exports.init = function(settings) {
 exports.index = function(req, res) {
 
 	// reinit l10n and moment with locale
-	if (req.query && req.query.lang) {
-		common.l10n.setLanguage(req.query.lang);
-		moment.locale(req.query.lang);
-	}
+	common.reinitLocale(req);
 
 	//query
 	var query = {
@@ -43,6 +40,11 @@ exports.index = function(req, res) {
 		query['classid'] = req.query.classid;
 	}
 
+	var classroom_id;
+	if (req.query.classroom_id) {
+		classroom_id = req.query.classroom_id;
+	}
+
 	// call
 	request({
 		headers: common.getHeaders(req),
@@ -62,6 +64,7 @@ exports.index = function(req, res) {
 					moment: moment,
 					query: query,
 					classrooms: classrooms,
+					classroom_id: classroom_id,
 					data: body,
 					account: req.session.user,
 					server: ini.information
@@ -76,6 +79,9 @@ exports.index = function(req, res) {
 };
 
 exports.addUser = function(req, res) {
+
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
 
 	if (req.method == 'POST') {
 
@@ -103,7 +109,7 @@ exports.addUser = function(req, res) {
 			}, function(error, response, body) {
 				if (response.statusCode == 200) {
 					req.flash('success', {
-						msg: common.l10n.get('UserCreated')
+						msg: common.l10n.get('UserCreated', {name: req.body.name})
 					});
 					if (body.role == "admin") {
 						// send to admin page
@@ -153,6 +159,9 @@ exports.addUser = function(req, res) {
 
 exports.editUser = function(req, res) {
 
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
+
 	if (req.params.uid) {
 		if (req.method == 'POST') {
 
@@ -177,7 +186,7 @@ exports.editUser = function(req, res) {
 				}, function(error, response, body) {
 					if (response.statusCode == 200) {
 						req.flash('success', {
-							msg: common.l10n.get('UserUpdated')
+							msg: common.l10n.get('UserUpdated', {name: req.body.name})
 						});
 						if (body.role == "admin") {
 							// send to admin page
@@ -236,6 +245,7 @@ exports.deleteUser = function(req, res) {
 
 	if (req.params.uid) {
 		var role = req.query.role || 'student';
+		var name = req.query.name || 'user';
 		if (req.params.uid == common.getHeaders(req)['x-key']) {
 			req.flash('errors', {
 				msg: common.l10n.get('ErrorCode20')
@@ -252,7 +262,7 @@ exports.deleteUser = function(req, res) {
 
 				// send to users page
 				req.flash('success', {
-					msg: common.l10n.get('UserDeleted')
+					msg: common.l10n.get('UserDeleted', {name: name})
 				});
 			} else {
 				req.flash('errors', {

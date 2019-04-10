@@ -13,10 +13,8 @@ exports.init = function(settings) {
 // main landing page
 exports.index = function(req, res) {
 
-	// reinit momemt with locale
-	if (req.query && req.query.lang) {
-		moment.locale(req.query.lang);
-	}
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
 
 	// send to login page
 	res.render('stats', {

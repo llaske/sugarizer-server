@@ -16,11 +16,8 @@ exports.init = function(settings) {
 // main landing page
 exports.index = function(req, res) {
 
-	// reinit l10n and moment with locale
-	if (req.query && req.query.lang) {
-		common.l10n.setLanguage(req.query.lang);
-		moment.locale(req.query.lang);
-	}
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
 
 	//query
 	var query = {
@@ -68,6 +65,9 @@ exports.index = function(req, res) {
 
 exports.addClassroom = function(req, res) {
 
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
+
 	if (req.method == 'POST') {
 
 		// validate
@@ -98,7 +98,7 @@ exports.addClassroom = function(req, res) {
 
 					// send to classrooms page
 					req.flash('success', {
-						msg: common.l10n.get('ClassroomCreated')
+						msg: common.l10n.get('ClassroomCreated', {name: req.body.name})
 					});
 					return res.redirect('/dashboard/classrooms/');
 				} else {
@@ -132,6 +132,9 @@ exports.addClassroom = function(req, res) {
 
 exports.editClassroom = function(req, res) {
 
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
+
 	if (req.params.classid) {
 		if (req.method == 'POST') {
 
@@ -162,7 +165,7 @@ exports.editClassroom = function(req, res) {
 
 						// send back
 						req.flash('success', {
-							msg: common.l10n.get('ClassroomUpdated')
+							msg: common.l10n.get('ClassroomUpdated', {name: req.body.name})
 						});
 						return res.redirect('/dashboard/classrooms/');
 					} else {
@@ -214,6 +217,7 @@ exports.editClassroom = function(req, res) {
 exports.deleteClassroom = function(req, res) {
 
 	if (req.params.classid) {
+		var name = req.query.name || 'classroom';
 		request({
 			headers: common.getHeaders(req),
 			json: true,
@@ -224,7 +228,7 @@ exports.deleteClassroom = function(req, res) {
 
 				// send to classrooms page
 				req.flash('success', {
-					msg: common.l10n.get('ClassroomDeleted')
+					msg: common.l10n.get('ClassroomDeleted', {name: name})
 				});
 			} else {
 				req.flash('errors', {
