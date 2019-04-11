@@ -12,46 +12,36 @@ var shared = null;
 //- Utility functions
 
 // Init database
-exports.init = function(settings, callback) {
+exports.init = function(settings, database) {
 
 	// Open the journal collection
 	journalCollection = settings.collections.journal;
-	var client = new mongo.MongoClient(
-		'mongodb://'+settings.database.server+':'+settings.database.port+'/'+settings.database.name,
-		{auto_reconnect: false, w:1, useNewUrlParser: true});
 
-	// Open the db
-	client.connect(function(err, client) {
-		db = client.db(settings.database.name);
-		if (!err) {
-			db.collection(journalCollection, function(err, collection) {
-				// Get the shared journal collection
-				collection.findOne({
-					'shared': true
-				}, function(err, item) {
-					// Not found, create one
-					if (!err && item == null) {
-						collection.insertOne({
-							content: [],
-							shared: true
-						}, {
-							safe: true
-						}, function(err, result) {
-							shared = result.ops[0];
-						});
-					}
-
-					// Already exist, save it
-					else if (item != null) {
-						shared = item;
-					}
-
-					if (callback) callback();
+	db = database;
+	db.collection(journalCollection, function(err, collection) {
+		// Get the shared journal collection
+		collection.findOne({
+			'shared': true
+		}, function(err, item) {
+			// Not found, create one
+			if (!err && item == null) {
+				collection.insertOne({
+					content: [],
+					shared: true
+				}, {
+					safe: true
+				}, function(err, result) {
+					shared = result.ops[0];
 				});
-			});
-		}
+			}
+
+			// Already exist, save it
+			else if (item != null) {
+				shared = item;
+			}
+		});
 	});
-}
+};
 
 // Get shared journal
 exports.getShared = function() {

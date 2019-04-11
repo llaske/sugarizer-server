@@ -4848,7 +4848,17 @@ footer .btn {
   }
   .navbar-transparent {
     padding-top: 15px;
-    background-color: rgba(0, 0, 0, 0.45);
+    position: sticky;
+    top: 0px;
+    background-color: #e5e5e5 !important;
+    padding-top: 15px;
+    border-bottom: 1px solid grey !important;
+  }
+  .main-panel>.content {
+    margin-top: 35px;
+  }
+  .no-border-bottom {
+    border-bottom: 0px !important;
   }
   body {
     position: relative;
@@ -4895,7 +4905,7 @@ footer .btn {
     z-index: 1032;
     visibility: visible;
     background-color: #282828;
-    overflow-y: visible;
+    overflow-y: scroll;
     border-top: none;
     text-align: left;
     padding-right: 0px;

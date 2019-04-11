@@ -40,7 +40,7 @@
 								<li>
 									<div class="card">
 										<div class="card-content">
-										<div class="col-lg-1 col-md-1 col-sm-1"><img class ="draggable pointer" src="../public/img/font-awesome-ellipsis-v.png" alt="drag" style="width:40px;height:40px;"></div>
+										<div class="col-lg-1 col-md-1 col-sm-1"><img class ="draggable pointer" src="../public/img/font-awesome-ellipsis-v.png" alt="drag" style="width:40px;height:40px;" data-l10n-id="reorder" title="Drag to Reorder" ></div>
 											<div class="text-center col-lg-1 col-md-1 col-sm-1 ">
 													<img style="width: 30px;height: 30px;margin: 5px;" src="/<%= activities[i].directory + '/' + activities[i].icon %>" />
 											</div>
@@ -51,9 +51,9 @@
 												<div class="favoriteBox">
 														<label data-id="<%= activities[i].id %>">
 																<% if(activities[i].favorite == true){ %>
-																	<input checked name="favoriteActivities" type="checkbox" onclick="updateActivities()">
+																	<input checked name="favoriteActivities" type="checkbox" onclick="updateActivities()" data-l10n-id="toggle-favourite" title="Toggle Favourite" >
 																<% }else{ %>
-																	<input name="favoriteActivities" type="checkbox" onclick="updateActivities()">
+																	<input name="favoriteActivities" type="checkbox" onclick="updateActivities()" data-l10n-id="toggle-favourite" title="Toggle Favourite" >
 																<% } %>
 																<span class="checkbox-material"></span>
 														</label>

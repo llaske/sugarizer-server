@@ -16,11 +16,8 @@ exports.init = function(settings) {
 // main landing page
 exports.index = function(req, res) {
 
-	// reinit l10n and moment with locale
-	if (req.query && req.query.lang) {
-		common.l10n.setLanguage(req.query.lang);
-		moment.locale(req.query.lang);
-	}
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
 
 	//query
 	var query = {
@@ -70,6 +67,9 @@ exports.index = function(req, res) {
 };
 
 exports.addClassroom = function(req, res) {
+
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
 
 	if (req.method == 'POST') {
 
@@ -134,6 +134,9 @@ exports.addClassroom = function(req, res) {
 };
 
 exports.editClassroom = function(req, res) {
+
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
 
 	if (req.params.classid) {
 		if (req.method == 'POST') {

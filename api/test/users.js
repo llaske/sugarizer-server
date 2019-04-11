@@ -369,17 +369,7 @@ describe('Users', function() {
 				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					chai.request(server)
-						.delete('/api/v1/journal/' + fakeUser.student.private_journal)
-						.set('x-access-token', fakeUser.admin.token)
-						.set('x-key', fakeUser.admin.user._id)
-						.query({
-							'type': 'full'
-						})
-						.end((err, res) => {
-							res.should.have.status(200);
-							done();
-						});
+					done();
 				});
 		});
 	});
