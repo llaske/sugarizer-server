@@ -7,6 +7,7 @@
 	"license": "Apache-2.0",
 	"dependencies": {
 		"cors": "2.8.x",
+		"csv-parser": "^2.2.0",
 		"ejs": "~>2.5.5",
 		"express": "4.16.4",
 		"express-session": "1.15.6",
@@ -35,6 +36,7 @@
 		"test": "mocha api/test/",
 		"docs": "apidoc -i api/controller -i dashboard/helper -o docs/www/",
 		"start": "node sugarizer.js",
-		"start:watch": "nodemon sugarizer.js"
+		"start:watch": "nodemon sugarizer.js",
+		"seed:users-csv": "node scripts/seed_users.js"
 	}
 }
