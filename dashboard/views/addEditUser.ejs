@@ -24,16 +24,16 @@
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="language"></label>
                                     <select name="language" class="form-control">
-                                        <option value="en" <% if(typeof user == 'object' &&  user.language=='en'){ %> selected="selected" <% } %>>English</option>
-                                        <option value="es" <% if(typeof user == 'object' &&  user.language=='es'){ %> selected="selected" <% } %>>Spanish</option>
-                                        <option value="fr" <% if(typeof user == 'object' &&  user.language=='fr'){ %> selected="selected" <% } %>>French</option>
-                                        <option value="de" <% if(typeof user == 'object' &&  user.language=='de'){ %> selected="selected" <% } %>>German</option>
-                                        <option value="pt" <% if(typeof user == 'object' &&  user.language=='pt'){ %> selected="selected" <% } %>>Portuguese</option>
-                                        <option value="ar" <% if(typeof user == 'object' &&  user.language=='ar'){ %> selected="selected" <% } %>>Arabic</option>
-                                        <option value="ja" <% if(typeof user == 'object' &&  user.language=='ja'){ %> selected="selected" <% } %>>Japanese</option>
-                                        <option value="pl" <% if(typeof user == 'object' &&  user.language=='pl'){ %> selected="selected" <% } %>>Polish</option>
-                                        <option value="ibo" <% if(typeof user == 'object' &&  user.language=='ibo'){ %> selected="selected" <% } %>>Igbo</option>
-                                        <option value="yor" <% if(typeof user == 'object' &&  user.language=='yor'){ %> selected="selected" <% } %>>Yoruba</option>
+                                        <option value="en" data-l10n-id="english" <% if(typeof user == 'object' &&  user.language=='en'){ %> selected="selected" <% } %>>English</option>
+                                        <option value="es" data-l10n-id="spanish" <% if(typeof user == 'object' &&  user.language=='es'){ %> selected="selected" <% } %>>Spanish</option>
+                                        <option value="fr" data-l10n-id="french" <% if(typeof user == 'object' &&  user.language=='fr'){ %> selected="selected" <% } %>>French</option>
+                                        <option value="de" data-l10n-id="german" <% if(typeof user == 'object' &&  user.language=='de'){ %> selected="selected" <% } %>>German</option>
+                                        <option value="pt" data-l10n-id="portuguese" <% if(typeof user == 'object' &&  user.language=='pt'){ %> selected="selected" <% } %>>Portuguese</option>
+                                        <option value="ar" data-l10n-id="arabic" <% if(typeof user == 'object' &&  user.language=='ar'){ %> selected="selected" <% } %>>Arabic</option>
+                                        <option value="ja" data-l10n-id="japanese" <% if(typeof user == 'object' &&  user.language=='ja'){ %> selected="selected" <% } %>>Japanese</option>
+                                        <option value="pl" data-l10n-id="polish" <% if(typeof user == 'object' &&  user.language=='pl'){ %> selected="selected" <% } %>>Polish</option>
+                                        <option value="ibo" data-l10n-id="igbo" <% if(typeof user == 'object' &&  user.language=='ibo'){ %> selected="selected" <% } %>>Igbo</option>
+                                        <option value="yor" data-l10n-id="yoruba" <% if(typeof user == 'object' &&  user.language=='yor'){ %> selected="selected" <% } %>>Yoruba</option>
                                     </select>
                                     <span class="material-input"></span>
                                 </div>
@@ -55,8 +55,9 @@
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="color"></label>
                                     <select class="form-control" name="color" id="color-select2">
+                                        <% if(typeof user == "undefined") var random=Math.floor(Math.random()*xocolors.length); %>
                                         <% for(var i=0; i< xocolors.length; i++){ %>
-                                          <% if(typeof user == 'object' && typeof user.color == 'object' && xocolors[i].stroke == user.color.stroke && xocolors[i].fill == user.color.fill){ %>
+                                          <% if(typeof user == 'object' && (typeof user.color == 'object' && xocolors[i].stroke == user.color.stroke && xocolors[i].fill == user.color.fill) || (random == i)) { %>
                                             <option selected="selected" data-stroke="<%= xocolors[i].stroke %>" data-fill="<%= xocolors[i].fill %>" value='<%- JSON.stringify(xocolors[i]) %>'></option>
                                           <% }else{ %>
                                             <option data-stroke="<%= xocolors[i].stroke %>" data-fill="<%= xocolors[i].fill %>" value='<%- JSON.stringify(xocolors[i]) %>'></option>
@@ -76,22 +77,26 @@
                                 </div>
                             </div>
                         </div>
+                        <% if (typeof user == 'object' && user.created_time) { %>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="createdTime"></label>
-                                    <input class="form-control" readonly value="<% if(typeof user == 'object'){ %><%= moment(user.created_time).calendar() %><% } %>" type="text">
+                                    <input class="form-control" readonly value="<%= moment(user.created_time).calendar() %>" type="text">
                                 </div>
                             </div>
                         </div>
+                        <% } %>
+                        <% if (typeof user == 'object' && user.timestamp) { %>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="lastSeen"></label>
-                                    <input class="form-control" readonly value="<% if(typeof user == 'object'){ %><%= moment(user.timestamp).calendar() %><% } %>" type="text">
+                                    <input class="form-control" readonly value="<%= moment(user.timestamp).calendar() %>" type="text">
                                 </div>
                             </div>
                         </div>
+                        <% } %>
                         <button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
                         <a class="btn pull-right btn-round" href="/dashboard/users" data-l10n-id="cancel"></a>
                         <div class="clearfix"></div>

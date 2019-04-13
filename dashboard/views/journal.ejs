@@ -38,9 +38,13 @@
 									<button class="btn btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
 								</div>
 								<script>
-								window.addEventListener('localized', function() {  // HACK: Force localization of private combo
+								window.addEventListener('localized', function() {  // HACK: Force localization of selected field
 									var selection = document.getElementsByClassName("select2-selection__rendered");
-									if (selection && selection[1]) selection[1].innerHTML = document.webL10n.get("private");
+									if (selection && selection[1] && typeof selection[1].innerHTML == "string") {
+										var journal_select_type = document.getElementById("journal-type-select2");
+										var val = journal_select_type.options[journal_select_type.selectedIndex].value;
+										selection[1].innerHTML = document.webL10n.get(val);
+									}
 								});
 								</script>
 							</form>
@@ -63,13 +67,13 @@
 								<div class="card-header row" data-background-color="">
 										<div class="col-md-4 col-sm-4 col-lg-4 text-left">
 										<% if(entries.links.prev_page) { %>
-											 <a data-l10n-id="prevPage" href="<%= query.journal %><%= entries.links.prev_page %>&type=<%= query.type %>"><< previous page</a>
+											 <a data-l10n-id="prevPage" href="<%= query.journal %><%= entries.links.prev_page %>&type=<%= query.type %>"><< Prev page</a>
 										<% } %>
 										</div>
 										<div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= entries.offset + 1 %>", "to": "<%= entries.offset + entries.entries.length %>", "total": "<%= entries.total %>" }'></div>
 										<div class="col-md-4 col-sm-4 col-lg-4 text-right">
 										<% if(entries.links.next_page) { %>
-											 <a data-l10n-id="nextPage" href="<%= query.journal %><%= entries.links.next_page %>&type=<%= query.type %>">next page >></a>
+											 <a data-l10n-id="nextPage" href="<%= query.journal %><%= entries.links.next_page %>&type=<%= query.type %>">Next page >></a>
 										<% } %>
 										</div>
 								</div>
@@ -99,10 +103,32 @@
 																	</script>
 																	<td><%= entries.entries[i].metadata.title %></td>
 																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>
-																	<td><%= entries.entries[i].metadata.file_size %></td>
+																	<% var size = entries.entries[i].metadata.textsize %>
+																	<% var format = "" %>
+																	<%  if(size > 1048576){
+																		size=(size/1024/1024).toFixed()
+																		format="MB"
+																	}
+																	else if(size > 1024){
+																		size=(size/1024).toFixed()
+																		format="KB"
+																	}
+																	else if(!size){
+																		format="-"
+																	}
+																	else{
+																		format="Bytes"
+																	}
+																	 %>
+																	<td id="size"><% if(size>0) {%><%= size %><%}%> 
+																		<% if(format=="Bytes") {%> <div style="display: inline" data-l10n-id="ShortForBytes"></div> <%}%>
+																		<% if(format=="KB") {%> <div style="display: inline" data-l10n-id="ShortForKilobytes"></div> <%}%>
+																		<% if(format=="MB") {%> <div style="display: inline" data-l10n-id="ShortForMegabytes"></div> <%}%>
+																		<% if(format=="-") {%> <div style="display: inline"><%= format %></div> <%}%>
+																	</td>
 																	<td>
 																		<a href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
-																		<a data-l10n-id="deleteEntry" title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteEntry'))"><i class="material-icons text-muted">delete_forever</i></a>
+																		<a data-l10n-id="deleteEntry" title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>&title=<%= entries.entries[i].metadata.title %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteEntry', {activity:`<%= entries.entries[i].metadata.title %>`}))"><i class="material-icons text-muted">delete_forever</i></a>
 																	</td>
 															</tr>
 														<% } %>

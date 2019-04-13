@@ -16,10 +16,7 @@ exports.init = function(settings) {
 exports.index = function(req, res) {
 
 	// reinit l10n and moment with locale
-	if (req.query && req.query.lang) {
-		common.l10n.setLanguage(req.query.lang);
-		moment.locale(req.query.lang);
-	}
+	common.reinitLocale(req);
 
 	//query
 	var query = {
@@ -43,6 +40,11 @@ exports.index = function(req, res) {
 		query['classid'] = req.query.classid;
 	}
 
+	var classroom_id;
+	if (req.query.classroom_id) {
+		classroom_id = req.query.classroom_id;
+	}
+
 	// call
 	request({
 		headers: common.getHeaders(req),
@@ -62,6 +64,7 @@ exports.index = function(req, res) {
 					moment: moment,
 					query: query,
 					classrooms: classrooms,
+					classroom_id: classroom_id,
 					data: body,
 					account: req.session.user,
 					server: ini.information
@@ -76,6 +79,9 @@ exports.index = function(req, res) {
 };
 
 exports.addUser = function(req, res) {
+
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
 
 	if (req.method == 'POST') {
 
@@ -102,12 +108,16 @@ exports.addUser = function(req, res) {
 				uri: common.getAPIUrl(req) + 'api/v1/users'
 			}, function(error, response, body) {
 				if (response.statusCode == 200) {
-
-					// send to users page
 					req.flash('success', {
-						msg: common.l10n.get('UserCreated')
+						msg: common.l10n.get('UserCreated', {name: req.body.name})
 					});
-					return res.redirect('/dashboard/users/');
+					if (body.role == "admin") {
+						// send to admin page
+						return res.redirect('/dashboard/users/?role=admin');
+					} else {
+						// send to users page
+						return res.redirect('/dashboard/users/');
+					}
 				} else {
 					req.flash('errors', {
 						msg: common.l10n.get('ErrorCode'+body.code)
@@ -117,7 +127,21 @@ exports.addUser = function(req, res) {
 			});
 		} else {
 			req.flash('errors', errors);
-			return res.redirect('/dashboard/users/add');
+			return res.render('addEditUser', {
+				module: 'users',
+				user: {
+					name:req.body.name,
+					password: req.body.password,
+					color: req.body.color,
+					language:req.body.language,
+					role:req.body.role
+				},
+				xocolors: xocolors,
+				moment: moment,
+				emoji: emoji,
+				account: req.session.user,
+				server: ini.information
+			});
 		}
 
 	} else {
@@ -134,6 +158,9 @@ exports.addUser = function(req, res) {
 };
 
 exports.editUser = function(req, res) {
+
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
 
 	if (req.params.uid) {
 		if (req.method == 'POST') {
@@ -158,12 +185,16 @@ exports.editUser = function(req, res) {
 					uri: common.getAPIUrl(req) + 'api/v1/users/' + req.params.uid
 				}, function(error, response, body) {
 					if (response.statusCode == 200) {
-
-						// send back
 						req.flash('success', {
-							msg: common.l10n.get('UserUpdated')
+							msg: common.l10n.get('UserUpdated', {name: req.body.name})
 						});
-						return res.redirect('/dashboard/users/');
+						if (body.role == "admin") {
+							// send to admin page
+							return res.redirect('/dashboard/users/?role=admin');
+						} else {
+							// send to users page
+							return res.redirect('/dashboard/users/');
+						}
 					} else {
 						req.flash('errors', {
 							msg: common.l10n.get('ErrorCode'+body.code)
@@ -213,6 +244,14 @@ exports.editUser = function(req, res) {
 exports.deleteUser = function(req, res) {
 
 	if (req.params.uid) {
+		var role = req.query.role || 'student';
+		var name = req.query.name || 'user';
+		if (req.params.uid == common.getHeaders(req)['x-key']) {
+			req.flash('errors', {
+				msg: common.l10n.get('ErrorCode20')
+			});
+			return res.redirect('/dashboard/users/?role='+role);
+		}
 		request({
 			headers: common.getHeaders(req),
 			json: true,
@@ -223,14 +262,14 @@ exports.deleteUser = function(req, res) {
 
 				// send to users page
 				req.flash('success', {
-					msg: common.l10n.get('UserDeleted')
+					msg: common.l10n.get('UserDeleted', {name: name})
 				});
 			} else {
 				req.flash('errors', {
 					msg: common.l10n.get('ErrorCode'+body.code)
 				});
 			}
-			return res.redirect('/dashboard/users');
+			return res.redirect('/dashboard/users?role='+role);
 		});
 	} else {
 		req.flash('errors', {

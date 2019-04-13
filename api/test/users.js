@@ -5,17 +5,17 @@ process.env.NODE_ENV = 'test';
 var server = require('../../sugarizer.js');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
-var should = chai.should();
 var timestamp = +new Date();
 
 //fake user for testing auth
 var fakeUser = {
 	'student': '{"name":"Sugarizer_' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"pass","language":"fr"}',
-	'admin': '{"name":"TarunFake_' + (timestamp.toString()) + '","password":"pokemon","role":"admin"}'
-}
+	'admin': '{"name":"TarunFake_' + (timestamp.toString()) + '","password":"pokemon","language":"en","role":"admin"}'
+};
 
 //init server
 chai.use(chaiHttp);
+chai.should();
 
 describe('Users', function() {
 
@@ -59,7 +59,7 @@ describe('Users', function() {
 				.end((err, res) => {
 					res.should.have.status(200);
 					fakeUser.student = res.body;
-					res.body.should.be.a('object');
+					res.body.should.be.an('object');
 					res.body.should.have.property('_id').not.eql(undefined);
 					res.body.should.have.property('name').eql("Sugarizer_" + (timestamp.toString()));
 					res.body.should.have.property('role').eql('student');
@@ -124,7 +124,7 @@ describe('Users', function() {
 				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.should.be.a('object');
+					res.body.should.be.an('object');
 					res.body.should.have.property('_id').eql(fakeUser.student._id);
 					res.body.should.have.property('name').eql("Sugarizer_" + (timestamp.toString()));
 					res.body.should.have.property('role').eql('student');
@@ -150,7 +150,7 @@ describe('Users', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.users.should.be.a('array');
+					res.body.users.should.be.an('array');
 					res.body.users.length.should.be.above(0);
 					done();
 				});
@@ -169,7 +169,7 @@ describe('Users', function() {
 					res.should.have.status(200);
 					for (var i = 0; i < res.body.users.length; i++) {
 
-						res.body.users[i].should.be.a('object');
+						res.body.users[i].should.be.an('object');
 						res.body.users[i].should.have.property('_id').not.eql(undefined);
 						res.body.users[i].should.have.property('name').not.eql(undefined);
 						res.body.users[i].should.have.property('role').eql('admin');
@@ -192,7 +192,7 @@ describe('Users', function() {
 					res.should.have.status(200);
 					for (var i = 0; i < res.body.users.length; i++) {
 
-						res.body.users[i].should.be.a('object');
+						res.body.users[i].should.be.an('object');
 						res.body.users[i].should.have.property('_id').not.eql(undefined);
 						res.body.users[i].should.have.property('name').not.eql(undefined);
 						res.body.users[i].should.have.property('role').eql('student');
@@ -307,7 +307,7 @@ describe('Users', function() {
 						.set('x-key', fakeUser.admin.user._id)
 						.end((err, res) => {
 							res.should.have.status(200);
-							res.body.should.be.a('object');
+							res.body.should.be.an('object');
 							res.body.should.have.property('_id').eql(fakeUser.student._id);
 							res.body.should.have.property('name').eql("Sugarizer_" + (timestamp.toString()));
 							res.body.should.have.property('language').eql("en");
@@ -369,17 +369,7 @@ describe('Users', function() {
 				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					chai.request(server)
-						.delete('/api/v1/journal/' + fakeUser.student.private_journal)
-						.set('x-access-token', fakeUser.admin.token)
-						.set('x-key', fakeUser.admin.user._id)
-						.query({
-							'type': 'full'
-						})
-						.end((err, res) => {
-							res.should.have.status(200);
-							done();
-						});
+					done();
 				});
 		});
 	});

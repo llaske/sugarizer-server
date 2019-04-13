@@ -2,28 +2,18 @@
 
 var common = require('../../dashboard/helper/common');
 
-var mongo = require('mongodb');
-
-var db;
-var isActive = true
+var isActive = true;
 
 var statsCollection;
 
-// Init database
-exports.init = function(settings, callback) {
-	statsCollection = settings.collections.stats;
-	isActive = settings.statistics.active
-	var client = new mongo.MongoClient(
-		'mongodb://'+settings.database.server+':'+settings.database.port+'/'+settings.database.name,
-		{auto_reconnect: false, w:1, useNewUrlParser: true});
+var db;
 
-	// Open the db
-	client.connect(function(err, client) {
-		db = client.db(settings.database.name);
-		if (err) {}
-		if (callback) callback();
-	});
-}
+// Init database
+exports.init = function(settings, database) {
+	statsCollection = settings.collections.stats;
+	isActive = settings.statistics.active;
+	db = database;
+};
 
 
 /**
@@ -148,7 +138,7 @@ exports.deleteStats = function(req, res) {
 	}
 
 	db.collection(statsCollection, function(err, collection) {
-		collection.remove({
+		collection.deleteOne({
 			'user_id': req.query.uid
 		}, function(err, result) {
 			if (err) {

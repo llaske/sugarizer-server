@@ -3,6 +3,7 @@ function initDragDrop() {
 	var adjustment;
 
 	$("ol.simple_with_animation").sortable({
+		handle: '.draggable',
 		group: 'simple_with_animation',
 		pullPlaceholder: false,
 		placeholder: '<div class="placeholder"></div>',
@@ -63,7 +64,7 @@ function launch_activity(callurl) {
 			lsBackup[index] = localStorage.getItem(index);
 			var encodedValue = response.lsObj[index];
 			var rawValue = JSON.parse(encodedValue);
-			if (rawValue.server) {
+			if (rawValue && rawValue.server) {
 				rawValue.server.url = window.location.protocol+"//"+window.location.hostname+":"+rawValue.server.web;
 				encodedValue = JSON.stringify(rawValue);
 			}
@@ -177,6 +178,25 @@ function formatColorField(state) {
 	return $state;
 }
 
+function matchColorField(params, data) {
+	if ($.trim(params.term) === '') {
+		return data;
+	}
+	params.term = params.term.toUpperCase();
+
+	if (typeof data.text === 'undefined') {
+		return null;
+	}
+
+	if (data.id.indexOf(params.term) > -1) {
+		var modifiedData = $.extend({}, data, true);
+		modifiedData.text += ' (matched)';
+		return modifiedData;
+	}
+
+	return null;
+}
+
 $(document).ready(function() {
 	if ($("#users-select2").length > 0) {
 		$("#users-select2").select2({
@@ -197,7 +217,8 @@ $(document).ready(function() {
 	if ($("#color-select2").length > 0) {
 		$("#color-select2").select2({
 			templateResult: formatColorField,
-			templateSelection: formatColorField
+			templateSelection: formatColorField,
+			matcher: matchColorField
 		})
 	}
 
@@ -238,10 +259,31 @@ function highlight(text) {
 		$(this).html(inputText);
 	});
 
+	//show error
+  if (offset === -1 && text !== '') {
+    $('.control-label').removeClass('hidden');
+    $('.search_query')
+      .parent()
+      .addClass('label-floating has-error is-focused')
+      .removeClass('form-black is-empty');
+  } else {
+    $('.control-label').addClass('hidden');
+    $('.search_query')
+      .parent()
+      .removeClass('label-floating has-error is-focused');
+  }
 	//scroll
 	$('.main-panel').animate({
 		scrollTop: (offset - 30)
 	}, 500);
+}
+
+//hide label when input is empty
+function hideLabel(value) {
+  if (value === '') {
+    $('.control-label').addClass('hidden');
+    highlight('');
+  }
 }
 
 // localization
@@ -259,12 +301,23 @@ function onLocalized() {
 			lang.value = localStorage.getItem("languageSelection");
 		}
 		lang.onchange = function() {
-			l10n.setLanguage(this.value);
 			localStorage.setItem("languageSelection", this.value);
+			location.href = window.location.pathname + "?lang="+lang.value;
 		};
 	}
 }
 document.webL10n.ready(onLocalized);
+
+// Initiate localization in mobile view
+$(document).ready(function() {
+	var toggle = document.getElementById('navbar-toggle');
+
+	if (toggle != null) {
+		toggle.addEventListener("click", function(){
+			document.webL10n.ready(onLocalized);
+		});
+	}
+});
 
 // graph create
 function createGraph(type, element, route) {
@@ -279,7 +332,7 @@ function createGraph(type, element, route) {
 				var html = '<div class="text-center">\
 											<i class="material-icons dp96 text-muted">info_outline</i>\
 											<p data-l10n-id="noGraphDataText">' + document.webL10n.get('noGraphDataText') + '</p>\
-										</div>'
+										</div>';
 				$("#" + response.element).replaceWith(html);
 			} else {
 				var ctx = document.getElementById(response.element).getContext('2d');
@@ -288,19 +341,28 @@ function createGraph(type, element, route) {
 					data: response.data,
 					options: (response.options ? response.options : {})
 				});
-				myChart.options.onClick = function(e){
-					var activePoints = myChart.getElementsAtEvent(e);
-					// Avoid console erros when clicking on any white space in the chart
-					var index = activePoints.length ? activePoints[0]._index : -1;
-					if (index > -1 && response.graph === 'bar'){
-						window.location.href = `/dashboard/journal/${response.journalIDs[index]}?uid=${response.userIDs[index]}&type=private`;
-					}else if(index > -1 && response.graph === 'doughnut'){
-						window.location.href = `javascript:launch_activity('/dashboard/activities/launch?aid=${response.activityIDs[index]}')`;
-					}
+				if (type == 'top-contributor') {
+					myChart.options.onClick = function(e) {
+						var activePoints = myChart.getElementsAtEvent(e);
+						// Avoid console erros when clicking on any white space in the chart
+						var index = activePoints.length ? activePoints[0]._index : -1;
+						if (index > -1) {
+							window.location.href = "/dashboard/journal/" + response.journalIDs[index] + "?uid=" + response.userIDs[index] + "&type=private";
+						}
+					};
+				} else if (type == 'top-activities') {
+					myChart.options.onClick = function(e) {
+						var activePoints = myChart.getElementsAtEvent(e);
+						// Avoid console erros when clicking on any white space in the chart
+						var index = activePoints.length ? activePoints[0]._index : -1;
+						if (index > -1) {
+							window.location.href = "javascript:launch_activity('/dashboard/activities/launch?aid="+response.activityIDs[index]+"')";
+						}
+					};
 				}
 			}
 		});
-	})
+	});
 }
 
 function createTable(type, element, route) {

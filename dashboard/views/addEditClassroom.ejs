@@ -37,8 +37,8 @@
                                     <script type="text/javascript">
                                         // run multiSelect
                                         $('#searchable-select-students').multiSelect({
-                                            selectableHeader: "<input type='text' class='form-control' data-l10n-id='john.placeholder' autocomplete='off' placeholder='search students'>",
-                                            selectionHeader: "<input type='text' class='form-control' data-l10n-id='john.placeholder' autocomplete='off' placeholder='search students'>",
+                                            selectableHeader: "<input type='text' class='form-control' data-l10n-id='john' autocomplete='off' placeholder='search students'>",
+                                            selectionHeader: "<input type='text' class='form-control' data-l10n-id='john' autocomplete='off' placeholder='search students'>",
                                             afterInit: function(ms){
                                                 var that = this,
                                                     $selectableSearch = that.$selectableUl.prev(),
@@ -80,8 +80,9 @@
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="color"></label>
                                     <select class="form-control" name="color" id="color-select2">
+                                        <% if(typeof classroom == "undefined") var random=Math.floor(Math.random()*xocolors.length); %>
                                         <% for(var i=0; i< xocolors.length; i++){ %>
-                                          <% if(typeof classroom == 'object' && typeof classroom.color == 'object' && xocolors[i].stroke == classroom.color.stroke && xocolors[i].fill == classroom.color.fill){ %>
+                                          <% if(typeof classroom == 'object' && (typeof classroom.color == 'object' && xocolors[i].stroke == classroom.color.stroke && xocolors[i].fill == classroom.color.fill) || (random == i)) { %>
                                             <option selected="selected" data-stroke="<%= xocolors[i].stroke %>" data-icon="classroom-icon" data-fill="<%= xocolors[i].fill %>" value='<%- JSON.stringify(xocolors[i]) %>'></option>
                                           <% }else{ %>
                                             <option data-stroke="<%= xocolors[i].stroke %>" data-icon="classroom-icon" data-fill="<%= xocolors[i].fill %>" value='<%- JSON.stringify(xocolors[i]) %>'></option>
@@ -91,22 +92,26 @@
                                 </div>
                             </div>
                         </div>
+                        <% if(typeof classroom == 'object' && classroom.created_time) { %>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="createdTime"></label>
-                                    <input class="form-control" readonly value="<% if(typeof classroom == 'object'){ %><%= moment(classroom.created_time).calendar() %><% } %>" type="text">
+                                    <input class="form-control" readonly value="<%= moment(classroom.created_time).calendar() %>" type="text">
                                 </div>
                             </div>
                         </div>
+                        <% } %>
+                        <% if(typeof classroom == 'object' && classroom.timestamp) { %>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
-                                    <label class="control-label" data-l10n-id="lastSeen"></label>
-                                    <input class="form-control" readonly value="<% if(typeof classroom == 'object'){ %><%= moment(classroom.timestamp).calendar() %><% } %>" type="text">
+                                    <label class="control-label" data-l10n-id="lastUpdated"></label>
+                                    <input class="form-control" readonly value="<%= moment(classroom.timestamp).calendar() %>" type="text">
                                 </div>
                             </div>
                         </div>
+                        <% } %>
                         <button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
                         <a class="btn pull-right btn-round" href="/dashboard/classrooms" data-l10n-id="cancel"></a>
                         <div class="clearfix"></div>

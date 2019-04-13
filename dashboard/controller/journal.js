@@ -15,11 +15,8 @@ exports.init = function(settings) {
 // main landing page
 exports.index = function(req, res) {
 
-	// reinit l10n and moment with locale
-	if (req.query && req.query.lang) {
-		common.l10n.setLanguage(req.query.lang);
-		moment.locale(req.query.lang);
-	}
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
 
 	getUsers(req, res, function(users) {
 		res.render('journal', {
@@ -53,7 +50,7 @@ exports.deleteEntry = function(req, res) {
 		if (response.statusCode == 200) {
 			// return back
 			req.flash('success', {
-				msg: common.l10n.get('EntryDeleted')
+				msg: common.l10n.get('EntryDeleted', {activity: req.query.title})
 			});
 			return res.redirect('/dashboard/journal/' + req.params.jid + '?uid=' + req.query.uid + '&offset=' + (req.query.offset ? req.query.offset : 0) + '&limit=' + (req.query.limit ? req.query.limit : 10));
 
@@ -67,6 +64,9 @@ exports.deleteEntry = function(req, res) {
 };
 
 exports.getEntries = function(req, res) {
+
+	// reinit l10n and momemt with locale
+	common.reinitLocale(req);
 
 	//get users
 	getUsers(req, res, function(users) {
