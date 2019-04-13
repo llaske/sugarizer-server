@@ -31,10 +31,7 @@ var common = require('../dashboard/helper/common');
 // Import xocolors helper
 var xocolors = require('../dashboard/helper/xocolors')();
 
-// Set the node enviornment to test
-process.env.NODE_ENV = 'test';
-
-// Initiate
+// Initialize settings for sugarizer.ini
 var settings;
 
 // Read settings from sugarizer.ini file
@@ -46,7 +43,12 @@ fs.open(confFile, 'r', function(err, fd) {
         process.exit(-1);
       }
     }
+
+    // Assign configuration data to settings
     settings = ini.parse(fs.readFileSync(confFile, 'utf-8'));
+
+    // Initialize common module with settings
+    common.init(settings);
 });
 
 // Define user with parameterized constructor
@@ -109,7 +111,6 @@ function isValidLanguage(lang) {
     var sugarizerLang = ["en", "es", "fr", "de", "pt", "ar", "ja", "pl", "ibo", "yor"];
     if(sugarizerLang.indexOf(lang) == -1) return false;
     else return true;
-
 }
 
 // Generate random password
@@ -126,7 +127,7 @@ function generatePassword(length) {
 // Validate data row
 function validateUserRow(user, index) {
     if (!user.name) {
-        console.log("Row: " + (index + 1) + " -> Username is invalid\nSkipping...");
+        console.log("Row: " + (index + 1) + " -> Username is invalid. Skipping...");
         return;
     }
 
@@ -146,7 +147,7 @@ function validateUserRow(user, index) {
 
     var minPass = (settings && settings.security && parseInt(settings.security.min_password_size)) ? parseInt(settings.security.min_password_size) : 4;
     if (!user.password || typeof user.password != "string" || user.password.length < minPass) {
-        console.log("Row: " + (index + 1) + " -> User: " + user.name + " -- Password is invalid\nGenerating random password...");
+        console.log("Row: " + (index + 1) + " -> User: " + user.name + " -- Password is invalid. Generating random password...");
         user.password = generatePassword(minPass);
     }
 
@@ -312,7 +313,6 @@ function getClassroomsNamesFromUsers() {
 
 // Function to generate CSV of users
 function generateCSV() {
-    console.log("Generating CSV...");
     return new Promise(function(resolve, reject) {
         var csvWriter = createCsvWriter({
             path: filename + "_output.csv",
@@ -339,7 +339,6 @@ function generateCSV() {
 
 // Function to delete Master Admin
 function deleteMasterAdmin() {
-    console.log("Deleting Temporary Admin...");
     return new Promise(function(resolve, reject) {
         request({
             headers: {
@@ -362,9 +361,7 @@ function deleteMasterAdmin() {
 
 // Finish classroom assignment and generate CSV and delete Master Admin 
 function finishClassroomAssignment() {
-    console.log("All users assigned to classrooms");
     Promise.all([generateCSV(), deleteMasterAdmin()]).then(function(values) {
-        console.log("Temporary Admin deleted");
         console.log('The CSV file written successfully. Filename: ' + values[0]);
         process.exit(0);
     }).catch(function(err) {
@@ -385,7 +382,7 @@ function findOrCreateClassroom(classes) {
                     if (res) {
                         Classrooms[res.q].data = res;
                     } else {
-                        console.log("error creating classroom");
+                        console.log("Error creating classroom");
                     }
                     if (classroomProcessed == classes.length) finishClassroomAssignment();
                 })
@@ -401,7 +398,7 @@ function findOrCreateClassroom(classes) {
                     if (res) {
                         Classrooms[res.q].data = res;
                     } else {
-                        console.log("error creating classroom");
+                        console.log("Error creating classroom");
                     }
                     if (classroomProcessed == classes.length) finishClassroomAssignment();
                 })
@@ -422,7 +419,6 @@ function findOrCreateClassroom(classes) {
 
 // Processed users for assignment into classrooms
 function initClassroomAssignment() {
-    console.log('Initiating classroom assignment...');
     var uniqueClassrooms = getClassroomsNamesFromUsers();
     for (var i=0; i<uniqueClassrooms.length; i++) {
         Classrooms[uniqueClassrooms[i]] = {data: "", students: []};
@@ -438,17 +434,9 @@ function initClassroomAssignment() {
     else finishClassroomAssignment();
 }
 
-// Initiate Server
-function initServer() {
-    // Import sugarizer server
-    require('../sugarizer');
-}
-
 // Initiate seeding to DB
 function initSeed() {
     // Create Master Admin
-    console.log('Creating Temporary Admin...');
-
     request({
         headers: {
             "content-type": "application/json",
@@ -460,8 +448,8 @@ function initSeed() {
             "user" : masterAdmin
         }
     }, function(error, response) {
-        if (response.statusCode == 200) {
-            console.log('Temporary Admin created');
+        if (response && response.statusCode == 200) {
+            // Master Admin created
             request({
                 headers: {
                     "content-type": "application/json",
@@ -474,11 +462,9 @@ function initSeed() {
                 }
             }, function(error, response, body) {
                 if (response.statusCode == 200) {
+                    // Logged into Master Admin
                     masterAdmin = body;
 
-                    console.log('Logged into Temporary Admin');
-
-                    console.log('Inserting users...');
                     var usersProcessed = 0;
                     // Insert all users
                     for (var i=0; i < Users.length; i++) {
@@ -486,30 +472,32 @@ function initSeed() {
                             usersProcessed++;
                             if (usersProcessed == Users.length) initClassroomAssignment();
                         }).catch(function(err) {
-                            usersProcessed++;
                             console.log(err);
+                            usersProcessed++;
                             if (usersProcessed == Users.length) initClassroomAssignment();
                         });
                     }
                 } else {
-                    console.log('Error logging into Temporary Admin');
+                    console.log('Error logging into Master Admin');
                     process.exit(-1);
                 }
             });
+        } else if (!response) {
+            console.log('Error: Cannot access sugarizer-server');
+            process.exit(-1);
         } else {
-            console.log('Error creating Temporary Admin');
+            console.log('Error creating Master Admin');
             process.exit(-1);
         }
     });
 }
 
-console.log("Reading and validating file");
+// Reading and validating file
+
 var dataIndex = 0;
 // Read the CSV file
 fs.createReadStream(filename)
     .on('error', function(err) {
-        console.log(err);
-        // ToDo: Check safely terminate script
         throw err;
     })
     .pipe(csv())
@@ -519,12 +507,10 @@ fs.createReadStream(filename)
         if (validRow) Users.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom));
     })
     .on('end', function() {
-        console.log('Finished processing CSV file');
-        console.log('Starting Sugarizer-Server...');
+        // Finished processing CSV file
         if (Users.length == 0) {
             console.log('Error: No users to insert');
             process.exit(-1);
         }
-        initServer();
-        setTimeout(initSeed, 1000);
+        initSeed();
     });
