@@ -19,14 +19,35 @@ var createCsvWriter = csvWriter.createObjectCsvWriter;
 // Import fs module
 var fs = require('fs');
 
+// Import ini module to parse '.ini' files
+var ini = require('ini')
+
 // Import request library to make requests over the network
 var request = require('request');
 
 // Import common helper
 var common = require('../dashboard/helper/common');
 
+// Import xocolors helper
+var xocolors = require('../dashboard/helper/xocolors')();
+
 // Set the node enviornment to test
 process.env.NODE_ENV = 'test';
+
+// Initiate
+var settings;
+
+// Read settings from sugarizer.ini file
+var confFile = './env/sugarizer.ini';
+fs.open(confFile, 'r', function(err, fd) {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        console.log("Cannot load settings file 'sugarizer.ini', error code "+err.code);
+        process.exit(-1);
+      }
+    }
+    settings = ini.parse(fs.readFileSync(confFile, 'utf-8'));
+});
 
 // Define user with parameterized constructor
 class User {
@@ -55,21 +76,46 @@ function cleanString(string) {
     return string;
 }
 
+// Get random color from xocolors and generate color string
+function getRandomColorString() {
+    var randomColor = xocolors[Math.floor(Math.random()*xocolors.length)];
+    randomColor = JSON.stringify(randomColor);
+    return randomColor;
+}
+
 // Validate color string
 function isValidColor(color) {
+    // Check if valid JSON
     try {
         color = JSON.parse(color);
     } catch (e) {
         return false;
     }
+
+    // Check if property 'stroke' and 'fill' exists
     if (!color.stroke || !color.fill) return false;
-    return true
+
+    // Look for the color in xocolors
+    for (var i=0; i<xocolors.length; i++) {
+        if (xocolors[i].stroke == color.stroke && xocolors[i].fill == color.fill) {
+            return true;
+        }
+    }
+    return false
+}
+
+// Validate language
+function isValidLanguage(lang) {
+    var sugarizerLang = ["en", "es", "fr", "de", "pt", "ar", "ja", "pl", "ibo", "yor"];
+    if(sugarizerLang.indexOf(lang) == -1) return false;
+    else return true;
+
 }
 
 // Generate random password
 function generatePassword(length) {
     var password = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz0123456789"; // All alphanumeric characters except 'Y' and 'Z' 
     
     for (var i = 0; i < length; i++)
         password += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -89,22 +135,19 @@ function validateUserRow(user, index) {
         user.type = "student";
     }
 
-    // ToDo: Validate language from an array of valid languages
     user.language = cleanString(user.language);
-    if (!user.language) {
+    if (!isValidLanguage(user.language)) {
         user.language = "en";
     }
 
-    user.color = cleanString(user.color);
     if (!isValidColor(user.color)) {
-        // ToDo: Randomize Color
-        user.color = '{ "stroke":"#ff0000", "fill":"#0000ff" }';
+        user.color = getRandomColorString();
     }
 
-    // ToDo: Get minimum password length from .ini file
-    if (!user.password || typeof user.password != "string" || user.password.length < 4) {
+    var minPass = (settings && settings.security && parseInt(settings.security.min_password_size)) ? parseInt(settings.security.min_password_size) : 4;
+    if (!user.password || typeof user.password != "string" || user.password.length < minPass) {
         console.log("Row: " + (index + 1) + " -> User: " + user.name + " -- Password is invalid\nGenerating random password...");
-        user.password = generatePassword(8);
+        user.password = generatePassword(minPass);
     }
 
     user.classroom = user.classroom || "";
@@ -124,7 +167,7 @@ function stringifyUser(user) {
 }
 
 // Initiate Master Admin
-var masterAdmin = stringifyUser(new User('Master_Admin_' + (+new Date()).toString(), 'admin', 'en', '{"stroke":"#ff0000", "fill":"#0000ff"}', 'password'));
+var masterAdmin = stringifyUser(new User('Master_Admin_' + (+new Date()).toString(), 'admin', 'en', getRandomColorString(), 'password'));
 
 // Insert User
 function insertUser(i) {
@@ -157,15 +200,25 @@ function insertUser(i) {
 // Initiate Classrooms object
 var Classrooms = {}; // Contains {classname{ students: [students_array], data: classroom_data }
 
-function stringifyClassroom(name) {
+function stringifyExistingClassroom(name) {
     var newStudents = Classrooms[name].students;
     var oldStudents = [];
     if (Classrooms[name].data && Classrooms[name].data.students && Classrooms[name].data.students.length > 0) {
         oldStudents = Classrooms[name].data.students 
     }
     var union = [...new Set([...newStudents, ...oldStudents])];
-    var students = JSON.stringify(union);
-    return '{"name":"' + name + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"students":' + students + '}';
+    var classroomData = {
+        name: name,
+        color: Classrooms[name].data.color,
+        students: union
+    }
+    classroomData = JSON.stringify(classroomData);
+    return classroomData;
+}
+
+function stringifyNewClassroom(name) {
+    var students = JSON.stringify(Classrooms[name].students);
+    return '{"name":"' + name + '","color":' + getRandomColorString() + ',"students":' + students + '}';
 }
 
 // Update classroom by ID
@@ -181,7 +234,7 @@ function updateClassroom(name) {
             method: 'put',
             uri: common.getAPIUrl() + 'api/v1/classrooms/' + Classrooms[name].data._id,
             body: {
-                classroom: stringifyClassroom(name)
+                classroom: stringifyExistingClassroom(name)
             }
         }, function(error, response, body) {
             body.q = name;
@@ -207,7 +260,7 @@ function insertClassroom(name) {
             method: 'post',
             uri: common.getAPIUrl() + 'api/v1/classrooms',
             body: {
-                classroom: stringifyClassroom(name)
+                classroom: stringifyNewClassroom(name)
             }
         }, function(error, response, body) {
             body.q = name;
