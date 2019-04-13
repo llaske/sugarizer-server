@@ -12,6 +12,10 @@ if (filename) {
 // Import csv-parser module
 var csv = require('csv-parser');
 
+// Import csv-writer module and create CSV writer
+var csvWriter = require('csv-writer')
+var createCsvWriter = csvWriter.createObjectCsvWriter; 
+
 // Import fs module
 var fs = require('fs');
 
@@ -109,6 +113,7 @@ function validateUserRow(user, index) {
     return user;
 }
 
+// Function to stringift user class object
 function stringifyUser(user) {
     return '{"name":"' + user.name + '", ' + 
             '"color":' + user.color + ', ' +
@@ -149,12 +154,8 @@ function insertUser(i) {
     });
 }
 
-function generateCSV() {
-    console.log("generating csv...");
-}
-
-// Initiate Classrooms
-var Classrooms = {}; // Contains {classname: [students_array]}
+// Initiate Classrooms object
+var Classrooms = {}; // Contains {classname{ students: [students_array], data: classroom_data }
 
 function stringifyClassroom(name) {
     var newStudents = Classrooms[name].students;
@@ -164,7 +165,6 @@ function stringifyClassroom(name) {
     }
     var union = [...new Set([...newStudents, ...oldStudents])];
     var students = JSON.stringify(union);
-    console.log(union);
     return '{"name":"' + name + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"students":' + students + '}';
 }
 
@@ -257,6 +257,68 @@ function getClassroomsNamesFromUsers() {
     return classroomList;
 }
 
+// Function to generate CSV of users
+function generateCSV() {
+    console.log("Generating CSV...");
+    return new Promise(function(resolve, reject) {
+        var csvWriter = createCsvWriter({
+            path: filename + "_output.csv",
+            header: [
+                {id: 'name', title: 'name'}, 
+                {id: 'type', title: 'type'}, 
+                {id: 'language', title: 'language'}, 
+                {id: 'color', title: 'color'}, 
+                {id: 'password', title: 'password'}, 
+                {id: 'classroom', title: 'classroom'}, 
+                {id: 'status', title: 'status'}, 
+                {id: 'comment', title: 'comment'}
+            ]
+        });
+        csvWriter
+        .writeRecords(Users)
+        .then(function() {
+            resolve(filename + "_output.csv");
+        }).catch(function(err) {
+            reject(err);
+        });
+    });
+}
+
+// Function to delete Master Admin
+function deleteMasterAdmin() {
+    console.log("Deleting Temporary Admin...");
+    return new Promise(function(resolve, reject) {
+        request({
+            headers: {
+                "content-type": "application/json",
+                "x-access-token": masterAdmin.token,
+                "x-key": masterAdmin.user._id
+            },
+            json: true,
+            method: 'delete',
+            uri: common.getAPIUrl() + 'api/v1/users/' + masterAdmin.user._id,
+        }, function(error, response, body) {
+            if (response.statusCode == 200) {
+                resolve(body);
+            } else {
+                reject(body);
+            }
+        });
+    });
+}
+
+// Finish classroom assignment and generate CSV and delete Master Admin 
+function finishClassroomAssignment() {
+    console.log("All users assigned to classrooms");
+    Promise.all([generateCSV(), deleteMasterAdmin()]).then(function(values) {
+        console.log("Temporary Admin deleted");
+        console.log('The CSV file written successfully. Filename: ' + values[0]);
+        process.exit(0);
+    }).catch(function(err) {
+        console.log(err);
+    });
+}
+
 // Find classrooms. Insert classroom if not found
 function findOrCreateClassroom(classes) {
     var classroomProcessed = 0;
@@ -272,12 +334,12 @@ function findOrCreateClassroom(classes) {
                     } else {
                         console.log("error creating classroom");
                     }
-                    if (classroomProcessed == classes.length) generateCSV();
+                    if (classroomProcessed == classes.length) finishClassroomAssignment();
                 })
                 .catch(function(err) {
                     classroomProcessed++;
                     console.log(err);
-                    if (classroomProcessed == classes.length) generateCSV();
+                    if (classroomProcessed == classes.length) finishClassroomAssignment();
                 })
             } else {
                 // Create Classroom
@@ -288,19 +350,19 @@ function findOrCreateClassroom(classes) {
                     } else {
                         console.log("error creating classroom");
                     }
-                    if (classroomProcessed == classes.length) generateCSV();
+                    if (classroomProcessed == classes.length) finishClassroomAssignment();
                 })
                 .catch(function(err) {
                     classroomProcessed++;
                     console.log(err);
-                    if (classroomProcessed == classes.length) generateCSV();
+                    if (classroomProcessed == classes.length) finishClassroomAssignment();
                 })
             }
         })
         .catch(function(err) {
             classroomProcessed++;
             console.log(err);
-            if (classroomProcessed == classes.length) generateCSV();
+            if (classroomProcessed == classes.length) finishClassroomAssignment();
         });
     }
 }
@@ -319,7 +381,8 @@ function initClassroomAssignment() {
         }
     }
 
-    findOrCreateClassroom(uniqueClassrooms);
+    if (uniqueClassrooms.length > 0) findOrCreateClassroom(uniqueClassrooms);
+    else finishClassroomAssignment();
 }
 
 // Initiate Server
@@ -330,7 +393,7 @@ function initServer() {
 
 // Initiate seeding to DB
 function initSeed() {
-    // Create Temporary Admin
+    // Create Master Admin
     console.log('Creating Temporary Admin...');
 
     request({
@@ -387,7 +450,6 @@ function initSeed() {
     });
 }
 
-
 console.log("Reading and validating file");
 var dataIndex = 0;
 // Read the CSV file
@@ -405,10 +467,11 @@ fs.createReadStream(filename)
     })
     .on('end', function() {
         console.log('Finished processing CSV file');
-        console.log(Users);
         console.log('Starting Sugarizer-Server...');
+        if (Users.length == 0) {
+            console.log('Error: No users to insert');
+            process.exit(-1);
+        }
         initServer();
         setTimeout(initSeed, 1000);
     });
-
-// Bug: Issue while inserting users with same name;

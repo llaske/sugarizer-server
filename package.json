@@ -8,6 +8,7 @@
 	"dependencies": {
 		"cors": "2.8.x",
 		"csv-parser": "^2.2.0",
+		"csv-writer": "^1.2.0",
 		"ejs": "~>2.5.5",
 		"express": "4.16.4",
 		"express-session": "1.15.6",
