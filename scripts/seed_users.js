@@ -31,15 +31,19 @@ var common = require('../dashboard/helper/common');
 // Import xocolors helper
 var xocolors = require('../dashboard/helper/xocolors')();
 
-// Initialize settings for sugarizer.ini
+// Import regexvalidate helper
+var regexValidate    = require('../dashboard/helper/regexValidate');
+
+// Initialize settings for .ini file
 var settings;
 
-// Read settings from sugarizer.ini file
-var confFile = './env/sugarizer.ini';
+// Read settings from .ini file
+var env = (process.env.NODE_ENV ? process.env.NODE_ENV : 'sugarizer');
+var confFile = "./env/" + env + '.ini';
 fs.open(confFile, 'r', function(err, fd) {
     if (err) {
       if (err.code === 'ENOENT') {
-        console.log("Cannot load settings file 'sugarizer.ini', error code "+err.code);
+        console.log("Cannot load settings file '" + confFile + "', error code "+err.code);
         process.exit(-1);
       }
     }
@@ -113,6 +117,13 @@ function isValidLanguage(lang) {
     else return true;
 }
 
+// Validate user role
+function isValidType(type) {
+    var roles = ["admin", "student"];
+    if (roles.indexOf(type) == -1) return false;
+    else return true;
+}
+
 // Generate random password
 function generatePassword(length) {
     var password = "";
@@ -126,13 +137,13 @@ function generatePassword(length) {
 
 // Validate data row
 function validateUserRow(user, index) {
-    if (!user.name) {
+    if (!user.name || !regexValidate("user").test(user.name)) {
         console.log("Row: " + (index + 1) + " -> Username is invalid. Skipping...");
         return;
     }
 
     user.type = cleanString(user.type);
-    if (!user.type) {
+    if (!isValidType(user.type)) {
         user.type = "student";
     }
 
@@ -146,7 +157,7 @@ function validateUserRow(user, index) {
     }
 
     var minPass = (settings && settings.security && parseInt(settings.security.min_password_size)) ? parseInt(settings.security.min_password_size) : 4;
-    if (!user.password || typeof user.password != "string" || user.password.length < minPass) {
+    if (!user.password || typeof user.password != "string" || user.password.length < minPass || !regexValidate("pass").test(user.password)) {
         console.log("Row: " + (index + 1) + " -> User: " + user.name + " -- Password is invalid. Generating random password...");
         user.password = generatePassword(minPass);
     }
@@ -192,6 +203,7 @@ function insertUser(i) {
                 resolve(body);
             } else {
                 Users[i].comment = body.error;
+                body.user = Users[i];
                 reject(body);
             }
         });
@@ -315,7 +327,7 @@ function getClassroomsNamesFromUsers() {
 function generateCSV() {
     return new Promise(function(resolve, reject) {
         var csvWriter = createCsvWriter({
-            path: filename + "_output.csv",
+            path: "output.csv",
             header: [
                 {id: 'name', title: 'name'}, 
                 {id: 'type', title: 'type'}, 
@@ -330,7 +342,7 @@ function generateCSV() {
         csvWriter
         .writeRecords(Users)
         .then(function() {
-            resolve(filename + "_output.csv");
+            resolve("output.csv");
         }).catch(function(err) {
             reject(err);
         });
@@ -472,7 +484,7 @@ function initSeed() {
                             usersProcessed++;
                             if (usersProcessed == Users.length) initClassroomAssignment();
                         }).catch(function(err) {
-                            console.log(err);
+                            if (err) console.log("Error inserting " + err.user.name + ": " + err.error);
                             usersProcessed++;
                             if (usersProcessed == Users.length) initClassroomAssignment();
                         });
