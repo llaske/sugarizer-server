@@ -55,8 +55,9 @@
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="color"></label>
                                     <select class="form-control" name="color" id="color-select2">
+                                        <% if(typeof user == "undefined") var random=Math.floor(Math.random()*xocolors.length); %>
                                         <% for(var i=0; i< xocolors.length; i++){ %>
-                                          <% if(typeof user == 'object' && typeof user.color == 'object' && xocolors[i].stroke == user.color.stroke && xocolors[i].fill == user.color.fill){ %>
+                                          <% if(typeof user == 'object' && (typeof user.color == 'object' && xocolors[i].stroke == user.color.stroke && xocolors[i].fill == user.color.fill) || (random == i)) { %>
                                             <option selected="selected" data-stroke="<%= xocolors[i].stroke %>" data-fill="<%= xocolors[i].fill %>" value='<%- JSON.stringify(xocolors[i]) %>'></option>
                                           <% }else{ %>
                                             <option data-stroke="<%= xocolors[i].stroke %>" data-fill="<%= xocolors[i].fill %>" value='<%- JSON.stringify(xocolors[i]) %>'></option>
