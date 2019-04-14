@@ -32,7 +32,7 @@ var common = require('../dashboard/helper/common');
 var xocolors = require('../dashboard/helper/xocolors')();
 
 // Import regexvalidate helper
-var regexValidate    = require('../dashboard/helper/regexValidate');
+var regexValidate = require('../dashboard/helper/regexValidate');
 
 // Initialize settings for .ini file
 var settings;
@@ -57,7 +57,7 @@ fs.open(confFile, 'r', function(err, fd) {
 
 // Define user with parameterized constructor
 class User {
-    constructor(name, type, language, color, password, classroom) {
+    constructor(name, type, language, color, password, classroom, comment) {
         this.name = name;
         this.type = type;
         this.language = language;
@@ -65,8 +65,8 @@ class User {
         this.password = password;
         if (classroom)
             this.classroom = classroom;
+        this.comment = comment ? comment : "";
         this.status = 0;
-        this.comment = "";
         this._id = "";
     }
 }
@@ -137,10 +137,24 @@ function generatePassword(length) {
 
 // Validate data row
 function validateUserRow(user, index) {
+    user.comment = "";
+
     if (!user.name || !regexValidate("user").test(user.name)) {
-        console.log("Row: " + (index + 1) + " -> Username is invalid. Skipping...");
+        console.log("Row: " + (index + 1) + " -> Username is invalid. Skipping... ");
         return;
     }
+
+    var log = {
+        info: "Row: " + (index + 1) + " -> User: " + user.name,
+        status: false,
+        addInfo: function(info) {
+            this.status = true;
+            this.info += info;
+        },
+        print: function() {
+            if(this.status) console.log(this.info);
+        }
+    };
 
     user.type = cleanString(user.type);
     if (!isValidType(user.type)) {
@@ -158,13 +172,19 @@ function validateUserRow(user, index) {
 
     var minPass = (settings && settings.security && parseInt(settings.security.min_password_size)) ? parseInt(settings.security.min_password_size) : 4;
     if (!user.password || typeof user.password != "string" || user.password.length < minPass || !regexValidate("pass").test(user.password)) {
-        console.log("Row: " + (index + 1) + " -> User: " + user.name + " -- Password is invalid. Generating random password...");
         user.password = generatePassword(minPass);
+        log.addInfo(" -- Password invalid (random password)");
+        user.comment += "Given password was invlaid (Generated random password). ";
     }
 
-    user.classroom = user.classroom || "";
-    user.classroom = user.classroom.trim();
+    user.classroom = user.classroom ? user.classroom.trim() : "";
+    if (user.classroom && (typeof user.classroom != "string" || !regexValidate("user").test(user.classroom))) {
+        user.classroom = "";
+        log.addInfo(" -- Classroom Invalid (classroom dropped)");
+        user.comment += "Given classroom name was invlaid (Classroom dropped). ";
+    }
 
+    log.print();
     return user;
 }
 
@@ -202,7 +222,7 @@ function insertUser(i) {
                 Users[i]._id = body._id;
                 resolve(body);
             } else {
-                Users[i].comment = body.error;
+                Users[i].comment += body.error;
                 body.user = Users[i];
                 reject(body);
             }
@@ -516,7 +536,7 @@ fs.createReadStream(filename)
     .on('data', function(row) {
         dataIndex++;
         var validRow = validateUserRow(row, dataIndex);
-        if (validRow) Users.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom));
+        if (validRow) Users.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
     })
     .on('end', function() {
         // Finished processing CSV file
