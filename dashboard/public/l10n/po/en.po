@@ -371,6 +371,11 @@ msgctxt "PasswordBlank"
 msgid "Password cannot be blank"
 msgstr "Password cannot be blank"
 
+#: PasswordInvalid
+msgctxt "PasswordInvalid"
+msgid "Password is not valid"
+msgstr "Password is not valid"
+
 #: CantOpenWindow
 msgctxt "CantOpenWindow"
 msgid "Can't open window, check your browser for popup blocker"

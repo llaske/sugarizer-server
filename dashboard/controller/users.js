@@ -3,7 +3,8 @@ var request = require('request'),
 	moment = require('moment'),
 	common = require('../helper/common'),
 	xocolors = require('../helper/xocolors')(),
-	emoji = require('../public/js/emoji');
+	emoji = require('../public/js/emoji'),
+	regexValidate = require('../helper/regexValidate');
 
 
 // init settings
@@ -89,8 +90,9 @@ exports.addUser = function(req, res) {
 		req.body.name = req.body.name.trim();
 		req.body.password = req.body.password.trim();
 		req.body.color = JSON.parse(req.body.color);
-		req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
+		req.assert('name', common.l10n.get('UsernameInvalid')).matches(regexValidate("user"));
 		req.assert('password', common.l10n.get('PasswordAtLeast', {count:ini.security.min_password_size})).len(ini.security.min_password_size);
+		req.assert('password', common.l10n.get('PasswordInvalid')).matches(regexValidate("pass"));
 		req.body.options = { sync: true, stats: true };
 
 		// get errors
@@ -169,7 +171,9 @@ exports.editUser = function(req, res) {
 			req.body.name = req.body.name.trim();
 			req.body.password = req.body.password.trim();
 			req.body.color = JSON.parse(req.body.color);
+			req.assert('name', common.l10n.get('UsernameInvalid')).matches(regexValidate("user"));
 			req.assert('password', common.l10n.get('PasswordAtLeast', {count:ini.security.min_password_size})).len(ini.security.min_password_size);
+			req.assert('password', common.l10n.get('PasswordInvalid')).matches(regexValidate("pass"));
 
 			// get errors
 			var errors = req.validationErrors();
