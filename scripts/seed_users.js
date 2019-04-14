@@ -14,7 +14,7 @@ var csv = require('csv-parser');
 
 // Import csv-writer module and create CSV writer
 var csvWriter = require('csv-writer')
-var createCsvWriter = csvWriter.createObjectCsvWriter; 
+var createCsvWriter = csvWriter.createObjectCsvWriter;
 
 // Import fs module
 var fs = require('fs');
@@ -127,11 +127,11 @@ function isValidType(type) {
 // Generate random password
 function generatePassword(length) {
     var password = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz0123456789"; // All alphanumeric characters except 'Y' and 'Z' 
-    
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz0123456789"; // All alphanumeric characters except 'Y' and 'Z'
+
     for (var i = 0; i < length; i++)
         password += possible.charAt(Math.floor(Math.random() * possible.length));
-    
+
     return password;
 }
 
@@ -174,14 +174,14 @@ function validateUserRow(user, index) {
     if (!user.password || typeof user.password != "string" || user.password.length < minPass || !regexValidate("pass").test(user.password)) {
         user.password = generatePassword(minPass);
         log.addInfo(" -- Password invalid (random password)");
-        user.comment += "Given password was invlaid (Generated random password). ";
+        user.comment += "Given password was invalid (Generated random password). ";
     }
 
     user.classroom = user.classroom ? user.classroom.trim() : "";
     if (user.classroom && (typeof user.classroom != "string" || !regexValidate("user").test(user.classroom))) {
         user.classroom = "";
         log.addInfo(" -- Classroom Invalid (classroom dropped)");
-        user.comment += "Given classroom name was invlaid (Classroom dropped). ";
+        user.comment += "Given classroom name was invalid (Classroom dropped). ";
     }
 
     log.print();
@@ -190,10 +190,10 @@ function validateUserRow(user, index) {
 
 // Function to stringift user class object
 function stringifyUser(user) {
-    return '{"name":"' + user.name + '", ' + 
+    return '{"name":"' + user.name + '", ' +
             '"color":' + user.color + ', ' +
             '"role":"' + user.type + '", ' +
-            '"password":"' + user.password + '", ' + 
+            '"password":"' + user.password + '", ' +
             '"language":"' + user.language + '", ' +
             '"options":{"sync":true, "stats":true}}';
 }
@@ -237,7 +237,7 @@ function stringifyExistingClassroom(name) {
     var newStudents = Classrooms[name].students;
     var oldStudents = [];
     if (Classrooms[name].data && Classrooms[name].data.students && Classrooms[name].data.students.length > 0) {
-        oldStudents = Classrooms[name].data.students 
+        oldStudents = Classrooms[name].data.students
     }
     var union = [...new Set([...newStudents, ...oldStudents])];
     var classroomData = {
@@ -349,13 +349,13 @@ function generateCSV() {
         var csvWriter = createCsvWriter({
             path: "output.csv",
             header: [
-                {id: 'name', title: 'name'}, 
-                {id: 'type', title: 'type'}, 
-                {id: 'language', title: 'language'}, 
-                {id: 'color', title: 'color'}, 
-                {id: 'password', title: 'password'}, 
-                {id: 'classroom', title: 'classroom'}, 
-                {id: 'status', title: 'status'}, 
+                {id: 'name', title: 'name'},
+                {id: 'type', title: 'type'},
+                {id: 'language', title: 'language'},
+                {id: 'color', title: 'color'},
+                {id: 'password', title: 'password'},
+                {id: 'classroom', title: 'classroom'},
+                {id: 'status', title: 'status'},
                 {id: 'comment', title: 'comment'}
             ]
         });
@@ -391,7 +391,7 @@ function deleteMasterAdmin() {
     });
 }
 
-// Finish classroom assignment and generate CSV and delete Master Admin 
+// Finish classroom assignment and generate CSV and delete Master Admin
 function finishClassroomAssignment() {
     Promise.all([generateCSV(), deleteMasterAdmin()]).then(function(values) {
         console.log('The CSV file written successfully. Filename: ' + values[0]);
