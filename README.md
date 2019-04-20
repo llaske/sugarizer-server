@@ -104,6 +104,8 @@ To login to the Dashboard the first time, you will have to create an admin accou
 
 	sh add-admin.sh admin password http://127.0.0.1:8080/auth/signup
 
+Note: For security reason, the script should be launched from the local machine. On Docker, attach a new shell to the container and launch the script from this shell.
+
 Where **admin** is the login for the new admin account and **password** is the password.
 
 Once the admin account is created, you could access Sugarizer Dashboard on http://127.0.0.1:8080/dashboard.
@@ -227,6 +229,8 @@ Here's an example of output file:
     Lionel,admin,fr,"{""stroke"":""#F8E800"",""fill"":""#FF8F00""}",aaaa,,1,
     Nikhil,student,en,"{""stroke"":""#807500"",""fill"":""#FF8F00""}",l0dU,CM2,1,Given password was invalid (Generated random password).
 
+Note: For security reason, the script should be launched from the local machine. On Docker, attach a new shell to the container and launch the script from this shell.
+
 
 ## Running Server securely using SSL
 
@@ -251,3 +255,5 @@ Note that settings for unit testing are defined in [env/test.ini](env/test.ini).
 ## License
 
 This project is licensed under `Apache v2` License. See [LICENSE](LICENSE) for full license text.
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)

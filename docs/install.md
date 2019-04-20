@@ -117,12 +117,12 @@ To stop the Mongo daemon hit ctrl-c
         node sugarizer.js
 
 
-## Running Sugarizer on a RaspberryPI
+## Run Sugarizer on a RaspberryPI
 
 To deploy Sugarizer Server on a Raspberry Pi, a specific packaging name [Sugarizer Schoolbox](https://github.com/llaske/sugarizer-school-box) is available [here](https://github.com/llaske/sugarizer-school-box).
 
 
-## Running Sugarizer the cloud
+## Run Sugarizer on the cloud
 
 You could install on any existing cloud platform (Amazon, Microsoft Azure, Google Cloud Platform, ...). Detail of settings for:
 
