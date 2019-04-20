@@ -58,7 +58,7 @@ function getHowUserLaunchActivity(req, res) {
 			var d = {}
 			for (var i = 0; i < data.length; i++) {
 				if (!d.hasOwnProperty(data[i].event_object)) {
-					d[data[i].event_object] = 0
+					d[data[i].event_object] = 1
 				} else {
 					d[data[i].event_object]++
 				}
