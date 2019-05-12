@@ -98,6 +98,7 @@ Sugarizer Server Dashboard is an admin tool for teachers and deployment administ
 * Users: how many users have been registered on the server, recent users, top users on the server, create/edit/remove a user.
 * Journal: how many Journals and how many entries in Journal on the server, last Journal, and last entries, edit a journal (see/update/remove) entries.
 * Activities: how many activities are available on the server, change activities visibility from Client, update order and way to appear in the favorite view.
+* Classrooms: a way to organize users on the server side to handle them more easily.
 * Graphic and request: display graphics and report on previous data.
 
 To login to the Dashboard the first time, you will have to create an admin account using this command:
