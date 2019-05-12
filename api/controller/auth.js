@@ -98,6 +98,8 @@ exports.login = function(req, res) {
  * @api {post} auth/signup/ Signup User
  * @apiName Signup User
  * @apiDescription Add a new user (Admin or Student). Return the user created.
+ *
+ * For security reason, call to signup for an Admin is only allowed from the server address.
  * @apiGroup Auth
  * @apiVersion 1.0.0
  *

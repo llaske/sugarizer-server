@@ -87,15 +87,14 @@ exports.addClassroom = function(req, res) {
 };
 
 /**
- * @api {delete} api/v1/classrooms Remove classroom
+ * @api {delete} api/v1/classrooms/:id  Remove classroom
  * @apiName RemoveClassroom
  * @apiDescription Remove the classroom by id.
  * @apiGroup Classrooms
  * @apiVersion 1.1.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
- *
- * @apiParam {String} classid Unique id of the classroom to delete Classroom
+ * @apiParam {String} id Unique id of the classroom to delete
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK

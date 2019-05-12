@@ -117,7 +117,7 @@ exports.getAPIUrl = function(req) {
  * @apiSuccess {Object} settings.options Server options
  * @apiSuccess {String} settings.options.min-password-size Minimum size for password
  * @apiSuccess {Boolean} settings.options.statistics Statistics active or not
- * @apiSuccess {String} settings.options.cooke-age Expiration time for authentication token
+ * @apiSuccess {String} settings.options.cookie-age Expiration time for authentication token
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK

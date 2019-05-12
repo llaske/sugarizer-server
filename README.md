@@ -189,7 +189,9 @@ A full documentation of the API is available in http://127.0.0.1:8080/docs.
 
 To generate docs, run the following command in `terminal`.
 
-    apidoc -i api/controller  -i dashboard/helper -o docs/www/
+	npm install -d
+	npm install apidoc -g
+	apidoc -i api/controller  -i dashboard/helper -o docs/www/
 
 
 ## Import users from a CSV file
@@ -248,7 +250,8 @@ Few parameters in the **[security]** section of the setting file are dedicated t
 Sugarizer Server includes a set of unit tests on the API.
 To run unit tests for Sugarizer Server launch:
 
-	npm test
+    npm install -d
+    npm test
 
 Note that settings for unit testing are defined in [env/test.ini](env/test.ini).
 

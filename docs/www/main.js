@@ -364,7 +364,7 @@ require([
         });
 
         // render Section with Articles
-        fields = {
+        var fields = {
             group: groupEntry,
             title: title,
             description: description,
@@ -620,7 +620,7 @@ require([
             if (entry.info && entry.info.fields)
                 fields._hasTypeInInfoFields = _hasTypeInFields(entry.info.fields);
 
-            entry = compareEntry;
+            var entry = compareEntry;
             if (fields._hasTypeInParameterFields !== true && entry.parameter && entry.parameter.fields)
                 fields._hasTypeInParameterFields = _hasTypeInFields(entry.parameter.fields);
 
