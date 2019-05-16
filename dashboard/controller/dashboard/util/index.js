@@ -1,68 +1,7 @@
 // include libraries
 var request = require('request'),
-	moment = require('moment'),
-	common = require('../helper/common');
+	common = require('../../../helper/common');
 
-
-// init settings
-var ini = null;
-exports.init = function(settings) {
-	ini = settings;
-}
-
-// main landing page
-exports.index = function(req, res) {
-
-	// reinit l10n and momemt with locale
-	common.reinitLocale(req);
-
-	var data = {};
-
-	//get all users
-	exports.getAllUsers(req, res, function(usersResponse) {
-
-		// store
-		data.users = usersResponse;
-
-		//get all activities
-		exports.getAllActivities(req, res, function(activitiesResponse) {
-
-			// store
-			data.activities = activitiesResponse;
-
-			//get journal data
-			exports.getAllJournals(req, res, function(journalResponse) {
-
-				//process
-				var d = {}
-				d.totalJournal = journalResponse.length;
-				d.totalEntries = 0;
-				for (var i = 0; i < journalResponse.length; i++) {
-					d.totalEntries += journalResponse[i].count;
-				}
-
-				//store
-				data.journal = d;
-
-				//get all classrooms
-				exports.getAllClassrooms(req, res, function(classroomResponse) {
-					
-					//store
-					data.classrooms = classroomResponse;
-
-					// send to login page
-					res.render('dashboard', {
-						title: 'dashboard',
-						module: 'dashboard',
-						data: data,
-						account: req.session.user,
-						server: ini.information
-					});
-				});
-			});
-		});
-	});
-};
 
 exports.getAllJournals = function(req, res, callback) {
 	// call
@@ -82,8 +21,8 @@ exports.getAllJournals = function(req, res, callback) {
 				msg: common.l10n.get('ErrorCode'+body.code)
 			});
 		}
-	})
-}
+	});
+};
 
 exports.getAllActivities = function(req, res, callback) {
 	// call
@@ -103,8 +42,8 @@ exports.getAllActivities = function(req, res, callback) {
 				msg: common.l10n.get('ErrorCode'+body.code)
 			});
 		}
-	})
-}
+	});
+};
 
 exports.getAllUsers = function(req, res, callback) {
 	request({
@@ -128,7 +67,7 @@ exports.getAllUsers = function(req, res, callback) {
 			});
 		}
 	});
-}
+};
 
 exports.getAllClassrooms = function(req, res, callback) {
 	// call
@@ -149,4 +88,4 @@ exports.getAllClassrooms = function(req, res, callback) {
 			});
 		}
 	});
-}
+};
