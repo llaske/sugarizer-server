@@ -1,74 +1,38 @@
 // include libraries
 var request = require('request'),
 	moment = require('moment'),
-	common = require('../helper/common'),
-	graph = require('../controller/graph');
+	common = require('../../../helper/common'),
+	graph = require('../../../controller/graph');
 
-// init settings
-var ini = null;
-exports.init = function(settings) {
-	ini = settings;
-}
-
-// main landing page
-exports.index = function(req, res) {
-
-	// reinit l10n and momemt with locale
-	common.reinitLocale(req);
-
-	// send to login page
-	res.render('stats', {
-		title: 'stats',
-		module: 'stats',
-		account: req.session.user,
-		server: ini.information
-	});
-};
-
-exports.getGraph = function(req, res) {
-	if (req.query.type == 'how-user-launch-activities') {
-		getHowUserLaunchActivity(req, res);
-	} else if (req.query.type == 'how-often-user-change-settings') {
-		getHowOftenUserChangeSettings(req, res);
-	} else if (req.query.type == 'how-users-are-active') {
-		getHowUsersAreActive(req, res);
-	} else if (req.query.type == 'what-type-of-client-connected') {
-		getWhatTypeOfClientConnected(req, res);
-	} else if (req.query.type == 'how-many-entries-by-journal') {
-		getHowManyEntriesByJournal(req, res);
-	}
-
-}
-
-function getHowUserLaunchActivity(req, res) {
+exports.getHowUserLaunchActivity = function(req, res) {
 
 	//data var
-	var data = []
+	var data = [];
 
 	// get data
 	getLogsData(req, res, {
 		event_action: 'launch_activity'
 	}, function(body) {
-		data = data.concat(body)
+		data = data.concat(body);
 		getLogsData(req, res, {
 			event_action: 'relaunch_activity'
 		}, function(body) {
-			data = data.concat(body)
+			data = data.concat(body);
 
-			var d = {}
+			var d = {};
 			for (var i = 0; i < data.length; i++) {
 				if (!d.hasOwnProperty(data[i].event_object)) {
-					d[data[i].event_object] = 1
+					d[data[i].event_object] = 1;
 				} else {
-					d[data[i].event_object]++
+					d[data[i].event_object]++;
 				}
 			}
 
-			var labels = []
-			var ddata = []
+			var labels = [];
+			var ddata = [];
 			for (var v in d) {
-				labels.push(common.l10n.get(v))
-				ddata.push(d[v])
+				labels.push(common.l10n.get(v));
+				ddata.push(d[v]);
 			}
 
 			//return
@@ -88,18 +52,18 @@ function getHowUserLaunchActivity(req, res) {
 				},
 				element: req.query.element,
 				graph: 'pie'
-			})
-		})
-	})
-}
+			});
+		});
+	});
+};
 
-function getHowOftenUserChangeSettings(req, res) {
+exports.getHowOftenUserChangeSettings = function(req, res) {
 
 	//data
 	var data = {
 		labels: [],
 		data: []
-	}
+	};
 
 	// get data
 	getLogsData(req, res, {
@@ -132,7 +96,7 @@ function getHowOftenUserChangeSettings(req, res) {
 					data.data.push(body.length);
 
 					// node data
-					if(JSON.stringify(data.data) == JSON.stringify([0, 0]))data.data = []
+					if(JSON.stringify(data.data) == JSON.stringify([0, 0]))data.data = [];
 
 					//return
 					return res.json({
@@ -160,21 +124,21 @@ function getHowOftenUserChangeSettings(req, res) {
 								}]
 							}
 						}
-					})
-				})
-			})
-		})
-	})
-}
+					});
+				});
+			});
+		});
+	});
+};
 
 
-function getHowUsersAreActive(req, res) {
+exports.getHowUsersAreActive = function(req, res) {
 
 	//data
 	var data = {
 		labels: [],
 		data: []
-	}
+	};
 	var total = 0;
 
 	// get data
@@ -202,18 +166,18 @@ function getHowUsersAreActive(req, res) {
 				},
 				element: req.query.element,
 				graph: 'pie'
-			})
-		})
-	})
-}
+			});
+		});
+	});
+};
 
-function getWhatTypeOfClientConnected(req, res) {
+exports.getWhatTypeOfClientConnected = function(req, res) {
 
 	//data
 	var data = {
 		labels: [],
 		data: []
-	}
+	};
 
 	// get data
 	getLogsData(req, res, {
@@ -241,24 +205,24 @@ function getWhatTypeOfClientConnected(req, res) {
 				},
 				element: req.query.element,
 				graph: 'pie'
-			})
-		})
-	})
-}
+			});
+		});
+	});
+};
 
-function getHowManyEntriesByJournal(req, res) {
+exports.getHowManyEntriesByJournal = function(req, res) {
 
 	//data
 	var data = {
 		labels: [],
 		data: []
-	}
+	};
 
 	data.labels.push(common.l10n.get('AverageEntries'));
 	data.data.push(graph.getAverageEntries());
 
 	// node data
-	if(JSON.stringify(data.data) == JSON.stringify([0, 0]))data.data = []
+	if(JSON.stringify(data.data) == JSON.stringify([0, 0]))data.data = [];
 
 	//return
 	return res.json({
@@ -283,8 +247,8 @@ function getHowManyEntriesByJournal(req, res) {
 				}]
 			}
 		}
-	})
-}
+	});
+};
 
 function getLogsData(req, res, query, callback) {
 	request({
@@ -295,9 +259,9 @@ function getLogsData(req, res, query, callback) {
 		uri: common.getAPIUrl(req) + 'api/v1/stats'
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
-			callback(body)
+			callback(body);
 		}else{
-			callback([])
+			callback([]);
 		}
 	});
 }
