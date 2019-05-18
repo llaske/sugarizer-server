@@ -1,6 +1,6 @@
 // include libraries
 var request = require('request'),
-	dashboard = require('./dashboard'),
+	dashboard_utils = require('./dashboard/util'),
 	moment = require('moment'),
 	common = require('../helper/common'),
 	async = require('async');
@@ -19,17 +19,17 @@ exports.getGraph = function(req, res) {
 	if (req.query.type == 'recent-activities') {
 		getRecentActivities(req, res);
 	}
-}
+};
 
 var averageEntries = 0.0;
 exports.getAverageEntries = function() {
 	return averageEntries;
-}
+};
 
 function getTopContributors(req, res) {
 
 	//get all users
-	dashboard.getAllUsers(req, res, function(users) {
+	dashboard_utils.getAllUsers(req, res, function(users) {
 
 		//make hashList
 		var hashList = {};
@@ -38,7 +38,7 @@ function getTopContributors(req, res) {
 		}
 
 		//get journal data
-		dashboard.getAllJournals(req, res, function(journals) {
+		dashboard_utils.getAllJournals(req, res, function(journals) {
 
 			//get name mapping
 			var totalEntries = 0;
@@ -105,9 +105,9 @@ function getTopContributors(req, res) {
 				},
 				journalIDs: journalIDs,
 				userIDs: userIDs
-			})
-		})
-	})
+			});
+		});
+	});
 }
 
 function getTopActivities(req, res) {
@@ -177,18 +177,18 @@ function getTopActivities(req, res) {
 				element: req.query.element,
 				graph: 'doughnut',
 				activityIDs: activityIDs
-			})
-		})
-	})
+			});
+		});
+	});
 }
 
 function getRecentUsers(req, res) {
 
 	//get all entries
-	dashboard.getAllUsers(req, res, function(users) {
+	dashboard_utils.getAllUsers(req, res, function(users) {
 
 		//get users object
-		users = users.users
+		users = users.users;
 
 		//limit 5
 		users = users.splice(0, 5);
@@ -196,22 +196,22 @@ function getRecentUsers(req, res) {
 		var data = '';
 		for (var i = 0; i < users.length; i++) {
 
-			var url = '/dashboard/journal/' + users[i].private_journal + '?uid=' + users[i]._id + '&type=private'
+			var url = '/dashboard/journal/' + users[i].private_journal + '?uid=' + users[i]._id + '&type=private';
 			data += '<tr onclick="window.document.location=\'' + url + '\'">\
 									<td>' + (i + 1) + '</td>\
 									<td><div class="color" id="' + users[i]._id + i.toString() + '"><div class="xo-icon"></div></div></td>\
 									<script>new icon().load("/public/img/owner-icon.svg", ' + JSON.stringify(users[i].color) + ', "' + users[i]._id + i.toString() + '")</script>\
 									<td title="' + users[i].name + '">' + users[i].name + '</td>\
 									<td class="text-muted">' + moment(users[i].timestamp).calendar(); + '</td>\
-							</tr>'
+							</tr>';
 		}
 
 		return res.json({
 			data: data,
 			element: req.query.element,
 			graph: 'table'
-		})
-	})
+		});
+	});
 }
 
 function getRecentActivities(req, res) {
@@ -225,7 +225,7 @@ function getRecentActivities(req, res) {
 			//make hashlist
 			var hashList = {};
 			for (var i = 0; i < activities.length; i++) {
-				hashList[activities[i].id] = '/' + activities[i].directory + '/' + activities[i].icon
+				hashList[activities[i].id] = '/' + activities[i].directory + '/' + activities[i].icon;
 			}
 
 			//sort entries
@@ -244,7 +244,7 @@ function getRecentActivities(req, res) {
 			for (var i = 0; i < allEntries.length; i++) {
 
 				// launch url
-				var url = '/dashboard/activities/launch/' + allEntries[i].journalId + '?oid=' + allEntries[i].objectId + '&uid=' + allEntries[i].metadata.user_id + '&aid=' + allEntries[i].metadata.activity
+				var url = '/dashboard/activities/launch/' + allEntries[i].journalId + '?oid=' + allEntries[i].objectId + '&uid=' + allEntries[i].metadata.user_id + '&aid=' + allEntries[i].metadata.activity;
 
 				data += '<tr onclick="javascript:launch_activity(\'' + url + '\')">\
 										<td>' + (i + 1) + '</td>\
@@ -253,22 +253,22 @@ function getRecentActivities(req, res) {
 										<td title="' + allEntries[i].metadata.title + '">' + allEntries[i].metadata.title + '</td>\
 										<td title="' + allEntries[i].metadata.buddy_name + '">' + allEntries[i].metadata.buddy_name + '</td>\
 										<td class="text-muted">' + moment(allEntries[i].metadata.timestamp).calendar() + '</td>\
-								</tr>'
+								</tr>';
 			}
 
 			return res.json({
 				data: data,
 				element: req.query.element,
 				graph: 'table'
-			})
-		})
-	})
+			});
+		});
+	});
 }
 
 function getAllEntriesList(req, res, limit, callback) {
 
 	//get all users
-	dashboard.getAllUsers(req, res, function(users) {
+	dashboard_utils.getAllUsers(req, res, function(users) {
 
 		//entries
 		var allEntries = [];
@@ -329,7 +329,7 @@ function getAllEntriesList(req, res, limit, callback) {
 		], function() {
 			callback(allEntries);
 		});
-	})
+	});
 }
 
 function getActivities(req, res, callback) {
@@ -349,5 +349,5 @@ function getActivities(req, res, callback) {
 			});
 			return res.redirect('/dashboard/journal');
 		}
-	})
+	});
 }
