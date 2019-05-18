@@ -1,7 +1,7 @@
 // include libraries
 var request = require('request'),
 	moment = require('moment'),
-	dashboard = require('../dashboard'),
+	dashboard_utils = require('../dashboard/util'),
 	common = require('../../helper/common'),
 	xocolors = require('../../helper/xocolors')(),
 	emoji = require('../../public/js/emoji');
@@ -60,7 +60,7 @@ module.exports = function addClassroom(req, res) {
 
 	} else {
 		//get all users
-		dashboard.getAllUsers(req, res, function(users) {
+		dashboard_utils.getAllUsers(req, res, function(users) {
 			// send to classroom page
 			res.render('addEditClassroom', {
 				module: 'classrooms',
