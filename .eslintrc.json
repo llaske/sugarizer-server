@@ -1,0 +1,91 @@
+{
+    "env": {
+        "browser": true,
+        "node": true,
+        "mocha": true,
+        "jquery": true,
+        "mongo": true,
+        "amd": true
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 5
+    },
+    "rules": {
+        "indent": [
+            "off",
+            "tab"
+        ],
+        "linebreak-style": [
+            "off",
+            "unix"
+        ],
+        "semi": [
+            "off",
+            "always"
+        ],
+        "eol-last": [
+            "error",
+            "always"
+        ],
+        "no-mixed-spaces-and-tabs": "off",
+        "no-console": 0,
+        "no-redeclare": "off"
+    },
+    "overrides": [
+        {
+            "files": ["seed_users.js"],
+            "parserOptions": {
+                "ecmaVersion": 6
+            },
+            "env": {
+                "node": true,
+                "es6": true
+            },
+            "rules": {
+                "indent": "off"
+            }
+        },
+        {
+            "files": ["docs/www/main.js"],
+            "rules": {
+                "indent": "off"
+            },
+            "globals": {
+                "List": "readonly"
+            }
+        },
+        {
+            "files": ["dashboard/public/js/main.js"],
+            "rules": {
+                "no-unused-vars": "off"
+            },
+            "globals": {
+                "url": "writable",
+                "headers": "writable",
+                "icon": "readonly",
+                "Chart": "readonly"
+            }
+        },
+        {
+            "files": ["api/test/*.js"],
+            "parserOptions": {
+                "ecmaVersion": 6
+            },
+            "env": {
+                "node": true,
+                "es6": true
+            }
+        },
+        {
+            "files": ["docs/www/*"],
+            "globals": {
+                "pathToRegexp": "readonly"
+            }
+        }
+    ]
+}
