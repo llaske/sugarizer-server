@@ -27,20 +27,40 @@ describe('Journal', function() {
 			chai.request(server)
 				.post('/auth/signup')
 				.send({
-					"user": fakeUser.student
+					"user": fakeUser.admin
 				})
-				.end((err, res) => {
+				.end(() => {
 
 					//login user
 					chai.request(server)
 						.post('/auth/login')
 						.send({
-							"user": fakeUser.student
+							"user": fakeUser.admin
 						})
 						.end((err, res) => {
 							//store user data
-							fakeUser.student = res.body;
-							done();
+							fakeUser.admin = res.body;
+
+							//create fake users
+							chai.request(server)
+								.post('/auth/signup')
+								.send({
+									"user": fakeUser.student
+								})
+								.end(() => {
+
+									//login user
+									chai.request(server)
+										.post('/auth/login')
+										.send({
+											"user": fakeUser.student
+										})
+										.end((err, res) => {
+											//store user data
+											fakeUser.student = res.body;
+											done();
+										});
+								});
 						});
 				});
 		}, 300);
@@ -86,6 +106,19 @@ describe('Journal', function() {
 				});
 		});
 	});
+
+	describe('/GET/aggregate journal', () => {
+		it('it should get all journal entries', (done) => {
+			chai.request(server)
+				.get('/api/v1/journal/aggregate')
+				.set('x-access-token', fakeUser.admin.token)
+				.set('x-key', fakeUser.admin.user._id)
+				.end((err, res) => {
+					res.should.have.status(200);
+					done();
+				});
+		});
+	})
 
 	describe('/POST/:id journal', function() {
 		it('it should do nothing on invalid journal', (done) => {

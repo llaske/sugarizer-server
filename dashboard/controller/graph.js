@@ -116,7 +116,7 @@ function getTopActivities(req, res) {
 	getActivities(req, res, function(activities) {
 
 		//get all entries
-		getAllEntriesList(req, res, 10000000, function(allEntries) {
+		getAllEntriesList(req, res, function(allEntries) {
 			var freq = {};
 			var freq2 = [];
 			for (var i = 0; i < allEntries.length; i++) {
@@ -217,7 +217,7 @@ function getRecentUsers(req, res) {
 function getRecentActivities(req, res) {
 
 	//get all entries
-	getAllEntriesList(req, res, 1000000, function(allEntries) {
+	getAllEntriesList(req, res, function(allEntries) {
 
 		//get activities
 		getActivities(req, res, function(activities) {
@@ -265,70 +265,28 @@ function getRecentActivities(req, res) {
 	});
 }
 
-function getAllEntriesList(req, res, limit, callback) {
+function getAllEntriesList(req, res, callback) {
 
-	//get all users
-	dashboard_utils.getAllUsers(req, res, function(users) {
+	//entries
+	var allEntries = [];
 
-		//entries
-		var allEntries = [];
-
-		//async
-		async.series([
-			function(callback) {
-				if (users.users.length > 0) {
-					// call
-					request({
-						headers: common.getHeaders(req),
-						json: true,
-						method: 'GET',
-						qs: {
-							offset: 0,
-							limit: limit,
-							sort: '-timestamp'
-						},
-						uri: common.getAPIUrl(req) + 'api/v1/journal/' + users.users[0].shared_journal
-					}, function(error, response, body) {
-						//merge data
-						if (body.entries) {
-							allEntries = allEntries.concat(body.entries);
-						}
-						callback(null);
-					});
-				} else {
-					callback(null);
+	// call
+	request({
+		headers: common.getHeaders(req),
+		json: true,
+		method: 'GET',
+		uri: common.getAPIUrl(req) + 'api/v1/journal/aggregate/'
+	}, function(error, response, body) {
+		//merge data
+		if (body) {
+			for (var i=0; i<body.length; i++) {
+				if (body[i] && typeof body[i].content == "object" && body[i].content.length > 0) {
+					if (body[i].shared == true) console.log(body[i].content.length);
+					allEntries = allEntries.concat(body[i].content);
 				}
-			},
-			function(callback) {
-				//for each user
-				async.each(users.users, function(user, icallback) {
-					// call
-					request({
-						headers: common.getHeaders(req),
-						json: true,
-						method: 'GET',
-						qs: {
-							uid: user._id,
-							offset: 0,
-							limit: limit,
-							sort: '-timestamp'
-						},
-						uri: common.getAPIUrl(req) + 'api/v1/journal/' + user.private_journal
-					}, function(error, response, body) {
-						//merge data
-						if (body.entries) {
-							allEntries = allEntries.concat(body.entries);
-						}
-						icallback();
-					});
-				}, function() {
-					callback(null);
-				});
-
 			}
-		], function() {
-			callback(allEntries);
-		});
+		}
+		callback(allEntries);
 	});
 }
 

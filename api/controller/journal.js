@@ -763,3 +763,128 @@ var validateUser = function(req, res) {
 		}
 	}
 }
+
+/**
+ * @api {get} api/v1/aggregate Get all journals with entries
+ * @apiName GetAllJournalEntries
+ * @apiDescription It will get all the journals with their entries present in the database. Private and shared can be filtered using the "type" query param. If the param is not specified, it will get all the journals.
+ * @apiGroup Journal
+ * @apiVersion 1.0.0
+ *
+ * @apiExample Example usage:
+ *     "/api/v1/aggregate"
+ *     "/api/v1/aggregate?type=shared"
+ *     "/api/v1/aggregate?type=private"
+ *
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ *
+ * @apiParam {String} [type] Type of the journal (shared or private)
+ *
+ * @apiSuccess {String} _id Unique id of the journal
+ * @apiSuccess {Object} content Array containing data of the entries
+ * @apiSuccess {Object} content[i].metadata Metadata of the entries, i.e. characteristics of the entry
+ * @apiSuccess {String} content[i].objectId Unique id of the entry in the journal
+ * @apiSuccess {String} content[i].objectId Unique id of the entry in the journal
+ * @apiSuccess {String} content[i].text Text of the entries, i.e. storage value of the entry. It depends of the entry type
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *      {
+ *       "_id": "5946d4fc9f0e36686c50a548",
+ *       "content": [
+ *        {
+ *         "metadata": {
+ *          "title": "Read me !",
+ *          "title_set_by_user": "0",
+ *          "activity": "org.sugarlabs.Markdown",
+ *          "activity_id": "caa97e48-d33c-470a-99e9-495ff02afe01",
+ *          "creation_time": ​1423341000747,
+ *          "timestamp": ​1423341066909,
+ *          "file_size": ​0,
+ *          "user_id": "5569f4b019e0b4c9525b3c97",
+ *          "buddy_name": "Sugarizer server",
+ *          "buddy_color": {
+ *           "stroke": "#005FE4",
+ *           "fill": "#FF2B34"
+ *          }
+ *         },
+ *         "objectId": "4837240f-bf78-4d22-b936-3db96880f0a0",
+ *         "text" : ""
+ *        },
+ *        {
+ *         "metadata": {
+ *          "title": "Physics JS Activity",
+ *          "title_set_by_user": "0",
+ *          "activity": "org.olpg-france.physicsjs",
+ *          "activity_id": "43708a15-f48e-49b1-85ef-da4c1419b364",
+ *          "creation_time": ​1436003632237,
+ *          "timestamp": ​1436025389565,
+ *          "file_size": ​0,
+ *          "user_id": "5569f4b019e0b4c9525b3c97",
+ *          "buddy_name": "Lionel",
+ *          "buddy_color": {
+ *           "stroke": "#00A0FF",
+ *           "fill": "#F8E800"
+ *          }
+ *         },
+ *         "objectId": "2acbcd69-aa14-4273-8a9f-47642b41ad9d",
+ *         "text" : ""
+ *        },
+ *        ...
+ *       ],
+ *       "shared": true
+ *      },
+ *      {
+ *       "_id": "5954089e088a9fd957734e46",
+ *       "content": [
+ *        {
+ *         "metadata" : {
+ *          "title" : "Paint Activity",
+ *          "title_set_by_user" : "0",
+ *          "activity" : "org.olpcfrance.PaintActivity",
+ *          "activity_id" : "c3863442-f524-4d17-868a-9eed8fb467e5",
+ *          "creation_time" : 1522441628767,
+ *          "timestamp" : 1522441631568,
+ *          "file_size" : 0,
+ *          "buddy_name" : "Local",
+ *          "buddy_color" : {
+ *           "stroke" : "#00B20D",
+ *           "fill" : "#00EA11"
+ *           },
+ *           "textsize" : 28687,
+ *           "user_id" : "5a9d84682feba60e001ee997"
+ *         },
+ *         "objectId" : "e02da731-690b-4347-8ae2-e8e88a692999",
+ *         "text" : ""
+ *        }
+ *       ],
+ *       "shared": false
+ *      }
+ *     ]
+ **/
+exports.findAllEntries = function(req, res) {
+	// set options
+	var options = {};
+	if (req.query.type == 'shared') {
+		options.shared = true;
+	} else if (req.query.type == 'private') {
+		options.shared = false;
+	}
+
+	//get data
+	db.collection(journalCollection, function(err, collection) {
+		collection.find(options).toArray(function(err, items) {
+			//check for errors
+			if (err) {
+				return res.status(500).send({
+					'error': err,
+					'code': 5
+				});
+			}
+			// Return
+			return res.send(items);
+		})
+	});
+}
