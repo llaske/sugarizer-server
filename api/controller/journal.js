@@ -1,6 +1,5 @@
 // Journal handling
-var mongo = require('mongodb'),
-	users = require('./users');
+var mongo = require('mongodb');
 
 
 var db;
@@ -621,7 +620,7 @@ exports.updateEntryInJournal = function(req, res) {
 			'_id': new mongo.ObjectID(jid)
 		}, deletecontent, {
 			safe: true
-		}, function(err, result) {
+		}, function(err) {
 			if (err) {
 				return res.status(500).send({
 					'error': 'An error has occurred',

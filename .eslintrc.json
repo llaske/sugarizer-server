@@ -80,12 +80,6 @@
                 "node": true,
                 "es6": true
             }
-        },
-        {
-            "files": ["docs/www/*"],
-            "globals": {
-                "pathToRegexp": "readonly"
-            }
         }
     ]
 }

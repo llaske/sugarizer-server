@@ -31,7 +31,7 @@ describe('Classrooms', function() {
 				.send({
 					"user": fake.admin
 				})
-				.end((err, res) => {
+				.end(() => {
 
 					//login user
 					chai.request(server)

@@ -59,7 +59,7 @@ module.exports = function(app, ini, db) {
 	app.delete("/api/v1/classrooms/:classid", auth.checkAdmin, classrooms.removeClassroom);
 
 	// If no route is matched by now, it must be a 404
-	app.use('/api/v1/*', function(req, res, next) {
+	app.use('/api/v1/*', function(req, res) {
 		return res.status(404).res.json({
 			'status': 404,
 			'error': "Route Not Found!",

@@ -29,7 +29,7 @@ describe('Users', function() {
 				.send({
 					"user": fakeUser.admin
 				})
-				.end((err, res) => {
+				.end(() => {
 
 					//login user
 					chai.request(server)

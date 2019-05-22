@@ -28,7 +28,7 @@ describe('Stats', function() {
 				.send({
 					"user": fakeUser.student
 				})
-				.end((err, res) => {
+				.end(() => {
 
 					//login user
 					chai.request(server)

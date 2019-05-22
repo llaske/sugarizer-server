@@ -140,7 +140,7 @@ exports.deleteStats = function(req, res) {
 	db.collection(statsCollection, function(err, collection) {
 		collection.deleteOne({
 			'user_id': req.query.uid
-		}, function(err, result) {
+		}, function(err) {
 			if (err) {
 				res.status(500).send({
 					'error': 'An error has occurred',

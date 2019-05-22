@@ -5,8 +5,6 @@ icon = (function() {
 
 	'use strict';
 
-	var icon = {};
-
 	function changeColors(iconData, fillColor, strokeColor) {
 		var re;
 		if (fillColor) {
