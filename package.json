@@ -32,7 +32,9 @@
 		"nodemon": "*",
 		"apidoc": "*",
 		"mocha": "*",
-		"eslint": "^5.15.0"
+		"eslint": "^5.15.0",
+		"grunt": "~0.4.5",
+		"grunt-contrib-uglify": "~0.5.0"
 	},
 	"scripts": {
 		"test": "mocha api/test/",

@@ -256,6 +256,41 @@ To run unit tests for Sugarizer Server launch:
 Note that settings for unit testing are defined in [env/test.ini](env/test.ini).
 
 
+# Optimize performance
+
+If you want to optimize JavaScript performance, you could generate an optimized version of Sugarizer and Sugarizer-Server with [Grunt](http://gruntjs.com). This optimized version will minimize and reduce size of all JavaScript files.
+
+First ensure than Node.js and npm is installed on your machine. See [here](http://nodejs.org/) for more information.
+
+The Gruntfile.js contains tasks settings to build an optimized version of Sugarizer and Sugarizer-Server. To do that, ensure first that Grunt is installed:
+
+	npm install -g grunt-cli
+
+Then navigate to Sugarizer directory install specific component for Sugarizer by running:
+
+	npm install
+
+Then launch Grunt task to minify Sugarizer JavaScript files:
+
+	grunt -v
+
+After minification, the `build` directory will contain the optimized version of each file in a same directory that the initial one, so you could just copy files:
+
+	cp -r build/* .
+
+Then navigate to Sugarizer-Server directory install specific component for Sugarizer-Server by running:
+
+	npm install
+
+Then launch Grunt task to minify Sugarizer-Server JavaScript files:
+
+	grunt -v
+
+Similarly, after minification, you could copy files:
+
+	cp -r build/* .
+
+
 ## License
 
 This project is licensed under `Apache v2` License. See [LICENSE](LICENSE) for full license text.
