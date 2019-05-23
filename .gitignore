@@ -8,4 +8,6 @@ docker/Dockerfile-mongodb
 docker/Dockerfile-server
 docker/db
 
+build/
+
 *.csv
