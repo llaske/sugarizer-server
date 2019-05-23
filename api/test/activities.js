@@ -26,7 +26,7 @@ describe('Activities', function() {
 			chai.request(server)
 				.post('/auth/signup')
 				.send(fakeUser)
-				.end((err, res) => {
+				.end(() => {
 
 					//login user
 					chai.request(server)

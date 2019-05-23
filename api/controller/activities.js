@@ -51,11 +51,9 @@ exports.load = function(settings, callback) {
 
 							// Check if activity is favorite
 							var favorite = false;
-							var index = favorites.length + 1;
 							for (var i = 0; !favorite && i < favorites.length; i++) {
 								if (favorites[i].trim() == info.Activity.bundle_id) {
 									favorite = true;
-									index = i;
 								}
 							}
 
@@ -83,7 +81,7 @@ exports.load = function(settings, callback) {
 								callback = null;
 							}
 						});
-						stream.on('error', function(err) {
+						stream.on('error', function() {
 							console.log("WARNING: can't find info file for '"+activitiesDirName+path.sep + file+"'");
 						});
 					}
@@ -249,7 +247,7 @@ function process_results(req, activities) {
 	opt.sort = [sort_val.substring(1), sort_type];
 
 	//filter now
-	activities.forEach(function(activity, key) {
+	activities.forEach(function(activity) {
 
 		//flag
 		var isValid = true;

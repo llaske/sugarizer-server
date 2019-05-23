@@ -40,7 +40,7 @@ var settings;
 // Read settings from .ini file
 var env = (process.env.NODE_ENV ? process.env.NODE_ENV : 'sugarizer');
 var confFile = "./env/" + env + '.ini';
-fs.open(confFile, 'r', function(err, fd) {
+fs.open(confFile, 'r', function(err) {
     if (err) {
       if (err.code === 'ENOENT') {
         console.log("Cannot load settings file '" + confFile + "', error code "+err.code);

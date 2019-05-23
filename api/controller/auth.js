@@ -1,7 +1,6 @@
 var jwt = require('jwt-simple'),
 	users = require('./users.js'),
 	mongo = require('mongodb'),
-	journal = require('./journal'),
 	common = require('../../dashboard/helper/common');
 
 

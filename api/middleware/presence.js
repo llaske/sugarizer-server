@@ -17,6 +17,7 @@ exports.init = function(settings) {
 	/**
 	 * Message types
 	 */
+	/* eslint-disable no-unused-vars */
 	var msgInit = 0;
 	var msgListUsers = 1;
 	var msgCreateSharedActivity = 2;
@@ -27,6 +28,7 @@ exports.init = function(settings) {
 	var msgOnSharedActivityUserChanged = 7;
 	var msgSendMessage = 8;
 	var msgListSharedActivityUsers = 9;
+	/* eslint-enable no-unused-vars */
 
 	/**
 	 * HTTP server
@@ -38,9 +40,9 @@ exports.init = function(settings) {
 			console.log("Error reading HTTPS credentials");
 			process.exit(-1);
 		}
-		server = https.createServer(credentials, function(request, response) {});
+		server = https.createServer(credentials);
 	} else {
-		server = http.createServer(function(request, response) {});
+		server = http.createServer();
 	}
 	server.listen(settings.presence.port, function() {
 		console.log("Presence is listening on"+(settings.security.https ? " secure":"")+" port " + settings.presence.port + "...");
@@ -226,7 +228,7 @@ exports.init = function(settings) {
 		});
 
 		// user disconnected
-		connection.on('close', function(connection) {
+		connection.on('close', function() {
 			if (userId !== false) {
 				console.log("User " + userId + " disconnected");
 				removeClient(userIndex);

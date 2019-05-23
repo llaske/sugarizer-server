@@ -96,7 +96,7 @@ exports.getServerIP = function() {
 	return addresses;
 }
 
-exports.getAPIUrl = function(req) {
+exports.getAPIUrl = function() {
 	return (ini.security.https ? 'https' : 'http' ) + "://localhost:" + ini.web.port + '/';
 }
 
