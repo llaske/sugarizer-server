@@ -46,6 +46,7 @@ module.exports = function(app, ini, db) {
 
 	// Register journal API
 	app.get("/api/v1/journal", journal.findAll);
+	app.get("/api/v1/journal/aggregate", auth.checkAdmin, journal.findAllEntries);
 	app.get("/api/v1/journal/:jid", journal.findJournalContent);
 	app.post("/api/v1/journal/:jid", journal.addEntryInJournal);
 	app.put("/api/v1/journal/:jid", journal.updateEntryInJournal);

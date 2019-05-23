@@ -1114,6 +1114,91 @@ define({ "api": [
   },
   {
     "type": "get",
+    "url": "api/v1/aggregate",
+    "title": "Get all journals with entries",
+    "name": "GetAllJournalEntries",
+    "description": "<p>It will get all the journals with their entries present in the database. Private and shared can be filtered using the &quot;type&quot; query param. If the param is not specified, it will get all the journals.</p>",
+    "group": "Journal",
+    "version": "1.0.0",
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "\"/api/v1/aggregate\"\n\"/api/v1/aggregate?type=shared\"\n\"/api/v1/aggregate?type=private\"",
+        "type": "json"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "type",
+            "description": "<p>Type of the journal (shared or private)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>Unique id of the journal</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "content",
+            "description": "<p>Array containing data of the entries</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "content[i]",
+            "description": "<p>.metadata Metadata of the entries, i.e. characteristics of the entry</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n {\n  \"_id\": \"5946d4fc9f0e36686c50a548\",\n  \"content\": [\n   {\n    \"metadata\": {\n     \"title\": \"Read me !\",\n     \"title_set_by_user\": \"0\",\n     \"activity\": \"org.sugarlabs.Markdown\",\n     \"activity_id\": \"caa97e48-d33c-470a-99e9-495ff02afe01\",\n     \"creation_time\": ​1423341000747,\n     \"timestamp\": ​1423341066909,\n     \"file_size\": ​0,\n     \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n     \"buddy_name\": \"Sugarizer server\",\n     \"buddy_color\": {\n      \"stroke\": \"#005FE4\",\n      \"fill\": \"#FF2B34\"\n     }\n    },\n    \"objectId\": \"4837240f-bf78-4d22-b936-3db96880f0a0\",\n    \"text\" : \"\"\n   },\n   {\n    \"metadata\": {\n     \"title\": \"Physics JS Activity\",\n     \"title_set_by_user\": \"0\",\n     \"activity\": \"org.olpg-france.physicsjs\",\n     \"activity_id\": \"43708a15-f48e-49b1-85ef-da4c1419b364\",\n     \"creation_time\": ​1436003632237,\n     \"timestamp\": ​1436025389565,\n     \"file_size\": ​0,\n     \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n     \"buddy_name\": \"Lionel\",\n     \"buddy_color\": {\n      \"stroke\": \"#00A0FF\",\n      \"fill\": \"#F8E800\"\n     }\n    },\n    \"objectId\": \"2acbcd69-aa14-4273-8a9f-47642b41ad9d\",\n    \"text\" : \"\"\n   },\n   ...\n  ],\n  \"shared\": true\n },\n {\n  \"_id\": \"5954089e088a9fd957734e46\",\n  \"content\": [\n   {\n    \"metadata\" : {\n     \"title\" : \"Paint Activity\",\n     \"title_set_by_user\" : \"0\",\n     \"activity\" : \"org.olpcfrance.PaintActivity\",\n     \"activity_id\" : \"c3863442-f524-4d17-868a-9eed8fb467e5\",\n     \"creation_time\" : 1522441628767,\n     \"timestamp\" : 1522441631568,\n     \"file_size\" : 0,\n     \"buddy_name\" : \"Local\",\n     \"buddy_color\" : {\n      \"stroke\" : \"#00B20D\",\n      \"fill\" : \"#00EA11\"\n      },\n      \"textsize\" : 28687,\n      \"user_id\" : \"5a9d84682feba60e001ee997\"\n    },\n    \"objectId\" : \"e02da731-690b-4347-8ae2-e8e88a692999\",\n    \"text\" : \"\"\n   }\n  ],\n  \"shared\": false\n }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/journal.js",
+    "groupTitle": "Journal"
+  },
+  {
+    "type": "get",
     "url": "api/v1/journal",
     "title": "Get all journals",
     "name": "GetAllJournals",
