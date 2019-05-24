@@ -30,7 +30,16 @@ module.exports = function(grunt) {
 			dynamic: {
 				files: [{
 					expand: true,
-					src: ['dashboard/public/img/*.{png,jpg,gif}'],
+					src: 'dashboard/public/img/*.{png,jpg,gif}',
+					dest: 'build/'
+				}]
+			}
+		},
+		cssmin: {
+			target: {
+				files: [{
+					expand: true,
+					src: 'dashboard/public/css/*.css',
 					dest: 'build/'
 				}]
 			}
@@ -40,8 +49,9 @@ module.exports = function(grunt) {
 	// These plugins provide necessary tasks.
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-imagemin');
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 	// Default task.
-	grunt.registerTask('default', ['uglify', 'imagemin']);
+	grunt.registerTask('default', ['uglify', 'imagemin', 'cssmin']);
 
 };
