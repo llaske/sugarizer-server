@@ -22,13 +22,26 @@ module.exports = function(grunt) {
 				],
 				dest: 'build/'
 			}
+		},
+		imagemin: {
+			options: {
+				optimizationLevel: 0 // Select optimization level between 0 and 7. See https://github.com/gruntjs/grunt-contrib-imagemin#optimizationlevel-png for more info
+			},
+			dynamic: {
+				files: [{
+					expand: true,
+					src: ['dashboard/public/img/*.{png,jpg,gif}'],
+					dest: 'build/'
+				}]
+			}
 		}
 	});
 
 	// These plugins provide necessary tasks.
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-imagemin');
 
 	// Default task.
-	grunt.registerTask('default', ['uglify']);
+	grunt.registerTask('default', ['uglify', 'imagemin']);
 
 };
