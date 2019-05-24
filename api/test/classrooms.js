@@ -140,7 +140,7 @@ describe('Classrooms', function() {
 					res.body.should.have.property('students').be.an('array')
 					var studentList = res.body.students.reduce(function(list, student) {
 						if (student.is_member) {
-						   list.push(student._id);
+							list.push(student._id);
 						}
 						return list;
 					}, []);
@@ -168,7 +168,7 @@ describe('Classrooms', function() {
 							res.body.should.have.property('students').be.an('array');
 							var studentList = res.body.students.reduce(function(list, student) {
 								if (student.is_member) {
-								   list.push(student._id);
+									list.push(student._id);
 								}
 								return list;
 							}, []);
