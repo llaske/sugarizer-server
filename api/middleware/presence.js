@@ -85,7 +85,7 @@ exports.init = function(settings) {
 						console.log('User ' + rjson.networkId + ' rejected, already connected');
 					} else {
 						// Add client
-						userIndex = addClient(connection)
+						userIndex = addClient(connection);
 						clients[userIndex].settings = rjson;
 
 						// Get user name
@@ -255,7 +255,7 @@ exports.init = function(settings) {
 
 		var uuid = s.join("");
 		return uuid;
-	};
+	}
 
 	// Find client by id
 	function findClient(userId) {
@@ -450,4 +450,4 @@ exports.init = function(settings) {
 		// Return users in group
 		return sharedActivities[groupIndex].users;
 	}
-}
+};

@@ -45,7 +45,7 @@ exports.init = function(settings, database) {
 // Get shared journal
 exports.getShared = function() {
 	return shared;
-}
+};
 
 // Create a new journal
 exports.createJournal = function(callback) {
@@ -55,9 +55,9 @@ exports.createJournal = function(callback) {
 			shared: false
 		}, {
 			safe: true
-		}, callback)
+		}, callback);
 	});
-}
+};
 
 /**
  * @api {get} api/v1/journal Get all journals
@@ -107,7 +107,7 @@ exports.findAll = function(req, res) {
 				new mongo.ObjectID(req.user.private_journal),
 				new mongo.ObjectID(req.user.shared_journal)
 			]
-		}
+		};
 	}
 
 	//get data
@@ -124,7 +124,7 @@ exports.findAll = function(req, res) {
 			res.send(items);
 		});
 	});
-}
+};
 
 //- REST interface
 
@@ -140,7 +140,7 @@ exports.addJournal = function(req, res) {
 			res.send(result.ops[0]);
 		}
 	});
-}
+};
 
 /**
  * @api {get} api/v1/journal/:jid Get journal entries
@@ -288,7 +288,7 @@ exports.findJournalContent = function(req, res) {
 			});
 		});
 	});
-}
+};
 
 //form query params
 function formPaginatedUrl(route, params, offset, limit) {
@@ -537,7 +537,7 @@ exports.addEntryInJournal = function(req, res) {
 			}
 		});
 	});
-}
+};
 
 /**
  * @api {put} api/v1/journal/:jid Update entry
@@ -632,7 +632,7 @@ exports.updateEntryInJournal = function(req, res) {
 			}
 		});
 	});
-}
+};
 
 /**
  * @api {delete} api/v1/journal/:jid Remove entry/journal
@@ -676,7 +676,7 @@ exports.removeInJournal = function(req, res) {
 		return;
 	}
 	var jid = req.params.jid;
-	var oid = (req.query.oid) ? req.query.oid : false;;
+	var oid = (req.query.oid) ? req.query.oid : false;
 	var type = (req.query.type) ? req.query.type : 'partial';
 
 	// validate on the basis of user's role
@@ -748,7 +748,7 @@ exports.removeInJournal = function(req, res) {
 			});
 		}
 	}
-}
+};
 
 //check user permission
 var validateUser = function(req, res) {
@@ -761,7 +761,7 @@ var validateUser = function(req, res) {
 			});
 		}
 	}
-}
+};
 
 /**
  * @api {get} api/v1/aggregate Get all journals with entries
@@ -884,6 +884,6 @@ exports.findAllEntries = function(req, res) {
 			}
 			// Return
 			return res.send(items);
-		})
+		});
 	});
-}
+};

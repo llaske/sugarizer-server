@@ -723,4 +723,4 @@ module.exports = function() {
 	];
 
 	return xocolors;
-}
+};

@@ -56,4 +56,4 @@ module.exports = function(app, ini) {
 			"url": req.protocol + '://' + req.get('host') + req.originalUrl
 		});
 	});
-}
+};

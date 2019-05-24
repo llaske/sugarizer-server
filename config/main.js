@@ -14,7 +14,7 @@ module.exports = function(app, ini) {
 	// add an artificial delay for debug
 	if (artificialDelay) {
 		app.use(function(req,res,next) {
-			setTimeout(next, artificialDelay)
+			setTimeout(next, artificialDelay);
 		});
 	}
 
@@ -33,11 +33,11 @@ module.exports = function(app, ini) {
 	app.use(bodyParser.urlencoded({
 		limit: '16mb',
 		extended: false
-	}))
+	}));
 	app.use(bodyParser.json({
 		limit: '16mb',
 		type: '*/*'
-	}))
+	}));
 
 	//include expressValidator
 	app.use(expressValidator());

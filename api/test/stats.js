@@ -159,7 +159,7 @@ function getLogs(num) {
 		"event_action": "search",
 		"event_label": "q=stopwatch",
 		"event_value": "null"
-	}
+	};
 
 	//add uid of the user
 	sampleLog.user_id = fakeUser.student.user._id;

@@ -68,7 +68,7 @@ function launch_activity(callurl) {
 				rawValue.server.url = window.location.protocol+"//"+window.location.hostname+":"+rawValue.server.web;
 				encodedValue = JSON.stringify(rawValue);
 			}
-			localStorage.setItem(index, encodedValue)
+			localStorage.setItem(index, encodedValue);
 		}
 
 		// open window
@@ -102,7 +102,7 @@ function launch_activity(callurl) {
 							localStorage.removeItem(key);
 						}
 					}
-				}
+				};
 			} else {
 				$.notify({
 					message: document.webL10n.get('CantOpenWindow')
@@ -117,7 +117,7 @@ function launch_activity(callurl) {
 function updateActivities() {
 
 	//get favorites
-	var list = []
+	var list = [];
 	$.each($('[name="favoriteActivities"]:checked'), function(index, value) {
 		list.push($(this).parent().data('id'));
 	});
@@ -156,7 +156,7 @@ function formatUserField(state) {
 	);
 	new icon().load("/public/img/owner-icon.svg", $(state.element).data('color'), $(state.element).data('id'));
 	return $state;
-};
+}
 
 function formatColorField(state) {
 	if (!state.id) {
@@ -210,7 +210,7 @@ $(document).ready(function() {
 			} else {
 				$('#getJournalEntries').attr('action', '/dashboard/journal/' + pj);
 			}
-		})
+		});
 		$("#users-select2").trigger("change");
 	}
 
@@ -219,7 +219,7 @@ $(document).ready(function() {
 			templateResult: formatColorField,
 			templateSelection: formatColorField,
 			matcher: matchColorField
-		})
+		});
 	}
 
 	if ($("#journal-type-select2").length > 0) {
@@ -231,7 +231,7 @@ $(document).ready(function() {
 			} else {
 				$('#getJournalEntries').attr('action', '/dashboard/journal/' + pj);
 			}
-		})
+		});
 	}
 });
 
@@ -373,5 +373,5 @@ function createTable(type, element, route) {
 		}, function(response) {
 			$('#' + response.element + ' tbody').html(response.data);
 		});
-	})
+	});
 }

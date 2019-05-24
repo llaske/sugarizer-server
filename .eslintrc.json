@@ -25,7 +25,7 @@
             "unix"
         ],
         "semi": [
-            "off",
+            "error",
             "always"
         ],
         "eol-last": [
