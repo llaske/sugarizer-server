@@ -1,14 +1,13 @@
 // User handling
 
 var mongo = require('mongodb'),
-	classroom = require('./classrooms'),
 	journal = require('./journal');
 
 var db;
 
 var usersCollection;
 var classroomsCollection;
-
+var journalCollection;
 
 // Init database
 exports.init = function(settings, database) {
@@ -196,12 +195,12 @@ exports.findAll = function(req, res) {
 						'prev_page': ((options.skip - options.limit) >= 0) ? formPaginatedUrl(route, params, (options.skip - options.limit), options.limit) : undefined,
 						'next_page': ((options.skip + options.limit) < options.total) ? formPaginatedUrl(route, params, (options.skip + options.limit), options.limit) : undefined,
 					},
-				}
+				};
 
 				// Return
 				res.send(data);
 			});
-		})
+		});
 	});
 };
 
@@ -238,7 +237,7 @@ exports.getAllUsers = function(query, options, callback) {
 			});
 		});
 	});
-}
+};
 
 function getOptions(req, count, def_sort) {
 
@@ -252,7 +251,7 @@ function getOptions(req, count, def_sort) {
 		skip: req.query.offset || 0,
 		total: count,
 		limit: req.query.limit || 10
-	}
+	};
 
 	//cast to int
 	options.skip = parseInt(options.skip);
@@ -277,7 +276,9 @@ function addQuery(filter, params, query, default_val) {
 			};
 		} else if (filter == 'classid') {
 			query['_id'] = {
-				$in: params[filter].split(',').map(id => new mongo.ObjectID(id))
+				$in: params[filter].split(',').map(function(id) {
+					return new mongo.ObjectID(id);
+				})
 			};
 		} else {
 			query[filter] = {
@@ -439,7 +440,7 @@ exports.addUser = function(req, res) {
 			});
 		}
 	});
-}
+};
 
 /**
  * @api {put} api/v1/users/ Update user
@@ -551,7 +552,7 @@ exports.updateUser = function(req, res) {
 		//update user
 		updateUser(uid, user, res);
 	}
-}
+};
 
 //private function to update user
 function updateUser(uid, user, res) {
@@ -645,7 +646,7 @@ exports.removeUser = function(req, res) {
 							}, {
 								safe: true
 							},
-							function(err, result) {
+							function(err) {
 								if (err) {
 									res.status(500).send({
 										error: "An error has occurred",
@@ -655,22 +656,22 @@ exports.removeUser = function(req, res) {
 									if (user.value.private_journal) {
 										db.collection(journalCollection, function(err, collection) {
 											collection.deleteMany({
-													_id: new mongo.ObjectID(user.value.private_journal)
-												}, {
-													safe: true
-												},
-												function(err, result) {
-													if (err) {
-														res.status(500).send({
-															error: "An error has occurred",
-															code: 10
-														});
-													} else {
-														res.send({
-															'user_id': uid
-														});
-													}
+												_id: new mongo.ObjectID(user.value.private_journal)
+											}, {
+												safe: true
+											},
+											function(err) {
+												if (err) {
+													res.status(500).send({
+														error: "An error has occurred",
+														code: 10
+													});
+												} else {
+													res.send({
+														'user_id': uid
+													});
 												}
+											}
 											);
 										});
 									} else {
@@ -691,7 +692,7 @@ exports.removeUser = function(req, res) {
 			}
 		});
 	});
-}
+};
 
 //update user's time stamp
 exports.updateUserTimestamp = function(uid, callback) {
@@ -705,15 +706,8 @@ exports.updateUserTimestamp = function(uid, callback) {
 			}
 		}, {
 			safe: true
-		}, function(err, result) {
-			if (err) {
-				res.status(500).send({
-					'error': 'An error has occurred while updating timestamp',
-					'code': 24
-				});
-			} else {
-				callback()
-			}
+		}, function(err) {
+			callback(err);
 		});
 	});
-}
+};
