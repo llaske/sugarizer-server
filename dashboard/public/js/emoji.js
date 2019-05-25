@@ -79,7 +79,7 @@ var getHtmlForEmoji = function(password) {
 		}
 	}
 	return html;
-}
+};
 
 try {
 	exports.getHtml = getHtmlForEmoji;

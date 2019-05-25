@@ -32,7 +32,7 @@ module.exports = function(req, res, next) {
 
 						//send to the next middleware
 						next();
-					})
+					});
 				} else {
 					// No user with this name exists, respond back with a 401
 					return res.status(401).send({

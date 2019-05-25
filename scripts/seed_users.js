@@ -13,14 +13,14 @@ if (filename) {
 var csv = require('csv-parser');
 
 // Import csv-writer module and create CSV writer
-var csvWriter = require('csv-writer')
+var csvWriter = require('csv-writer');
 var createCsvWriter = csvWriter.createObjectCsvWriter;
 
 // Import fs module
 var fs = require('fs');
 
 // Import ini module to parse '.ini' files
-var ini = require('ini')
+var ini = require('ini');
 
 // Import request library to make requests over the network
 var request = require('request');
@@ -107,7 +107,7 @@ function isValidColor(color) {
             return true;
         }
     }
-    return false
+    return false;
 }
 
 // Validate language
@@ -237,14 +237,14 @@ function stringifyExistingClassroom(name) {
     var newStudents = Classrooms[name].students;
     var oldStudents = [];
     if (Classrooms[name].data && Classrooms[name].data.students && Classrooms[name].data.students.length > 0) {
-        oldStudents = Classrooms[name].data.students
+        oldStudents = Classrooms[name].data.students;
     }
     var union = [...new Set([...newStudents, ...oldStudents])];
     var classroomData = {
         name: name,
         color: Classrooms[name].data.color,
         students: union
-    }
+    };
     classroomData = JSON.stringify(classroomData);
     return classroomData;
 }
@@ -422,7 +422,7 @@ function findOrCreateClassroom(classes) {
                     classroomProcessed++;
                     console.log(err);
                     if (classroomProcessed == classes.length) finishClassroomAssignment();
-                })
+                });
             } else {
                 // Create Classroom
                 insertClassroom(res.q).then(function(res) {
@@ -438,7 +438,7 @@ function findOrCreateClassroom(classes) {
                     classroomProcessed++;
                     console.log(err);
                     if (classroomProcessed == classes.length) finishClassroomAssignment();
-                })
+                });
             }
         })
         .catch(function(err) {

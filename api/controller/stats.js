@@ -96,7 +96,7 @@ exports.addStats = function(req, res) {
 			}
 		});
 	});
-}
+};
 
 
 /**
@@ -153,7 +153,7 @@ exports.deleteStats = function(req, res) {
 			}
 		});
 	});
-}
+};
 
 /**
  * @api {get} api/v1/stats/ Get all stats
@@ -229,7 +229,7 @@ function getOptions(req, def_sort) {
 		sort: [
 			[sort_val.substring(1), sort_type]
 		]
-	}
+	};
 	return options;
 }
 

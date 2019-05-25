@@ -118,7 +118,7 @@ describe('Journal', function() {
 					done();
 				});
 		});
-	})
+	});
 
 	describe('/POST/:id journal', function() {
 		it('it should do nothing on invalid journal', (done) => {
@@ -695,5 +695,5 @@ function genFakeJournalEntry(i, text) {
 			"timestamp": (+new Date() - parseInt(1000 * Math.random())),
 			"activity": (i.toString() + ".mocha.org")
 		}
-	})
+	});
 }

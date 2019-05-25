@@ -45,7 +45,7 @@ exports.init = function(settings, database) {
 // Get shared journal
 exports.getShared = function() {
 	return shared;
-}
+};
 
 // Create a new journal
 exports.createJournal = function(callback) {
@@ -55,9 +55,9 @@ exports.createJournal = function(callback) {
 			shared: false
 		}, {
 			safe: true
-		}, callback)
+		}, callback);
 	});
-}
+};
 
 /**
  * @api {get} api/v1/journal Get all journals
@@ -107,7 +107,7 @@ exports.findAll = function(req, res) {
 				new mongo.ObjectID(req.user.private_journal),
 				new mongo.ObjectID(req.user.shared_journal)
 			]
-		}
+		};
 	}
 
 	//get data
@@ -124,7 +124,7 @@ exports.findAll = function(req, res) {
 			res.send(items);
 		});
 	});
-}
+};
 
 //- REST interface
 
@@ -140,7 +140,7 @@ exports.addJournal = function(req, res) {
 			res.send(result.ops[0]);
 		}
 	});
-}
+};
 
 /**
  * @api {get} api/v1/journal/:jid Get journal entries
@@ -190,9 +190,9 @@ exports.addJournal = function(req, res) {
  *           "title_set_by_user": "0",
  *           "activity": "org.sugarlabs.Markdown",
  *           "activity_id": "caa97e48-d33c-470a-99e9-495ff02afe01",
- *           "creation_time": ​1423341000747,
- *           "timestamp": ​1423341066909,
- *           "file_size": ​0,
+ *           "creation_time": 1423341000747,
+ *           "timestamp": 1423341066909,
+ *           "file_size": 0,
  *           "user_id": "5569f4b019e0b4c9525b3c97",
  *           "buddy_name": "Sugarizer server",
  *           "buddy_color": {
@@ -209,9 +209,9 @@ exports.addJournal = function(req, res) {
  *           "title_set_by_user": "0",
  *           "activity": "org.olpg-france.physicsjs",
  *           "activity_id": "43708a15-f48e-49b1-85ef-da4c1419b364",
- *           "creation_time": ​1436003632237,
- *           "timestamp": ​1436025389565,
- *           "file_size": ​0,
+ *           "creation_time": 1436003632237,
+ *           "timestamp": 1436025389565,
+ *           "file_size": 0,
  *           "user_id": "5569f4b019e0b4c9525b3c97",
  *           "buddy_name": "Lionel",
  *           "buddy_color": {
@@ -288,7 +288,7 @@ exports.findJournalContent = function(req, res) {
 			});
 		});
 	});
-}
+};
 
 //form query params
 function formPaginatedUrl(route, params, offset, limit) {
@@ -464,9 +464,9 @@ function getOptions(req) {
  *         "title_set_by_user": "0",
  *         "activity": "org.sugarlabs.Markdown",
  *         "activity_id": "caa97e48-d33c-470a-99e9-495ff02afe01",
- *         "creation_time": ​1423341000747,
- *         "timestamp": ​1423341000747,
- *         "file_size": ​0,
+ *         "creation_time": 1423341000747,
+ *         "timestamp": 1423341000747,
+ *         "file_size": 0,
  *         "user_id": "5569f4b019e0b4c9525b3c97",
  *         "buddy_name": "Lionel",
  *         "buddy_color": {
@@ -537,7 +537,7 @@ exports.addEntryInJournal = function(req, res) {
 			}
 		});
 	});
-}
+};
 
 /**
  * @api {put} api/v1/journal/:jid Update entry
@@ -579,10 +579,10 @@ exports.addEntryInJournal = function(req, res) {
  *         "title_set_by_user": "0",
  *         "activity": "org.sugarlabs.Markdown",
  *         "activity_id": "caa97e48-d33c-470a-99e9-495ff02afe01",
- *         "creation_time": ​1423341000747,
- *         "timestamp": ​1423341066120,
- *         "file_size": ​0,
- *         "user_id": ​"5569f4b019e0b4c9525b3c97",
+ *         "creation_time": 1423341000747,
+ *         "timestamp": 1423341066120,
+ *         "file_size": 0,
+ *         "user_id": "5569f4b019e0b4c9525b3c97",
  *         "buddy_name": "Lionel",
  *         "buddy_color": {
  *           "stroke": "#005FE4",
@@ -632,7 +632,7 @@ exports.updateEntryInJournal = function(req, res) {
 			}
 		});
 	});
-}
+};
 
 /**
  * @api {delete} api/v1/journal/:jid Remove entry/journal
@@ -676,7 +676,7 @@ exports.removeInJournal = function(req, res) {
 		return;
 	}
 	var jid = req.params.jid;
-	var oid = (req.query.oid) ? req.query.oid : false;;
+	var oid = (req.query.oid) ? req.query.oid : false;
 	var type = (req.query.type) ? req.query.type : 'partial';
 
 	// validate on the basis of user's role
@@ -748,7 +748,7 @@ exports.removeInJournal = function(req, res) {
 			});
 		}
 	}
-}
+};
 
 //check user permission
 var validateUser = function(req, res) {
@@ -761,7 +761,7 @@ var validateUser = function(req, res) {
 			});
 		}
 	}
-}
+};
 
 /**
  * @api {get} api/v1/aggregate Get all journals with entries
@@ -799,9 +799,9 @@ var validateUser = function(req, res) {
  *          "title_set_by_user": "0",
  *          "activity": "org.sugarlabs.Markdown",
  *          "activity_id": "caa97e48-d33c-470a-99e9-495ff02afe01",
- *          "creation_time": ​1423341000747,
- *          "timestamp": ​1423341066909,
- *          "file_size": ​0,
+ *          "creation_time": 1423341000747,
+ *          "timestamp": 1423341066909,
+ *          "file_size": 0,
  *          "user_id": "5569f4b019e0b4c9525b3c97",
  *          "buddy_name": "Sugarizer server",
  *          "buddy_color": {
@@ -818,9 +818,9 @@ var validateUser = function(req, res) {
  *          "title_set_by_user": "0",
  *          "activity": "org.olpg-france.physicsjs",
  *          "activity_id": "43708a15-f48e-49b1-85ef-da4c1419b364",
- *          "creation_time": ​1436003632237,
- *          "timestamp": ​1436025389565,
- *          "file_size": ​0,
+ *          "creation_time": 1436003632237,
+ *          "timestamp": 1436025389565,
+ *          "file_size": 0,
  *          "user_id": "5569f4b019e0b4c9525b3c97",
  *          "buddy_name": "Lionel",
  *          "buddy_color": {
@@ -884,6 +884,6 @@ exports.findAllEntries = function(req, res) {
 			}
 			// Return
 			return res.send(items);
-		})
+		});
 	});
-}
+};

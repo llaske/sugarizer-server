@@ -15,3 +15,5 @@ dashboard/public/js/pace.min.js
 dashboard/public/js/select2.min.js
 
 docs/
+
+build/

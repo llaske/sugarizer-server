@@ -159,7 +159,7 @@ describe('Activities', function() {
 				.set('x-key', fakeUser.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.should.have.property('id').eql('org.olpcfrance.PaintActivity');;
+					res.body.should.have.property('id').eql('org.olpcfrance.PaintActivity');
 					res.body.should.have.property('name').not.eql(undefined);
 					res.body.should.have.property('version').not.eql(undefined);
 					res.body.should.have.property('directory').not.eql(undefined);
@@ -181,7 +181,7 @@ describe('Activities', function() {
 				.set('x-key', fakeUser.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.should.have.property('id').eql('org.olpcfrance.PaintActivity');;
+					res.body.should.have.property('id').eql('org.olpcfrance.PaintActivity');
 					res.body.should.have.property('name').not.eql(undefined);
 					res.body.should.not.have.property('version');
 					res.body.should.not.have.property('directory');
@@ -191,7 +191,7 @@ describe('Activities', function() {
 					done();
 				});
 		});
-	})
+	});
 
 	describe('/PUT activities', () => {
 		it('it should update favorites and order property of activities', (done) => {

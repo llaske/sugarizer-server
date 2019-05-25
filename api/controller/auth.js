@@ -168,8 +168,8 @@ exports.validateUser = function(uid, callback) {
 exports.updateTimestamp = function(uid, callback) {
 
 	//update user time stamp function
-	users.updateUserTimestamp(uid, callback)
-}
+	users.updateUserTimestamp(uid, callback);
+};
 
 //check admin
 exports.checkAdmin = function(req, res, next) {
@@ -182,7 +182,7 @@ exports.checkAdmin = function(req, res, next) {
 		}
 	}
 	next();
-}
+};
 exports.checkAdminOrLocal = function(req, res, next) {
 	var whishedRole = 'student';
 	if (req.body && req.body.user) {
@@ -198,7 +198,7 @@ exports.checkAdminOrLocal = function(req, res, next) {
 		});
 	}
 	next();
-}
+};
 
 // private method
 function genToken(user, age) {

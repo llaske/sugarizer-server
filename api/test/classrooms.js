@@ -137,10 +137,10 @@ describe('Classrooms', function() {
 					res.body.should.have.property('_id').eql(fake.classroom._id);
 					res.body.should.have.property('name').eql("group_a_" + (timestamp.toString()));
 					res.body.should.have.property('color').not.eql(undefined);
-					res.body.should.have.property('students').be.an('array')
+					res.body.should.have.property('students').be.an('array');
 					var studentList = res.body.students.reduce(function(list, student) {
 						if (student.is_member) {
-						   list.push(student._id);
+							list.push(student._id);
 						}
 						return list;
 					}, []);
@@ -157,7 +157,7 @@ describe('Classrooms', function() {
 				.set('x-key', fake.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					fake.classroom.students = fake.classroom.students.filter(function(el) { return el != fake.student1._id });
+					fake.classroom.students = fake.classroom.students.filter(function(el) { return el != fake.student1._id; });
 					chai.request(server)
 						.get('/api/v1/classrooms/' + fake.classroom._id)
 						.set('x-access-token', fake.admin.token)
@@ -168,7 +168,7 @@ describe('Classrooms', function() {
 							res.body.should.have.property('students').be.an('array');
 							var studentList = res.body.students.reduce(function(list, student) {
 								if (student.is_member) {
-								   list.push(student._id);
+									list.push(student._id);
 								}
 								return list;
 							}, []);

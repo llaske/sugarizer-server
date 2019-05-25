@@ -17,7 +17,7 @@
     },
     "rules": {
         "indent": [
-            "off",
+            "error",
             "tab"
         ],
         "linebreak-style": [
@@ -25,14 +25,14 @@
             "unix"
         ],
         "semi": [
-            "off",
+            "error",
             "always"
         ],
         "eol-last": [
             "error",
             "always"
         ],
-        "no-mixed-spaces-and-tabs": "off",
+        "no-mixed-spaces-and-tabs": "error",
         "no-console": 0,
         "no-redeclare": "off"
     },

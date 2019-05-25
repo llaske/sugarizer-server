@@ -6,7 +6,7 @@ var moment = require('moment');
 
 exports.init = function(settings) {
 	ini = settings;
-}
+};
 
 // language features
 exports.l10n = {
@@ -32,7 +32,7 @@ exports.l10n = {
 		}
 		return translate;
 	}
-}
+};
 
 exports.reinitLocale = function(req) {
 	// reinit l10n and moment with locale
@@ -57,7 +57,7 @@ exports.loadCredentials = function(settings) {
 		return null;
 	}
 	return {cert: cert, key: key};
-}
+};
 
 exports.getHeaders = function(req) {
 
@@ -66,8 +66,8 @@ exports.getHeaders = function(req) {
 		"content-type": "application/json",
 		"x-access-token": (req.session.user ? req.session.user.token : ""),
 		"x-key": (req.session.user ? req.session.user.user._id : ""),
-	}
-}
+	};
+};
 
 exports.getClientIP = function(req) {
 
@@ -76,7 +76,7 @@ exports.getClientIP = function(req) {
 		req.connection.remoteAddress ||
 		req.socket.remoteAddress ||
 		req.connection.socket.remoteAddress;
-}
+};
 
 
 exports.getServerIP = function() {
@@ -94,11 +94,11 @@ exports.getServerIP = function() {
 	addresses.push("::1");
 	addresses.push("::ffff:127.0.0.1");
 	return addresses;
-}
+};
 
 exports.getAPIUrl = function() {
 	return (ini.security.https ? 'https' : 'http' ) + "://localhost:" + ini.web.port + '/';
-}
+};
 
 
 /**
@@ -148,4 +148,4 @@ exports.getAPIInfo = function(req, res) {
 			"cookie-age": ini.security.max_age
 		}
 	});
-}
+};

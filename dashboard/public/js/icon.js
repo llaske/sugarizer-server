@@ -36,7 +36,7 @@ icon = (function() {
 
 		client.open("GET", source);
 		client.send();
-	};
+	}
 
 	function colorize(url, colors, uid) {
 
@@ -56,7 +56,7 @@ icon = (function() {
 				}
 			}
 		});
-	};
+	}
 
 	// PUBLIC INTERFACE
 	return {

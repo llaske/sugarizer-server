@@ -10,7 +10,7 @@ var settingsData;
 exports.load = function(settings, callback) {
 
 	// Get settings
-	activities = []
+	activities = [];
 	settingsData = settings;
 	var activitiesDirName = settings.activities.activities_directory_name;
 	var templateDirName = settings.activities.template_directory_name;
@@ -361,4 +361,4 @@ exports.updateActivities = function(req, res) {
 	exports.load(settingsData, function() {
 		res.send(activities);
 	});
-}
+};
