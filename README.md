@@ -258,7 +258,7 @@ Note that settings for unit testing are defined in [env/test.ini](env/test.ini).
 
 # Optimize performance
 
-If you want to optimize JavaScript performance, you could generate an optimized version of Sugarizer and Sugarizer-Server with [Grunt](http://gruntjs.com). This optimized version will minimize and reduce size of all JavaScript files.
+If you want to optimize JavaScript performance, you could generate an optimized version of Sugarizer and Sugarizer-Server with [Grunt](http://gruntjs.com). This optimized version will minimize and reduce size of the public resources.
 
 First ensure than Node.js and npm is installed on your machine. See [here](http://nodejs.org/) for more information.
 
@@ -282,7 +282,7 @@ Then navigate to Sugarizer-Server directory install specific component for Sugar
 
 	npm install
 
-Then launch Grunt task to minify Sugarizer-Server JavaScript files:
+Then launch Grunt task to minify Sugarizer-Server CSS, Image and JavaScript files:
 
 	grunt -v
 
