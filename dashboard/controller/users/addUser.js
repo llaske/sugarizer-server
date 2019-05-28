@@ -68,6 +68,7 @@ module.exports = function addUser(req, res) {
 					role:req.body.role
 				},
 				xocolors: xocolors,
+				mode: "add",
 				moment: moment,
 				emoji: emoji,
 				account: req.session.user,
@@ -80,6 +81,7 @@ module.exports = function addUser(req, res) {
 		res.render('addEditUser', {
 			module: 'users',
 			xocolors: xocolors,
+			mode: "add",
 			moment: moment,
 			emoji: emoji,
 			account: req.session.user,

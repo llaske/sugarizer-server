@@ -515,6 +515,7 @@ exports.updateUser = function(req, res) {
 
 	var uid = req.params.uid;
 	var user = JSON.parse(req.body.user);
+	delete user.role // Disable role change
 
 	// validate on the basis of user's role
 	if (req.user.role == 'student') {
