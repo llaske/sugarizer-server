@@ -32,7 +32,7 @@ exports.index = function(req, res) {
 		if (response.statusCode == 200) {
 
 			// send to activities page
-			res.render('activities', {
+			res.render('admin/activities', {
 				module: 'activities',
 				activities: body,
 				headers: common.getHeaders(req),

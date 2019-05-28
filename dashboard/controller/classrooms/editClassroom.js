@@ -66,7 +66,7 @@ module.exports = function editClassroom(req, res) {
 				if (response.statusCode == 200) {
 
 					// send to classrooms page
-					res.render('addEditClassroom', {
+					res.render('admin/addEditClassroom', {
 						module: 'classrooms',
 						classroom: body,
 						moment: moment,

@@ -50,7 +50,7 @@ exports.index = function(req, res) {
 		if (response.statusCode == 200) {
 
 			// send to activities page
-			res.render('classrooms', {
+			res.render('admin/classrooms', {
 				module: 'classrooms',
 				moment: moment,
 				query: query,

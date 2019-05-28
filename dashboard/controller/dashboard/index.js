@@ -55,7 +55,7 @@ exports.index = function(req, res) {
 					data.classrooms = classroomResponse;
 
 					// send to login page
-					res.render('dashboard', {
+					res.render('admin/dashboard', {
 						title: 'dashboard',
 						module: 'dashboard',
 						data: data,

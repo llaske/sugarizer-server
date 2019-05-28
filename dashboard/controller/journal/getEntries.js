@@ -38,7 +38,7 @@ module.exports = function getEntries(req, res) {
 			getJournalEntries(req, res, query, function(entries) {
 
 				//render template
-				res.render('journal', {
+				res.render('admin/journal', {
 					module: 'journals',
 					moment: moment,
 					entries: entries,

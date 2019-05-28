@@ -24,7 +24,7 @@ exports.index = function(req, res) {
 	common.reinitLocale(req);
 
 	getUsers(req, res, function(users) {
-		res.render('journal', {
+		res.render('admin/journal', {
 			module: 'journals',
 			moment: moment,
 			entries: [],

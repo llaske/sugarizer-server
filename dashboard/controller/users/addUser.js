@@ -61,7 +61,7 @@ module.exports = function addUser(req, res) {
 			});
 		} else {
 			req.flash('errors', errors);
-			return res.render('addEditUser', {
+			return res.render('admin/addEditUser', {
 				module: 'users',
 				user: {
 					name:req.body.name,
@@ -81,7 +81,7 @@ module.exports = function addUser(req, res) {
 
 	} else {
 		// send to activities page
-		res.render('addEditUser', {
+		res.render('admin/addEditUser', {
 			module: 'users',
 			xocolors: xocolors,
 			mode: "add",

@@ -66,7 +66,7 @@ exports.index = function(req, res) {
 			getClassrooms(req, function(classrooms){
 
 				// send to activities page
-				res.render('users', {
+				res.render('admin/users', {
 					module: 'users',
 					moment: moment,
 					query: query,
