@@ -45,6 +45,9 @@ module.exports = function addUser(req, res) {
 					if (body.role == "admin") {
 						// send to admin page
 						return res.redirect('/dashboard/users/?role=admin');
+					} else if (body.role == "teacher") {
+						// send to admin page
+						return res.redirect('/dashboard/users/?role=teacher');
 					} else {
 						// send to users page
 						return res.redirect('/dashboard/users/');

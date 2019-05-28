@@ -20,6 +20,7 @@
                           <div class="form-group form-black label-floating is-empty">
                               <select class="form-control" id="user-type-select2" name="role">
                                  <option data-l10n-id="student" value="student" <% if(query.role=='student'){ %>selected="selected"<% } %> >Student</option>
+                                 <option data-l10n-id="teacher" value="teacher" <% if(query.role=='teacher'){ %>selected="selected"<% } %> >Teacher</option>
                                  <option data-l10n-id="admin" value="admin" <% if(query.role=='admin'){ %>selected="selected"<% } %> >Admin</option>
                               </select>
 							  <script>$('#user-form [name="role"]').select2().on("change", () => show_class_fields())</script>
@@ -166,7 +167,7 @@
 <script>
 function show_class_fields() {
     console.log($('#user-form [name="role"]').select2('data')[0].id)
-    if($('#user-form [name="role"]').select2('data')[0].id == 'admin'){
+    if($('#user-form [name="role"]').select2('data')[0].id != 'student'){
         $('.classroom_input').addClass('hide');
         $('#user-form [name="classid"]').val('').trigger('change');
 

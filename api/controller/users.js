@@ -300,7 +300,7 @@ function addQuery(filter, params, query, default_val) {
 /**
  * @api {post} api/v1/users/ Add user
  * @apiName AddUser
- * @apiDescription Add a new user. Return the user created. Only admin can add another admin or student.
+ * @apiDescription Add a new user. Return the user created. Only admin can add another admin, student or teacher.
  * @apiGroup Users
  * @apiVersion 1.0.0
  * @apiHeader {String} x-key User unique id.
@@ -308,13 +308,13 @@ function addQuery(filter, params, query, default_val) {
  *
  * @apiSuccess {String} _id Unique user id
  * @apiSuccess {String} name Unique user name
- * @apiSuccess {String} role User role (student or admin)
+ * @apiSuccess {String} role User role (admin, student or teacher)
  * @apiSuccess {Object} color Buddy color
  * @apiSuccess {String} color.stroke Buddy strike color
  * @apiSuccess {String} color.fill Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
  * @apiSuccess {String} language Language setting of the user
- * @apiSuccess {String} password password of the user
+ * @apiSuccess {String} password Password of the user
  * @apiSuccess {String} private_journal Id of the private journal on the server
  * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
  * @apiSuccess {Number} created_time when the user was created on the server
@@ -380,7 +380,7 @@ exports.addUser = function(req, res) {
 
 	// validate on the basis of user's role for logged in case
 	if (req.user) {
-		if (req.user.role == 'student') {
+		if (req.user.role == 'student' || req.user.role == 'teacher') {
 			return res.status(401).send({
 				'error': 'You don\'t have permission to perform this action',
 				'code': 19
@@ -394,7 +394,10 @@ exports.addUser = function(req, res) {
 	}, {}, function(item) {
 		if (item.length == 0) {
 			//create user based on role
-			if (user.role == 'admin') {
+			if (user.role == 'admin' || user.role == 'teacher') {
+				if (user.role = 'teacher') {
+					user.classrooms=[];
+				}
 				db.collection(usersCollection, function(err, collection) {
 					collection.insertOne(user, {
 						safe: true
@@ -445,7 +448,7 @@ exports.addUser = function(req, res) {
 /**
  * @api {put} api/v1/users/ Update user
  * @apiName UpdateUser
- * @apiDescription Update an user. Return the user updated. Student can update only his/her details but admin can update anyone.
+ * @apiDescription Update an user. Return the user updated. Student or teacher can update only his/her details but admin can update anyone.
  * @apiGroup Users
  * @apiVersion 1.0.0
  * @apiHeader {String} x-key User unique id.
@@ -453,13 +456,13 @@ exports.addUser = function(req, res) {
  *
  * @apiSuccess {String} _id Unique user id
  * @apiSuccess {String} name Unique user name
- * @apiSuccess {String} role User role (student or admin)
+ * @apiSuccess {String} role User role (admin, student or teacher)
  * @apiSuccess {Object} color Buddy color
  * @apiSuccess {String} color.stroke Buddy strike color
  * @apiSuccess {String} color.fill Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
  * @apiSuccess {String} language Language setting of the user
- * @apiSuccess {String} password password of the user
+ * @apiSuccess {String} password Password of the user
  * @apiSuccess {String} private_journal Id of the private journal on the server
  * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
  * @apiSuccess {Number} created_time when the user was created on the server
@@ -519,7 +522,7 @@ exports.updateUser = function(req, res) {
 	delete user.role; // Disable role change
 
 	// validate on the basis of user's role
-	if (req.user.role == 'student') {
+	if (req.user.role == 'student' || req.user.role == 'teacher') {
 		if (req.user._id != uid) {
 			res.status(401).send({
 				'error': 'You don\'t have permission to perform this action',
@@ -616,7 +619,7 @@ exports.removeUser = function(req, res) {
 	}
 
 	// validate on the basis of user's role
-	if (req.user.role == 'student') {
+	if (req.user.role == 'student' || req.user.role == 'teacher') {
 		if (req.user._id != req.params.uid) {
 			res.status(401).send({
 				'error': 'You don\'t have permission to perform this action',
