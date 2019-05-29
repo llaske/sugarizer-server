@@ -222,7 +222,7 @@ exports.getAllUsers = function(query, options, callback) {
 
 	//get data
 	db.collection(usersCollection, function(err, collection) {
-
+		
 		//get users
 		collection.find(query, function(err, users) {
 
@@ -395,7 +395,7 @@ exports.addUser = function(req, res) {
 		if (item.length == 0) {
 			//create user based on role
 			if (user.role == 'admin' || user.role == 'teacher') {
-				if (user.role = 'teacher') {
+				if (user.role == 'teacher') {
 					user.classrooms=[];
 				}
 				db.collection(usersCollection, function(err, collection) {

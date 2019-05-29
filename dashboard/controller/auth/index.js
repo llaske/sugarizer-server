@@ -2,7 +2,8 @@
 var getLogin = require('./getLogin'),
 	logout = require('./logout'),
 	postLogin = require('./postLogin'),
-	validateSession = require('./validateSession');
+	validateSession = require('./validateSession'),
+	checkRole = require('./checkRole');
 
 // init settings
 var ini = null;
@@ -18,3 +19,4 @@ exports.getLogin = getLogin;
 exports.logout = logout;
 exports.postLogin = postLogin;
 exports.validateSession = validateSession;
+exports.checkRole = checkRole;

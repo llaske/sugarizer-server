@@ -59,23 +59,35 @@ exports.login = function(req, res) {
 	var user = JSON.parse(req.body.user);
 	var name = user.name || '';
 	var password = user.password || '';
-	var role = user.role || 'student';
 	var query = {
 		'name': {
 			$regex: new RegExp("^" + name + "$", "i")
 		},
 		'password': {
 			$regex: new RegExp("^" + password + "$", "i")
-		},
-		'role': {
-			$regex: new RegExp("^" + role + "$", "i")
 		}
 	};
+
+	if (typeof user.role == "object" && user.role.length > 0) {
+		query['$or'] = [];
+		user.role.forEach(function(rl) {
+			query.$or.push({
+				role: {
+					$regex: new RegExp("^" + rl + "$", "i")
+				}
+			});
+		});
+	} else {
+		var role = user.role || 'student';
+		query.role = {
+			$regex: new RegExp("^" + role + "$", "i")
+		};
+	}
 
 	//find user by name & password
 	users.getAllUsers(query, {}, function(users) {
 
-		if (users.length > 0) {
+		if (users && users.length > 0) {
 
 			//take the first user incase of multple matches
 			user = users[0];
@@ -173,7 +185,7 @@ exports.updateTimestamp = function(uid, callback) {
 
 //check admin
 exports.checkAdmin = function(req, res, next) {
-	if (req.user.role == 'student') {
+	if (req.user.role == 'student' || req.user.role == 'teacher') {
 		if (req.user._id != req.query.uid) {
 			return res.status(401).send({
 				'error': 'You don\'t have permission to perform this action',

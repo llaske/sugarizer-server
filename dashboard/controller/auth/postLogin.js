@@ -23,15 +23,22 @@ module.exports = function postLogin(req, res) {
 	// get errors
 	var errors = req.validationErrors();
 
+	var role = ["admin", "teacher"];
+	if (req.body.role == "teacher") {
+		role = ["teacher"];
+	} else if (req.body.role == "admin") {
+		role = ["admin"];
+	}
+
 	//form data
 	var form = {
 		user: JSON.stringify({
 			name: req.body.username,
 			password: req.body.password,
-			role: 'admin'
+			role: role
 		})
 	};
-
+	
 	//call
 	if (!errors) {
 		// call
