@@ -438,7 +438,7 @@ require([
         $('.nav-tabs-examples').find('a:first').tab('show');
 
         // sample request switch
-        $('.sample-request-switch').click(function () {
+        $('.sample-request-switch').click(function (e) {
             var name = '.' + $(this).attr('name') + '-fields';
             $(name).addClass('hide');
             $(this).parent().next(name).removeClass('hide');
@@ -470,7 +470,7 @@ require([
         $('#sidenav li:not(.nav-fixed)').addClass('hide');
 
         // show 1st equal or lower Version of each entry
-        $('article[data-version]').each(function() {
+        $('article[data-version]').each(function(index) {
             var group = $(this).data('group');
             var name = $(this).data('name');
             var version = $(this).data('version');
@@ -487,7 +487,7 @@ require([
         });
 
         // show 1st equal or lower Version of each entry
-        $('article[data-version]').each(function() {
+        $('article[data-version]').each(function(index) {
             var group = $(this).data('group');
             $('section#api-' + group).removeClass('hide');
             if ($('section#api-' + group + ' article:visible').length === 0) {
@@ -684,7 +684,7 @@ require([
             }))
 
             for (var dot_count = 1; dot_count <= max_dot_count; dot_count++) {
-                reversed.forEach(function (item) {
+                reversed.forEach(function (item, index) {
                     var parts = item.field.split(".");
                     if (parts.length - 1 == dot_count) {
                         var fields_names = fields.map(function (item) { return item.field; });

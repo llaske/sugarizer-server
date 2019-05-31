@@ -713,6 +713,42 @@ exports.updateUserTimestamp = function(uid, callback) {
 	});
 };
 
+
+/**
+ * @api {get} api/v1/users/classroom/:id Get user classrooms
+ * @apiName GetUserClassroos
+ * @apiDescription Retrieve the classroom data for a specific user.
+ * @apiGroup Users
+ * @apiVersion 1.2.0
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ *
+ * @apiSuccess {Object[]} classrooms
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ * [
+ * 	{
+ * 	  _id: '5cdd20eb34374452856e8208',
+ * 	  name: 'Classroom X',
+ * 	  students: [ '5cdc2bde1f8dc510360b2433', '5cecd77a211a7d1d5ab92b67' ],
+ * 	  color: { stroke: '#8BFF7A', fill: '#00EA11' },
+ * 	  options: { sync: true, stats: true },
+ * 	  created_time: 1557995755642,
+ * 	  timestamp: 1559293919121
+ * 	},
+ * 	{
+ * 	  _id: '5cd87e5b4ddb1a000f5c6bab',
+ * 	  name: 'Classroom Y',
+ * 	  students: [ '5cdd263379dcbe57d458b205', '59ea5cc94622230e00791854', '59ea739f4622230e00791856', '59ea51efa0855844008511e2', '5cecd77a211a7d1d5ab92b67' ],
+ * 	  color: { stroke: '#008009', fill: '#F8E800' },
+ * 	  options: { sync: true, stats: true },
+ * 	  created_time: 1557691995135,
+ * 	  timestamp: 1559293901572
+ * 	}
+ * ]
+ **/
+
 exports.findClassroom = function(req, res) {
 	if (!mongo.ObjectID.isValid(req.params.uid)) {
 		res.status(401).send({
