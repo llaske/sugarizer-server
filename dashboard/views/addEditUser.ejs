@@ -97,6 +97,48 @@
                             </div>
                         </div>
                         <% } %>
+                        <% if (typeof classrooms == 'object') { %>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-black label-floating">
+                                    <label class="control-label" data-l10n-id="classrooms"></label>
+                                    <% if (classrooms.length > 0) { %>
+                                    <table class="table">
+                                        <thead class="text-muted">
+                                            <tr>
+                                                <th>#</th>
+                                                <th data-l10n-id="icon">Icon</th>
+                                                <th data-l10n-id="name">Name</th>
+                                                <th data-l10n-id="studentsCount">Students Count</th>
+                                                <th data-l10n-id="lastUpdated">Timestamp</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% for(var i=0; i < classrooms.length; i++) { %>
+                                            <tr>
+                                                <td><%= i + 1 %></td>
+                                                <td>
+                                                    <div class="color" id="<%= classrooms[i]._id %>">
+                                                        <div class="xo-icon"></div>
+                                                    </div>
+                                                </td>
+                                                <script>
+                                                    new icon().load("/public/img/classroom-icon.svg", ("<% JSON.stringify(classrooms[i].color) %>"), "<%= classrooms[i]._id %>");
+                                                </script>
+                                                <td><%= classrooms[i].name %></td>
+                                                <td><%= classrooms[i].students.length %></td>
+                                                <td><%= moment(classrooms[i].timestamp).calendar() %></td>
+                                            </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                    <% } else { %>
+                                        <div class="form-control" data-l10n-id="noClassroomText"></div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
                         <button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
                         <a class="btn pull-right btn-round" href="/dashboard/users" data-l10n-id="cancel"></a>
                         <div class="clearfix"></div>

@@ -65,23 +65,59 @@ module.exports = function editUser(req, res) {
 				json: true,
 				method: 'get',
 				uri: common.getAPIUrl(req) + 'api/v1/users/' + req.params.uid
-			}, function(error, response, body) {
-				if (response.statusCode == 200) {
-
-					// send to users page
-					res.render('addEditUser', {
-						module: 'users',
-						user: body,
-						mode: "edit",
-						moment: moment,
-						emoji: emoji,
-						xocolors: xocolors,
-						account: req.session.user,
-						server: users.ini().information
+			}, function(error, response, user) {
+				if (error) {
+					req.flash('errors', {
+						msg: common.l10n.get('ThereIsError')
 					});
+					return res.redirect('/dashboard/users');
+				} else if (response.statusCode == 200) {
+					if (user && user.role == "student") {
+						request({
+							headers: common.getHeaders(req),
+							json: true,
+							method: 'get',
+							uri: common.getAPIUrl(req) + 'api/v1/users/classroom/' + req.params.uid
+						}, function(error, response, classrooms) {
+							if (error) {
+								req.flash('errors', {
+									msg: common.l10n.get('ThereIsError')
+								});
+								return res.redirect('/dashboard/users');
+							} else if (response.statusCode == 200) {
+								res.render('addEditUser', {
+									module: 'users',
+									user: user,
+									mode: "edit",
+									classrooms: classrooms,
+									moment: moment,
+									emoji: emoji,
+									xocolors: xocolors,
+									account: req.session.user,
+									server: users.ini().information
+								});
+							} else {
+								req.flash('errors', {
+									msg: common.l10n.get('ErrorCode'+classrooms.code)
+								});
+								return res.redirect('/dashboard/users');
+							}
+						});
+					} else {
+						res.render('addEditUser', {
+							module: 'users',
+							user: user,
+							mode: "edit",
+							moment: moment,
+							emoji: emoji,
+							xocolors: xocolors,
+							account: req.session.user,
+							server: users.ini().information
+						});
+					}
 				} else {
 					req.flash('errors', {
-						msg: common.l10n.get('ErrorCode'+body.code)
+						msg: common.l10n.get('ErrorCode'+user.code)
 					});
 					return res.redirect('/dashboard/users');
 				}

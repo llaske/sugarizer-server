@@ -35,6 +35,7 @@ module.exports = function(app, ini, db) {
 	// Register users API
 	app.get("/api/v1/users", users.findAll);
 	app.get("/api/v1/users/:uid", users.findById);
+	app.get("/api/v1/users/classroom/:uid", users.findClassroom);
 	app.post("/api/v1/users", users.addUser);
 	app.put("/api/v1/users/:uid", users.updateUser);
 	app.delete("/api/v1/users/:uid", users.removeUser);
@@ -61,7 +62,7 @@ module.exports = function(app, ini, db) {
 
 	// If no route is matched by now, it must be a 404
 	app.use('/api/v1/*', function(req, res) {
-		return res.status(404).res.json({
+		return res.status(404).json({
 			'status': 404,
 			'error': "Route Not Found!",
 			'code': 7,

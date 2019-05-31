@@ -516,7 +516,7 @@ exports.updateUser = function(req, res) {
 
 	var uid = req.params.uid;
 	var user = JSON.parse(req.body.user);
-	delete user.role // Disable role change
+	delete user.role; // Disable role change
 
 	// validate on the basis of user's role
 	if (req.user.role == 'student') {
@@ -710,5 +710,41 @@ exports.updateUserTimestamp = function(uid, callback) {
 		}, function(err) {
 			callback(err);
 		});
+	});
+};
+
+exports.findClassroom = function(req, res) {
+	if (!mongo.ObjectID.isValid(req.params.uid)) {
+		res.status(401).send({
+			'error': 'Invalid user id',
+			'code': 18
+		});
+		return;
+	}
+
+	db.collection(classroomsCollection, function(err, collection) {
+		collection.find({
+			students: req.params.uid
+		},
+		function(err, classroom) {
+			if(err) {
+				res.status(500).send({
+					'error': 'An error has occurred',
+					'code': 10
+				});
+			} else {
+				classroom.toArray(function(err, classroomList) {
+					if(err) {
+						res.status(500).send({
+							'error': 'An error has occurred',
+							'code': 10
+						});
+					} else {
+						res.send(classroomList);
+					}
+				});
+			}
+		}
+		);
 	});
 };
