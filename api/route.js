@@ -35,7 +35,7 @@ module.exports = function(app, ini, db) {
 	// Register users API
 	app.get("/api/v1/users", users.findAll);
 	app.get("/api/v1/users/:uid", users.findById);
-	app.get("/api/v1/users/classroom/:uid", users.findClassroom);
+	app.get("/api/v1/users/:uid/classroom", users.findClassroom);
 	app.post("/api/v1/users", users.addUser);
 	app.put("/api/v1/users/:uid", users.updateUser);
 	app.delete("/api/v1/users/:uid", users.removeUser);

@@ -2427,7 +2427,7 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "api/v1/users/classroom/:id",
+    "url": "api/v1/users/:id/classroom",
     "title": "Get user classrooms",
     "name": "GetUserClassroos",
     "description": "<p>Retrieve the classroom data for a specific user.</p>",

@@ -278,7 +278,7 @@ describe('Users', function() {
 		it('it should return nothing on invalid id', (done) => {
 
 			chai.request(server)
-				.get('/api/v1/users/classroom/' + 'xxx')
+				.get('/api/v1/users/' + 'xxx' + '/classroom')
 				.set('x-access-token', fakeUser.admin.token)
 				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {
@@ -291,7 +291,7 @@ describe('Users', function() {
 		it('it should return nothing on inexisting id', (done) => {
 
 			chai.request(server)
-				.get('/api/v1/users/classroom/' + 'ffffffffffffffffffffffff')
+				.get('/api/v1/users/' + 'ffffffffffffffffffffffff' +'/classroom')
 				.set('x-access-token', fakeUser.admin.token)
 				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {
@@ -304,7 +304,7 @@ describe('Users', function() {
 		it('it should return right classrooms by user id', (done) => {
 
 			chai.request(server)
-				.get('/api/v1/users/classroom/' + fakeUser.student._id)
+				.get('/api/v1/users/' + fakeUser.student._id + '/classroom')
 				.set('x-access-token', fakeUser.admin.token)
 				.set('x-key', fakeUser.admin.user._id)
 				.end((err, res) => {

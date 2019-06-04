@@ -715,7 +715,7 @@ exports.updateUserTimestamp = function(uid, callback) {
 
 
 /**
- * @api {get} api/v1/users/classroom/:id Get user classrooms
+ * @api {get} api/v1/users/:id/classroom Get user classrooms
  * @apiName GetUserClassroos
  * @apiDescription Retrieve the classroom data for a specific user.
  * @apiGroup Users

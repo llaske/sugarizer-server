@@ -77,7 +77,7 @@ module.exports = function editUser(req, res) {
 							headers: common.getHeaders(req),
 							json: true,
 							method: 'get',
-							uri: common.getAPIUrl(req) + 'api/v1/users/classroom/' + req.params.uid
+							uri: common.getAPIUrl(req) + 'api/v1/users/' + req.params.uid + '/classroom'
 						}, function(error, response, classrooms) {
 							if (error) {
 								req.flash('errors', {
