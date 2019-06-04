@@ -81,6 +81,4 @@ var getHtmlForEmoji = function(password) {
 	return html;
 };
 
-try {
-	exports.getHtml = getHtmlForEmoji;
-} catch(e) {}
+exports.getHtml = getHtmlForEmoji;

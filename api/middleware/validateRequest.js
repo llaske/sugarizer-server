@@ -28,7 +28,13 @@ module.exports = function(req, res, next) {
 					req.user = user;
 
 					//update user timestamp
-					users.updateTimestamp(key, function() {
+					users.updateTimestamp(key, function(err) {
+						if (err) {
+							return res.status(500).send({
+								'error': 'An error has occurred while updating timestamp',
+								'code': 24
+							});
+						}
 
 						//send to the next middleware
 						next();
