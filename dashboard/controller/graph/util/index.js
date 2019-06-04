@@ -1,32 +1,15 @@
-// include libraries
 var request = require('request'),
-	dashboard_utils = require('./dashboard/util'),
+	dashboard_utils = require('../../dashboard/util'),
 	moment = require('moment'),
-	common = require('../helper/common'),
-	async = require('async');
+	common = require('../../../helper/common');
 
-exports.getGraph = function(req, res) {
-
-	if (req.query.type == 'top-contributor') {
-		getTopContributors(req, res);
-	}
-	if (req.query.type == 'top-activities') {
-		getTopActivities(req, res);
-	}
-	if (req.query.type == 'recent-users') {
-		getRecentUsers(req, res);
-	}
-	if (req.query.type == 'recent-activities') {
-		getRecentActivities(req, res);
-	}
-};
 
 var averageEntries = 0.0;
-exports.getAverageEntries = function() {
+exports.averageEntries = function() {
 	return averageEntries;
 };
 
-function getTopContributors(req, res) {
+exports.getTopContributors = function(req, res) {
 
 	//get all users
 	dashboard_utils.getAllUsers(req, res, function(users) {
@@ -108,9 +91,9 @@ function getTopContributors(req, res) {
 			});
 		});
 	});
-}
+};
 
-function getTopActivities(req, res) {
+exports.getTopActivities = function(req, res) {
 
 	//get activities
 	getActivities(req, res, function(activities) {
@@ -180,9 +163,9 @@ function getTopActivities(req, res) {
 			});
 		});
 	});
-}
+};
 
-function getRecentUsers(req, res) {
+exports.getRecentUsers = function(req, res) {
 
 	//get all entries
 	dashboard_utils.getAllUsers(req, res, function(users) {
@@ -212,9 +195,9 @@ function getRecentUsers(req, res) {
 			graph: 'table'
 		});
 	});
-}
+};
 
-function getRecentActivities(req, res) {
+exports.getRecentActivities = function(req, res) {
 
 	//get all entries
 	getAllEntriesList(req, res, function(allEntries) {
@@ -263,7 +246,7 @@ function getRecentActivities(req, res) {
 			});
 		});
 	});
-}
+};
 
 function getAllEntriesList(req, res, callback) {
 
