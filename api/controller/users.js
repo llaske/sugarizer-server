@@ -395,8 +395,8 @@ exports.addUser = function(req, res) {
 		if (item.length == 0) {
 			//create user based on role
 			if (user.role == 'admin' || user.role == 'teacher') {
-				if (user.role == 'teacher') {
-					user.classrooms=[];
+				if (user.role != 'teacher') {
+					delete user.classrooms;
 				}
 				db.collection(usersCollection, function(err, collection) {
 					collection.insertOne(user, {

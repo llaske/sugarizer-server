@@ -78,6 +78,58 @@
                                 </div>
                             </div>
                         </div>
+                        <% if(typeof classrooms == 'object') { %>
+                        <div class="row" id='searchable-select-classrooms-row'>
+                            <div class="col-md-12">
+                                <div class="form-group form-black" style="margin-top: -15px;">
+                                    <label class="control-label" data-l10n-id="classrooms"></label>
+                                    <select id='searchable-select-classrooms' multiple='multiple' name="classrooms" class="form-control">
+                                        <% for(var i=0; i < classrooms.length; i++) { %>
+                                            <option <% if(classrooms[i].is_member) { %> selected <% } %> value='<%= classrooms[i]._id %>'><%= classrooms[i].name %></option>
+                                        <% } %>
+                                    </select>
+                                    <script type="text/javascript">
+                                        // run multiSelect
+                                        $('#searchable-select-classrooms').multiSelect({
+                                            selectableHeader: "<input type='text' class='form-control' data-l10n-id='doe' autocomplete='off' placeholder='search classroom'>",
+                                            selectionHeader: "<input type='text' class='form-control' data-l10n-id='doe' autocomplete='off' placeholder='search classroom'>",
+                                            afterInit: function(ms){
+                                                var that = this,
+                                                    $selectableSearch = that.$selectableUl.prev(),
+                                                    $selectionSearch = that.$selectionUl.prev(),
+                                                    selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
+                                                    selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+
+                                                that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+                                                    .on('keydown', function(e){
+                                                    if (e.which === 40){
+                                                        that.$selectableUl.focus();
+                                                        return false;
+                                                    }
+                                                });
+
+                                                that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+                                                    .on('keydown', function(e){
+                                                    if (e.which == 40){
+                                                        that.$selectionUl.focus();
+                                                        return false;
+                                                    }
+                                                });
+                                            },
+                                            afterSelect: function(){
+                                                this.qs1.cache();
+                                                this.qs2.cache();
+                                            },
+                                            afterDeselect: function(){
+                                                this.qs1.cache();
+                                                this.qs2.cache();
+                                            }
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
                         <% if (typeof user == 'object' && user.created_time) { %>
                         <div class="row">
                             <div class="col-md-12">
@@ -141,7 +193,7 @@
                         </div>
                         <% } %>
                         <button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
-                        <a class="btn pull-right btn-round" href="/dashboard/users" data-l10n-id="cancel"></a>
+                        <a class="btn pull-right btn-round" <% if (typeof user == 'object' && typeof user.role == 'string') { %>href="/dashboard/users?role=<%= user.role %>"<% } else { %> href="/dashboard/users" <% } %> data-l10n-id="cancel"></a>
                         <div class="clearfix"></div>
                     </form>
                 </div>
@@ -154,15 +206,19 @@
 <% include ../includes/footer %>
 <script>
 function show_user_fields(val) {
-  if(val == 'admin'){
-	  $('.color_input').addClass('hide');
-      $('.color_input input').attr('disabled', '');
+    if (val == 'admin') {
+        $('.color_input').addClass('hide');
+        $('.color_input input').attr('disabled', '');
+    } else {
+        $('.color_input').removeClass('hide');
+        $('.color_input input').removeAttr('disabled');
+    }
 
-  }else{
-	  $('.color_input').removeClass('hide');
-      $('.color_input input').removeAttr('disabled');
-
-  }
+    if (val == 'teacher') {
+        $('#searchable-select-classrooms-row').removeClass('hide');
+    } else {
+        $('#searchable-select-classrooms-row').addClass('hide');
+    }
 }
 show_user_fields('<% if(typeof user == "object"){ %><%= user.role %><% } %>')
 </script>
