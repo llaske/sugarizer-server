@@ -72,6 +72,7 @@ module.exports = function editUser(req, res) {
 					res.render('addEditUser', {
 						module: 'users',
 						user: body,
+						mode: "edit",
 						moment: moment,
 						emoji: emoji,
 						xocolors: xocolors,
