@@ -24,7 +24,7 @@ exports.index = function(req, res) {
 	common.reinitLocale(req);
 
 	getUsers(req, res, function(users) {
-		res.render('admin/journal', {
+		res.render('journal', {
 			module: 'journals',
 			moment: moment,
 			entries: [],
@@ -34,7 +34,8 @@ exports.index = function(req, res) {
 			},
 			users: users,
 			account: req.session.user,
-			server: ini.information
+			server: ini.information,
+			role: req.role
 		});
 	});
 };

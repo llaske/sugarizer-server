@@ -58,6 +58,7 @@
 					<p data-l10n-id="classrooms">Classrooms</p>
 				</a>
 			</li>
+			<%if (role == "admin") { %>
 			<%if (module == 'stats') { %>
 				<li class="active">
 			<% } else {%>
@@ -68,6 +69,7 @@
 					<p data-l10n-id="stats">Statistics</p>
 				</a>
 			</li>
+			<% } %>
 		</ul>
 	</div>
 </div>

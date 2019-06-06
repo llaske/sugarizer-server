@@ -69,7 +69,8 @@ module.exports = function addClassroom(req, res) {
 				students: users.users,
 				emoji: emoji,
 				account: req.session.user,
-				server: classroom.ini().information
+				server: classroom.ini().information,
+				role: req.role
 			});
 		});
 	}

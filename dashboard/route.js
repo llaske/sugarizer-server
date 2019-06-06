@@ -25,28 +25,28 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/logout', authController.logout);
 	app.get('/dashboard', authController.validateSession, authController.checkRole(dashboardController.index, classroomsController.index)); // checkRole(adminRoute, teacherRoute)
 	app.get('/dashboard/users', authController.validateSession, usersController.index);
-	app.get('/dashboard/users/add', authController.validateSession, usersController.addUser);
-	app.post('/dashboard/users/add', authController.validateSession, usersController.addUser);
-	app.get('/dashboard/users/edit/:uid', authController.validateSession, usersController.editUser);
-	app.post('/dashboard/users/edit/:uid', authController.validateSession, usersController.editUser);
-	app.get('/dashboard/users/delete/:uid', authController.validateSession, usersController.deleteUser);
+	app.get('/dashboard/users/add', authController.validateSession, authController.checkRole(usersController.addUser));
+	app.post('/dashboard/users/add', authController.validateSession, authController.checkRole(usersController.addUser));
+	app.get('/dashboard/users/edit/:uid', authController.validateSession, authController.checkRole(usersController.editUser));
+	app.post('/dashboard/users/edit/:uid', authController.validateSession, authController.checkRole(usersController.editUser));
+	app.get('/dashboard/users/delete/:uid', authController.validateSession, authController.checkRole(usersController.deleteUser));
 	app.get('/dashboard/journal', authController.validateSession, journalController.index);
 	app.get('/dashboard/journal/:jid', authController.validateSession, journalController.getEntries);
-	app.get('/dashboard/journal/:jid/delete/:oid', authController.validateSession, journalController.deleteEntry);
+	app.get('/dashboard/journal/:jid/delete/:oid', authController.validateSession, authController.checkRole(journalController.deleteEntry));
 	app.get('/dashboard/activities', authController.validateSession, activitiesController.index);
 	app.get('/dashboard/activities/launch', authController.validateSession, activitiesController.fakeLaunch);
 	app.get('/dashboard/activities/launch/:jid', authController.validateSession, activitiesController.launch);
-	app.get('/dashboard/stats', authController.validateSession, statsController.index);
+	app.get('/dashboard/stats', authController.validateSession, authController.checkRole(statsController.index));
 	app.get('/dashboard/stats/graph', authController.validateSession, statsController.getGraph);
 	app.get('/dashboard/graph', authController.validateSession, graphController.getGraph);
 
 	// classrooms routes
 	app.get('/dashboard/classrooms', authController.validateSession, classroomsController.index);
-	app.get('/dashboard/classrooms/add', authController.validateSession, classroomsController.addClassroom);
-	app.post('/dashboard/classrooms/add', authController.validateSession, classroomsController.addClassroom);
-	app.get('/dashboard/classrooms/edit/:classid', authController.validateSession, classroomsController.editClassroom);
-	app.post('/dashboard/classrooms/edit/:classid', authController.validateSession, classroomsController.editClassroom);
-	app.get('/dashboard/classrooms/delete/:classid', authController.validateSession, classroomsController.deleteClassroom);
+	app.get('/dashboard/classrooms/add', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
+	app.post('/dashboard/classrooms/add', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
+	app.get('/dashboard/classrooms/edit/:classid', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
+	app.post('/dashboard/classrooms/edit/:classid', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
+	app.get('/dashboard/classrooms/delete/:classid', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
 
 
 	// If no route is matched by now, it must be a 404

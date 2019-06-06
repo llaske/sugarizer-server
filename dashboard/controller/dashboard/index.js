@@ -60,7 +60,8 @@ exports.index = function(req, res) {
 						module: 'dashboard',
 						data: data,
 						account: req.session.user,
-						server: ini.information
+						server: ini.information,
+						role: req.role
 					});
 				});
 			});

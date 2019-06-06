@@ -39,9 +39,6 @@ exports.index = function(req, res) {
 		query['offset'] = req.query.offset;
 	}
 
-	var role;
-	if (req.session && req.session.user && req.session.user.user && req.session.user.user.role) role = req.session.user.user.role;
-
 	// call
 	request({
 		headers: common.getHeaders(req),
@@ -53,14 +50,14 @@ exports.index = function(req, res) {
 		if (response.statusCode == 200) {
 
 			// send to activities page
-			res.render('admin/classrooms', {
+			res.render('classrooms', {
 				module: 'classrooms',
-				role: role,
 				moment: moment,
 				query: query,
 				data: body,
 				account: req.session.user,
-				server: ini.information
+				server: ini.information,
+				role: req.role
 			});
 
 		} else {

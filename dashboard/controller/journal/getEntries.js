@@ -38,7 +38,7 @@ module.exports = function getEntries(req, res) {
 			getJournalEntries(req, res, query, function(entries) {
 
 				//render template
-				res.render('admin/journal', {
+				res.render('journal', {
 					module: 'journals',
 					moment: moment,
 					entries: entries,
@@ -46,7 +46,8 @@ module.exports = function getEntries(req, res) {
 					query: query,
 					users: users,
 					account: req.session.user,
-					server: journal.ini().information
+					server: journal.ini().information,
+					role: req.role
 				});
 			});
 		});

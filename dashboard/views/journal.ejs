@@ -1,11 +1,11 @@
-<% include ../includes/header %>
+<% include includes/header %>
 <div class="wrapper">
-	<% include ../includes/sidebar %>
+	<% include includes/sidebar %>
 	<div class="main-panel">
-	<% include ../includes/navbar %>
+	<% include includes/navbar %>
 		<div class="content">
 			<div class="container-fluid">
-				<% include ../includes/flash-errors %>
+				<% include includes/flash-errors %>
 				<div class="row">
 					<div class="card">
 							<form method="get" action="" id="getJournalEntries">
@@ -128,7 +128,9 @@
 																	</td>
 																	<td>
 																		<a href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
+																		<% if (role=="admin") { %>
 																		<a data-l10n-id="deleteEntry" title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>&title=<%= entries.entries[i].metadata.title %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteEntry', {activity:`<%= entries.entries[i].metadata.title %>`}))"><i class="material-icons text-muted">delete_forever</i></a>
+																		<% } %>
 																	</td>
 															</tr>
 														<% } %>
@@ -143,4 +145,4 @@
 		</div>
 	</div>
 </div>
-<% include ../includes/footer %>
+<% include includes/footer %>

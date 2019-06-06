@@ -52,10 +52,6 @@ exports.index = function(req, res) {
 		classroom_id = req.query.classroom_id;
 	}
 
-
-	var role;
-	if (req.session && req.session.user && req.session.user.user && req.session.user.user.role) role = req.session.user.user.role;
-
 	// call
 	request({
 		headers: common.getHeaders(req),
@@ -70,16 +66,16 @@ exports.index = function(req, res) {
 			getClassrooms(req, function(classrooms){
 
 				// send to activities page
-				res.render('admin/users', {
+				res.render('users', {
 					module: 'users',
 					moment: moment,
-					role: role,
 					query: query,
 					classrooms: classrooms,
 					classroom_id: classroom_id,
 					data: body,
 					account: req.session.user,
-					server: ini.information
+					server: ini.information,
+					role: req.role
 				});
 			});
 		} else {
