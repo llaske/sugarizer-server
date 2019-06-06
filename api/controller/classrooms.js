@@ -183,7 +183,6 @@ exports.removeClassroom = function(req, res) {
  **/
 exports.findAll = function(req, res) {
 	//prepare condition
-	console.log('Find All');
 	var query = {};
 	query = addQuery("q", req.query, query);
 
@@ -195,12 +194,10 @@ exports.findAll = function(req, res) {
 		};
 	}
 
-	console.log('query', query);
 
 	// add filter and pagination
 	db.collection(classroomsCollection, function(err, collection) {
 		//count data
-		console.log('query', query);
 		collection.countDocuments(query, function(err, count) {
 			//define var
 			var params = JSON.parse(JSON.stringify(req.query));

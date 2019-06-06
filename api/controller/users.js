@@ -170,6 +170,14 @@ exports.findAll = function(req, res) {
 		};
 	}
 
+	if (req.user && req.user.role == "teacher") {
+		query['_id'] = {
+			$in: req.user.students.map(function(id) {
+				return new mongo.ObjectID(id);
+			})
+		};
+	}
+
 	// add filter and pagination
 	db.collection(usersCollection, function(err, collection) {
 

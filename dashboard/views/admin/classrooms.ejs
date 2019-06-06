@@ -18,8 +18,10 @@
                         </div>
                         <div class="col-md-3"></div>
                         <div class="col-md-6">
-						  <a class="btn btn-round pull-right " href="/dashboard/classrooms/add" data-l10n-id="addClassroom"><div class="ripple-container"></div></a>
-                          <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+                            <% if (role && role=="admin") { %>
+                                <a class="btn btn-round pull-right " href="/dashboard/classrooms/add" data-l10n-id="addClassroom"><div class="ripple-container"></div></a>
+                            <% } %>
+                           <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>
                       </form>
                   </div>
@@ -78,8 +80,10 @@
                                               <% } else { %>
                                                   <a title="View Students" style="pointer-events: none;"><span class="student-icon" style="opacity: 0.4;"></span></a>
                                               <% } %>
+                                              <% if (role && role=="admin") { %>
                                               <a data-l10n-id="editClassroom" title="Edit Classroom" href="/dashboard/classrooms/edit/<%= data.classrooms[i]._id %>"><i class="material-icons text-muted">edit</i></a>
                                               <a data-l10n-id="deleteClassroom" title="Delete Classroom" href="/dashboard/classrooms/delete/<%= data.classrooms[i]._id %>?&name=<%= data.classrooms[i].name %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom', {classroom:'<%= data.classrooms[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
+                                              <% } %>
                                           </td>
                                       </tr>
                                     <% } %>

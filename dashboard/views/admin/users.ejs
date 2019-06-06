@@ -10,7 +10,7 @@
               <div class="col-md-12">
                   <div class="card">
                       <form method="get" id="user-form">
-                        <div class="col-md-2">
+                            <div class="col-md-2">
                           <div class="form-group form-black label-floating is-empty">
                               <input data-l10n-id="john" placeholder="John..." class="form-control" name="username" value="<% if(query.q){ %><%= query.q %><% } %>" type="text">
                               <span class="material-input"></span>
@@ -19,9 +19,11 @@
                         <div class="col-md-2">
                           <div class="form-group form-black label-floating is-empty">
                               <select class="form-control" id="user-type-select2" name="role">
-                                 <option data-l10n-id="student" value="student" <% if(query.role=='student'){ %>selected="selected"<% } %> >Student</option>
-                                 <option data-l10n-id="teacher" value="teacher" <% if(query.role=='teacher'){ %>selected="selected"<% } %> >Teacher</option>
-                                 <option data-l10n-id="admin" value="admin" <% if(query.role=='admin'){ %>selected="selected"<% } %> >Admin</option>
+                                <option data-l10n-id="student" value="student" <% if(query.role=='student'){ %>selected="selected"<% } %> >Student</option>
+                                <% if (role=="admin") { %>
+                                <option data-l10n-id="teacher" value="teacher" <% if(query.role=='teacher'){ %>selected="selected"<% } %> >Teacher</option>
+                                <option data-l10n-id="admin" value="admin" <% if(query.role=='admin'){ %>selected="selected"<% } %> >Admin</option>
+                                <% } %>
                               </select>
 							  <script>$('#user-form [name="role"]').select2().on("change", () => show_class_fields())</script>
                           </div>
@@ -52,7 +54,7 @@
 			<script>
 			window.addEventListener('localized', function() {  // HACK: Force localization of role combo
 				var selection = document.getElementsByClassName("select2-selection__rendered");
-				if (selection && selection[0] && typeof selection[0].innerHTML == "string") {
+				if (selection && selection[0] && typeof selection[0].innerHTML == "string" &&  document.getElementById("user-type-select2")) {
                                 var user = document.getElementById("user-type-select2");
                                 var val = user.options[user.selectedIndex].value;
                                 selection[0].innerHTML = document.webL10n.get(val);
@@ -75,7 +77,9 @@
                             });
                             </script>
                         <div class="col-md-6">
+                            <% if (role=="admin") { %>
                             <a class="btn btn-round pull-right " href="/dashboard/users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
+                            <% } %>
                             <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>
                       </form>
@@ -148,7 +152,9 @@
                                                 <a data-l10n-id="seeJournalEntries" title="See Journal Entries" href="/dashboard/journal/<%= data.users[i].private_journal %>?uid=<%= data.users[i]._id %>&type=private"><span class="journal-icon2"></span></a>
                                                 <% } %>
                                                 <a data-l10n-id="editUser" title="Edit User" href="/dashboard/users/edit/<%= data.users[i]._id %>"><i class="material-icons text-muted">edit</i></a>
+                                                <% if (role=="admin") { %>
                                                 <a data-l10n-id="deleteUser" title="Delete User" href="/dashboard/users/delete/<%= data.users[i]._id %>?role=<%= data.users[i].role %>&name=<%= data.users[i].name %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteUser',{user:'<%= data.users[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
+                                                <% } %>
                                               </td>
                                           </tr>
                                         <% } %>
@@ -166,11 +172,10 @@
 <% include ../includes/footer %>
 <script>
 function show_class_fields() {
-    console.log($('#user-form [name="role"]').select2('data')[0].id)
-    if($('#user-form [name="role"]').select2('data')[0].id != 'student'){
+    if($('#user-form [name="role"]').length && $('#user-form [name="role"]').select2('data')[0].id != 'student'){
         $('.classroom_input').addClass('hide');
         $('#user-form [name="classid"]').val('').trigger('change');
-
+        
     }else{
         $('.classroom_input').removeClass('hide');
     }
