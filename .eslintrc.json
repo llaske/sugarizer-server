@@ -72,7 +72,7 @@
             }
         },
         {
-            "files": ["api/test/*.js"],
+            "files": ["api/**/*.js"],
             "parserOptions": {
                 "ecmaVersion": 6
             },

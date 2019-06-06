@@ -195,6 +195,33 @@ exports.checkAdmin = function(req, res, next) {
 	}
 	next();
 };
+
+exports.allowedRoles = function (roles) {
+	return function (req, res, next) {
+		if (roles.includes(req.user.role)) {
+			if (req.user.role == "teacher" && req.query.uid) {
+				if (req.user._id == req.query.uid || (req.user.students && req.user.students.indexOf(req.query.uid) != -1)) {
+					next();
+				} else {
+					res.status(401).send({
+						'error': 'You don\'t have permission to perform this action',
+						'code': 19
+					});
+				}
+			} else {
+				next();
+			}
+		} else if (req.user.role == 'student' && req.user._id == req.query.uid) {
+			next();
+		} else {
+			res.status(401).send({
+				'error': 'You don\'t have permission to perform this action',
+				'code': 19
+			});
+		}
+	};
+};
+
 exports.checkAdminOrLocal = function(req, res, next) {
 	var whishedRole = 'student';
 	if (req.body && req.body.user) {

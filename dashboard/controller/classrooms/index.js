@@ -38,7 +38,6 @@ exports.index = function(req, res) {
 	if (req.query.offset != '') {
 		query['offset'] = req.query.offset;
 	}
-
 	// call
 	request({
 		headers: common.getHeaders(req),
@@ -47,6 +46,7 @@ exports.index = function(req, res) {
 		qs: query,
 		uri: common.getAPIUrl(req) + 'api/v1/classrooms'
 	}, function(error, response, body) {
+		console.log('error, response, body');
 		if (response.statusCode == 200) {
 
 			// send to activities page

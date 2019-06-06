@@ -23,7 +23,7 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/login', authController.getLogin);
 	app.post('/dashboard/login', authController.postLogin);
 	app.get('/dashboard/logout', authController.logout);
-	app.get('/dashboard', authController.validateSession, authController.checkRole(dashboardController.index, statsController.index)); // checkRole(adminRoute, teacherRoute)
+	app.get('/dashboard', authController.validateSession, authController.checkRole(dashboardController.index, classroomsController.index)); // checkRole(adminRoute, teacherRoute)
 	app.get('/dashboard/users', authController.validateSession, usersController.index);
 	app.get('/dashboard/users/add', authController.validateSession, usersController.addUser);
 	app.post('/dashboard/users/add', authController.validateSession, usersController.addUser);
