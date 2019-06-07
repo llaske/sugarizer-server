@@ -37,12 +37,12 @@ module.exports = function(app, ini, db) {
 	app.get("/api/v1/activities/:id", activities.findById);
 
 	// Register users API
-	app.get("/api/v1/users", users.findAll);
-	app.get("/api/v1/users/:uid", users.findById);
-	app.get("/api/v1/users/:uid/classroom", users.findClassroom);
-	app.post("/api/v1/users", users.addUser);
-	app.put("/api/v1/users/:uid", users.updateUser);
-	app.delete("/api/v1/users/:uid", users.removeUser);
+	app.get("/api/v1/users", auth.allowedRoles([Admin, Student, Teacher]), users.findAll);
+	app.get("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.findById);
+	app.get("/api/v1/users/:uid/classroom", auth.allowedRoles([Admin, Teacher]), users.findClassroom);
+	app.post("/api/v1/users", auth.allowedRoles([Admin]), users.addUser);
+	app.put("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.updateUser);
+	app.delete("/api/v1/users/:uid", auth.allowedRoles([Admin, Student]), users.removeUser);
 
 	// Register stats API
 	app.get("/api/v1/stats", stats.findAll);

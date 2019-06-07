@@ -34,7 +34,7 @@ module.exports = function(req, res, next) {
 							for (var i=0; i < students.length; i++) {
 								if(!map.has(students[i]._id)){
 									map.set(students[i]._id, true); // set any value to Map
-									uniqueStudents.push(students[i]._id);
+									uniqueStudents.push(students[i]._id.toString());
 								}
 							}
 

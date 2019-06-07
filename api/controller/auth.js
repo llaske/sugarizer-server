@@ -199,26 +199,23 @@ exports.checkAdmin = function(req, res, next) {
 exports.allowedRoles = function (roles) {
 	return function (req, res, next) {
 		if (roles.includes(req.user.role)) {
-			if (req.user.role == "teacher" && req.query.uid) {
-				if (req.user._id == req.query.uid || (req.user.students && req.user.students.indexOf(req.query.uid) != -1)) {
-					next();
-				} else {
-					res.status(401).send({
-						'error': 'You don\'t have permission to perform this action',
-						'code': 19
-					});
+			if (req.user.role == "teacher" && (req.params.uid)) {
+				if ((req.user._id == req.params.uid) || (req.user.students && (req.user.students.includes(req.params.uid)))) {
+					console.log('WHY 401?');
+					return next();
+				}
+			} else if (req.user.role == 'student' && req.params.uid) {
+				if (req.user._id == req.params.uid) {
+					return next();
 				}
 			} else {
-				next();
+				return next();
 			}
-		} else if (req.user.role == 'student' && req.user._id == req.query.uid) {
-			next();
-		} else {
-			res.status(401).send({
-				'error': 'You don\'t have permission to perform this action',
-				'code': 19
-			});
 		}
+		res.status(401).send({
+			'error': 'You don\'t have permission to perform this action',
+			'code': 19
+		});
 	};
 };
 

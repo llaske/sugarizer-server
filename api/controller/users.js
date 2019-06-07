@@ -529,17 +529,6 @@ exports.updateUser = function(req, res) {
 	var user = JSON.parse(req.body.user);
 	delete user.role; // Disable role change
 
-	// validate on the basis of user's role
-	if (req.user.role == 'student' || req.user.role == 'teacher') {
-		if (req.user._id != uid) {
-			res.status(401).send({
-				'error': 'You don\'t have permission to perform this action',
-				'code': 19
-			});
-			return;
-		}
-	}
-
 	//do not update name if already exist
 	if (typeof user.name !== 'undefined') {
 		//check for unique user name validation

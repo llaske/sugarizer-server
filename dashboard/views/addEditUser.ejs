@@ -1,14 +1,14 @@
-<% include ../includes/header %>
+<% include includes/header %>
   <div class="wrapper">
-  	<% include ../includes/sidebar %>
+  	<% include includes/sidebar %>
     	<div class="main-panel">
-    	<% include ../includes/navbar %>
+    	<% include includes/navbar %>
     		<div class="content">
     			<div class="container-fluid">
             <div class="col-md-8 col-lg-8 col-sm-12">
               <div class="card">
                 <div class="card-content">
-                    <% include ../includes/flash-errors %>
+                    <% include includes/flash-errors %>
                     <form id="user-add-edit-form" method="post" <% if(typeof user == 'object'){ %> action="<%= user._id %>" <% } %>>
                         <div class="row">
                             <div class="col-md-12">
@@ -83,7 +83,7 @@
                             <div class="col-md-12">
                                 <div class="form-group form-black" style="margin-top: -15px;">
                                     <label class="control-label" data-l10n-id="classrooms"></label>
-                                    <select id='searchable-select-classrooms' multiple='multiple' name="classrooms" class="form-control">
+                                    <select id='searchable-select-classrooms' multiple='multiple' name="classrooms" class="form-control" <% if(role!="admin") { %> disabled <% } %>>
                                         <% for(var i=0; i < classrooms.length; i++) { %>
                                             <option <% if(classrooms[i].is_member) { %> selected <% } %> value='<%= classrooms[i]._id %>'><%= classrooms[i].name %></option>
                                         <% } %>
@@ -203,7 +203,7 @@
       </div>
     </div>
   </div>
-<% include ../includes/footer %>
+<% include includes/footer %>
 <script>
 function show_user_fields(val) {
     if (val == 'admin') {

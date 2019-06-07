@@ -27,12 +27,12 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/users', authController.validateSession, usersController.index);
 	app.get('/dashboard/users/add', authController.validateSession, authController.checkRole(usersController.addUser));
 	app.post('/dashboard/users/add', authController.validateSession, authController.checkRole(usersController.addUser));
-	app.get('/dashboard/users/edit/:uid', authController.validateSession, authController.checkRole(usersController.editUser));
-	app.post('/dashboard/users/edit/:uid', authController.validateSession, authController.checkRole(usersController.editUser));
+	app.get('/dashboard/users/edit/:uid', authController.validateSession, usersController.editUser);
+	app.post('/dashboard/users/edit/:uid', authController.validateSession, usersController.editUser);
 	app.get('/dashboard/users/delete/:uid', authController.validateSession, authController.checkRole(usersController.deleteUser));
 	app.get('/dashboard/journal', authController.validateSession, journalController.index);
 	app.get('/dashboard/journal/:jid', authController.validateSession, journalController.getEntries);
-	app.get('/dashboard/journal/:jid/delete/:oid', authController.validateSession, authController.checkRole(journalController.deleteEntry));
+	app.get('/dashboard/journal/:jid/delete/:oid', authController.validateSession, journalController.deleteEntry);
 	app.get('/dashboard/activities', authController.validateSession, activitiesController.index);
 	app.get('/dashboard/activities/launch', authController.validateSession, activitiesController.fakeLaunch);
 	app.get('/dashboard/activities/launch/:jid', authController.validateSession, activitiesController.launch);

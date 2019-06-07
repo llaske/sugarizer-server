@@ -79,7 +79,7 @@ module.exports = function addUser(req, res) {
 					}
 				}
 				req.flash('errors', errors);
-				return res.render('admin/addEditUser', {
+				return res.render('addEditUser', {
 					module: 'users',
 					user: {
 						name:req.body.name,
@@ -101,7 +101,7 @@ module.exports = function addUser(req, res) {
 
 	} else {
 		dashboard_utils.getAllClassrooms(req, res, function(classrooms) {
-			res.render('admin/addEditUser', {
+			res.render('addEditUser', {
 				module: 'users',
 				classrooms: classrooms.classrooms,
 				xocolors: xocolors,
