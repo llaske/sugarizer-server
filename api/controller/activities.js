@@ -332,14 +332,6 @@ function process_results(req, activities) {
  **/
 exports.updateActivities = function(req, res) {
 
-	// validate on the basis of user's role
-	if (req.user.role == 'student') {
-		return res.status(401).send({
-			'error': 'You don\'t have permission to remove this journal',
-			'code': 8
-		});
-	}
-
 	//do changes
 	var locales = settingsData.locales;
 	if (req.body.favorites) {

@@ -386,16 +386,6 @@ exports.addUser = function(req, res) {
 		});
 	}
 
-	// validate on the basis of user's role for logged in case
-	if (req.user) {
-		if (req.user.role == 'student' || req.user.role == 'teacher') {
-			return res.status(401).send({
-				'error': 'You don\'t have permission to perform this action',
-				'code': 19
-			});
-		}
-	}
-
 	//check if user already exist
 	exports.getAllUsers({
 		'name': new RegExp("^" + user.name + "$", "i")
@@ -613,17 +603,6 @@ exports.removeUser = function(req, res) {
 			'code': 18
 		});
 		return;
-	}
-
-	// validate on the basis of user's role
-	if (req.user.role == 'student' || req.user.role == 'teacher') {
-		if (req.user._id != req.params.uid) {
-			res.status(401).send({
-				'error': 'You don\'t have permission to perform this action',
-				'code': 19
-			});
-			return;
-		}
 	}
 
 	//delete user from db

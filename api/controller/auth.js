@@ -183,29 +183,29 @@ exports.updateTimestamp = function(uid, callback) {
 	users.updateUserTimestamp(uid, callback);
 };
 
-//check admin
-exports.checkAdmin = function(req, res, next) {
-	if (req.user.role == 'student' || req.user.role == 'teacher') {
-		if (req.user._id != req.query.uid) {
-			return res.status(401).send({
-				'error': 'You don\'t have permission to perform this action',
-				'code': 19
-			});
-		}
-	}
-	next();
-};
-
+//check role
 exports.allowedRoles = function (roles) {
 	return function (req, res, next) {
 		if (roles.includes(req.user.role)) {
 			if (req.user.role == "teacher" && (req.params.uid)) {
 				if ((req.user._id == req.params.uid) || (req.user.students && (req.user.students.includes(req.params.uid)))) {
-					console.log('WHY 401?');
 					return next();
 				}
-			} else if (req.user.role == 'student' && req.params.uid) {
-				if (req.user._id == req.params.uid) {
+			} else if (req.user.role == 'student') {
+				if (req.params.uid) {
+					if (req.user._id == req.params.uid) {
+						return next();
+					}
+				} else if (req.params.jid) {
+					if ([req.user.private_journal.toString(), req.user.shared_journal.toString()].includes(req.params.jid)) {
+						return next();
+					} else {
+						return res.status(401).send({
+							'error': 'You don\'t have permission to remove this journal',
+							'code': 8
+						});
+					}
+				} else {
 					return next();
 				}
 			} else {

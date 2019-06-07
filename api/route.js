@@ -32,9 +32,9 @@ module.exports = function(app, ini, db) {
 	app.post('/auth/signup', auth.checkAdminOrLocal, auth.signup);
 
 	// Register activities list API
-	app.get("/api/v1/activities", activities.findAll);
-	app.post("/api/v1/activities", activities.updateActivities);
-	app.get("/api/v1/activities/:id", activities.findById);
+	app.get("/api/v1/activities", auth.allowedRoles([Admin, Student, Teacher]), activities.findAll);
+	app.post("/api/v1/activities", auth.allowedRoles([Admin]), activities.updateActivities);
+	app.get("/api/v1/activities/:id", auth.allowedRoles([Admin, Student, Teacher]), activities.findById);
 
 	// Register users API
 	app.get("/api/v1/users", auth.allowedRoles([Admin, Student, Teacher]), users.findAll);
@@ -45,17 +45,17 @@ module.exports = function(app, ini, db) {
 	app.delete("/api/v1/users/:uid", auth.allowedRoles([Admin, Student]), users.removeUser);
 
 	// Register stats API
-	app.get("/api/v1/stats", stats.findAll);
-	app.post("/api/v1/stats", stats.addStats);
-	app.delete("/api/v1/stats", stats.deleteStats);
+	app.get("/api/v1/stats", auth.allowedRoles([Admin, Student, Teacher]), stats.findAll);
+	app.post("/api/v1/stats", auth.allowedRoles([Admin, Student, Teacher]), stats.addStats);
+	app.delete("/api/v1/stats", auth.allowedRoles([Admin, Student, Teacher]), stats.deleteStats);
 
 	// Register journal API
-	app.get("/api/v1/journal", journal.findAll);
+	app.get("/api/v1/journal", auth.allowedRoles([Admin, Student, Teacher]), journal.findAll);
 	app.get("/api/v1/journal/aggregate", auth.allowedRoles([Admin]), journal.findAllEntries);
-	app.get("/api/v1/journal/:jid", journal.findJournalContent);
-	app.post("/api/v1/journal/:jid", journal.addEntryInJournal);
-	app.put("/api/v1/journal/:jid", journal.updateEntryInJournal);
-	app.delete("/api/v1/journal/:jid", journal.removeInJournal);
+	app.get("/api/v1/journal/:jid", auth.allowedRoles([Admin, Student, Teacher]), journal.findJournalContent);
+	app.post("/api/v1/journal/:jid", auth.allowedRoles([Admin, Student, Teacher]), journal.addEntryInJournal);
+	app.put("/api/v1/journal/:jid", auth.allowedRoles([Admin, Student, Teacher]), journal.updateEntryInJournal);
+	app.delete("/api/v1/journal/:jid", auth.allowedRoles([Admin, Student, Teacher]), journal.removeInJournal);
 
 	// Register classroom API
 	app.get("/api/v1/classrooms", auth.allowedRoles([Admin, Teacher]), classrooms.findAll);
