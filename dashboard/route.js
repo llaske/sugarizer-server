@@ -25,11 +25,11 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/logout', authController.logout);
 	app.get('/dashboard', authController.validateSession, authController.checkRole(dashboardController.index, classroomsController.index)); // checkRole(adminRoute, teacherRoute)
 	app.get('/dashboard/users', authController.validateSession, usersController.index);
-	app.get('/dashboard/users/add', authController.validateSession, authController.checkRole(usersController.addUser));
-	app.post('/dashboard/users/add', authController.validateSession, authController.checkRole(usersController.addUser));
+	app.get('/dashboard/users/add', authController.validateSession, usersController.addUser);
+	app.post('/dashboard/users/add', authController.validateSession, usersController.addUser);
 	app.get('/dashboard/users/edit/:uid', authController.validateSession, usersController.editUser);
 	app.post('/dashboard/users/edit/:uid', authController.validateSession, usersController.editUser);
-	app.get('/dashboard/users/delete/:uid', authController.validateSession, authController.checkRole(usersController.deleteUser));
+	app.get('/dashboard/users/delete/:uid', authController.validateSession, usersController.deleteUser);
 	app.get('/dashboard/journal', authController.validateSession, journalController.index);
 	app.get('/dashboard/journal/:jid', authController.validateSession, journalController.getEntries);
 	app.get('/dashboard/journal/:jid/delete/:oid', authController.validateSession, journalController.deleteEntry);
@@ -44,8 +44,8 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/classrooms', authController.validateSession, classroomsController.index);
 	app.get('/dashboard/classrooms/add', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
 	app.post('/dashboard/classrooms/add', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
-	app.get('/dashboard/classrooms/edit/:classid', authController.validateSession, authController.checkRole(classroomsController.editClassroom));
-	app.post('/dashboard/classrooms/edit/:classid', authController.validateSession, authController.checkRole(classroomsController.editClassroom));
+	app.get('/dashboard/classrooms/edit/:classid', authController.validateSession, classroomsController.editClassroom);
+	app.post('/dashboard/classrooms/edit/:classid', authController.validateSession, classroomsController.editClassroom);
 	app.get('/dashboard/classrooms/delete/:classid', authController.validateSession, authController.checkRole(classroomsController.deleteClassroom));
 
 

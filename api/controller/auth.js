@@ -187,8 +187,16 @@ exports.updateTimestamp = function(uid, callback) {
 exports.allowedRoles = function (roles) {
 	return function (req, res, next) {
 		if (roles.includes(req.user.role)) {
-			if (req.user.role == "teacher" && (req.params.uid)) {
-				if ((req.user._id == req.params.uid) || (req.user.students && (req.user.students.includes(req.params.uid)))) {
+			if (req.user.role == "teacher") {
+				if (req.params.uid) {
+					if ((req.user._id == req.params.uid) || (req.user.students && (req.user.students.includes(req.params.uid)))) {
+						return next();
+					}
+				} else if (req.params.classid) {
+					if ((req.user._id == req.params.classid) || (req.user.classrooms && (req.user.classrooms.includes(req.params.classid)))) {
+						return next();
+					}
+				} else {
 					return next();
 				}
 			} else if (req.user.role == 'student') {

@@ -40,9 +40,9 @@ module.exports = function(app, ini, db) {
 	app.get("/api/v1/users", auth.allowedRoles([Admin, Student, Teacher]), users.findAll);
 	app.get("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.findById);
 	app.get("/api/v1/users/:uid/classroom", auth.allowedRoles([Admin, Teacher]), users.findClassroom);
-	app.post("/api/v1/users", auth.allowedRoles([Admin]), users.addUser);
+	app.post("/api/v1/users", auth.allowedRoles([Admin, Teacher]), users.addUser);
 	app.put("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.updateUser);
-	app.delete("/api/v1/users/:uid", auth.allowedRoles([Admin, Student]), users.removeUser);
+	app.delete("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.removeUser);
 
 	// Register stats API
 	app.get("/api/v1/stats", auth.allowedRoles([Admin, Student, Teacher]), stats.findAll);
@@ -61,7 +61,7 @@ module.exports = function(app, ini, db) {
 	app.get("/api/v1/classrooms", auth.allowedRoles([Admin, Teacher]), classrooms.findAll);
 	app.get("/api/v1/classrooms/:classid", auth.allowedRoles([Admin, Teacher]), classrooms.findById);
 	app.post("/api/v1/classrooms", auth.allowedRoles([Admin]), classrooms.addClassroom);
-	app.put("/api/v1/classrooms/:classid", auth.allowedRoles([Admin]), classrooms.updateClassroom);
+	app.put("/api/v1/classrooms/:classid", auth.allowedRoles([Admin, Teacher]), classrooms.updateClassroom);
 	app.delete("/api/v1/classrooms/:classid", auth.allowedRoles([Admin]), classrooms.removeClassroom);
 
 	// If no route is matched by now, it must be a 404

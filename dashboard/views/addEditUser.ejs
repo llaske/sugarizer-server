@@ -45,8 +45,10 @@
                                     <label class="control-label" data-l10n-id="role"></label>
                                     <select class="form-control" name="role" onchange="show_user_fields(this.value)" <% if (mode == "edit") { %> disabled <% } %> >
                                         <option data-l10n-id="student" value="student" <% if(typeof user == 'object' &&  user.role=='student'){ %> selected="selected" <% } %> >Student</option>
+                                        <% if (role=="admin") { %>
                                         <option data-l10n-id="teacher" value="teacher" <% if(typeof user == 'object' &&  user.role=='teacher'){ %> selected="selected" <% } %> >Teacher</option>
                                         <option data-l10n-id="admin" value="admin" <% if(typeof user == 'object' &&  user.role=='admin'){ %> selected="selected" <% } %> >Admin</option>
+                                        <% } %>
                                     </select>
                                 </div>
                             </div>

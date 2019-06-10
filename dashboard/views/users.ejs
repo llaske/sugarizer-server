@@ -77,9 +77,7 @@
                             });
                             </script>
                         <div class="col-md-6">
-                            <% if (role=="admin") { %>
                             <a class="btn btn-round pull-right " href="/dashboard/users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
-                            <% } %>
                             <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>
                       </form>
@@ -152,9 +150,7 @@
                                                 <a data-l10n-id="seeJournalEntries" title="See Journal Entries" href="/dashboard/journal/<%= data.users[i].private_journal %>?uid=<%= data.users[i]._id %>&type=private"><span class="journal-icon2"></span></a>
                                                 <% } %>
                                                 <a data-l10n-id="editUser" title="Edit User" href="/dashboard/users/edit/<%= data.users[i]._id %>"><i class="material-icons text-muted">edit</i></a>
-                                                <% if (role=="admin") { %>
                                                 <a data-l10n-id="deleteUser" title="Delete User" href="/dashboard/users/delete/<%= data.users[i]._id %>?role=<%= data.users[i].role %>&name=<%= data.users[i].name %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteUser',{user:'<%= data.users[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
-                                                <% } %>
                                               </td>
                                           </tr>
                                         <% } %>

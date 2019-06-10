@@ -378,12 +378,21 @@ exports.addUser = function(req, res) {
 	user.timestamp = +new Date();
 	user.role = (user.role ? user.role.toLowerCase() : 'student');
 
+	if (req.user.role=="teacher" && user.role=="admin") {
+		res.status(401).send({
+			'error': 'You don\'t have permission to perform this action',
+			'code': 19
+		});
+		return;
+	}
+
 	//validation for fields [password, name]
 	if (!user.password || !user.name) {
 		res.status(401).send({
 			'error': "Invalid user object!",
 			'code': 2
 		});
+		return;
 	}
 
 	//check if user already exist
