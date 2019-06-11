@@ -1104,7 +1104,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n {\n   \"metadata\": {\n     \"title\": \"Read me !\",\n     \"title_set_by_user\": \"0\",\n     \"activity\": \"org.sugarlabs.Markdown\",\n     \"activity_id\": \"caa97e48-d33c-470a-99e9-495ff02afe01\",\n     \"creation_time\": ​1423341000747,\n     \"timestamp\": ​1423341000747,\n     \"file_size\": ​0,\n     \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n     \"buddy_name\": \"Lionel\",\n     \"buddy_color\": {\n       \"stroke\": \"#005FE4\",\n       \"fill\": \"#FF2B34\"\n     }\n   },\n   \"text\": \"\\\"# Hello World !\\\\n\\\"\",\n   \"objectId\": \"4837240f-bf78-4d22-b936-3db96880f0a0\"\n}",
+          "content": " HTTP/1.1 200 OK\n {\n   \"metadata\": {\n     \"title\": \"Read me !\",\n     \"title_set_by_user\": \"0\",\n     \"activity\": \"org.sugarlabs.Markdown\",\n     \"activity_id\": \"caa97e48-d33c-470a-99e9-495ff02afe01\",\n     \"creation_time\": 1423341000747,\n     \"timestamp\": 1423341000747,\n     \"file_size\": 0,\n     \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n     \"buddy_name\": \"Lionel\",\n     \"buddy_color\": {\n       \"stroke\": \"#005FE4\",\n       \"fill\": \"#FF2B34\"\n     }\n   },\n   \"text\": \"\\\"# Hello World !\\\\n\\\"\",\n   \"objectId\": \"4837240f-bf78-4d22-b936-3db96880f0a0\"\n}",
           "type": "json"
         }
       ]
@@ -1189,7 +1189,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[\n {\n  \"_id\": \"5946d4fc9f0e36686c50a548\",\n  \"content\": [\n   {\n    \"metadata\": {\n     \"title\": \"Read me !\",\n     \"title_set_by_user\": \"0\",\n     \"activity\": \"org.sugarlabs.Markdown\",\n     \"activity_id\": \"caa97e48-d33c-470a-99e9-495ff02afe01\",\n     \"creation_time\": ​1423341000747,\n     \"timestamp\": ​1423341066909,\n     \"file_size\": ​0,\n     \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n     \"buddy_name\": \"Sugarizer server\",\n     \"buddy_color\": {\n      \"stroke\": \"#005FE4\",\n      \"fill\": \"#FF2B34\"\n     }\n    },\n    \"objectId\": \"4837240f-bf78-4d22-b936-3db96880f0a0\",\n    \"text\" : \"\"\n   },\n   {\n    \"metadata\": {\n     \"title\": \"Physics JS Activity\",\n     \"title_set_by_user\": \"0\",\n     \"activity\": \"org.olpg-france.physicsjs\",\n     \"activity_id\": \"43708a15-f48e-49b1-85ef-da4c1419b364\",\n     \"creation_time\": ​1436003632237,\n     \"timestamp\": ​1436025389565,\n     \"file_size\": ​0,\n     \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n     \"buddy_name\": \"Lionel\",\n     \"buddy_color\": {\n      \"stroke\": \"#00A0FF\",\n      \"fill\": \"#F8E800\"\n     }\n    },\n    \"objectId\": \"2acbcd69-aa14-4273-8a9f-47642b41ad9d\",\n    \"text\" : \"\"\n   },\n   ...\n  ],\n  \"shared\": true\n },\n {\n  \"_id\": \"5954089e088a9fd957734e46\",\n  \"content\": [\n   {\n    \"metadata\" : {\n     \"title\" : \"Paint Activity\",\n     \"title_set_by_user\" : \"0\",\n     \"activity\" : \"org.olpcfrance.PaintActivity\",\n     \"activity_id\" : \"c3863442-f524-4d17-868a-9eed8fb467e5\",\n     \"creation_time\" : 1522441628767,\n     \"timestamp\" : 1522441631568,\n     \"file_size\" : 0,\n     \"buddy_name\" : \"Local\",\n     \"buddy_color\" : {\n      \"stroke\" : \"#00B20D\",\n      \"fill\" : \"#00EA11\"\n      },\n      \"textsize\" : 28687,\n      \"user_id\" : \"5a9d84682feba60e001ee997\"\n    },\n    \"objectId\" : \"e02da731-690b-4347-8ae2-e8e88a692999\",\n    \"text\" : \"\"\n   }\n  ],\n  \"shared\": false\n }\n]",
+          "content": "HTTP/1.1 200 OK\n[\n {\n  \"_id\": \"5946d4fc9f0e36686c50a548\",\n  \"content\": [\n   {\n    \"metadata\": {\n     \"title\": \"Read me !\",\n     \"title_set_by_user\": \"0\",\n     \"activity\": \"org.sugarlabs.Markdown\",\n     \"activity_id\": \"caa97e48-d33c-470a-99e9-495ff02afe01\",\n     \"creation_time\": 1423341000747,\n     \"timestamp\": 1423341066909,\n     \"file_size\": 0,\n     \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n     \"buddy_name\": \"Sugarizer server\",\n     \"buddy_color\": {\n      \"stroke\": \"#005FE4\",\n      \"fill\": \"#FF2B34\"\n     }\n    },\n    \"objectId\": \"4837240f-bf78-4d22-b936-3db96880f0a0\",\n    \"text\" : \"\"\n   },\n   {\n    \"metadata\": {\n     \"title\": \"Physics JS Activity\",\n     \"title_set_by_user\": \"0\",\n     \"activity\": \"org.olpg-france.physicsjs\",\n     \"activity_id\": \"43708a15-f48e-49b1-85ef-da4c1419b364\",\n     \"creation_time\": 1436003632237,\n     \"timestamp\": 1436025389565,\n     \"file_size\": 0,\n     \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n     \"buddy_name\": \"Lionel\",\n     \"buddy_color\": {\n      \"stroke\": \"#00A0FF\",\n      \"fill\": \"#F8E800\"\n     }\n    },\n    \"objectId\": \"2acbcd69-aa14-4273-8a9f-47642b41ad9d\",\n    \"text\" : \"\"\n   },\n   ...\n  ],\n  \"shared\": true\n },\n {\n  \"_id\": \"5954089e088a9fd957734e46\",\n  \"content\": [\n   {\n    \"metadata\" : {\n     \"title\" : \"Paint Activity\",\n     \"title_set_by_user\" : \"0\",\n     \"activity\" : \"org.olpcfrance.PaintActivity\",\n     \"activity_id\" : \"c3863442-f524-4d17-868a-9eed8fb467e5\",\n     \"creation_time\" : 1522441628767,\n     \"timestamp\" : 1522441631568,\n     \"file_size\" : 0,\n     \"buddy_name\" : \"Local\",\n     \"buddy_color\" : {\n      \"stroke\" : \"#00B20D\",\n      \"fill\" : \"#00EA11\"\n      },\n      \"textsize\" : 28687,\n      \"user_id\" : \"5a9d84682feba60e001ee997\"\n    },\n    \"objectId\" : \"e02da731-690b-4347-8ae2-e8e88a692999\",\n    \"text\" : \"\"\n   }\n  ],\n  \"shared\": false\n }\n]",
           "type": "json"
         }
       ]
@@ -1440,7 +1440,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n {\n  \"entries\" : [\n   {\n     \"metadata\": {\n       \"title\": \"Read me !\",\n       \"title_set_by_user\": \"0\",\n       \"activity\": \"org.sugarlabs.Markdown\",\n       \"activity_id\": \"caa97e48-d33c-470a-99e9-495ff02afe01\",\n       \"creation_time\": ​1423341000747,\n       \"timestamp\": ​1423341066909,\n       \"file_size\": ​0,\n       \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n       \"buddy_name\": \"Sugarizer server\",\n       \"buddy_color\": {\n         \"stroke\": \"#005FE4\",\n         \"fill\": \"#FF2B34\"\n       }\n     },\n     \"objectId\": \"4837240f-bf78-4d22-b936-3db96880f0a0\",\n     \"journalId\": \"596bfc2e16d5147938518284\"\n   },\n   {\n     \"metadata\": {\n       \"title\": \"Physics JS Activity\",\n       \"title_set_by_user\": \"0\",\n       \"activity\": \"org.olpg-france.physicsjs\",\n       \"activity_id\": \"43708a15-f48e-49b1-85ef-da4c1419b364\",\n       \"creation_time\": ​1436003632237,\n       \"timestamp\": ​1436025389565,\n       \"file_size\": ​0,\n       \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n       \"buddy_name\": \"Lionel\",\n       \"buddy_color\": {\n         \"stroke\": \"#00A0FF\",\n         \"fill\": \"#F8E800\"\n       }\n     },\n     \"objectId\": \"2acbcd69-aa14-4273-8a9f-47642b41ad9d\",\n     \"journalId\": \"596bfc2e16d5147938518284\"\n   },\n   ...\n ],\n \"limit\": 10,\n \"offset\": 20,\n \"total\": 200,\n \"links\": {\n \t\"prev_page\": \"/api/v1/journal/5569f4b019e0b4c9525b3c96?limit=10&offset=10\",\n \t\"next_page\": \"/api/v1/journal/5569f4b019e0b4c9525b3c96?limit=10&offset=30\"\n }\n}",
+          "content": " HTTP/1.1 200 OK\n {\n  \"entries\" : [\n   {\n     \"metadata\": {\n       \"title\": \"Read me !\",\n       \"title_set_by_user\": \"0\",\n       \"activity\": \"org.sugarlabs.Markdown\",\n       \"activity_id\": \"caa97e48-d33c-470a-99e9-495ff02afe01\",\n       \"creation_time\": 1423341000747,\n       \"timestamp\": 1423341066909,\n       \"file_size\": 0,\n       \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n       \"buddy_name\": \"Sugarizer server\",\n       \"buddy_color\": {\n         \"stroke\": \"#005FE4\",\n         \"fill\": \"#FF2B34\"\n       }\n     },\n     \"objectId\": \"4837240f-bf78-4d22-b936-3db96880f0a0\",\n     \"journalId\": \"596bfc2e16d5147938518284\"\n   },\n   {\n     \"metadata\": {\n       \"title\": \"Physics JS Activity\",\n       \"title_set_by_user\": \"0\",\n       \"activity\": \"org.olpg-france.physicsjs\",\n       \"activity_id\": \"43708a15-f48e-49b1-85ef-da4c1419b364\",\n       \"creation_time\": 1436003632237,\n       \"timestamp\": 1436025389565,\n       \"file_size\": 0,\n       \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n       \"buddy_name\": \"Lionel\",\n       \"buddy_color\": {\n         \"stroke\": \"#00A0FF\",\n         \"fill\": \"#F8E800\"\n       }\n     },\n     \"objectId\": \"2acbcd69-aa14-4273-8a9f-47642b41ad9d\",\n     \"journalId\": \"596bfc2e16d5147938518284\"\n   },\n   ...\n ],\n \"limit\": 10,\n \"offset\": 20,\n \"total\": 200,\n \"links\": {\n \t\"prev_page\": \"/api/v1/journal/5569f4b019e0b4c9525b3c96?limit=10&offset=10\",\n \t\"next_page\": \"/api/v1/journal/5569f4b019e0b4c9525b3c96?limit=10&offset=30\"\n }\n}",
           "type": "Json"
         }
       ]
@@ -1714,7 +1714,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n {\n   \"metadata\": {\n     \"title\": \"Read me now !\",\n     \"title_set_by_user\": \"0\",\n     \"activity\": \"org.sugarlabs.Markdown\",\n     \"activity_id\": \"caa97e48-d33c-470a-99e9-495ff02afe01\",\n     \"creation_time\": ​1423341000747,\n     \"timestamp\": ​1423341066120,\n     \"file_size\": ​0,\n     \"user_id\": ​\"5569f4b019e0b4c9525b3c97\",\n     \"buddy_name\": \"Lionel\",\n     \"buddy_color\": {\n       \"stroke\": \"#005FE4\",\n       \"fill\": \"#FF2B34\"\n     }\n   },\n   \"text\": \"\\\"# Hello Sugarizer user !\\\\n\\\\nWelcome to the Sugarizer server cloud storage. You could put everything that you need to share.\\\\n\\\\n\\\"\",\n   \"objectId\": \"4837240f-bf78-4d22-b936-3db96880f0a0\"\n}",
+          "content": " HTTP/1.1 200 OK\n {\n   \"metadata\": {\n     \"title\": \"Read me now !\",\n     \"title_set_by_user\": \"0\",\n     \"activity\": \"org.sugarlabs.Markdown\",\n     \"activity_id\": \"caa97e48-d33c-470a-99e9-495ff02afe01\",\n     \"creation_time\": 1423341000747,\n     \"timestamp\": 1423341066120,\n     \"file_size\": 0,\n     \"user_id\": \"5569f4b019e0b4c9525b3c97\",\n     \"buddy_name\": \"Lionel\",\n     \"buddy_color\": {\n       \"stroke\": \"#005FE4\",\n       \"fill\": \"#FF2B34\"\n     }\n   },\n   \"text\": \"\\\"# Hello Sugarizer user !\\\\n\\\\nWelcome to the Sugarizer server cloud storage. You could put everything that you need to share.\\\\n\\\\n\\\"\",\n   \"objectId\": \"4837240f-bf78-4d22-b936-3db96880f0a0\"\n}",
           "type": "json"
         }
       ]
@@ -2418,6 +2418,57 @@
         {
           "title": "Success-Response:",
           "content": " HTTP/1.1 200 OK\n {\n   \"name\": \"Tarun\",\n   \"role\": \"student\",\n   \"color\": {\n     \"stroke\": \"#00A0FF\",\n     \"fill\": \"#00B20D\"\n   },\n   \"favorites\": [\n      \"org.olpcfrance.Abecedarium\",\n      \"org.sugarlabs.ChatPrototype\",\n      \"org.sugarlabs.Clock\",\n      \"org.olpcfrance.FoodChain\",\n      \"org.sugarlabs.GearsActivity\",\n      \"org.sugarlabs.GTDActivity\",\n      \"org.olpcfrance.Gridpaint\",\n      \"org.olpc-france.LOLActivity\",\n      \"org.sugarlabs.Markdown\",\n      \"org.sugarlabs.MazeWebActivity\",\n      \"org.sugarlabs.PaintActivity\"\n   ],\n   \"language\": \"en\",\n   \"password\": \"xxx\",\n   \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n   \"shared_journal\": \"536d30874326e55f2a22816f\",\n   \"created_time\": 1423341000747,\n   \"timestamp\": 1423341000747,\n   \"_id\": \"5569f4b019e0b4c9525b3c97\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/users.js",
+    "groupTitle": "Users"
+  },
+  {
+    "type": "get",
+    "url": "api/v1/users/:id/classroom",
+    "title": "Get user classrooms",
+    "name": "GetUserClassroos",
+    "description": "<p>Retrieve the classroom data for a specific user.</p>",
+    "group": "Users",
+    "version": "1.2.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "classrooms",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "    HTTP/1.1 200 OK\n[\n\t{\n\t  _id: '5cdd20eb34374452856e8208',\n\t  name: 'Classroom X',\n\t  students: [ '5cdc2bde1f8dc510360b2433', '5cecd77a211a7d1d5ab92b67' ],\n\t  color: { stroke: '#8BFF7A', fill: '#00EA11' },\n\t  options: { sync: true, stats: true },\n\t  created_time: 1557995755642,\n\t  timestamp: 1559293919121\n\t},\n\t{\n\t  _id: '5cd87e5b4ddb1a000f5c6bab',\n\t  name: 'Classroom Y',\n\t  students: [ '5cdd263379dcbe57d458b205', '59ea5cc94622230e00791854', '59ea739f4622230e00791856', '59ea51efa0855844008511e2', '5cecd77a211a7d1d5ab92b67' ],\n\t  color: { stroke: '#008009', fill: '#F8E800' },\n\t  options: { sync: true, stats: true },\n\t  created_time: 1557691995135,\n\t  timestamp: 1559293901572\n\t}\n]",
           "type": "json"
         }
       ]
