@@ -152,12 +152,12 @@
                             </div>
                         </div>
                         <% } %>
-                        <% if (typeof classrooms == 'object') { %>
+                        <% if (typeof classroomList == 'object') { %>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="classrooms"></label>
-                                    <% if (classrooms.length > 0) { %>
+                                    <% if (classroomList.length > 0) { %>
                                     <table class="table table-hover">
                                         <thead class="text-muted">
                                             <tr>
@@ -169,20 +169,20 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <% for(var i=0; i < classrooms.length; i++) { %>
-                                            <tr class="pointer" onclick=window.document.location='/dashboard/classrooms/edit/<%= classrooms[i]._id %>'>
+                                            <% for(var i=0; i < classroomList.length; i++) { %>
+                                            <tr class="pointer" onclick=window.document.location='/dashboard/classrooms/edit/<%= classroomList[i]._id %>'>
                                                 <td><%= i + 1 %></td>
                                                 <td>
-                                                    <div class="color" id="<%= classrooms[i]._id %>">
+                                                    <div class="color" id="<%= classroomList[i]._id %>">
                                                         <div class="xo-icon"></div>
                                                     </div>
                                                 </td>
                                                 <script>
-                                                    new icon().load("/public/img/classroom-icon.svg", ("<% JSON.stringify(classrooms[i].color) %>"), "<%= classrooms[i]._id %>");
+                                                    new icon().load("/public/img/classroom-icon.svg", ("<% JSON.stringify(classroomList[i].color) %>"), "<%= classroomList[i]._id %>");
                                                 </script>
-                                                <td><%= classrooms[i].name %></td>
-                                                <td><%= classrooms[i].students.length %></td>
-                                                <td><%= moment(classrooms[i].timestamp).calendar() %></td>
+                                                <td><%= classroomList[i].name %></td>
+                                                <td><%= classroomList[i].students.length %></td>
+                                                <td><%= moment(classroomList[i].timestamp).calendar() %></td>
                                             </tr>
                                             <% } %>
                                         </tbody>

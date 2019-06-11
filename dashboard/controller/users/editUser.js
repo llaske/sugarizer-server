@@ -119,12 +119,13 @@ module.exports = function editUser(req, res) {
 									module: 'users',
 									user: user,
 									mode: "edit",
-									classrooms: classrooms,
+									classroomList: classrooms,
 									moment: moment,
 									emoji: emoji,
 									xocolors: xocolors,
 									account: req.session.user,
-									server: users.ini().information
+									server: users.ini().information,
+									role: req.role
 								});
 							} else {
 								req.flash('errors', {

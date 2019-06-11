@@ -90,6 +90,7 @@ module.exports = function addUser(req, res) {
 					},
 					classrooms: classrooms.classrooms,
 					xocolors: xocolors,
+					mode: "add",
 					moment: moment,
 					emoji: emoji,
 					account: req.session.user,
