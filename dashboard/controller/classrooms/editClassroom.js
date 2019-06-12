@@ -73,8 +73,7 @@ module.exports = function editClassroom(req, res) {
 						emoji: emoji,
 						xocolors: xocolors,
 						account: req.session.user,
-						server: classroom.ini().information,
-						role: req.role
+						server: classroom.ini().information
 					});
 				} else {
 					req.flash('errors', {

@@ -20,7 +20,7 @@
                           <div class="form-group form-black label-floating is-empty">
                               <select class="form-control" id="user-type-select2" name="role">
                                 <option data-l10n-id="student" value="student" <% if(query.role=='student'){ %>selected="selected"<% } %> >Student</option>
-                                <% if (role=="admin") { %>
+                                <% if (account.user && account.user.role=="admin") { %>
                                 <option data-l10n-id="teacher" value="teacher" <% if(query.role=='teacher'){ %>selected="selected"<% } %> >Teacher</option>
                                 <option data-l10n-id="admin" value="admin" <% if(query.role=='admin'){ %>selected="selected"<% } %> >Admin</option>
                                 <% } %>

@@ -94,8 +94,7 @@ module.exports = function addUser(req, res) {
 					moment: moment,
 					emoji: emoji,
 					account: req.session.user,
-					server: users.ini().information,
-					role: req.role
+					server: users.ini().information
 				});
 			});
 		}
@@ -110,8 +109,7 @@ module.exports = function addUser(req, res) {
 				moment: moment,
 				emoji: emoji,
 				account: req.session.user,
-				server: users.ini().information,
-				role: req.role
+				server: users.ini().information
 			});
 		});
 	}

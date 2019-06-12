@@ -39,8 +39,7 @@ exports.index = function(req, res) {
 				account: req.session.user,
 				url: common.getAPIUrl(req),
 				search: (req.query.search ? req.query.search.trim() : ''),
-				server: ini.information,
-				role: req.role
+				server: ini.information
 			});
 
 		} else {

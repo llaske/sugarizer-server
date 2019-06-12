@@ -19,8 +19,7 @@ exports.index = function(req, res) {
 		title: 'stats',
 		module: 'stats',
 		account: req.session.user,
-		server: ini.information,
-		role: req.role
+		server: ini.information
 	});
 };
 

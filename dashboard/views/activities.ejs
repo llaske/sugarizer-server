@@ -37,7 +37,7 @@
 								<li>
 									<div class="card">
 										<div class="card-content">
-										<div class="col-lg-1 col-md-1 col-sm-1"><img <% if(role=="admin") { %> class="draggable pointer" <% } %> src="../public/img/font-awesome-ellipsis-v.png" alt="drag" style="width:40px;height:40px;" data-l10n-id="reorder" title="Drag to Reorder" ></div>
+										<div class="col-lg-1 col-md-1 col-sm-1"><img <% if(account.user && account.user.role=="admin") { %> class="draggable pointer" <% } %> src="../public/img/font-awesome-ellipsis-v.png" alt="drag" style="width:40px;height:40px;" data-l10n-id="reorder" title="Drag to Reorder" ></div>
 											<div class="text-center col-lg-1 col-md-1 col-sm-1 ">
 													<img style="width: 30px;height: 30px;margin: 5px;" src="/<%= activities[i].directory + '/' + activities[i].icon %>" />
 											</div>
@@ -47,7 +47,7 @@
 											<div class="text-center col-lg-1 col-md-1 col-sm-1">
 												<div class="favoriteBox">
 														<label data-id="<%= activities[i].id %>">
-															<input <% if(activities[i].favorite == true) { %> checked <% } %> name="favoriteActivities" type="checkbox" <% if(role=="admin") { %> onclick="updateActivities()" data-l10n-id="toggle-favourite" title="Toggle Favourite" <% } else { %>disabled<% } %>  >
+															<input <% if(activities[i].favorite == true) { %> checked <% } %> name="favoriteActivities" type="checkbox" <% if(account.user && account.user.role=="admin") { %> onclick="updateActivities()" data-l10n-id="toggle-favourite" title="Toggle Favourite" <% } else { %>disabled<% } %>  >
 															<span class="checkbox-material"></span>
 														</label>
 												</div>
@@ -77,7 +77,7 @@ var headers = <%- JSON.stringify(headers) %>;
 var url = '<%= url %>';
 
 //init drag drop
-<% if(role=="admin") { %>
+<% if(account.user && account.user.role=="admin") { %>
 	initDragDrop();
 <% } %>
 

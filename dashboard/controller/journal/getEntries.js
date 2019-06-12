@@ -46,8 +46,7 @@ module.exports = function getEntries(req, res) {
 					query: query,
 					users: users,
 					account: req.session.user,
-					server: journal.ini().information,
-					role: req.role
+					server: journal.ini().information
 				});
 			});
 		});

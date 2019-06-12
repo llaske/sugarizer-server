@@ -98,8 +98,7 @@ module.exports = function editUser(req, res) {
 								moment: moment,
 								emoji: emoji,
 								account: req.session.user,
-								server: users.ini().information,
-								role: req.role
+								server: users.ini().information
 							});
 						});
 					} else if (user && user.role == 'student') {
@@ -124,8 +123,7 @@ module.exports = function editUser(req, res) {
 									emoji: emoji,
 									xocolors: xocolors,
 									account: req.session.user,
-									server: users.ini().information,
-									role: req.role
+									server: users.ini().information
 								});
 							} else {
 								req.flash('errors', {
@@ -144,8 +142,7 @@ module.exports = function editUser(req, res) {
 							emoji: emoji,
 							xocolors: xocolors,
 							account: req.session.user,
-							server: users.ini().information,
-							role: req.role
+							server: users.ini().information
 						});
 					}
 				} else {

@@ -88,8 +88,7 @@ module.exports = function profile(req, res) {
 								moment: moment,
 								emoji: emoji,
 								account: req.session.user,
-								server: users.ini().information,
-								role: req.role
+								server: users.ini().information
 							});
 						});
 					} else {
@@ -102,8 +101,7 @@ module.exports = function profile(req, res) {
 							emoji: emoji,
 							xocolors: xocolors,
 							account: req.session.user,
-							server: users.ini().information,
-							role: req.role
+							server: users.ini().information
 						});
 					}
 				} else {

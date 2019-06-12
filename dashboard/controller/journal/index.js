@@ -34,8 +34,7 @@ exports.index = function(req, res) {
 			},
 			users: users,
 			account: req.session.user,
-			server: ini.information,
-			role: req.role
+			server: ini.information
 		});
 	});
 };

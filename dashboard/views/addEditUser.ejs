@@ -46,7 +46,7 @@
                                     <label class="control-label" data-l10n-id="role"></label>
                                     <select class="form-control" name="role" onchange="show_user_fields(this.value)" <% if (mode == "edit") { %> disabled <% } %> >
                                         <option data-l10n-id="student" value="student" <% if(typeof user == 'object' &&  user.role=='student'){ %> selected="selected" <% } %> >Student</option>
-                                        <% if (role=="admin") { %>
+                                        <% if (account.user && account.user.role=="admin") { %>
                                         <option data-l10n-id="teacher" value="teacher" <% if(typeof user == 'object' &&  user.role=='teacher'){ %> selected="selected" <% } %> >Teacher</option>
                                         <option data-l10n-id="admin" value="admin" <% if(typeof user == 'object' &&  user.role=='admin'){ %> selected="selected" <% } %> >Admin</option>
                                         <% } %>
@@ -87,7 +87,7 @@
                             <div class="col-md-12">
                                 <div class="form-group form-black" style="margin-top: -15px;">
                                     <label class="control-label" data-l10n-id="classrooms"></label>
-                                    <select id='searchable-select-classrooms' multiple='multiple' name="classrooms" class="form-control" <% if(role!="admin") { %> disabled <% } %>>
+                                    <select id='searchable-select-classrooms' multiple='multiple' name="classrooms" class="form-control" <% if(account.user && account.user.role!="admin") { %> disabled <% } %>>
                                         <% for(var i=0; i < classrooms.length; i++) { %>
                                             <option <% if(classrooms[i].is_member) { %> selected <% } %> value='<%= classrooms[i]._id %>'><%= classrooms[i].name %></option>
                                         <% } %>
@@ -197,7 +197,7 @@
                         </div>
                         <% } %>
                         <button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
-                        <a class="btn pull-right btn-round" <% if (typeof user == 'object' && typeof user.role == 'string') { %>href="/dashboard/users?role=<%= user.role %>"<% } else { %> href="/dashboard/users" <% } %> data-l10n-id="cancel"></a>
+                        <a class="btn pull-right btn-round" <% if (module="profile") { %> href="/dashboard/profile" <% } else if (typeof user == 'object' && typeof user.role == 'string') { %>href="/dashboard/users?role=<%= user.role %>"<% } else { %> href="/dashboard/users" <% } %> data-l10n-id="cancel"></a>
                         <div class="clearfix"></div>
                     </form>
                 </div>

@@ -75,8 +75,7 @@ exports.index = function(req, res) {
 					classroom_id: classroom_id,
 					data: body,
 					account: req.session.user,
-					server: ini.information,
-					role: req.role
+					server: ini.information
 				});
 			});
 		} else {

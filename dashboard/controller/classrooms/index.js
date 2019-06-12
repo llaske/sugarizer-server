@@ -56,8 +56,7 @@ exports.index = function(req, res) {
 				query: query,
 				data: body,
 				account: req.session.user,
-				server: ini.information,
-				role: req.role
+				server: ini.information
 			});
 
 		} else {
