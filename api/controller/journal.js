@@ -1,5 +1,6 @@
 // Journal handling
-var mongo = require('mongodb');
+var mongo = require('mongodb'),
+	users = require("./users");
 
 
 var db;
@@ -110,20 +111,71 @@ exports.findAll = function(req, res) {
 		};
 	}
 
-	//get data
-	db.collection(journalCollection, function(err, collection) {
-		collection.find(options).toArray(function(err, items) {
-
-			//count
-			for (var i = 0; i < items.length; i++) {
-				items[i].count = items[i].content.length;
-				delete items[i].content;
+	if (req.user.role == "teacher") {
+		// get student mappings
+		users.getAllUsers({
+			role: 'student',
+			_id: {
+				$in: req.user.students.map(function(id) {
+					return new mongo.ObjectID(id);
+				})
 			}
+		}, {}, function(users) {
+			var journalList = [];
+			var map = new Map();
+			for (var i=0; i < users.length; i++) {
+				if(users[i].private_journal && !map.has(users[i].private_journal)){
+					map.set(users[i].private_journal, true);
+					journalList.push(users[i].private_journal);
+				}
+				if(users[i].shared_journal && !map.has(users[i].shared_journal)){
+					map.set(users[i].shared_journal, true);
+					journalList.push(users[i].shared_journal);
+				}
+			}
+			options['_id'] = {
+				$in: journalList
+			};
+			db.collection(journalCollection, function(err, collection) {
+				collection.find(options).toArray(function(err, items) {
 
-			//return
-			res.send(items);
+					//count
+					for (var i=0; i<items.length; i++) {
+						if (items[i].shared) {
+							items[i].count = 0;
+							for (var j=0; j<items[i].content.length; j++) {
+								if (items[i].content[j] && items[i].content[j].metadata && items[i].content[j].metadata.user_id && req.user.students.includes(items[i].content[j].metadata.user_id)) {
+									items[i].count++;
+								}
+							}
+							delete items[i].content;
+						} else {
+							items[i].count = items[i].content.length;
+							delete items[i].content;
+						}
+					}
+
+					//return
+					res.send(items);
+				});
+			});
 		});
-	});
+	} else {
+		//get data
+		db.collection(journalCollection, function(err, collection) {
+			collection.find(options).toArray(function(err, items) {
+
+				//count
+				for (var i = 0; i < items.length; i++) {
+					items[i].count = items[i].content.length;
+					delete items[i].content;
+				}
+
+				//return
+				res.send(items);
+			});
+		});
+	}
 };
 
 //- REST interface
@@ -847,18 +899,70 @@ exports.findAllEntries = function(req, res) {
 		options.shared = false;
 	}
 
-	//get data
-	db.collection(journalCollection, function(err, collection) {
-		collection.find(options).toArray(function(err, items) {
-			//check for errors
-			if (err) {
-				return res.status(500).send({
-					'error': err,
-					'code': 5
-				});
+	if (req.user.role == "teacher") {
+		// get student mappings
+		users.getAllUsers({
+			role: 'student',
+			_id: {
+				$in: req.user.students.map(function(id) {
+					return new mongo.ObjectID(id);
+				})
 			}
-			// Return
-			return res.send(items);
+		}, {}, function(users) {
+			var journalList = [];
+			var map = new Map();
+			for (var i=0; i < users.length; i++) {
+				if(users[i].private_journal && !map.has(users[i].private_journal)){
+					map.set(users[i].private_journal, true);
+					journalList.push(users[i].private_journal);
+				}
+				if(users[i].shared_journal && !map.has(users[i].shared_journal)){
+					map.set(users[i].shared_journal, true);
+					journalList.push(users[i].shared_journal);
+				}
+			}
+			options['_id'] = {
+				$in: journalList
+			};
+			db.collection(journalCollection, function(err, collection) {
+				collection.find(options).toArray(function(err, items) {
+					//check for errors
+					if (err) {
+						return res.status(500).send({
+							'error': err,
+							'code': 5
+						});
+					}
+					//count
+					for (var i=0; i<items.length; i++) {
+						if (items[i].shared && typeof items[i].content == "object") {
+							var content = [];
+							for (var j=0; j<items[i].content.length; j++) {
+								if (items[i].content[j] && items[i].content[j].metadata && items[i].content[j].metadata.user_id && req.user.students.includes(items[i].content[j].metadata.user_id)) {
+									content.push(items[i].content[j]);
+								}
+							}
+							items[i].content = content;
+						}
+					}
+					return res.send(items);
+				});
+			});
 		});
-	});
+	} else {
+		//get data
+		db.collection(journalCollection, function(err, collection) {
+			collection.find(options).toArray(function(err, items) {
+				//check for errors
+				if (err) {
+					return res.status(500).send({
+						'error': err,
+						'code': 5
+					});
+				}
+				// Return
+				return res.send(items);
+			});
+		});
+	}
 };

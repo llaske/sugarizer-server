@@ -225,7 +225,7 @@ exports.getRecentActivities = function(req, res) {
 
 			var data = '';
 			for (var i = 0; i < allEntries.length; i++) {
-
+				
 				// launch url
 				var url = '/dashboard/activities/launch/' + allEntries[i].journalId + '?oid=' + allEntries[i].objectId + '&uid=' + allEntries[i].metadata.user_id + '&aid=' + allEntries[i].metadata.activity;
 
@@ -264,8 +264,11 @@ function getAllEntriesList(req, res, callback) {
 		if (body) {
 			for (var i=0; i<body.length; i++) {
 				if (body[i] && typeof body[i].content == "object" && body[i].content.length > 0) {
-					if (body[i].shared == true) console.log(body[i].content.length);
-					allEntries = allEntries.concat(body[i].content);
+					for (var j=0; j<body[i].content.length; j++) {
+						body[i].content[j].journalId = body[i]._id;
+						body[i].content[j].shared = body[i].shared;
+						allEntries.push(body[i].content[j]);
+					}
 				}
 			}
 		}

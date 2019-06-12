@@ -51,7 +51,7 @@ module.exports = function(app, ini, db) {
 
 	// Register journal API
 	app.get("/api/v1/journal", auth.allowedRoles([Admin, Student, Teacher]), journal.findAll);
-	app.get("/api/v1/journal/aggregate", auth.allowedRoles([Admin]), journal.findAllEntries);
+	app.get("/api/v1/journal/aggregate", auth.allowedRoles([Admin, Teacher]), journal.findAllEntries);
 	app.get("/api/v1/journal/:jid", auth.allowedRoles([Admin, Student, Teacher]), journal.findJournalContent);
 	app.post("/api/v1/journal/:jid", auth.allowedRoles([Admin, Student, Teacher]), journal.addEntryInJournal);
 	app.put("/api/v1/journal/:jid", auth.allowedRoles([Admin, Student, Teacher]), journal.updateEntryInJournal);
