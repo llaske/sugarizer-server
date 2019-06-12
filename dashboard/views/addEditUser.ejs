@@ -9,7 +9,7 @@
               <div class="card">
                 <div class="card-content">
                     <% include includes/flash-errors %>
-                    <form id="user-add-edit-form" method="post" <% if(typeof user == 'object'){ %> action="<%= user._id %>" <% } %>>
+                    <form id="user-add-edit-form" method="post" <% if(typeof user == 'object'){ %> action="/dashboard/profile" <% } %>>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
@@ -39,6 +39,7 @@
                                 </div>
                             </div>
                         </div>
+                        <% if (module != "profile") { %>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
@@ -53,6 +54,7 @@
                                 </div>
                             </div>
                         </div>
+                        <% } %>
                         <div class="row color_input">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
@@ -80,7 +82,7 @@
                                 </div>
                             </div>
                         </div>
-                        <% if(typeof classrooms == 'object') { %>
+                        <% if(typeof classrooms == 'object' && module != "profile") { %>
                         <div class="row" id='searchable-select-classrooms-row'>
                             <div class="col-md-12">
                                 <div class="form-group form-black" style="margin-top: -15px;">

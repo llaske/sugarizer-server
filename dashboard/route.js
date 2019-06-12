@@ -39,6 +39,8 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/stats', authController.validateSession, authController.checkRole(statsController.index));
 	app.get('/dashboard/stats/graph', authController.validateSession, statsController.getGraph);
 	app.get('/dashboard/graph', authController.validateSession, graphController.getGraph);
+	app.get('/dashboard/profile', authController.validateSession, usersController.profile);
+	app.post('/dashboard/profile', authController.validateSession, usersController.profile);
 
 	// classrooms routes
 	app.get('/dashboard/classrooms', authController.validateSession, classroomsController.index);

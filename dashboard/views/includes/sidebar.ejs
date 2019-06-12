@@ -70,6 +70,16 @@
 				</a>
 			</li>
 			<% } %>
+			<%if (module == 'profile') { %>
+				<li class="active">
+			<% } else {%>
+				<li>
+			<% }%>
+				<a class="pointer" onclick="jumpTo('/dashboard/profile')">
+					<i class="custom-icon classroom-icon"></i>
+					<p data-l10n-id="profile">Profile</p>
+				</a>
+			</li>
 		</ul>
 	</div>
 </div>
