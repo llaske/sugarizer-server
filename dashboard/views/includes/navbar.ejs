@@ -12,12 +12,18 @@
         </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
-  							<li class="dropdown">
+  							<li class="dropdown hide-mob-el">
   								<a href="/dashboard/logout" class="dropdown-toggle" data-toggle="dropdown">
-  									<p class="custom-icon xo-icon"></p>
-  									<p class="hidden-lg hidden-md" data-l10n-id="logout">Logout</p>
-  								</a>
+                                      <p class="custom-icon xo-icon"></p>
+                                      <p class="hidden-lg hidden-md" data-l10n-id="logout">Logout</p>
+                                </a>
   								<ul class="dropdown-menu">
+                                    <%if (module == 'profile') { %>
+                                        <li class="active">
+                                    <% } else {%>
+                                        <li>
+                                    <% }%>
+                                    <a class="pointer" data-l10n-id="profile" onclick="jumpTo('/dashboard/profile')">Profile</a></li>
   									<li><a href="/dashboard/logout" data-l10n-id="logout">Logout</a></li>
   								</ul>
   							</li>
