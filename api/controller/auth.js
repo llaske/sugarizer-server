@@ -209,7 +209,7 @@ exports.allowedRoles = function (roles) {
 						return next();
 					} else {
 						return res.status(401).send({
-							'error': 'You don\'t have permission to remove this journal',
+							'error': 'You don\'t have permission to access this journal',
 							'code': 8
 						});
 					}
