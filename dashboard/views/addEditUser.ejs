@@ -9,7 +9,7 @@
               <div class="card">
                 <div class="card-content">
                     <% include includes/flash-errors %>
-                    <form id="user-add-edit-form" method="post" <% if(typeof user == 'object'){ %> action="/dashboard/profile" <% } %>>
+                    <form id="user-add-edit-form" method="post" <% if(typeof user == 'object' && module =="profile"){ %> action="/dashboard/profile" <% } else if (typeof user == 'object') { %> action="<%= user._id %>" <% } %>>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
@@ -87,7 +87,7 @@
                             <div class="col-md-12">
                                 <div class="form-group form-black" style="margin-top: -15px;">
                                     <label class="control-label" data-l10n-id="classrooms"></label>
-                                    <select id='searchable-select-classrooms' multiple='multiple' name="classrooms" class="form-control" <% if(account.user && account.user.role!="admin") { %> disabled <% } %>>
+                                    <select id='searchable-select-classrooms' multiple='multiple' name="classrooms" class="form-control">
                                         <% for(var i=0; i < classrooms.length; i++) { %>
                                             <option <% if(classrooms[i].is_member) { %> selected <% } %> value='<%= classrooms[i]._id %>'><%= classrooms[i].name %></option>
                                         <% } %>
@@ -197,7 +197,7 @@
                         </div>
                         <% } %>
                         <button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
-                        <a class="btn pull-right btn-round" <% if (module="profile") { %> href="/dashboard/profile" <% } else if (typeof user == 'object' && typeof user.role == 'string') { %>href="/dashboard/users?role=<%= user.role %>"<% } else { %> href="/dashboard/users" <% } %> data-l10n-id="cancel"></a>
+                        <a class="btn pull-right btn-round" <% if (module=="profile") { %> href="/dashboard/profile" <% } else if (typeof user == 'object' && typeof user.role == 'string') { %>href="/dashboard/users?role=<%= user.role %>"<% } else { %> href="/dashboard/users" <% } %> data-l10n-id="cancel"></a>
                         <div class="clearfix"></div>
                     </form>
                 </div>
@@ -217,12 +217,13 @@ function show_user_fields(val) {
         $('.color_input').removeClass('hide');
         $('.color_input input').removeAttr('disabled');
     }
-
+    <% if (account.user.role == "admin") { %>
     if (val == 'teacher') {
         $('#searchable-select-classrooms-row').removeClass('hide');
     } else {
         $('#searchable-select-classrooms-row').addClass('hide');
     }
+    <% } %>
 }
 show_user_fields('<% if(typeof user == "object"){ %><%= user.role %><% } %>')
 </script>

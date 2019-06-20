@@ -28,6 +28,15 @@ module.exports = function editUser(req, res) {
 				req.body.classrooms = [req.body.classrooms];
 			}
 
+			if (req.session &&  req.session.user && req.session.user.user && req.session.user.user.role == "teacher") {
+				if ((!req.body.classrooms) || !(req.body.classrooms.length > 0)) {
+					req.flash('errors', {
+						msg: "Classroom cannot be empty"
+					});
+					return res.redirect('/dashboard/users/add');
+				}
+			}
+
 			// get errors
 			var errors = req.validationErrors();
 
@@ -42,18 +51,69 @@ module.exports = function editUser(req, res) {
 					uri: common.getAPIUrl(req) + 'api/v1/users/' + req.params.uid
 				}, function(error, response, body) {
 					if (response.statusCode == 200) {
-						req.flash('success', {
-							msg: common.l10n.get('UserUpdated', {name: req.body.name})
-						});
-						if (body.role == "admin") {
-							// send to admin page
-							return res.redirect('/dashboard/users/?role=admin');
-						} else if (body.role == "teacher") {
-							// send to teacher page
-							return res.redirect('/dashboard/users/?role=teacher');
+						if (body.role=="student" && req.body.classrooms && typeof(req.body.classrooms) == "object" && req.body.classrooms.length > 0) {
+							dashboard_utils.getAllClassrooms(req, res, function(classrooms) {
+								if (classrooms && classrooms.classrooms && classrooms.classrooms.length > 0) {
+									var classroomCounter = 0;
+									for (var i=0; i<classrooms.classrooms.length; i++) {
+										classrooms.classrooms[i].students = classrooms.classrooms[i].students || [];
+										if (req.body.classrooms.includes(classrooms.classrooms[i]._id) || classrooms.classrooms[i].students.includes(body._id)) {
+											if (req.body.classrooms.includes(classrooms.classrooms[i]._id)) {
+												if (classrooms.classrooms[i].students.length > 0) {
+													if (!classrooms.classrooms[i].students.includes(body._id)) {
+														classrooms.classrooms[i].students.push(body._id);
+													}
+												} else {
+													classrooms.classrooms[i].students = [body._id];
+												}
+											} else {
+												classrooms.classrooms[i].students = classrooms.classrooms[i].students.filter(function(value){
+													return (value != body._id && value != null);
+												});
+											}
+
+											request({
+												headers: common.getHeaders(req),
+												json: true,
+												method: 'put',
+												body: {
+													classroom: JSON.stringify({
+														students: classrooms.classrooms[i].students
+													})
+												},
+												uri: common.getAPIUrl(req) + 'api/v1/classrooms/' + classrooms.classrooms[i]._id
+											}, function() {
+												classroomCounter++;
+												if (classroomCounter == req.body.classrooms.length) {
+													req.flash('success', {
+														msg: common.l10n.get('UserUpdated', {name: req.body.name})
+													});
+													return res.redirect('/dashboard/users/');
+												}
+											});
+										}
+									}
+								} else {
+									req.flash('success', {
+										msg: common.l10n.get('UserUpdated', {name: req.body.name})
+									});
+									return res.redirect('/dashboard/users/');
+								}
+							});
 						} else {
-							// send to users page
-							return res.redirect('/dashboard/users/');
+							req.flash('success', {
+								msg: common.l10n.get('UserUpdated', {name: req.body.name})
+							});
+							if (body.role == "admin") {
+								// send to admin page
+								return res.redirect('/dashboard/users/?role=admin');
+							} else if (body.role == "teacher") {
+								// send to teacher page
+								return res.redirect('/dashboard/users/?role=teacher');
+							} else {
+								// send to users page
+								return res.redirect('/dashboard/users/');
+							}
 						}
 					} else {
 						req.flash('errors', {
@@ -102,35 +162,25 @@ module.exports = function editUser(req, res) {
 							});
 						});
 					} else if (user && user.role == 'student') {
-						request({
-							headers: common.getHeaders(req),
-							json: true,
-							method: 'get',
-							uri: common.getAPIUrl(req) + 'api/v1/users/' + req.params.uid + '/classroom'
-						}, function(error, response, classrooms) {
-							if (error) {
-								req.flash('errors', {
-									msg: common.l10n.get('ThereIsError')
-								});
-								return res.redirect('/dashboard/users');
-							} else if (response.statusCode == 200) {
-								res.render('addEditUser', {
-									module: 'users',
-									user: user,
-									mode: "edit",
-									classroomList: classrooms,
-									moment: moment,
-									emoji: emoji,
-									xocolors: xocolors,
-									account: req.session.user,
-									server: users.ini().information
-								});
-							} else {
-								req.flash('errors', {
-									msg: common.l10n.get('ErrorCode'+classrooms.code)
-								});
-								return res.redirect('/dashboard/users');
+						dashboard_utils.getAllClassrooms(req, res, function(classrooms) {
+							if (classrooms && classrooms.classrooms && classrooms.classrooms.length > 0) {
+								for (var i=0; i<classrooms.classrooms.length; i++) {
+									if (typeof classrooms.classrooms[i].students == "object" && classrooms.classrooms[i].students.includes(user._id)) {
+										classrooms.classrooms[i]['is_member'] = true;
+									}
+								}
 							}
+							res.render('addEditUser', {
+								module: 'users',
+								user: user,
+								mode: "edit",
+								classrooms: classrooms.classrooms,
+								xocolors: xocolors,
+								moment: moment,
+								emoji: emoji,
+								account: req.session.user,
+								server: users.ini().information
+							});
 						});
 					} else {
 						// send to users page
