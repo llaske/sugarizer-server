@@ -46,8 +46,8 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/classrooms', authController.validateSession, classroomsController.index);
 	app.get('/dashboard/classrooms/add', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
 	app.post('/dashboard/classrooms/add', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
-	app.get('/dashboard/classrooms/edit/:classid', authController.validateSession, classroomsController.editClassroom);
-	app.post('/dashboard/classrooms/edit/:classid', authController.validateSession, classroomsController.editClassroom);
+	app.get('/dashboard/classrooms/edit/:classid', authController.validateSession, authController.checkRole(classroomsController.editClassroom));
+	app.post('/dashboard/classrooms/edit/:classid', authController.validateSession, authController.checkRole(classroomsController.editClassroom));
 	app.get('/dashboard/classrooms/delete/:classid', authController.validateSession, authController.checkRole(classroomsController.deleteClassroom));
 
 
