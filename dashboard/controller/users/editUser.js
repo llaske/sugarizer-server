@@ -24,6 +24,7 @@ module.exports = function editUser(req, res) {
 			req.assert('name', common.l10n.get('UsernameInvalid')).matches(regexValidate("user"));
 			req.assert('password', common.l10n.get('PasswordAtLeast', {count:users.ini().security.min_password_size})).len(users.ini().security.min_password_size);
 			req.assert('password', common.l10n.get('PasswordInvalid')).matches(regexValidate("pass"));
+			req.body.classrooms = req.body.classrooms || [];
 			if (typeof req.body.classrooms == 'string') {
 				req.body.classrooms = [req.body.classrooms];
 			}
@@ -51,13 +52,15 @@ module.exports = function editUser(req, res) {
 					uri: common.getAPIUrl(req) + 'api/v1/users/' + req.params.uid
 				}, function(error, response, body) {
 					if (response.statusCode == 200) {
-						if (body.role=="student" && req.body.classrooms && typeof(req.body.classrooms) == "object" && req.body.classrooms.length > 0) {
+						if (body.role=="student" && typeof(req.body.classrooms) == "object") {
 							dashboard_utils.getAllClassrooms(req, res, function(classrooms) {
 								if (classrooms && classrooms.classrooms && classrooms.classrooms.length > 0) {
 									var classroomCounter = 0;
+									var classroomRequests = 0;
 									for (var i=0; i<classrooms.classrooms.length; i++) {
 										classrooms.classrooms[i].students = classrooms.classrooms[i].students || [];
 										if (req.body.classrooms.includes(classrooms.classrooms[i]._id) || classrooms.classrooms[i].students.includes(body._id)) {
+											classroomRequests++;
 											if (req.body.classrooms.includes(classrooms.classrooms[i]._id)) {
 												if (classrooms.classrooms[i].students.length > 0) {
 													if (!classrooms.classrooms[i].students.includes(body._id)) {
@@ -84,13 +87,21 @@ module.exports = function editUser(req, res) {
 												uri: common.getAPIUrl(req) + 'api/v1/classrooms/' + classrooms.classrooms[i]._id
 											}, function() {
 												classroomCounter++;
-												if (classroomCounter == req.body.classrooms.length) {
+												if (classroomCounter == classroomRequests) {
 													req.flash('success', {
 														msg: common.l10n.get('UserUpdated', {name: req.body.name})
 													});
 													return res.redirect('/dashboard/users/');
 												}
 											});
+										}
+									}
+									if (classroomRequests == 0) {
+										if (classroomCounter == classroomRequests) {
+											req.flash('success', {
+												msg: common.l10n.get('UserUpdated', {name: req.body.name})
+											});
+											return res.redirect('/dashboard/users/');
 										}
 									}
 								} else {

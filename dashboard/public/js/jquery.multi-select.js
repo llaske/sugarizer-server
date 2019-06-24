@@ -108,7 +108,14 @@
           attributes += attr.name+'="'+attr.value+'" ';
         }
       }
-      var selectableLi = $('<li '+attributes+'><span>'+that.escapeHTML($option.text())+'</span></li>'),
+      var cont, elem;
+      elem = document.getElementById(that.escapeHTML($option.text()));
+      if (elem) {
+        cont = document.getElementById(that.escapeHTML($option.text())).innerHTML;
+      } else {
+        cont = that.escapeHTML($option.text());
+      }
+      var selectableLi = $('<li '+attributes+'><span>'+ cont +'</span></li>'),
           selectedLi = selectableLi.clone(),
           value = $option.val(),
           elementId = that.sanitize(value);

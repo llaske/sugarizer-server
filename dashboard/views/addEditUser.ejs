@@ -89,9 +89,22 @@
                                     <label class="control-label" data-l10n-id="classrooms"></label>
                                     <select id='searchable-select-classrooms' multiple='multiple' name="classrooms" class="form-control">
                                         <% for(var i=0; i < classrooms.length; i++) { %>
-                                            <option <% if(classrooms[i].is_member) { %> selected <% } %> value='<%= classrooms[i]._id %>'><%= classrooms[i].name %></option>
+                                            <option <% if(classrooms[i].is_member) { %> selected <% } %> value='<%= classrooms[i]._id %>'><%= "class_" + classrooms[i]._id %></option>
                                         <% } %>
                                     </select>
+                                    <% for(var i=0; i < classrooms.length; i++) { %>
+                                        <div id='<%= "class_" + classrooms[i]._id %>' style="display:none;">
+                                            <div style="height: 35px;">
+                                                <div class="color <%= classrooms[i]._id + '_icon' %>">
+                                                    <div class="xo-icon"></div>
+                                                </div>
+                                                <script>
+                                                    new icon().loadByClass("/public/img/classroom-icon.svg", (<%- JSON.stringify(classrooms[i].color) %>), "<%= classrooms[i]._id + '_icon' %>");
+                                                </script>
+                                                <div style="padding: 4px 0px 0px 40px;"><%= classrooms[i].name %></div>
+                                            </div>
+                                        </div>
+                                    <% } %>
                                     <script type="text/javascript">
                                         // run multiSelect
                                         $('#searchable-select-classrooms').multiSelect({
@@ -154,48 +167,6 @@
                             </div>
                         </div>
                         <% } %>
-                        <% if (typeof classroomList == 'object') { %>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group form-black label-floating">
-                                    <label class="control-label" data-l10n-id="classrooms"></label>
-                                    <% if (classroomList.length > 0) { %>
-                                    <table class="table table-hover">
-                                        <thead class="text-muted">
-                                            <tr>
-                                                <th>#</th>
-                                                <th data-l10n-id="icon">Icon</th>
-                                                <th data-l10n-id="name">Name</th>
-                                                <th data-l10n-id="studentsCount">Students Count</th>
-                                                <th data-l10n-id="lastUpdated">Timestamp</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% for(var i=0; i < classroomList.length; i++) { %>
-                                            <tr class="pointer" onclick=window.document.location='/dashboard/classrooms/edit/<%= classroomList[i]._id %>'>
-                                                <td><%= i + 1 %></td>
-                                                <td>
-                                                    <div class="color" id="<%= classroomList[i]._id %>">
-                                                        <div class="xo-icon"></div>
-                                                    </div>
-                                                </td>
-                                                <script>
-                                                    new icon().load("/public/img/classroom-icon.svg", ("<% JSON.stringify(classroomList[i].color) %>"), "<%= classroomList[i]._id %>");
-                                                </script>
-                                                <td><%= classroomList[i].name %></td>
-                                                <td><%= classroomList[i].students.length %></td>
-                                                <td><%= moment(classroomList[i].timestamp).calendar() %></td>
-                                            </tr>
-                                            <% } %>
-                                        </tbody>
-                                    </table>
-                                    <% } else { %>
-                                        <div class="form-control" data-l10n-id="noClassroomText"></div>
-                                    <% } %>
-                                </div>
-                            </div>
-                        </div>
-                        <% } %>
                         <button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
                         <a class="btn pull-right btn-round" <% if (module=="profile") { %> href="/dashboard/profile" <% } else if (typeof user == 'object' && typeof user.role == 'string') { %>href="/dashboard/users?role=<%= user.role %>"<% } else { %> href="/dashboard/users" <% } %> data-l10n-id="cancel"></a>
                         <div class="clearfix"></div>
@@ -217,13 +188,11 @@ function show_user_fields(val) {
         $('.color_input').removeClass('hide');
         $('.color_input input').removeAttr('disabled');
     }
-    <% if (account.user.role == "admin") { %>
-    if (val == 'teacher') {
+    if (val == 'teacher' || val == 'student' || !val) {
         $('#searchable-select-classrooms-row').removeClass('hide');
     } else {
         $('#searchable-select-classrooms-row').addClass('hide');
     }
-    <% } %>
 }
 show_user_fields('<% if(typeof user == "object"){ %><%= user.role %><% } %>')
 </script>
