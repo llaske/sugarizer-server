@@ -481,55 +481,6 @@ describe('Users', function() {
 		});
 	});
 
-	describe('/GET/:id/classroom users', () => {
-		it('it should return nothing on invalid id', (done) => {
-
-			chai.request(server)
-				.get('/api/v1/users/' + 'xxx' + '/classroom')
-				.set('x-access-token', fakeUser.admin1.token)
-				.set('x-key', fakeUser.admin1.user._id)
-				.end((err, res) => {
-					res.should.have.status(401);
-					res.body.code.should.be.eql(18);
-					done();
-				});
-		});
-
-		it('it should return nothing on inexisting id', (done) => {
-
-			chai.request(server)
-				.get('/api/v1/users/' + 'ffffffffffffffffffffffff' +'/classroom')
-				.set('x-access-token', fakeUser.admin1.token)
-				.set('x-key', fakeUser.admin1.user._id)
-				.end((err, res) => {
-					res.should.have.status(200);
-					res.body.should.be.eql([]);
-					done();
-				});
-		});
-
-		it('it should return right classrooms by user id', (done) => {
-
-			chai.request(server)
-				.get('/api/v1/users/' + fakeUser.student1._id + '/classroom')
-				.set('x-access-token', fakeUser.admin1.token)
-				.set('x-key', fakeUser.admin1.user._id)
-				.end((err, res) => {
-					res.should.have.status(200);
-					res.body.should.be.an('array');
-					var exists = true;
-					for(var i=0; i<res.body.length; i++) {
-						if (res.body[i].students && res.body[i].students.indexOf(fakeUser.student1._id) == -1) {
-							exists = false;
-							break;
-						}
-					}
-					chai.expect(exists).to.eql(true);
-					done();
-				});
-		});
-	});
-
 	describe('/PUT/:id users', () => {
 		it('it should do nothing on invalid user', (done) => {
 

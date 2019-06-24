@@ -39,7 +39,6 @@ module.exports = function(app, ini, db) {
 	// Register users API
 	app.get("/api/v1/users", auth.allowedRoles([Admin, Student, Teacher]), users.findAll);
 	app.get("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.findById);
-	app.get("/api/v1/users/:uid/classroom", auth.allowedRoles([Admin, Teacher]), users.findClassroom);
 	app.post("/api/v1/users", auth.allowedRoles([Admin, Teacher]), users.addUser);
 	app.put("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.updateUser);
 	app.delete("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.removeUser);
