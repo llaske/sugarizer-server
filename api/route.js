@@ -59,9 +59,9 @@ module.exports = function(app, ini, db) {
 
 	// Register classroom API
 	app.get("/api/v1/classrooms", auth.allowedRoles([Admin, Teacher]), classrooms.findAll);
-	app.get("/api/v1/classrooms/:classid", auth.allowedRoles([Admin]), classrooms.findById);
+	app.get("/api/v1/classrooms/:classid", auth.allowedRoles([Admin, Teacher]), classrooms.findById);
 	app.post("/api/v1/classrooms", auth.allowedRoles([Admin]), classrooms.addClassroom);
-	app.put("/api/v1/classrooms/:classid", auth.allowedRoles([Admin, Teacher]), classrooms.updateClassroom);
+	app.put("/api/v1/classrooms/:classid", auth.allowedRoles([Admin]), classrooms.updateClassroom);
 	app.delete("/api/v1/classrooms/:classid", auth.allowedRoles([Admin]), classrooms.removeClassroom);
 
 	// If no route is matched by now, it must be a 404

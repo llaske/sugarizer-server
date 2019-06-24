@@ -677,7 +677,14 @@ describe('Journal', function() {
 			.set('x-key', fakeUser.student.user._id)
 			.end((err, res) => {
 				res.should.have.status(200);
-				done();
+				chai.request(server)
+					.delete('/api/v1/users/' + fakeUser.admin.user._id)
+					.set('x-access-token', fakeUser.admin.token)
+					.set('x-key', fakeUser.admin.user._id)
+					.end((err, res) => {
+						res.should.have.status(200);
+						done();
+					});
 			});
 	});
 });

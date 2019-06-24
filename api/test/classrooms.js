@@ -13,7 +13,8 @@ var fake = {
 	'student2': '{"name":"Sugarizer_2' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"word","language":"en"}',
 	'admin': '{"name":"TarunFake_' + (timestamp.toString()) + '","password":"pokemon","language":"en","role":"admin"}',
 	'classroom': '{"name":"group_a_' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"students":[]}',
-	'teacher': '{"name":"SugarizerTeach_' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"teacher","password":"bulbasaur","language":"fr"}'
+	'teacher1': '{"name":"SugarizerTeach_1' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"teacher","password":"bulbasaur","language":"fr"}',
+	'teacher2': '{"name":"SugarizerTeach_2' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"teacher","password":"bulbasaur","language":"fr"}'
 };
 
 //init server
@@ -99,25 +100,42 @@ describe('Classrooms', function() {
 		});
 
 		after(function(done) {
-			fake.teacher = JSON.parse(fake.teacher);
-			fake.teacher['classrooms'] = [fake.classroom._id];
-			fake.teacher = JSON.stringify(fake.teacher);
+			fake.teacher1 = JSON.parse(fake.teacher1);
+			fake.teacher1['classrooms'] = [fake.classroom._id];
+			fake.teacher1 = JSON.stringify(fake.teacher1);
 			chai.request(server)
 				.post('/api/v1/users/')
 				.set('x-access-token', fake.admin.token)
 				.set('x-key', fake.admin.user._id)
 				.send({
-					"user": fake.teacher
+					"user": fake.teacher1
 				})
 				.end(() => {
 					chai.request(server)
 						.post('/auth/login')
 						.send({
-							"user": fake.teacher
+							"user": fake.teacher1
 						})
 						.end((err, res) => {
-							fake.teacher = res.body;
-							done();
+							fake.teacher1 = res.body;
+							chai.request(server)
+								.post('/api/v1/users/')
+								.set('x-access-token', fake.admin.token)
+								.set('x-key', fake.admin.user._id)
+								.send({
+									"user": fake.teacher2
+								})
+								.end(() => {
+									chai.request(server)
+										.post('/auth/login')
+										.send({
+											"user": fake.teacher2
+										})
+										.end((err, res) => {
+											fake.teacher2 = res.body;
+											done();
+										});
+								});
 						});
 				});
 		});
@@ -151,12 +169,49 @@ describe('Classrooms', function() {
 				});
 		});
 
+		it('it should return nothing for unauthorized user', (done) => {
+
+			chai.request(server)
+				.get('/api/v1/classrooms/' + fake.classroom._id)
+				.set('x-access-token', fake.teacher2.token)
+				.set('x-key', fake.teacher2.user._id)
+				.end((err, res) => {
+					res.should.have.status(401);
+					res.body.code.should.be.eql(19);
+					done();
+				});
+		});
+
 		it('it should return right classroom by id', (done) => {
 
 			chai.request(server)
 				.get('/api/v1/classrooms/' + fake.classroom._id)
 				.set('x-access-token', fake.admin.token)
 				.set('x-key', fake.admin.user._id)
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.an('object');
+					res.body.should.have.property('_id').eql(fake.classroom._id);
+					res.body.should.have.property('name').eql("group_a_" + (timestamp.toString()));
+					res.body.should.have.property('color').not.eql(undefined);
+					res.body.should.have.property('students').be.an('array');
+					var studentList = res.body.students.reduce(function(list, student) {
+						if (student.is_member) {
+							list.push(student._id);
+						}
+						return list;
+					}, []);
+					chai.expect(studentList).to.eql(fake.classroom.students);
+					done();
+				});
+		});
+
+		it('it should return right classroom by id for authorized user', (done) => {
+
+			chai.request(server)
+				.get('/api/v1/classrooms/' + fake.classroom._id)
+				.set('x-access-token', fake.teacher1.token)
+				.set('x-key', fake.teacher1.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
 					res.body.should.be.an('object');
@@ -223,8 +278,8 @@ describe('Classrooms', function() {
 		it('it should return all the classrooms for a teacher', (done) => {
 			chai.request(server)
 				.get('/api/v1/classrooms')
-				.set('x-access-token', fake.teacher.token)
-				.set('x-key', fake.teacher.user._id)
+				.set('x-access-token', fake.teacher1.token)
+				.set('x-key', fake.teacher1.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
 					res.body.classrooms.should.be.an('array');
@@ -284,6 +339,22 @@ describe('Classrooms', function() {
 				.end((err, res) => {
 					res.should.have.status(401);
 					res.body.code.should.be.eql(23);
+					done();
+				});
+		});
+
+		it('it should do nothing for teacher', (done) => {
+
+			chai.request(server)
+				.put('/api/v1/classrooms/' + fake.classroom._id)
+				.set('x-access-token', fake.teacher1.token)
+				.set('x-key', fake.teacher1.user._id)
+				.send({
+					classroom: '{"name":"group_new_a_' + (timestamp.toString()) + '"}'
+				})
+				.end((err, res) => {
+					res.should.have.status(401);
+					res.body.code.should.be.eql(19);
 					done();
 				});
 		});
@@ -351,6 +422,19 @@ describe('Classrooms', function() {
 				});
 		});
 
+		it('it should do nothing for teacher', (done) => {
+
+			chai.request(server)
+				.delete('/api/v1/classrooms/' + fake.classroom._id)
+				.set('x-access-token', fake.teacher1.token)
+				.set('x-key', fake.teacher1.user._id)
+				.end((err, res) => {
+					res.should.have.status(401);
+					res.body.code.should.be.eql(19);
+					done();
+				});
+		});
+
 		it('it should remove the valid classroom', (done) => {
 
 			chai.request(server)
@@ -366,26 +450,32 @@ describe('Classrooms', function() {
 
 	//delete fake user access key
 	after((done) => {
-
 		chai.request(server)
-			.delete('/api/v1/users/' + fake.teacher.user._id)
+			.delete('/api/v1/users/' + fake.teacher1.user._id)
 			.set('x-access-token', fake.admin.token)
 			.set('x-key', fake.admin.user._id)
 			.end((err, res) => {
 				res.should.have.status(200);
 				chai.request(server)
-					.delete('/api/v1/users/' + fake.student2._id)
+					.delete('/api/v1/users/' + fake.teacher2.user._id)
 					.set('x-access-token', fake.admin.token)
 					.set('x-key', fake.admin.user._id)
 					.end((err, res) => {
 						res.should.have.status(200);
 						chai.request(server)
-							.delete('/api/v1/users/' + fake.admin.user._id)
+							.delete('/api/v1/users/' + fake.student2._id)
 							.set('x-access-token', fake.admin.token)
 							.set('x-key', fake.admin.user._id)
 							.end((err, res) => {
 								res.should.have.status(200);
-								done();
+								chai.request(server)
+									.delete('/api/v1/users/' + fake.admin.user._id)
+									.set('x-access-token', fake.admin.token)
+									.set('x-key', fake.admin.user._id)
+									.end((err, res) => {
+										res.should.have.status(200);
+										done();
+									});
 							});
 					});
 			});

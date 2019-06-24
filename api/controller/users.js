@@ -378,7 +378,7 @@ exports.addUser = function(req, res) {
 	user.timestamp = +new Date();
 	user.role = (user.role ? user.role.toLowerCase() : 'student');
 
-	if ((req.user && req.user.role=="teacher") && user.role=="admin") {
+	if ((req.user && req.user.role=="teacher") && (user.role=="admin" || user.role=="teacher")) {
 		res.status(401).send({
 			'error': 'You don\'t have permission to perform this action',
 			'code': 19
