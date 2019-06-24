@@ -160,7 +160,6 @@ exports.findAll = function(req, res) {
 	//prepare condition
 	var query = {};
 	query = addQuery('name', req.query, query);
-	query = addQuery('classid', req.query, query);
 	query = addQuery('language', req.query, query);
 	query = addQuery('role', req.query, query, 'student');
 	query = addQuery('q', req.query, query);
@@ -171,11 +170,25 @@ exports.findAll = function(req, res) {
 	}
 
 	if (req.user && req.user.role == "teacher") {
-		query['_id'] = {
-			$in: req.user.students.map(function(id) {
-				return new mongo.ObjectID(id);
-			})
-		};
+		if (req.query && req.query['classid']) {
+			var requestedUsers = req.query['classid'].split(',');
+			var allowedUsers =  requestedUsers.filter(function(id) {
+				return req.user.students.includes(id);
+			});
+			query['_id'] = {
+				$in: allowedUsers.map(function(id) {
+					return new mongo.ObjectID(id);
+				})
+			};
+		} else {
+			query['_id'] = {
+				$in: req.user.students.map(function(id) {
+					return new mongo.ObjectID(id);
+				})
+			};
+		}
+	} else {
+		query = addQuery('classid', req.query, query);
 	}
 
 	// add filter and pagination
