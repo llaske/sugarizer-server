@@ -32,7 +32,7 @@ module.exports = function editUser(req, res) {
 			if (req.session &&  req.session.user && req.session.user.user && req.session.user.user.role == "teacher") {
 				if ((!req.body.classrooms) || !(req.body.classrooms.length > 0)) {
 					req.flash('errors', {
-						msg: "Classroom cannot be empty"
+						msg: common.l10n.get('EmptyClassroom')
 					});
 					return res.redirect('/dashboard/users/add');
 				}
