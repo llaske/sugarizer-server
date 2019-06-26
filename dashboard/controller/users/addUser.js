@@ -65,9 +65,6 @@ module.exports = function addUser(req, res) {
 								for (var i=0; i<classrooms.classrooms.length; i++) {
 									if (req.body.classrooms.includes(classrooms.classrooms[i]._id)) {
 										if (typeof classrooms.classrooms[i].students == "object" && classrooms.classrooms[i].students.length > 0) {
-											classrooms.classrooms[i].students = classrooms.classrooms[i].students.map(function(student) {
-												return student._id;
-											});
 											if (!classrooms.classrooms[i].students.includes(body._id)) {
 												classrooms.classrooms[i].students.push(body._id);
 											}
