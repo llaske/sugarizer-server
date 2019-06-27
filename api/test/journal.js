@@ -132,7 +132,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
-					res.body.code.should.be.eql(12);
+					res.body.code.should.be.eql(8);
 					done();
 				});
 		});
@@ -194,7 +194,7 @@ describe('Journal', function() {
 				.set('x-key', fakeUser.student.user._id)
 				.end((err, res) => {
 					res.should.have.status(401);
-					res.body.code.should.be.eql(11);
+					res.body.code.should.be.eql(8);
 					done();
 				});
 		});
@@ -483,7 +483,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
-					res.body.code.should.be.eql(13);
+					res.body.code.should.be.eql(8);
 					done();
 				});
 		});
@@ -573,7 +573,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
-					res.body.code.should.be.eql(11);
+					res.body.code.should.be.eql(8);
 					done();
 				});
 		});
@@ -677,7 +677,14 @@ describe('Journal', function() {
 			.set('x-key', fakeUser.student.user._id)
 			.end((err, res) => {
 				res.should.have.status(200);
-				done();
+				chai.request(server)
+					.delete('/api/v1/users/' + fakeUser.admin.user._id)
+					.set('x-access-token', fakeUser.admin.token)
+					.set('x-key', fakeUser.admin.user._id)
+					.end((err, res) => {
+						res.should.have.status(200);
+						done();
+					});
 			});
 	});
 });

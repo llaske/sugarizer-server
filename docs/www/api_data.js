@@ -2001,7 +2001,7 @@ define({ "api": [
     "url": "api/v1/users/",
     "title": "Add user",
     "name": "AddUser",
-    "description": "<p>Add a new user. Return the user created. Only admin can add another admin or student.</p>",
+    "description": "<p>Add a new user. Return the user created. Only admin can add another admin, student or teacher.</p>",
     "group": "Users",
     "version": "1.0.0",
     "header": {
@@ -2046,7 +2046,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "role",
-            "description": "<p>User role (student or admin)</p>"
+            "description": "<p>User role (admin, student or teacher)</p>"
           },
           {
             "group": "Success 200",
@@ -2088,7 +2088,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "password",
-            "description": "<p>password of the user</p>"
+            "description": "<p>Password of the user</p>"
           },
           {
             "group": "Success 200",
@@ -2426,57 +2426,6 @@ define({ "api": [
     "groupTitle": "Users"
   },
   {
-    "type": "get",
-    "url": "api/v1/users/:id/classroom",
-    "title": "Get user classrooms",
-    "name": "GetUserClassroos",
-    "description": "<p>Retrieve the classroom data for a specific user.</p>",
-    "group": "Users",
-    "version": "1.2.0",
-    "header": {
-      "fields": {
-        "Header": [
-          {
-            "group": "Header",
-            "type": "String",
-            "optional": false,
-            "field": "x-key",
-            "description": "<p>User unique id.</p>"
-          },
-          {
-            "group": "Header",
-            "type": "String",
-            "optional": false,
-            "field": "x-access-token",
-            "description": "<p>User access token.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "Object[]",
-            "optional": false,
-            "field": "classrooms",
-            "description": ""
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "    HTTP/1.1 200 OK\n[\n\t{\n\t  _id: '5cdd20eb34374452856e8208',\n\t  name: 'Classroom X',\n\t  students: [ '5cdc2bde1f8dc510360b2433', '5cecd77a211a7d1d5ab92b67' ],\n\t  color: { stroke: '#8BFF7A', fill: '#00EA11' },\n\t  options: { sync: true, stats: true },\n\t  created_time: 1557995755642,\n\t  timestamp: 1559293919121\n\t},\n\t{\n\t  _id: '5cd87e5b4ddb1a000f5c6bab',\n\t  name: 'Classroom Y',\n\t  students: [ '5cdd263379dcbe57d458b205', '59ea5cc94622230e00791854', '59ea739f4622230e00791856', '59ea51efa0855844008511e2', '5cecd77a211a7d1d5ab92b67' ],\n\t  color: { stroke: '#008009', fill: '#F8E800' },\n\t  options: { sync: true, stats: true },\n\t  created_time: 1557691995135,\n\t  timestamp: 1559293901572\n\t}\n]",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "api/controller/users.js",
-    "groupTitle": "Users"
-  },
-  {
     "type": "delete",
     "url": "api/v1/users/:uid",
     "title": "Remove user",
@@ -2534,7 +2483,7 @@ define({ "api": [
     "url": "api/v1/users/",
     "title": "Update user",
     "name": "UpdateUser",
-    "description": "<p>Update an user. Return the user updated. Student can update only his/her details but admin can update anyone.</p>",
+    "description": "<p>Update an user. Return the user updated. Student or teacher can update only his/her details but admin can update anyone.</p>",
     "group": "Users",
     "version": "1.0.0",
     "header": {
@@ -2579,7 +2528,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "role",
-            "description": "<p>User role (student or admin)</p>"
+            "description": "<p>User role (admin, student or teacher)</p>"
           },
           {
             "group": "Success 200",
@@ -2621,7 +2570,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "password",
-            "description": "<p>password of the user</p>"
+            "description": "<p>Password of the user</p>"
           },
           {
             "group": "Success 200",

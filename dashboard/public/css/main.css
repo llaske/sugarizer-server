@@ -162,6 +162,10 @@
   background-image: url('/public/img/classroom-icon.svg')
 }
 
+.user-icon {
+  background-image: url('/public/img/user-icon.svg')
+}
+
 .material-icons.dp24 {
   font-size: 24px;
   line-height: 36px;
@@ -340,5 +344,22 @@
   100% {
     transform: rotate(360deg);
     transform: rotate(360deg);
+  }
+}
+
+.hide-mob-el {
+  display: block;
+}
+
+.hide-desk-el {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .hide-mob-el {
+    display: none !important;
+  }
+  .hide-desk-el {
+    display: block !important;
   }
 }

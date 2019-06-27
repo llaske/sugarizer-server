@@ -15,7 +15,7 @@ exports.index = function(req, res) {
 	common.reinitLocale(req);
 
 	// send to login page
-	res.render('stats', {
+	res.render('admin/stats', {
 		title: 'stats',
 		module: 'stats',
 		account: req.session.user,

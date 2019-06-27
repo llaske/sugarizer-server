@@ -186,6 +186,15 @@ exports.findAll = function(req, res) {
 	var query = {};
 	query = addQuery("q", req.query, query);
 
+	if (req.user && req.user.role == "teacher") {
+		query['_id'] = {
+			$in: req.user.classrooms.map(function(id) {
+				return new mongo.ObjectID(id);
+			})
+		};
+	}
+
+
 	// add filter and pagination
 	db.collection(classroomsCollection, function(err, collection) {
 		//count data
@@ -524,3 +533,42 @@ function formPaginatedUrl(route, params, offset, limit) {
 		}
 	return "?" + str.join("&");
 }
+
+exports.findStudents = function(classID) {
+	return new Promise(function(resolve, reject) {
+		if (!mongo.ObjectID.isValid(classID)) {
+			resolve([]);
+		} else {
+			db.collection(classroomsCollection, function(err, collection) {
+				if (err) {
+					reject(err);
+				} else {
+					collection.findOne(
+						{
+							_id: new mongo.ObjectID(classID)
+						},
+						function(err, classroom) {
+							if (err) {
+								reject(err);
+							} else if (!classroom || typeof classroom.students != "object" || classroom.students.length == 0) {
+								resolve([]);
+							} else {
+								// get student mappings
+								users.getAllUsers({
+									role: 'student',
+									_id: {
+										$in: classroom.students.map(function(id) {
+											return new mongo.ObjectID(id);
+										})
+									}
+								}, {}, function(list) {
+									resolve(list);
+								});
+							}
+						}
+					);
+				}
+			});
+		}
+	});
+};

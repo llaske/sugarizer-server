@@ -10,7 +10,7 @@
               <div class="col-md-12">
                   <div class="card">
                       <form method="get" id="user-form">
-                        <div class="col-md-2">
+                            <div class="col-md-2">
                           <div class="form-group form-black label-floating is-empty">
                               <input data-l10n-id="john" placeholder="John..." class="form-control" name="username" value="<% if(query.q){ %><%= query.q %><% } %>" type="text">
                               <span class="material-input"></span>
@@ -19,8 +19,11 @@
                         <div class="col-md-2">
                           <div class="form-group form-black label-floating is-empty">
                               <select class="form-control" id="user-type-select2" name="role">
-                                 <option data-l10n-id="student" value="student" <% if(query.role=='student'){ %>selected="selected"<% } %> >Student</option>
-                                 <option data-l10n-id="admin" value="admin" <% if(query.role=='admin'){ %>selected="selected"<% } %> >Admin</option>
+                                <option data-l10n-id="student" value="student" <% if(query.role=='student'){ %>selected="selected"<% } %> >Student</option>
+                                <% if (account.user && account.user.role=="admin") { %>
+                                <option data-l10n-id="teacher" value="teacher" <% if(query.role=='teacher'){ %>selected="selected"<% } %> >Teacher</option>
+                                <option data-l10n-id="admin" value="admin" <% if(query.role=='admin'){ %>selected="selected"<% } %> >Admin</option>
+                                <% } %>
                               </select>
 							  <script>$('#user-form [name="role"]').select2().on("change", () => show_class_fields())</script>
                           </div>
@@ -51,7 +54,7 @@
 			<script>
 			window.addEventListener('localized', function() {  // HACK: Force localization of role combo
 				var selection = document.getElementsByClassName("select2-selection__rendered");
-				if (selection && selection[0] && typeof selection[0].innerHTML == "string") {
+				if (selection && selection[0] && typeof selection[0].innerHTML == "string" &&  document.getElementById("user-type-select2")) {
                                 var user = document.getElementById("user-type-select2");
                                 var val = user.options[user.selectedIndex].value;
                                 selection[0].innerHTML = document.webL10n.get(val);
@@ -165,11 +168,10 @@
 <% include includes/footer %>
 <script>
 function show_class_fields() {
-    console.log($('#user-form [name="role"]').select2('data')[0].id)
-    if($('#user-form [name="role"]').select2('data')[0].id == 'admin'){
+    if($('#user-form [name="role"]').length && $('#user-form [name="role"]').select2('data')[0].id != 'student'){
         $('.classroom_input').addClass('hide');
         $('#user-form [name="classid"]').val('').trigger('change');
-
+        
     }else{
         $('.classroom_input').removeClass('hide');
     }

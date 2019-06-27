@@ -24,6 +24,5 @@ exports.getGraph = function(req, res) {
 
 
 exports.getAverageEntries = function() {
-	console.log('getAverageEntries', averageEntries());
 	return averageEntries();
 };

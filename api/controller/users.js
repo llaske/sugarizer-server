@@ -160,7 +160,6 @@ exports.findAll = function(req, res) {
 	//prepare condition
 	var query = {};
 	query = addQuery('name', req.query, query);
-	query = addQuery('classid', req.query, query);
 	query = addQuery('language', req.query, query);
 	query = addQuery('role', req.query, query, 'student');
 	query = addQuery('q', req.query, query);
@@ -168,6 +167,28 @@ exports.findAll = function(req, res) {
 		query['timestamp'] = {
 			'$gte': parseInt(req.query.stime)
 		};
+	}
+
+	if (req.user && req.user.role == "teacher") {
+		if (req.query && req.query['classid']) {
+			var requestedUsers = req.query['classid'].split(',');
+			var allowedUsers =  requestedUsers.filter(function(id) {
+				return req.user.students.includes(id);
+			});
+			query['_id'] = {
+				$in: allowedUsers.map(function(id) {
+					return new mongo.ObjectID(id);
+				})
+			};
+		} else {
+			query['_id'] = {
+				$in: req.user.students.map(function(id) {
+					return new mongo.ObjectID(id);
+				})
+			};
+		}
+	} else {
+		query = addQuery('classid', req.query, query);
 	}
 
 	// add filter and pagination
@@ -222,7 +243,7 @@ exports.getAllUsers = function(query, options, callback) {
 
 	//get data
 	db.collection(usersCollection, function(err, collection) {
-
+		
 		//get users
 		collection.find(query, function(err, users) {
 
@@ -300,7 +321,7 @@ function addQuery(filter, params, query, default_val) {
 /**
  * @api {post} api/v1/users/ Add user
  * @apiName AddUser
- * @apiDescription Add a new user. Return the user created. Only admin can add another admin or student.
+ * @apiDescription Add a new user. Return the user created. Only admin can add another admin, student or teacher.
  * @apiGroup Users
  * @apiVersion 1.0.0
  * @apiHeader {String} x-key User unique id.
@@ -308,13 +329,13 @@ function addQuery(filter, params, query, default_val) {
  *
  * @apiSuccess {String} _id Unique user id
  * @apiSuccess {String} name Unique user name
- * @apiSuccess {String} role User role (student or admin)
+ * @apiSuccess {String} role User role (admin, student or teacher)
  * @apiSuccess {Object} color Buddy color
  * @apiSuccess {String} color.stroke Buddy strike color
  * @apiSuccess {String} color.fill Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
  * @apiSuccess {String} language Language setting of the user
- * @apiSuccess {String} password password of the user
+ * @apiSuccess {String} password Password of the user
  * @apiSuccess {String} private_journal Id of the private journal on the server
  * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
  * @apiSuccess {Number} created_time when the user was created on the server
@@ -370,22 +391,21 @@ exports.addUser = function(req, res) {
 	user.timestamp = +new Date();
 	user.role = (user.role ? user.role.toLowerCase() : 'student');
 
+	if ((req.user && req.user.role=="teacher") && (user.role=="admin" || user.role=="teacher")) {
+		res.status(401).send({
+			'error': 'You don\'t have permission to perform this action',
+			'code': 19
+		});
+		return;
+	}
+
 	//validation for fields [password, name]
 	if (!user.password || !user.name) {
 		res.status(401).send({
 			'error': "Invalid user object!",
 			'code': 2
 		});
-	}
-
-	// validate on the basis of user's role for logged in case
-	if (req.user) {
-		if (req.user.role == 'student') {
-			return res.status(401).send({
-				'error': 'You don\'t have permission to perform this action',
-				'code': 19
-			});
-		}
+		return;
 	}
 
 	//check if user already exist
@@ -394,7 +414,12 @@ exports.addUser = function(req, res) {
 	}, {}, function(item) {
 		if (item.length == 0) {
 			//create user based on role
-			if (user.role == 'admin') {
+			if (user.role == 'admin' || user.role == 'teacher') {
+				if (user.role != 'teacher') {
+					delete user.classrooms;
+				} else if (!user.classrooms) {
+					user.classrooms = [];
+				}
 				db.collection(usersCollection, function(err, collection) {
 					collection.insertOne(user, {
 						safe: true
@@ -445,7 +470,7 @@ exports.addUser = function(req, res) {
 /**
  * @api {put} api/v1/users/ Update user
  * @apiName UpdateUser
- * @apiDescription Update an user. Return the user updated. Student can update only his/her details but admin can update anyone.
+ * @apiDescription Update an user. Return the user updated. Student or teacher can update only his/her details but admin can update anyone.
  * @apiGroup Users
  * @apiVersion 1.0.0
  * @apiHeader {String} x-key User unique id.
@@ -453,13 +478,13 @@ exports.addUser = function(req, res) {
  *
  * @apiSuccess {String} _id Unique user id
  * @apiSuccess {String} name Unique user name
- * @apiSuccess {String} role User role (student or admin)
+ * @apiSuccess {String} role User role (admin, student or teacher)
  * @apiSuccess {Object} color Buddy color
  * @apiSuccess {String} color.stroke Buddy strike color
  * @apiSuccess {String} color.fill Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
  * @apiSuccess {String} language Language setting of the user
- * @apiSuccess {String} password password of the user
+ * @apiSuccess {String} password Password of the user
  * @apiSuccess {String} private_journal Id of the private journal on the server
  * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
  * @apiSuccess {Number} created_time when the user was created on the server
@@ -517,17 +542,6 @@ exports.updateUser = function(req, res) {
 	var uid = req.params.uid;
 	var user = JSON.parse(req.body.user);
 	delete user.role; // Disable role change
-
-	// validate on the basis of user's role
-	if (req.user.role == 'student') {
-		if (req.user._id != uid) {
-			res.status(401).send({
-				'error': 'You don\'t have permission to perform this action',
-				'code': 19
-			});
-			return;
-		}
-	}
 
 	//do not update name if already exist
 	if (typeof user.name !== 'undefined') {
@@ -613,17 +627,6 @@ exports.removeUser = function(req, res) {
 			'code': 18
 		});
 		return;
-	}
-
-	// validate on the basis of user's role
-	if (req.user.role == 'student') {
-		if (req.user._id != req.params.uid) {
-			res.status(401).send({
-				'error': 'You don\'t have permission to perform this action',
-				'code': 19
-			});
-			return;
-		}
 	}
 
 	//delete user from db
@@ -713,74 +716,3 @@ exports.updateUserTimestamp = function(uid, callback) {
 	});
 };
 
-
-/**
- * @api {get} api/v1/users/:id/classroom Get user classrooms
- * @apiName GetUserClassroos
- * @apiDescription Retrieve the classroom data for a specific user.
- * @apiGroup Users
- * @apiVersion 1.2.0
- * @apiHeader {String} x-key User unique id.
- * @apiHeader {String} x-access-token User access token.
- *
- * @apiSuccess {Object[]} classrooms
- *
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- * [
- * 	{
- * 	  _id: '5cdd20eb34374452856e8208',
- * 	  name: 'Classroom X',
- * 	  students: [ '5cdc2bde1f8dc510360b2433', '5cecd77a211a7d1d5ab92b67' ],
- * 	  color: { stroke: '#8BFF7A', fill: '#00EA11' },
- * 	  options: { sync: true, stats: true },
- * 	  created_time: 1557995755642,
- * 	  timestamp: 1559293919121
- * 	},
- * 	{
- * 	  _id: '5cd87e5b4ddb1a000f5c6bab',
- * 	  name: 'Classroom Y',
- * 	  students: [ '5cdd263379dcbe57d458b205', '59ea5cc94622230e00791854', '59ea739f4622230e00791856', '59ea51efa0855844008511e2', '5cecd77a211a7d1d5ab92b67' ],
- * 	  color: { stroke: '#008009', fill: '#F8E800' },
- * 	  options: { sync: true, stats: true },
- * 	  created_time: 1557691995135,
- * 	  timestamp: 1559293901572
- * 	}
- * ]
- **/
-
-exports.findClassroom = function(req, res) {
-	if (!mongo.ObjectID.isValid(req.params.uid)) {
-		res.status(401).send({
-			'error': 'Invalid user id',
-			'code': 18
-		});
-		return;
-	}
-
-	db.collection(classroomsCollection, function(err, collection) {
-		collection.find({
-			students: req.params.uid
-		},
-		function(err, classroom) {
-			if(err) {
-				res.status(500).send({
-					'error': 'An error has occurred',
-					'code': 10
-				});
-			} else {
-				classroom.toArray(function(err, classroomList) {
-					if(err) {
-						res.status(500).send({
-							'error': 'An error has occurred',
-							'code': 10
-						});
-					} else {
-						res.send(classroomList);
-					}
-				});
-			}
-		}
-		);
-	});
-};
