@@ -1,5 +1,6 @@
 // Journal handling
-var mongo = require('mongodb');
+var mongo = require('mongodb'),
+	users = require("./users");
 
 
 var db;
@@ -110,20 +111,71 @@ exports.findAll = function(req, res) {
 		};
 	}
 
-	//get data
-	db.collection(journalCollection, function(err, collection) {
-		collection.find(options).toArray(function(err, items) {
-
-			//count
-			for (var i = 0; i < items.length; i++) {
-				items[i].count = items[i].content.length;
-				delete items[i].content;
+	if (req.user.role == "teacher") {
+		// get student mappings
+		users.getAllUsers({
+			role: 'student',
+			_id: {
+				$in: req.user.students.map(function(id) {
+					return new mongo.ObjectID(id);
+				})
 			}
+		}, {}, function(users) {
+			var journalList = [];
+			var map = new Map();
+			for (var i=0; i < users.length; i++) {
+				if(users[i].private_journal && !map.has(users[i].private_journal)){
+					map.set(users[i].private_journal, true);
+					journalList.push(users[i].private_journal);
+				}
+				if(users[i].shared_journal && !map.has(users[i].shared_journal)){
+					map.set(users[i].shared_journal, true);
+					journalList.push(users[i].shared_journal);
+				}
+			}
+			options['_id'] = {
+				$in: journalList
+			};
+			db.collection(journalCollection, function(err, collection) {
+				collection.find(options).toArray(function(err, items) {
 
-			//return
-			res.send(items);
+					//count
+					for (var i=0; i<items.length; i++) {
+						if (items[i].shared) {
+							items[i].count = 0;
+							for (var j=0; j<items[i].content.length; j++) {
+								if (items[i].content[j] && items[i].content[j].metadata && items[i].content[j].metadata.user_id && req.user.students.includes(items[i].content[j].metadata.user_id)) {
+									items[i].count++;
+								}
+							}
+							delete items[i].content;
+						} else {
+							items[i].count = items[i].content.length;
+							delete items[i].content;
+						}
+					}
+
+					//return
+					res.send(items);
+				});
+			});
 		});
-	});
+	} else {
+		//get data
+		db.collection(journalCollection, function(err, collection) {
+			collection.find(options).toArray(function(err, items) {
+
+				//count
+				for (var i = 0; i < items.length; i++) {
+					items[i].count = items[i].content.length;
+					delete items[i].content;
+				}
+
+				//return
+				res.send(items);
+			});
+		});
+	}
 };
 
 //- REST interface
@@ -243,9 +295,6 @@ exports.findJournalContent = function(req, res) {
 		});
 		return;
 	}
-
-	// validate on the basis of user's role
-	validateUser(req, res);
 
 	//get options
 	var options = getOptions(req);
@@ -490,9 +539,6 @@ exports.addEntryInJournal = function(req, res) {
 	var jid = req.params.jid;
 	var journal = JSON.parse(req.body.journal);
 
-	// validate on the basis of user's role
-	validateUser(req, res);
-
 	// Look for existing entry with the same objectId
 	var filter = {
 		'_id': new mongo.ObjectID(jid),
@@ -604,9 +650,6 @@ exports.updateEntryInJournal = function(req, res) {
 	var jid = req.params.jid;
 	var oid = req.query.oid;
 
-	// validate on the basis of user's role
-	validateUser(req, res);
-
 	// Delete the entry
 	var deletecontent = {
 		$pull: {
@@ -679,9 +722,6 @@ exports.removeInJournal = function(req, res) {
 	var oid = (req.query.oid) ? req.query.oid : false;
 	var type = (req.query.type) ? req.query.type : 'partial';
 
-	// validate on the basis of user's role
-	validateUser(req, res);
-
 	//whether or partial is deleted!
 	if (type == 'full') {
 		db.collection(journalCollection, function(err, collection) {
@@ -745,19 +785,6 @@ exports.removeInJournal = function(req, res) {
 			return res.status(401).send({
 				'error': 'Invalid Object ID',
 				'code': 16
-			});
-		}
-	}
-};
-
-//check user permission
-var validateUser = function(req, res) {
-	// validate on the basis of user's role
-	if (req.user.role == 'student') {
-		if ([req.user.private_journal.toString(), req.user.shared_journal.toString()].indexOf(req.params.jid) == -1) {
-			return res.status(401).send({
-				'error': 'You don\'t have permission to remove this journal',
-				'code': 8
 			});
 		}
 	}
@@ -872,18 +899,70 @@ exports.findAllEntries = function(req, res) {
 		options.shared = false;
 	}
 
-	//get data
-	db.collection(journalCollection, function(err, collection) {
-		collection.find(options).toArray(function(err, items) {
-			//check for errors
-			if (err) {
-				return res.status(500).send({
-					'error': err,
-					'code': 5
-				});
+	if (req.user.role == "teacher") {
+		// get student mappings
+		users.getAllUsers({
+			role: 'student',
+			_id: {
+				$in: req.user.students.map(function(id) {
+					return new mongo.ObjectID(id);
+				})
 			}
-			// Return
-			return res.send(items);
+		}, {}, function(users) {
+			var journalList = [];
+			var map = new Map();
+			for (var i=0; i < users.length; i++) {
+				if(users[i].private_journal && !map.has(users[i].private_journal)){
+					map.set(users[i].private_journal, true);
+					journalList.push(users[i].private_journal);
+				}
+				if(users[i].shared_journal && !map.has(users[i].shared_journal)){
+					map.set(users[i].shared_journal, true);
+					journalList.push(users[i].shared_journal);
+				}
+			}
+			options['_id'] = {
+				$in: journalList
+			};
+			db.collection(journalCollection, function(err, collection) {
+				collection.find(options).toArray(function(err, items) {
+					//check for errors
+					if (err) {
+						return res.status(500).send({
+							'error': err,
+							'code': 5
+						});
+					}
+					//count
+					for (var i=0; i<items.length; i++) {
+						if (items[i].shared && typeof items[i].content == "object") {
+							var content = [];
+							for (var j=0; j<items[i].content.length; j++) {
+								if (items[i].content[j] && items[i].content[j].metadata && items[i].content[j].metadata.user_id && req.user.students.includes(items[i].content[j].metadata.user_id)) {
+									content.push(items[i].content[j]);
+								}
+							}
+							items[i].content = content;
+						}
+					}
+					return res.send(items);
+				});
+			});
 		});
-	});
+	} else {
+		//get data
+		db.collection(journalCollection, function(err, collection) {
+			collection.find(options).toArray(function(err, items) {
+				//check for errors
+				if (err) {
+					return res.status(500).send({
+						'error': err,
+						'code': 5
+					});
+				}
+				// Return
+				return res.send(items);
+			});
+		});
+	}
 };

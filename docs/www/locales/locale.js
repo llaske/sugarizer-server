@@ -19,8 +19,8 @@ define([
     var language = langId.substr(0, 2);
     var locales = {};
 
-    for (var index in arguments) {
-        for (var property in arguments[index])
+    for (index in arguments) {
+        for (property in arguments[index])
             locales[property] = arguments[index][property];
     }
     if ( ! locales['en'])

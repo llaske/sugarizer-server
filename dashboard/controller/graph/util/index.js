@@ -1,32 +1,15 @@
-// include libraries
 var request = require('request'),
-	dashboard_utils = require('./dashboard/util'),
+	dashboard_utils = require('../../dashboard/util'),
 	moment = require('moment'),
-	common = require('../helper/common'),
-	async = require('async');
+	common = require('../../../helper/common');
 
-exports.getGraph = function(req, res) {
-
-	if (req.query.type == 'top-contributor') {
-		getTopContributors(req, res);
-	}
-	if (req.query.type == 'top-activities') {
-		getTopActivities(req, res);
-	}
-	if (req.query.type == 'recent-users') {
-		getRecentUsers(req, res);
-	}
-	if (req.query.type == 'recent-activities') {
-		getRecentActivities(req, res);
-	}
-};
 
 var averageEntries = 0.0;
-exports.getAverageEntries = function() {
+exports.averageEntries = function() {
 	return averageEntries;
 };
 
-function getTopContributors(req, res) {
+exports.getTopContributors = function(req, res) {
 
 	//get all users
 	dashboard_utils.getAllUsers(req, res, function(users) {
@@ -108,9 +91,9 @@ function getTopContributors(req, res) {
 			});
 		});
 	});
-}
+};
 
-function getTopActivities(req, res) {
+exports.getTopActivities = function(req, res) {
 
 	//get activities
 	getActivities(req, res, function(activities) {
@@ -180,9 +163,9 @@ function getTopActivities(req, res) {
 			});
 		});
 	});
-}
+};
 
-function getRecentUsers(req, res) {
+exports.getRecentUsers = function(req, res) {
 
 	//get all entries
 	dashboard_utils.getAllUsers(req, res, function(users) {
@@ -212,9 +195,9 @@ function getRecentUsers(req, res) {
 			graph: 'table'
 		});
 	});
-}
+};
 
-function getRecentActivities(req, res) {
+exports.getRecentActivities = function(req, res) {
 
 	//get all entries
 	getAllEntriesList(req, res, function(allEntries) {
@@ -242,7 +225,7 @@ function getRecentActivities(req, res) {
 
 			var data = '';
 			for (var i = 0; i < allEntries.length; i++) {
-
+				
 				// launch url
 				var url = '/dashboard/activities/launch/' + allEntries[i].journalId + '?oid=' + allEntries[i].objectId + '&uid=' + allEntries[i].metadata.user_id + '&aid=' + allEntries[i].metadata.activity;
 
@@ -263,7 +246,7 @@ function getRecentActivities(req, res) {
 			});
 		});
 	});
-}
+};
 
 function getAllEntriesList(req, res, callback) {
 
@@ -281,8 +264,11 @@ function getAllEntriesList(req, res, callback) {
 		if (body) {
 			for (var i=0; i<body.length; i++) {
 				if (body[i] && typeof body[i].content == "object" && body[i].content.length > 0) {
-					if (body[i].shared == true) console.log(body[i].content.length);
-					allEntries = allEntries.concat(body[i].content);
+					for (var j=0; j<body[i].content.length; j++) {
+						body[i].content[j].journalId = body[i]._id;
+						body[i].content[j].shared = body[i].shared;
+						allEntries.push(body[i].content[j]);
+					}
 				}
 			}
 		}

@@ -4,7 +4,8 @@ var request = require('request'),
 	common = require('../../helper/common'),
 	addUser = require('./addUser'),
 	editUser = require('./editUser'),
-	deleteUser = require('./deleteUser');
+	deleteUser = require('./deleteUser'),
+	profile = require('./profile');
 
 var _util = require('./util'),
 	getClassrooms = _util.getClassrooms;
@@ -90,3 +91,5 @@ exports.addUser = addUser;
 exports.editUser = editUser;
 
 exports.deleteUser = deleteUser;
+
+exports.profile = profile;

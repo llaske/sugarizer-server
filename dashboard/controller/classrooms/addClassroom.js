@@ -62,7 +62,7 @@ module.exports = function addClassroom(req, res) {
 		//get all users
 		dashboard_utils.getAllUsers(req, res, function(users) {
 			// send to classroom page
-			res.render('addEditClassroom', {
+			res.render('admin/addEditClassroom', {
 				module: 'classrooms',
 				xocolors: xocolors,
 				moment: moment,

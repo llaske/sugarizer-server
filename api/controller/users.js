@@ -1,14 +1,13 @@
 // User handling
 
 var mongo = require('mongodb'),
-	classroom = require('./classrooms'),
 	journal = require('./journal');
 
 var db;
 
 var usersCollection;
 var classroomsCollection;
-
+var journalCollection;
 
 // Init database
 exports.init = function(settings, database) {
@@ -161,7 +160,6 @@ exports.findAll = function(req, res) {
 	//prepare condition
 	var query = {};
 	query = addQuery('name', req.query, query);
-	query = addQuery('classid', req.query, query);
 	query = addQuery('language', req.query, query);
 	query = addQuery('role', req.query, query, 'student');
 	query = addQuery('q', req.query, query);
@@ -169,6 +167,28 @@ exports.findAll = function(req, res) {
 		query['timestamp'] = {
 			'$gte': parseInt(req.query.stime)
 		};
+	}
+
+	if (req.user && req.user.role == "teacher") {
+		if (req.query && req.query['classid']) {
+			var requestedUsers = req.query['classid'].split(',');
+			var allowedUsers =  requestedUsers.filter(function(id) {
+				return req.user.students.includes(id);
+			});
+			query['_id'] = {
+				$in: allowedUsers.map(function(id) {
+					return new mongo.ObjectID(id);
+				})
+			};
+		} else {
+			query['_id'] = {
+				$in: req.user.students.map(function(id) {
+					return new mongo.ObjectID(id);
+				})
+			};
+		}
+	} else {
+		query = addQuery('classid', req.query, query);
 	}
 
 	// add filter and pagination
@@ -196,12 +216,12 @@ exports.findAll = function(req, res) {
 						'prev_page': ((options.skip - options.limit) >= 0) ? formPaginatedUrl(route, params, (options.skip - options.limit), options.limit) : undefined,
 						'next_page': ((options.skip + options.limit) < options.total) ? formPaginatedUrl(route, params, (options.skip + options.limit), options.limit) : undefined,
 					},
-				}
+				};
 
 				// Return
 				res.send(data);
 			});
-		})
+		});
 	});
 };
 
@@ -223,7 +243,7 @@ exports.getAllUsers = function(query, options, callback) {
 
 	//get data
 	db.collection(usersCollection, function(err, collection) {
-
+		
 		//get users
 		collection.find(query, function(err, users) {
 
@@ -238,7 +258,7 @@ exports.getAllUsers = function(query, options, callback) {
 			});
 		});
 	});
-}
+};
 
 function getOptions(req, count, def_sort) {
 
@@ -252,7 +272,7 @@ function getOptions(req, count, def_sort) {
 		skip: req.query.offset || 0,
 		total: count,
 		limit: req.query.limit || 10
-	}
+	};
 
 	//cast to int
 	options.skip = parseInt(options.skip);
@@ -277,7 +297,9 @@ function addQuery(filter, params, query, default_val) {
 			};
 		} else if (filter == 'classid') {
 			query['_id'] = {
-				$in: params[filter].split(',').map(id => new mongo.ObjectID(id))
+				$in: params[filter].split(',').map(function(id) {
+					return new mongo.ObjectID(id);
+				})
 			};
 		} else {
 			query[filter] = {
@@ -299,7 +321,7 @@ function addQuery(filter, params, query, default_val) {
 /**
  * @api {post} api/v1/users/ Add user
  * @apiName AddUser
- * @apiDescription Add a new user. Return the user created. Only admin can add another admin or student.
+ * @apiDescription Add a new user. Return the user created. Only admin can add another admin, student or teacher.
  * @apiGroup Users
  * @apiVersion 1.0.0
  * @apiHeader {String} x-key User unique id.
@@ -307,13 +329,13 @@ function addQuery(filter, params, query, default_val) {
  *
  * @apiSuccess {String} _id Unique user id
  * @apiSuccess {String} name Unique user name
- * @apiSuccess {String} role User role (student or admin)
+ * @apiSuccess {String} role User role (admin, student or teacher)
  * @apiSuccess {Object} color Buddy color
  * @apiSuccess {String} color.stroke Buddy strike color
  * @apiSuccess {String} color.fill Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
  * @apiSuccess {String} language Language setting of the user
- * @apiSuccess {String} password password of the user
+ * @apiSuccess {String} password Password of the user
  * @apiSuccess {String} private_journal Id of the private journal on the server
  * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
  * @apiSuccess {Number} created_time when the user was created on the server
@@ -369,22 +391,21 @@ exports.addUser = function(req, res) {
 	user.timestamp = +new Date();
 	user.role = (user.role ? user.role.toLowerCase() : 'student');
 
+	if ((req.user && req.user.role=="teacher") && (user.role=="admin" || user.role=="teacher")) {
+		res.status(401).send({
+			'error': 'You don\'t have permission to perform this action',
+			'code': 19
+		});
+		return;
+	}
+
 	//validation for fields [password, name]
 	if (!user.password || !user.name) {
 		res.status(401).send({
 			'error': "Invalid user object!",
 			'code': 2
 		});
-	}
-
-	// validate on the basis of user's role for logged in case
-	if (req.user) {
-		if (req.user.role == 'student') {
-			return res.status(401).send({
-				'error': 'You don\'t have permission to perform this action',
-				'code': 19
-			});
-		}
+		return;
 	}
 
 	//check if user already exist
@@ -393,7 +414,12 @@ exports.addUser = function(req, res) {
 	}, {}, function(item) {
 		if (item.length == 0) {
 			//create user based on role
-			if (user.role == 'admin') {
+			if (user.role == 'admin' || user.role == 'teacher') {
+				if (user.role != 'teacher') {
+					delete user.classrooms;
+				} else if (!user.classrooms) {
+					user.classrooms = [];
+				}
 				db.collection(usersCollection, function(err, collection) {
 					collection.insertOne(user, {
 						safe: true
@@ -439,12 +465,12 @@ exports.addUser = function(req, res) {
 			});
 		}
 	});
-}
+};
 
 /**
  * @api {put} api/v1/users/ Update user
  * @apiName UpdateUser
- * @apiDescription Update an user. Return the user updated. Student can update only his/her details but admin can update anyone.
+ * @apiDescription Update an user. Return the user updated. Student or teacher can update only his/her details but admin can update anyone.
  * @apiGroup Users
  * @apiVersion 1.0.0
  * @apiHeader {String} x-key User unique id.
@@ -452,13 +478,13 @@ exports.addUser = function(req, res) {
  *
  * @apiSuccess {String} _id Unique user id
  * @apiSuccess {String} name Unique user name
- * @apiSuccess {String} role User role (student or admin)
+ * @apiSuccess {String} role User role (admin, student or teacher)
  * @apiSuccess {Object} color Buddy color
  * @apiSuccess {String} color.stroke Buddy strike color
  * @apiSuccess {String} color.fill Buddy fill color
  * @apiSuccess {String[]} favorites Ids list of activities in the favorite view
  * @apiSuccess {String} language Language setting of the user
- * @apiSuccess {String} password password of the user
+ * @apiSuccess {String} password Password of the user
  * @apiSuccess {String} private_journal Id of the private journal on the server
  * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
  * @apiSuccess {Number} created_time when the user was created on the server
@@ -515,17 +541,7 @@ exports.updateUser = function(req, res) {
 
 	var uid = req.params.uid;
 	var user = JSON.parse(req.body.user);
-
-	// validate on the basis of user's role
-	if (req.user.role == 'student') {
-		if (req.user._id != uid) {
-			res.status(401).send({
-				'error': 'You don\'t have permission to perform this action',
-				'code': 19
-			});
-			return;
-		}
-	}
+	delete user.role; // Disable role change
 
 	//do not update name if already exist
 	if (typeof user.name !== 'undefined') {
@@ -551,7 +567,7 @@ exports.updateUser = function(req, res) {
 		//update user
 		updateUser(uid, user, res);
 	}
-}
+};
 
 //private function to update user
 function updateUser(uid, user, res) {
@@ -613,17 +629,6 @@ exports.removeUser = function(req, res) {
 		return;
 	}
 
-	// validate on the basis of user's role
-	if (req.user.role == 'student') {
-		if (req.user._id != req.params.uid) {
-			res.status(401).send({
-				'error': 'You don\'t have permission to perform this action',
-				'code': 19
-			});
-			return;
-		}
-	}
-
 	//delete user from db
 	var uid = req.params.uid;
 	db.collection(usersCollection, function(err, collection) {
@@ -645,7 +650,7 @@ exports.removeUser = function(req, res) {
 							}, {
 								safe: true
 							},
-							function(err, result) {
+							function(err) {
 								if (err) {
 									res.status(500).send({
 										error: "An error has occurred",
@@ -655,22 +660,22 @@ exports.removeUser = function(req, res) {
 									if (user.value.private_journal) {
 										db.collection(journalCollection, function(err, collection) {
 											collection.deleteMany({
-													_id: new mongo.ObjectID(user.value.private_journal)
-												}, {
-													safe: true
-												},
-												function(err, result) {
-													if (err) {
-														res.status(500).send({
-															error: "An error has occurred",
-															code: 10
-														});
-													} else {
-														res.send({
-															'user_id': uid
-														});
-													}
+												_id: new mongo.ObjectID(user.value.private_journal)
+											}, {
+												safe: true
+											},
+											function(err) {
+												if (err) {
+													res.status(500).send({
+														error: "An error has occurred",
+														code: 10
+													});
+												} else {
+													res.send({
+														'user_id': uid
+													});
 												}
+											}
 											);
 										});
 									} else {
@@ -691,7 +696,7 @@ exports.removeUser = function(req, res) {
 			}
 		});
 	});
-}
+};
 
 //update user's time stamp
 exports.updateUserTimestamp = function(uid, callback) {
@@ -705,15 +710,9 @@ exports.updateUserTimestamp = function(uid, callback) {
 			}
 		}, {
 			safe: true
-		}, function(err, result) {
-			if (err) {
-				res.status(500).send({
-					'error': 'An error has occurred while updating timestamp',
-					'code': 24
-				});
-			} else {
-				callback()
-			}
+		}, function(err) {
+			callback(err);
 		});
 	});
-}
+};
+

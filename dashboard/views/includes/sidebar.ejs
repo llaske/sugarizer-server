@@ -8,6 +8,13 @@
 
 	<div class="sidebar-wrapper">
 		<ul class="nav">
+			<li>
+				<a class="pointer hide-desk-el" onclick="jumpTo('/dashboard/logout')">
+					<i class="custom-icon shutdown-icon"></i>
+					<p data-l10n-id="logout">Logout</p>
+			  	</a>
+			</li>
+
 			<%if (module == 'dashboard') { %>
 				<li class="active">
 			<% } else {%>
@@ -58,6 +65,7 @@
 					<p data-l10n-id="classrooms">Classrooms</p>
 				</a>
 			</li>
+			<%if (account.user && account.user.role == "admin") { %>
 			<%if (module == 'stats') { %>
 				<li class="active">
 			<% } else {%>
@@ -66,6 +74,17 @@
 				<a class="pointer" onclick="jumpTo('/dashboard/stats')">
 					<i class="custom-icon stats-icon"></i>
 					<p data-l10n-id="stats">Statistics</p>
+				</a>
+			</li>
+			<% } %>
+			<%if (module == 'profile') { %>
+				<li class="active hide-desk-el">
+			<% } else {%>
+				<li class="hide-desk-el">
+			<% }%>
+				<a class="pointer" onclick="jumpTo('/dashboard/profile')">
+					<i class="custom-icon user-icon"></i>
+					<p data-l10n-id="profile">Profile</p>
 				</a>
 			</li>
 		</ul>

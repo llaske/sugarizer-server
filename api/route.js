@@ -9,6 +9,10 @@ var activities = require('./controller/activities'),
 	presence = require('./middleware/presence'),
 	common = require('../dashboard/helper/common');
 
+// Define roles
+// eslint-disable-next-line no-unused-vars
+var Admin="admin", Teacher="teacher", Student="student";
+
 module.exports = function(app, ini, db) {
 
 	//Only the requests that start with /api/v1/* will be checked for the token.
@@ -28,40 +32,40 @@ module.exports = function(app, ini, db) {
 	app.post('/auth/signup', auth.checkAdminOrLocal, auth.signup);
 
 	// Register activities list API
-	app.get("/api/v1/activities", activities.findAll);
-	app.post("/api/v1/activities", activities.updateActivities);
-	app.get("/api/v1/activities/:id", activities.findById);
+	app.get("/api/v1/activities", auth.allowedRoles([Admin, Student, Teacher]), activities.findAll);
+	app.post("/api/v1/activities", auth.allowedRoles([Admin]), activities.updateActivities);
+	app.get("/api/v1/activities/:id", auth.allowedRoles([Admin, Student, Teacher]), activities.findById);
 
 	// Register users API
-	app.get("/api/v1/users", users.findAll);
-	app.get("/api/v1/users/:uid", users.findById);
-	app.post("/api/v1/users", users.addUser);
-	app.put("/api/v1/users/:uid", users.updateUser);
-	app.delete("/api/v1/users/:uid", users.removeUser);
+	app.get("/api/v1/users", auth.allowedRoles([Admin, Student, Teacher]), users.findAll);
+	app.get("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.findById);
+	app.post("/api/v1/users", auth.allowedRoles([Admin, Teacher]), users.addUser);
+	app.put("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.updateUser);
+	app.delete("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.removeUser);
 
 	// Register stats API
-	app.get("/api/v1/stats", stats.findAll);
-	app.post("/api/v1/stats", stats.addStats);
-	app.delete("/api/v1/stats", stats.deleteStats);
+	app.get("/api/v1/stats", auth.allowedRoles([Admin, Student, Teacher]), stats.findAll);
+	app.post("/api/v1/stats", auth.allowedRoles([Admin, Student, Teacher]), stats.addStats);
+	app.delete("/api/v1/stats", auth.allowedRoles([Admin, Student, Teacher]), stats.deleteStats);
 
 	// Register journal API
-	app.get("/api/v1/journal", journal.findAll);
-	app.get("/api/v1/journal/aggregate", auth.checkAdmin, journal.findAllEntries);
-	app.get("/api/v1/journal/:jid", journal.findJournalContent);
-	app.post("/api/v1/journal/:jid", journal.addEntryInJournal);
-	app.put("/api/v1/journal/:jid", journal.updateEntryInJournal);
-	app.delete("/api/v1/journal/:jid", journal.removeInJournal);
+	app.get("/api/v1/journal", auth.allowedRoles([Admin, Student, Teacher]), journal.findAll);
+	app.get("/api/v1/journal/aggregate", auth.allowedRoles([Admin, Teacher]), journal.findAllEntries);
+	app.get("/api/v1/journal/:jid", auth.allowedRoles([Admin, Student, Teacher]), journal.findJournalContent);
+	app.post("/api/v1/journal/:jid", auth.allowedRoles([Admin, Student, Teacher]), journal.addEntryInJournal);
+	app.put("/api/v1/journal/:jid", auth.allowedRoles([Admin, Student, Teacher]), journal.updateEntryInJournal);
+	app.delete("/api/v1/journal/:jid", auth.allowedRoles([Admin, Student, Teacher]), journal.removeInJournal);
 
 	// Register classroom API
-	app.get("/api/v1/classrooms", auth.checkAdmin, classrooms.findAll);
-	app.get("/api/v1/classrooms/:classid", auth.checkAdmin, classrooms.findById);
-	app.post("/api/v1/classrooms", auth.checkAdmin, classrooms.addClassroom);
-	app.put("/api/v1/classrooms/:classid", auth.checkAdmin, classrooms.updateClassroom);
-	app.delete("/api/v1/classrooms/:classid", auth.checkAdmin, classrooms.removeClassroom);
+	app.get("/api/v1/classrooms", auth.allowedRoles([Admin, Teacher]), classrooms.findAll);
+	app.get("/api/v1/classrooms/:classid", auth.allowedRoles([Admin, Teacher]), classrooms.findById);
+	app.post("/api/v1/classrooms", auth.allowedRoles([Admin]), classrooms.addClassroom);
+	app.put("/api/v1/classrooms/:classid", auth.allowedRoles([Admin]), classrooms.updateClassroom);
+	app.delete("/api/v1/classrooms/:classid", auth.allowedRoles([Admin]), classrooms.removeClassroom);
 
 	// If no route is matched by now, it must be a 404
 	app.use('/api/v1/*', function(req, res) {
-		return res.status(404).res.json({
+		return res.status(404).json({
 			'status': 404,
 			'error': "Route Not Found!",
 			'code': 7,
