@@ -5,7 +5,8 @@ var request = require('request'),
 	addUser = require('./addUser'),
 	editUser = require('./editUser'),
 	deleteUser = require('./deleteUser'),
-	profile = require('./profile');
+	profile = require('./profile'),
+	importCSV = require('./importCSV');
 
 var _util = require('./util'),
 	getClassrooms = _util.getClassrooms;
@@ -93,3 +94,5 @@ exports.editUser = editUser;
 exports.deleteUser = deleteUser;
 
 exports.profile = profile;
+
+exports.importCSV = importCSV;

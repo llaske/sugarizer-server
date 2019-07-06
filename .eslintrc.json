@@ -72,6 +72,15 @@
             }
         },
         {
+            "files": ["dashboard/controller/users/importCSV.js"],
+            "parserOptions": {
+                "ecmaVersion": 6
+            },
+            "env": {
+                "es6": true
+            }
+        },
+        {
             "files": ["api/**/*.js"],
             "parserOptions": {
                 "ecmaVersion": 6
