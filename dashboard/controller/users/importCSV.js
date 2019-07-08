@@ -133,12 +133,13 @@ function validateUserRow(user) {
 
 
 module.exports = function profile(req, res) {
+	// reinit l10n and moment with locale
+	common.reinitLocale(req);
 
 	// Initialize the array that will contains all the users read from CSV
 	var AdminsStudents = [];
 	var Teachers = [];
 	var InvalidUsers = [];
-
 
 	// Function to stringift user class object
 	function stringifyUser(user) {
@@ -382,7 +383,7 @@ module.exports = function profile(req, res) {
 	// Return JSON Response
 	function returnResponse() {
 		var allUsers = [...new Set([...AdminsStudents, ...Teachers, ...InvalidUsers])];
-		res.json({success: true, msg: "Successfully inseterd users", data: allUsers});
+		res.json({success: true, msg: common.l10n.get('ImportSuccess'), data: allUsers});
 		return;
 	}
 
@@ -430,7 +431,8 @@ module.exports = function profile(req, res) {
 			var AllUsers = [...new Set([...AdminsStudents, ...Teachers])];
 
 			if (AllUsers.length == 0) {
-				return res.json({success: false, msg: "Error: No users to insert"});
+				res.json({success: false, msg: common.l10n.get('NoUsers')});
+				return;
 			}
 			initSeed();
 		});
