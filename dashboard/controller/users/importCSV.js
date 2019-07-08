@@ -355,9 +355,13 @@ module.exports = function profile(req, res) {
 			Classrooms[uniqueClassrooms[i]] = {data: "", students: []};
 		}
 		for (var j=0; j<AdminsStudents.length; j++) {
-			if (AdminsStudents[j].status && AdminsStudents[j].type == "student" && AdminsStudents[j]._id && AdminsStudents[j].classroom && Classrooms[AdminsStudents[j].classroom] && typeof Classrooms[AdminsStudents[j].classroom].students == "object") {
-			// Push user into classroom
-				Classrooms[AdminsStudents[j].classroom].students.push(AdminsStudents[j]._id);
+			if (AdminsStudents[j].status && AdminsStudents[j].type == "student" && AdminsStudents[j]._id && typeof AdminsStudents[j].classroom == "object") {
+				for (var k=0; k < AdminsStudents[j].classroom.length; k++) {
+					if (AdminsStudents[j].classroom[k] && typeof AdminsStudents[j].classroom[k] == "string" && Classrooms[AdminsStudents[j].classroom[k]] && typeof Classrooms[AdminsStudents[j].classroom[k]].students == "object") {
+						// Push user into classroom
+						Classrooms[AdminsStudents[j].classroom[k]].students.push(AdminsStudents[j]._id);
+					}
+				}
 			}
 		}
 
