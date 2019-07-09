@@ -77,9 +77,56 @@
                             });
                             </script>
                         <div class="col-md-6">
+                            <div class="btn pull-right btn-round" onclick="downloadUsers()">Export Users</div>
+                            <script>
+                                function downloadUsers(event) {
+                                    $.ajax({
+                                            type: "GET",
+                                            url: "/dashboard/users/export",
+                                            success: function (res) {
+                                                if (res && res.success) {
+                                                    var headers = {
+                                                        _id: "_id",
+                                                        name : "name",
+                                                        type : "type",
+                                                        language : "language",
+                                                        color : "color",
+                                                        password : "password",
+                                                        classroom : "classroom"
+                                                    };
+                                                    exportCSVFile(headers, res.data, 'UserExport');
+                                                    $.notify({
+                                                        icon: "notifications",
+                                                        message: res.msg
+
+                                                    },{
+                                                        type: 'success',
+                                                        timer: 2000,
+                                                        placement: {
+                                                            from: 'top',
+                                                            align: 'right'
+                                                        }
+                                                    });
+                                                } else {
+                                                    $.notify({
+                                                        icon: "error",
+                                                        message: res.msg
+                                                    },{
+                                                        type: 'danger',
+                                                        timer: 2000,
+                                                        placement: {
+                                                            from: 'top',
+                                                            align: 'right'
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                }
+                            </script>
                             <% if (account.user && account.user.role=="admin") { %>
                                 <div>
-                                    <label for="csv-upload" class="btn pull-right btn-round" >Upload CSV<div class="ripple-container"></div></label>
+                                    <label for="csv-upload" class="btn pull-right btn-round" >Add From CSV<div class="ripple-container"></div></label>
                                     <input id="csv-upload" style="visibility:hidden; display:none;" type="file" name="csv-file" accept="text/csv">
                                     <script>
                                         $("#csv-upload").change(function() {
