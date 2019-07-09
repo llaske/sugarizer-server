@@ -44,6 +44,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Language switching not handled properly #42
 - Show no result found message rather than Showing table headings #39
 - Inconsistency in language of users in dashboard #33
+- Server hangs/crashes on when an admin delete its own account #82
+- Language doesn't switch on mobile view #154
+- Word "users" use instead of "students" on the dashboard #148
+- Delete all user data when the user is deleted #109
 
 
 ## [1.0.1] - 2018-07-14
