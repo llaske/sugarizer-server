@@ -343,22 +343,6 @@ describe('Classrooms', function() {
 				});
 		});
 
-		it('it should do nothing for teacher', (done) => {
-
-			chai.request(server)
-				.put('/api/v1/classrooms/' + fake.classroom._id)
-				.set('x-access-token', fake.teacher1.token)
-				.set('x-key', fake.teacher1.user._id)
-				.send({
-					classroom: '{"name":"group_new_a_' + (timestamp.toString()) + '"}'
-				})
-				.end((err, res) => {
-					res.should.have.status(401);
-					res.body.code.should.be.eql(19);
-					done();
-				});
-		});
-
 		it('it should do nothing on inexisting classroom', (done) => {
 
 			chai.request(server)
@@ -392,6 +376,25 @@ describe('Classrooms', function() {
 					done();
 				});
 		});
+
+		it('it should update the valid classroom for teacher', (done) => {
+
+			chai.request(server)
+				.put('/api/v1/classrooms/' + fake.classroom._id)
+				.set('x-access-token', fake.teacher1.token)
+				.set('x-key', fake.teacher1.user._id)
+				.send({
+					classroom: '{"name":"group_new_b_' + (timestamp.toString()) + '"}'
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.an('object');
+					res.body.should.have.property('_id').eql(fake.classroom._id);
+					res.body.should.have.property('name').eql("group_new_b_" + (timestamp.toString()));
+					done();
+				});
+		});
+
 	});
 
 	describe('/DELETE/:id classrooms', () => {

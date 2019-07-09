@@ -34,7 +34,7 @@ module.exports = function editUser(req, res) {
 					req.flash('errors', {
 						msg: common.l10n.get('EmptyClassroom')
 					});
-					return res.redirect('/dashboard/users/add');
+					return res.redirect('/dashboard/users/edit/' + req.params.uid);
 				}
 			}
 

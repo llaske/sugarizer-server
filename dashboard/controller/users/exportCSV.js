@@ -35,15 +35,25 @@ module.exports = function exportCSV(req, res) {
 		if (user.password) {
 			validUser.password = user.password;
 		}
-		if (user.classrooms && typeof user.classrooms == "object") {
-			for (var i=0; i < user.classrooms.length; i++) {
-				if (user.classrooms[i] && Classrooms[user.classrooms[i]]) {
-					validUser.classroom += Classrooms[user.classrooms[i]];
-					validUser.classroom += ", "; 
+		if (user.role == "teacher") {
+			if (user.classrooms && typeof user.classrooms == "object") {
+				for (var i=0; i < user.classrooms.length; i++) {
+					if (user.classrooms[i] && Classrooms[user.classrooms[i]]) {
+						validUser.classroom += Classrooms[user.classrooms[i]].name;
+						validUser.classroom += ", "; 
+					}
 				}
 			}
-			if (validUser.classroom.length) validUser.classroom = validUser.classroom.substring(0, validUser.classroom.length - 2);
+		} else if (user.role == "student") {
+			for (var _id in Classrooms) {
+				if (user._id && Classrooms[_id] && typeof Classrooms[_id].students == "object" && Classrooms[_id].students.includes(user._id)) {
+					validUser.classroom += Classrooms[_id].name;
+					validUser.classroom += ", ";
+				}
+			}
 		}
+		if (validUser.classroom.length) validUser.classroom = validUser.classroom.substring(0, validUser.classroom.length - 2);
+		
 		return validUser;
 	}
 
@@ -62,7 +72,10 @@ module.exports = function exportCSV(req, res) {
 				if (response.statusCode == 200) {
 					if (body && typeof body.classrooms == "object" && body.classrooms.length > 0) {
 						for (var i=0; i<body.classrooms.length; i++) {
-							Classrooms[body.classrooms[i]._id] = body.classrooms[i].name;
+							Classrooms[body.classrooms[i]._id] = {
+								name: body.classrooms[i].name,
+								students: body.classrooms[i].students
+							};
 							if (i == body.classrooms.length - 1) callback(null);
 						}
 					} else {
