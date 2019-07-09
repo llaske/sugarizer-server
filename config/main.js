@@ -36,7 +36,7 @@ module.exports = function(app, ini) {
 	}));
 	app.use(bodyParser.json({
 		limit: '16mb',
-		type: '*/*'
+		type: 'application/json'
 	}));
 
 	//include expressValidator

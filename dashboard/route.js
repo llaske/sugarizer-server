@@ -1,3 +1,9 @@
+// import multer for file upload
+var multer = require('multer');
+
+// Define upload path
+var upload = multer({ dest: 'tmp/csv/' });
+
 // require files
 var authController = require('./controller/auth'),
 	usersController = require('./controller/users'),
@@ -27,6 +33,7 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/users', authController.validateSession, usersController.index);
 	app.get('/dashboard/users/add', authController.validateSession, usersController.addUser);
 	app.post('/dashboard/users/add', authController.validateSession, usersController.addUser);
+	app.post('/dashboard/users/import', upload.single('file'), authController.checkRole(usersController.importCSV));
 	app.get('/dashboard/users/edit/:uid', authController.validateSession, usersController.editUser);
 	app.post('/dashboard/users/edit/:uid', authController.validateSession, usersController.editUser);
 	app.get('/dashboard/users/delete/:uid', authController.validateSession, usersController.deleteUser);
