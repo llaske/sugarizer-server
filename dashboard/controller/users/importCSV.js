@@ -136,6 +136,16 @@ module.exports = function profile(req, res) {
 	// reinit l10n and moment with locale
 	common.reinitLocale(req);
 
+	// Define authorization level
+	var authLevel = 0;
+	if (req.session && req.session.user && req.session.user.user) {
+		if (req.session.user.user.role == "admin") {
+			authLevel = 2;
+		} else if (req.session.user.user.role == "teacher") {
+			authLevel = 1;
+		}
+	}
+
 	// Initialize the array that will contains all the users read from CSV
 	var AdminsStudents = [];
 	var Teachers = [];
@@ -369,8 +379,61 @@ module.exports = function profile(req, res) {
 		else initTeacherAssignment();
 	}
 
-	// Initiate seeding to DB
-	function initSeed() {
+	// Check students again for valid classrooms
+	function revalidateUsers() {
+		var validClass;
+		var deleteIndex = [];
+		for (var i=0; i<AdminsStudents.length; i++) {
+			validClass = [];
+			if (AdminsStudents[i] && typeof AdminsStudents[i].classroom == "object" && AdminsStudents[i].classroom.length > 0) {
+				for (var j=0; j<AdminsStudents[i].classroom.length; j++) {
+					if (Classrooms[AdminsStudents[i].classroom[j]] && Classrooms[AdminsStudents[i].classroom[j]].data && Classrooms[AdminsStudents[i].classroom[j]].data.name == AdminsStudents[i].classroom[j]) {
+						validClass.push(AdminsStudents[i].classroom[j]);
+					}
+				}
+				AdminsStudents[i].classroom = validClass;
+				if (!validClass.length) {
+					AdminsStudents[i].comment += "Cannot create user with no valid classroom. ";
+					InvalidUsers.push(AdminsStudents[i]);
+					deleteIndex.push(i);
+				}
+			} else {
+				AdminsStudents[i].comment += "Cannot create user with empty classroom. ";
+				InvalidUsers.push(AdminsStudents[i]);
+				deleteIndex.push(i);
+			}
+		}
+		
+		deleteIndex.sort(function(a, b){return b - a;});
+		for (var i=0; i< deleteIndex.length; i++) {
+			AdminsStudents.splice(deleteIndex[i], 1);
+		}
+
+		seedUsers();
+	}
+
+	// Get classroom names for teacher classroom validation
+	function findClassroomsForTeachers(classes) {
+		var classroomProcessed = 0;
+		for (var i=0; i < classes.length; i++) {
+			findClassroom(classes[i]).then(function(res) {
+				if (res && res.classrooms && res.classrooms.length > 0 && res.classrooms[0] && res.q == res.classrooms[0].name) {
+					// Confirm Match
+					Classrooms[res.q].data = res.classrooms[0];
+				}
+				classroomProcessed++;
+				if (classroomProcessed == classes.length) revalidateUsers();
+			})
+				.catch(function(err) {
+					classroomProcessed++;
+					console.log(err);
+					if (classroomProcessed == classes.length) revalidateUsers();
+				});
+		}
+	}
+
+	// Seed users in DB
+	function seedUsers() {
 		var usersProcessed = 0;
 		// Insert all users
 		for (var i=0; i < AdminsStudents.length; i++) {
@@ -381,6 +444,22 @@ module.exports = function profile(req, res) {
 				usersProcessed++;
 				if (usersProcessed == AdminsStudents.length) initClassroomAssignment();
 			});
+		}
+		if (AdminsStudents.length == 0) {
+			initClassroomAssignment();
+		}
+	}
+
+	// Initiate seeding to DB
+	function initSeed() {
+		if (authLevel > 1) {
+			seedUsers();
+		} else {
+			var uniqueClassrooms = getClassroomsNamesFromUsers(AdminsStudents);
+			for (var i=0; i<uniqueClassrooms.length; i++) {
+				Classrooms[uniqueClassrooms[i]] = {data: "", students: []};
+			}
+			findClassroomsForTeachers(uniqueClassrooms);
 		}
 	}
 
@@ -410,34 +489,51 @@ module.exports = function profile(req, res) {
 		}
 	}
 
-	// Reading and validating file
-	fs.createReadStream(req.file.path)
-		.on('error', function(err) {
-			throw err;
-		})
-		.pipe(csv())
-		.on('data', function(row) {
-			var validRow = validateUserRow(row);
-			if (validRow) {
-				if (validRow.type == "teacher") {
-					Teachers.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
+	if (authLevel > 0) {
+		// Reading and validating file
+		fs.createReadStream(req.file.path)
+			.on('error', function(err) {
+				throw err;
+			})
+			.pipe(csv())
+			.on('data', function(row) {
+				var validRow = validateUserRow(row);
+				if (validRow) {
+					if (validRow.type == "teacher") {
+						if (authLevel > 1) {
+							Teachers.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
+						} else {
+							InvalidUsers.push(new User(row.name, row.type, row.language, row.color, row.password, row.classroom, "Unauthorized"));
+						}
+					} else {
+						if (authLevel > 1) {
+							AdminsStudents.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
+						} else {
+							if (validRow.type == "admin") {
+								InvalidUsers.push(new User(row.name, row.type, row.language, row.color, row.password, row.classroom, "Unauthorized"));
+							} else {
+								AdminsStudents.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
+							}
+						}
+					}
 				} else {
-					AdminsStudents.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
+					InvalidUsers.push(new User(row.name, row.type, row.language, row.color, row.password, row.classroom, "Invalid Username"));
 				}
-			} else {
-				InvalidUsers.push(new User(row.name, row.type, row.language, row.color, row.password, row.classroom, "Invalid Username"));
-			}
-		})
-		.on('end', function() {
+			})
+			.on('end', function() {
 			// Finished processing CSV file
-			fs.unlinkSync(req.file.path); // remove temp file
+				fs.unlinkSync(req.file.path); // remove temp file
 
-			var AllUsers = [...new Set([...AdminsStudents, ...Teachers])];
+				var AllUsers = [...new Set([...AdminsStudents, ...Teachers])];
 
-			if (AllUsers.length == 0) {
-				res.json({success: false, msg: common.l10n.get('NoUsers')});
-				return;
-			}
-			initSeed();
-		});
+				if (AllUsers.length == 0) {
+					res.json({success: false, msg: common.l10n.get('NoUsers')});
+					return;
+				}
+				initSeed();
+			});
+	} else {
+		res.json({success: false, msg: common.l10n.get('ErrorCode19')});
+		return;
+	}
 };
