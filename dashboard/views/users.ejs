@@ -141,6 +141,7 @@
                                             processData: false,
                                             contentType: false,
                                             success: function (res) {
+                                                var timer = 2000;
                                                 if (res && res.success) {
                                                     var headers = {
                                                         status : "status",
@@ -160,7 +161,7 @@
 
                                                     },{
                                                         type: 'success',
-                                                        timer: 2000,
+                                                        timer: timer,
                                                         placement: {
                                                             from: 'top',
                                                             align: 'right'
@@ -172,13 +173,16 @@
                                                         message: res.msg
                                                     },{
                                                         type: 'danger',
-                                                        timer: 2000,
+                                                        timer: timer,
                                                         placement: {
                                                             from: 'top',
                                                             align: 'right'
                                                         }
                                                     });
                                                 }
+                                                setTimeout(function () {
+                                                    location.reload();
+                                                }, timer);
                                             }
                                         });
                                     });

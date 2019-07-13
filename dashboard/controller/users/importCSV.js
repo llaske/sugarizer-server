@@ -465,8 +465,15 @@ module.exports = function profile(req, res) {
 
 	// Return JSON Response
 	function returnResponse() {
+		var importedUsers = [...new Set([...AdminsStudents, ...Teachers])];
+		var importCount = 0;
+		for (var i=0; i<importedUsers.length; i++) {
+			if (importedUsers[i].status == 1) {
+				importCount++;
+			}
+		}
 		var allUsers = [...new Set([...AdminsStudents, ...Teachers, ...InvalidUsers])];
-		res.json({success: true, msg: common.l10n.get('ImportSuccess'), data: allUsers});
+		res.json({success: true, msg: common.l10n.get('ImportSuccess', {count: importCount}), data: allUsers});
 		return;
 	}
 
