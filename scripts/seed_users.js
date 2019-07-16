@@ -63,8 +63,7 @@ class User {
         this.language = language;
         this.color = color;
         this.password = password;
-        if (classroom)
-            this.classroom = classroom;
+        this.classroom = classroom;
         this.comment = comment ? comment : "";
         this.status = 0;
         this._id = "";
@@ -72,7 +71,9 @@ class User {
 }
 
 // Initialize the array that will contains all the users read from CSV
-var Users = [];
+var AdminsStudents = [];
+var Teachers = [];
+var InvalidUsers = [];
 
 // Trim and lowercase string
 function cleanString(string) {
@@ -119,7 +120,7 @@ function isValidLanguage(lang) {
 
 // Validate user role
 function isValidType(type) {
-    var roles = ["admin", "student"];
+    var roles = ["admin", "student", "teacher"];
     if (roles.indexOf(type) == -1) return false;
     else return true;
 }
@@ -178,11 +179,21 @@ function validateUserRow(user, index) {
     }
 
     user.classroom = user.classroom ? user.classroom.trim() : "";
-    if (user.classroom && (typeof user.classroom != "string" || !regexValidate("user").test(user.classroom))) {
-        user.classroom = "";
-        log.addInfo(" -- Classroom Invalid (classroom dropped)");
-        user.comment += "Given classroom name was invalid (Classroom dropped). ";
-    }
+    user.classroom = user.classroom.split(',');
+    
+    var validClassrooms = [];
+	if (user.classroom && user.classroom.length > 0) {
+		for (var i=0; i<user.classroom.length; i++) {
+			var thisClassroom = user.classroom[i] ? user.classroom[i].trim() : "";
+			if (thisClassroom && (typeof thisClassroom != "string" || !regexValidate("user").test(thisClassroom))) {
+                log.addInfo(" -- Classroom name " + JSON.stringify(thisClassroom) + " was Invalid (classroom dropped)");
+				user.comment += "Classroom name " + JSON.stringify(thisClassroom) + " was invalid (Classroom dropped). ";
+			} else if (thisClassroom) {
+				validClassrooms.push(thisClassroom);
+			}
+		}
+	}
+    user.classroom = validClassrooms;
 
     log.print();
     return user;
@@ -190,19 +201,36 @@ function validateUserRow(user, index) {
 
 // Function to stringift user class object
 function stringifyUser(user) {
-    return '{"name":"' + user.name + '", ' +
-            '"color":' + user.color + ', ' +
-            '"role":"' + user.type + '", ' +
-            '"password":"' + user.password + '", ' +
-            '"language":"' + user.language + '", ' +
-            '"options":{"sync":true, "stats":true}}';
+    if (user.type == "teacher") {
+        var classrooms = [];
+        for (var i=0; i < user.classroom.length; i++) {
+            if (Classrooms[user.classroom[i]] && Classrooms[user.classroom[i]].data && Classrooms[user.classroom[i]].data._id && classrooms.indexOf(Classrooms[user.classroom[i]].data._id) == -1) {
+                classrooms.push(Classrooms[user.classroom[i]].data._id);
+            }
+        }
+        classrooms = JSON.stringify(classrooms);
+        return '{"name":"' + user.name + '", ' +
+        '"color":' + user.color + ', ' +
+        '"role":"' + user.type + '", ' +
+        '"password":"' + user.password + '", ' +
+        '"language":"' + user.language + '", ' +
+        '"classrooms":' + classrooms + ', ' +
+        '"options":{"sync":true, "stats":true}}';
+    } else {
+        return '{"name":"' + user.name + '", ' +
+        '"color":' + user.color + ', ' +
+        '"role":"' + user.type + '", ' +
+        '"password":"' + user.password + '", ' +
+        '"language":"' + user.language + '", ' +
+        '"options":{"sync":true, "stats":true}}';
+    }
 }
 
 // Initiate Master Admin
 var masterAdmin = stringifyUser(new User('Master_Admin_' + (+new Date()).toString(), 'admin', 'en', getRandomColorString(), 'password'));
 
 // Insert User
-function insertUser(i) {
+function insertUser(Users, i) {
     return new Promise(function(resolve, reject) {
         request({
             headers: {
@@ -335,16 +363,22 @@ function findClassroom(name) {
 }
 
 // Create a list of all classrooms in Users
-function getClassroomsNamesFromUsers() {
+function getClassroomsNamesFromUsers(Users) {
     var classroomList = [];
-    for(var i=0; i<Users.length; i++) {
-        if (Users[i].classroom && classroomList.indexOf(Users[i].classroom) == -1) classroomList.push(Users[i].classroom);
+    for (var i=0; i<Users.length; i++) {
+        if (typeof Users[i].classroom == "object" && Users[i].classroom.length > 0) {
+            for (var j=0; j<Users[i].classroom.length; j++) {
+                if (classroomList.indexOf(Users[i].classroom[j]) == -1) {
+                    classroomList.push(Users[i].classroom[j]);
+                }
+            }
+        }
     }
     return classroomList;
 }
 
 // Function to generate CSV of users
-function generateCSV() {
+function generateCSV(Users) {
     return new Promise(function(resolve, reject) {
         var csvWriter = createCsvWriter({
             path: "output.csv",
@@ -392,8 +426,9 @@ function deleteMasterAdmin() {
 }
 
 // Finish classroom assignment and generate CSV and delete Master Admin
-function finishClassroomAssignment() {
-    Promise.all([generateCSV(), deleteMasterAdmin()]).then(function(values) {
+function returnResponse() {
+    var allUsers = [...new Set([...AdminsStudents, ...Teachers, ...InvalidUsers])];
+    Promise.all([generateCSV(allUsers), deleteMasterAdmin()]).then(function(values) {
         console.log('The CSV file written successfully. Filename: ' + values[0]);
         process.exit(0);
     }).catch(function(err) {
@@ -416,12 +451,12 @@ function findOrCreateClassroom(classes) {
                     } else {
                         console.log("Error creating classroom");
                     }
-                    if (classroomProcessed == classes.length) finishClassroomAssignment();
+                    if (classroomProcessed == classes.length) initTeacherAssignment();
                 })
                 .catch(function(err) {
                     classroomProcessed++;
                     console.log(err);
-                    if (classroomProcessed == classes.length) finishClassroomAssignment();
+                    if (classroomProcessed == classes.length) initTeacherAssignment();
                 });
             } else {
                 // Create Classroom
@@ -432,38 +467,61 @@ function findOrCreateClassroom(classes) {
                     } else {
                         console.log("Error creating classroom");
                     }
-                    if (classroomProcessed == classes.length) finishClassroomAssignment();
+                    if (classroomProcessed == classes.length) initTeacherAssignment();
                 })
                 .catch(function(err) {
                     classroomProcessed++;
                     console.log(err);
-                    if (classroomProcessed == classes.length) finishClassroomAssignment();
+                    if (classroomProcessed == classes.length) initTeacherAssignment();
                 });
             }
         })
         .catch(function(err) {
             classroomProcessed++;
             console.log(err);
-            if (classroomProcessed == classes.length) finishClassroomAssignment();
+            if (classroomProcessed == classes.length) initTeacherAssignment();
         });
     }
 }
 
 // Processed users for assignment into classrooms
 function initClassroomAssignment() {
-    var uniqueClassrooms = getClassroomsNamesFromUsers();
+    var uniqueClassrooms = getClassroomsNamesFromUsers([...new Set([...AdminsStudents, ...Teachers])]);
     for (var i=0; i<uniqueClassrooms.length; i++) {
         Classrooms[uniqueClassrooms[i]] = {data: "", students: []};
     }
-    for (var j=0; j<Users.length; j++) {
-        if (Users[j].status && Users[j].type == "student" && Users[j]._id && Users[j].classroom && Classrooms[Users[j].classroom] && typeof Classrooms[Users[j].classroom].students == "object") {
-            // Push user into classroom
-            Classrooms[Users[j].classroom].students.push(Users[j]._id);
+    for (var j=0; j<AdminsStudents.length; j++) {
+        if (AdminsStudents[j].status && AdminsStudents[j].type == "student" && AdminsStudents[j]._id && typeof AdminsStudents[j].classroom == "object") {
+            for (var k=0; k < AdminsStudents[j].classroom.length; k++) {
+                if (AdminsStudents[j].classroom[k] && typeof AdminsStudents[j].classroom[k] == "string" && Classrooms[AdminsStudents[j].classroom[k]] && typeof Classrooms[AdminsStudents[j].classroom[k]].students == "object") {
+                    // Push user into classroom
+                    Classrooms[AdminsStudents[j].classroom[k]].students.push(AdminsStudents[j]._id);
+                }
+            }
         }
     }
 
     if (uniqueClassrooms.length > 0) findOrCreateClassroom(uniqueClassrooms);
-    else finishClassroomAssignment();
+    else initTeacherAssignment();
+}
+
+// Initiate Teacher Assignment
+function initTeacherAssignment() {
+    if (Teachers.length > 0) {
+        var usersProcessed = 0;
+        // Insert all teachers
+        for (var i=0; i < Teachers.length; i++) {
+            insertUser(Teachers, i).then(function() {
+                usersProcessed++;
+                if (usersProcessed == Teachers.length) returnResponse();
+            }).catch(function() {
+                usersProcessed++;
+                if (usersProcessed == Teachers.length) returnResponse();
+            });
+        }
+    } else {
+        returnResponse();
+    }
 }
 
 // Initiate seeding to DB
@@ -499,15 +557,18 @@ function initSeed() {
 
                     var usersProcessed = 0;
                     // Insert all users
-                    for (var i=0; i < Users.length; i++) {
-                        insertUser(i).then(function() {
+                    for (var i=0; i < AdminsStudents.length; i++) {
+                        insertUser(AdminsStudents, i).then(function() {
                             usersProcessed++;
-                            if (usersProcessed == Users.length) initClassroomAssignment();
+                            if (usersProcessed == AdminsStudents.length) initClassroomAssignment();
                         }).catch(function(err) {
                             if (err) console.log("Error inserting " + err.user.name + ": " + err.error);
                             usersProcessed++;
-                            if (usersProcessed == Users.length) initClassroomAssignment();
+                            if (usersProcessed == AdminsStudents.length) initClassroomAssignment();
                         });
+                    }
+                    if (AdminsStudents.length == 0) {
+                        initClassroomAssignment();
                     }
                 } else {
                     console.log('Error logging into Master Admin');
@@ -536,11 +597,20 @@ fs.createReadStream(filename)
     .on('data', function(row) {
         dataIndex++;
         var validRow = validateUserRow(row, dataIndex);
-        if (validRow) Users.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
+        if (validRow) {
+            if (validRow.type == "teacher") {
+                Teachers.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
+            } else {
+                AdminsStudents.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
+            }
+        } else {
+            InvalidUsers.push(new User(row.name, row.type, row.language, row.color, row.password, row.classroom, "Invalid Username"));
+        }
     })
     .on('end', function() {
         // Finished processing CSV file
-        if (Users.length == 0) {
+        var AllUsers = [...new Set([...AdminsStudents, ...Teachers])];
+        if (AllUsers.length == 0) {
             console.log('Error: No users to insert');
             process.exit(-1);
         }
