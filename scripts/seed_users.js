@@ -90,17 +90,25 @@ function getRandomColorString() {
     return randomColor;
 }
 
+// Generate Color String from stroke and fill
+function getColorString(stroke, fill) {
+    return JSON.stringify({
+		"stroke": stroke,
+		"fill": fill
+	});
+}
+
 // Validate color string
-function isValidColor(color) {
-    // Check if valid JSON
-    try {
-        color = JSON.parse(color);
-    } catch (e) {
+function isValidColor(stroke, fill) {
+    var color;
+    if (typeof stroke == "string" && typeof fill == "string") {
+        color = {
+            "stroke": stroke,
+            "fill": fill
+        };
+    } else {
         return false;
     }
-
-    // Check if property 'stroke' and 'fill' exists
-    if (!color.stroke || !color.fill) return false;
 
     // Look for the color in xocolors
     for (var i=0; i<xocolors.length; i++) {
@@ -167,8 +175,10 @@ function validateUserRow(user, index) {
         user.language = "en";
     }
 
-    if (!isValidColor(user.color)) {
+    if (!isValidColor(user.stroke, user.fill)) {
         user.color = getRandomColorString();
+    } else {
+        user.color = getColorString(user.stroke, user.fill);
     }
 
     var minPass = (settings && settings.security && parseInt(settings.security.min_password_size)) ? parseInt(settings.security.min_password_size) : 4;
@@ -386,7 +396,8 @@ function generateCSV(Users) {
                 {id: 'name', title: 'name'},
                 {id: 'type', title: 'type'},
                 {id: 'language', title: 'language'},
-                {id: 'color', title: 'color'},
+                {id: 'stroke', title: 'stroke'},
+                {id: 'fill', title: 'fill'},
                 {id: 'password', title: 'password'},
                 {id: 'classroom', title: 'classroom'},
                 {id: 'status', title: 'status'},
@@ -428,6 +439,24 @@ function deleteMasterAdmin() {
 // Finish classroom assignment and generate CSV and delete Master Admin
 function returnResponse() {
     var allUsers = [...new Set([...AdminsStudents, ...Teachers, ...InvalidUsers])];
+    var color, stroke, fill;
+    for (var i=0; i<allUsers.length; i++) {
+        stroke = ""; fill = ""; color = "";
+        if (allUsers[i]) {
+            // Check if valid JSON
+            try {
+                color = JSON.parse(allUsers[i]['color']);
+            } catch (e) {
+                color = allUsers[i]['color'];
+            }
+            if (color && color.stroke && color.fill) {
+                stroke = color.stroke;
+                fill = color.fill;
+            }
+            allUsers[i]['stroke'] = stroke;
+            allUsers[i]['fill'] = fill;
+        }
+    }
     Promise.all([generateCSV(allUsers), deleteMasterAdmin()]).then(function(values) {
         console.log('The CSV file written successfully. Filename: ' + values[0]);
         process.exit(0);
