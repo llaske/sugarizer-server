@@ -77,68 +77,117 @@
                             });
                             </script>
                         <div class="col-md-6">
-                            <% if (account.user && account.user.role=="admin") { %>
-                                <div>
-                                    <label for="csv-upload" class="btn pull-right btn-round" >Upload CSV<div class="ripple-container"></div></label>
-                                    <input id="csv-upload" style="visibility:hidden; display:none;" type="file" name="csv-file" accept="text/csv">
-                                    <script>
-                                        $("#csv-upload").change(function() {
-                                            var formData = new FormData();
-                                            var fileSelect = document.getElementById("csv-upload");
-                                            var files = fileSelect.files;
-                                            formData.append("file", files[0], files[0].name);
-                                            $.ajax({
-                                                type: "POST",
-                                                url: "/dashboard/users/import",
-                                                enctype: 'multipart/form-data',
-                                                data: formData,
-                                                processData: false,
-                                                contentType: false,
-                                                success: function (res) {
-                                                    if (res && res.success) {
-                                                        var headers = {
-                                                            status : "status",
-                                                            comment : "comment",
-                                                            _id: "_id",
-                                                            name : "name",
-                                                            type : "type",
-                                                            language : "language",
-                                                            color : "color",
-                                                            password : "password",
-                                                            classroom : "classroom"
-                                                        };
-                                                        exportCSVFile(headers, res.data, 'UploadedUsers');
-                                                        $.notify({
-                                                            icon: "notifications",
-                                                            message: res.msg
+                            <div class="btn pull-right btn-round" onclick="downloadUsers()">Export Users</div>
+                            <script>
+                                function downloadUsers(event) {
+                                    $.ajax({
+                                            type: "GET",
+                                            url: "/dashboard/users/export",
+                                            success: function (res) {
+                                                if (res && res.success) {
+                                                    var headers = {
+                                                        _id: "_id",
+                                                        name : "name",
+                                                        type : "type",
+                                                        language : "language",
+                                                        color : "color",
+                                                        password : "password",
+                                                        classroom : "classroom"
+                                                    };
+                                                    exportCSVFile(headers, res.data, 'UserExport');
+                                                    $.notify({
+                                                        icon: "notifications",
+                                                        message: res.msg
 
-                                                        },{
-                                                            type: 'success',
-                                                            timer: 2000,
-                                                            placement: {
-                                                                from: 'top',
-                                                                align: 'right'
-                                                            }
-                                                        });
-                                                    } else {
-                                                        $.notify({
-                                                            icon: "error",
-                                                            message: res.msg
-                                                        },{
-                                                            type: 'danger',
-                                                            timer: 2000,
-                                                            placement: {
-                                                                from: 'top',
-                                                                align: 'right'
-                                                            }
-                                                        });
-                                                    }
+                                                    },{
+                                                        type: 'success',
+                                                        timer: 2000,
+                                                        placement: {
+                                                            from: 'top',
+                                                            align: 'right'
+                                                        }
+                                                    });
+                                                } else {
+                                                    $.notify({
+                                                        icon: "error",
+                                                        message: res.msg
+                                                    },{
+                                                        type: 'danger',
+                                                        timer: 2000,
+                                                        placement: {
+                                                            from: 'top',
+                                                            align: 'right'
+                                                        }
+                                                    });
                                                 }
-                                            });
+                                            }
                                         });
-                                    </script>
-                                </div>
-                            <% } %>
+                                }
+                            </script>
+                            <div>
+                                <label for="csv-upload" class="btn pull-right btn-round" >Add From CSV<div class="ripple-container"></div></label>
+                                <input id="csv-upload" style="visibility:hidden; display:none;" type="file" name="csv-file" accept="text/csv">
+                                <script>
+                                    $("#csv-upload").change(function() {
+                                        var formData = new FormData();
+                                        var fileSelect = document.getElementById("csv-upload");
+                                        var files = fileSelect.files;
+                                        formData.append("file", files[0], files[0].name);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "/dashboard/users/import",
+                                            enctype: 'multipart/form-data',
+                                            data: formData,
+                                            processData: false,
+                                            contentType: false,
+                                            success: function (res) {
+                                                var timer = 2000;
+                                                if (res && res.success) {
+                                                    var headers = {
+                                                        status : "status",
+                                                        comment : "comment",
+                                                        _id: "_id",
+                                                        name : "name",
+                                                        type : "type",
+                                                        language : "language",
+                                                        color : "color",
+                                                        password : "password",
+                                                        classroom : "classroom"
+                                                    };
+                                                    exportCSVFile(headers, res.data, 'UploadedUsers');
+                                                    $.notify({
+                                                        icon: "notifications",
+                                                        message: res.msg
+
+                                                    },{
+                                                        type: 'success',
+                                                        timer: timer,
+                                                        placement: {
+                                                            from: 'top',
+                                                            align: 'right'
+                                                        }
+                                                    });
+                                                } else {
+                                                    $.notify({
+                                                        icon: "error",
+                                                        message: res.msg
+                                                    },{
+                                                        type: 'danger',
+                                                        timer: timer,
+                                                        placement: {
+                                                            from: 'top',
+                                                            align: 'right'
+                                                        }
+                                                    });
+                                                }
+                                                setTimeout(function () {
+                                                    location.reload();
+                                                }, timer);
+                                            }
+                                        });
+                                    });
+                                </script>
+                            </div>
                             <a class="btn btn-round pull-right " href="/dashboard/users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
                             <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>

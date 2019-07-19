@@ -387,7 +387,16 @@ function convertToCSV(objArray) {
 			if (flag) line += ',';
 			flag = true;
 
-			line += array[i][index];
+			try {
+				var test = JSON.parse(array[i][index]);
+				if (test.stroke && test.fill) {
+					line += '"{stroke:""' + test.stroke + '"",fill:""' + test.fill + '""}"';
+				} else {
+					line += array[i][index];
+				}
+			} catch (e) {
+				line += JSON.stringify(array[i][index]);
+			}
 		}
 
 		str += line + '\r\n';
