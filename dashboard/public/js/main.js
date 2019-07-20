@@ -388,12 +388,8 @@ function convertToCSV(objArray) {
 			flag = true;
 
 			try {
-				var test = JSON.parse(array[i][index]);
-				if (test.stroke && test.fill) {
-					line += '"{stroke:""' + test.stroke + '"",fill:""' + test.fill + '""}"';
-				} else {
-					line += array[i][index];
-				}
+				JSON.parse(array[i][index]);
+				line += array[i][index];
 			} catch (e) {
 				line += JSON.stringify(array[i][index]);
 			}

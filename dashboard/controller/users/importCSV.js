@@ -18,6 +18,8 @@ class User {
 		this.type = type;
 		this.language = language;
 		this.color = color;
+		this.stroke = "";
+		this.fill = "";
 		this.password = password;
 		this.classroom = classroom;
 	}
@@ -38,17 +40,25 @@ function getRandomColorString() {
 	return randomColor;
 }
 
+// Generate Color String from stroke and fill
+function getColorString(stroke, fill) {
+	return JSON.stringify({
+		"stroke": stroke,
+		"fill": fill
+	});
+}
+
 // Validate color string
-function isValidColor(color) {
-	// Check if valid JSON
-	try {
-		color = JSON.parse(color);
-	} catch (e) {
+function isValidColor(stroke, fill) {
+	var color;
+	if (typeof stroke == "string" && typeof fill == "string") {
+		color = {
+			"stroke": stroke,
+			"fill": fill
+		};
+	} else {
 		return false;
 	}
-
-	// Check if property 'stroke' and 'fill' exists
-	if (!color.stroke || !color.fill) return false;
 
 	// Look for the color in xocolors
 	for (var i=0; i<xocolors.length; i++) {
@@ -102,8 +112,10 @@ function validateUserRow(user) {
 		user.language = "en";
 	}
 
-	if (!isValidColor(user.color)) {
+	if (!isValidColor(user.stroke, user.fill)) {
 		user.color = getRandomColorString();
+	} else {
+		user.color = getColorString(user.stroke, user.fill);
 	}
 
 	var minPass = (users.ini() && users.ini().security && parseInt(users.ini().security.min_password_size)) ? parseInt(users.ini().security.min_password_size) : 4;
@@ -465,14 +477,47 @@ module.exports = function profile(req, res) {
 
 	// Return JSON Response
 	function returnResponse() {
-		var importedUsers = [...new Set([...AdminsStudents, ...Teachers])];
+		var allUsers = [...new Set([...AdminsStudents, ...Teachers, ...InvalidUsers])];
 		var importCount = 0;
-		for (var i=0; i<importedUsers.length; i++) {
-			if (importedUsers[i].status == 1) {
-				importCount++;
+		var color, stroke, fill;
+		var classrooms;
+		for (var i=0; i<allUsers.length; i++) {
+			stroke = ""; fill = ""; color = "";
+			classrooms = "";
+			if (allUsers[i]) {
+				if (allUsers[i].status == 1) {
+					importCount++;
+				}
+
+				// Check if valid JSON for color
+				try {
+					color = JSON.parse(allUsers[i]['color']);
+				} catch (e) {
+					color = allUsers[i]['color'];
+				}
+				if (color && color.stroke && color.fill) {
+					stroke = color.stroke;
+					fill = color.fill;
+				}
+				allUsers[i]['stroke'] = stroke;
+				allUsers[i]['fill'] = fill;
+				delete allUsers[i].color;
+
+				// Convert classroom into string
+				if (typeof allUsers[i].classroom == 'object' && allUsers[i].classroom.length > 0) {
+					for (var j=0; j < allUsers[i].classroom.length; j++) {
+						if (allUsers[i].classroom[j] && typeof allUsers[i].classroom[j] == "string") {
+							classrooms += allUsers[i].classroom[j];
+							classrooms += ", ";
+						}
+					}
+					if (classrooms) classrooms = classrooms.substring(0, classrooms.length - 2);
+				} else if (typeof allUsers[i].classroom == 'string') {
+					classrooms = allUsers[i].classroom;
+				}
+				allUsers[i].classroom = classrooms;
 			}
 		}
-		var allUsers = [...new Set([...AdminsStudents, ...Teachers, ...InvalidUsers])];
 		res.json({success: true, msg: common.l10n.get('ImportSuccess', {count: importCount}), data: allUsers});
 		return;
 	}
