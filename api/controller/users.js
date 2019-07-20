@@ -201,7 +201,6 @@ exports.findAll = function(req, res) {
 			var params = JSON.parse(JSON.stringify(req.query));
 			var route = req.route.path;
 			var options = getOptions(req, count, "+name");
-
 			//get data
 			exports.getAllUsers(query, options, function(users) {
 
@@ -243,15 +242,51 @@ exports.getAllUsers = function(query, options, callback) {
 
 	//get data
 	db.collection(usersCollection, function(err, collection) {
-		
-		//get users
-		collection.find(query, function(err, users) {
+		var conf = [
+			{
+				$match: query
+			},
+			{
+				$project: {
+					name: 1,
+					language: 1,
+					role: 1,
+					color: 1,
+					password: 1,
+					options: 1,
+					created_time: 1,
+					timestamp: 1,
+					private_journal: 1,
+					shared_journal: 1,
+					favorites: 1,
+					classrooms: 1,
+					insensitive: { "$toLower": "$name" }
+				}
+			},
+			{ 
+				$sort: {
+					"insensitive": 1
+				}
+			}
+		];
 
-			//skip sort limit
-			if (options.sort) users.sort(options.sort);
+		if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >=2) {
+			conf[1]["$project"]["insensitive"] = { "$toLower": "$" + options.sort[0][0] };
+
+			if (options.sort[0][1] == 'desc') {
+				conf[2]["$sort"] = {
+					"insensitive": -1
+				};
+			} else {
+				conf[2]["$sort"] = {
+					"insensitive": 1
+				};
+			}
+		}
+
+		collection.aggregate(conf, function (err, users) {
 			if (options.skip) users.skip(options.skip);
 			if (options.limit) users.limit(options.limit);
-
 			//return
 			users.toArray(function(err, usersList) {
 				callback(usersList);
