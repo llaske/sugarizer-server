@@ -472,12 +472,10 @@ function sortBy(params) {
 		prev = query['sort'];
 	}
 	if (params == "name") {
-		if (prev == "+name" || prev == " name") {
-			query['sort'] = "-name";
-		} else if (prev == "-name") {
-			delete query.sort;
-		} else {
+		if (prev == "-name") {
 			query['sort'] = "+name";
+		} else {
+			query['sort'] = "-name";
 		}
 	} else if (params == "time") {
 		if (prev == "+timestamp" || prev == " timestamp") {
