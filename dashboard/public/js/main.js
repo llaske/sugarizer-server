@@ -434,3 +434,77 @@ function exportCSVFile(headers, items, fileTitle) {
 		}
 	}
 }
+
+function getJsonFromUrl(url) {
+	if(!url) url = location.search;
+	var query = url.substr(1);
+	var result = {};
+	query.split("&").forEach(function(part) {
+		var item = part.split("=");
+		result[item[0]] = decodeURIComponent(item[1]);
+	});
+	return result;
+}
+
+function handleSort() {
+	var query = getJsonFromUrl();
+	if (query.sort) {
+		if (query.sort == "+name" || query.sort == " name") {
+			document.getElementById("name-column").innerHTML = document.getElementById("name-column").innerHTML + '<i class="arrow up"></i>';
+		} else if (query.sort == "-name") {
+			document.getElementById("name-column").innerHTML += '<i class="arrow down"></i>';
+		} else if (query.sort == "+timestamp" || query.sort == " timestamp") {
+			document.getElementById("last-column").innerHTML += '<i class="arrow up"></i>';
+		} else if (query.sort == "-timestamp") {
+			document.getElementById("last-column").innerHTML += '<i class="arrow down"></i>';
+		} else if (query.sort == "+textsize" || query.sort == " textsize") {
+			document.getElementById("journal-size").innerHTML += '<i class="arrow up"></i>';
+		} else if (query.sort == "-textsize") {
+			document.getElementById("journal-size").innerHTML += '<i class="arrow down"></i>';
+		}
+	}
+}
+
+function sortBy(params) {
+	var query = getJsonFromUrl();
+	var prev = "";
+	if (query['sort']) {
+		prev = query['sort'];
+	}
+	if (params == "name") {
+		if (prev == "+name" || prev == " name") {
+			query['sort'] = "-name";
+		} else if (prev == "-name") {
+			delete query.sort;
+		} else {
+			query['sort'] = "+name";
+		}
+	} else if (params == "time") {
+		if (prev == "+timestamp" || prev == " timestamp") {
+			query['sort'] = "-timestamp";
+		} else if (prev == "-timestamp") {
+			delete query.sort;
+		} else {
+			query['sort'] = "+timestamp";
+		}
+	} else if (params == "size") {
+		if (prev == "+textsize" || prev == " textsize") {
+			query['sort'] = "-textsize";
+		} else if (prev == "-textsize") {
+			delete query.sort;
+		} else {
+			query['sort'] = "+textsize";
+		}
+	} else {
+		delete query.sort;
+	}
+
+	var url = location.origin + location.pathname + '?';
+	for (var key in query) {
+		if (key && query.hasOwnProperty(key)) {
+			var val = query[key];
+			url += key + '=' + val + '&';
+		}
+	}
+	window.location.href = url;
+}

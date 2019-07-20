@@ -24,10 +24,10 @@
 									<div class="col-lg-1 col-md-1 col-sm-1"></div>
 									<div data-l10n-id="icon" class="text-center text-muted col-lg-1 col-md-1 col-sm-1">Icon</div>
 									<div data-l10n-id="name" class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Name</div>
-									<div data-l10n-id="activity" class="text-center text-muted col-lg-4 col-md-4 col-sm-4">Activity Id</div>
-									<div data-l10n-id="version" class="text-center text-muted col-lg-1 col-md-1 col-sm-1">Version</div>
+									<div data-l10n-id="activity" class="text-center text-muted col-lg-4 col-md-4 col-sm-4">Activity</div>
+									<div data-l10n-id="version" class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Version</div>
 									<div data-l10n-id="favorite" class="text-center text-muted col-lg-1 col-md-1 col-sm-1">Favorite</div>
-									<div data-l10n-id="action" class="text-center text-muted col-lg-2 col-md-2 col-sm-2">Action</div>
+									<div data-l10n-id="action" class="text-center text-muted col-lg-1 col-md-1 col-sm-1">Action</div>
 								</div>
 							</div>
 						</div>
@@ -43,7 +43,7 @@
 											</div>
 											<div class="text-center col-lg-2 col-md-2 col-sm-2 search_textbox" style="line-height: 40px;"><%= activities[i].name %></div>
 											<div class="text-center col-lg-4 col-md-4 col-sm-4" style="line-height: 40px;"><%= activities[i].id %></div>
-											<div class="text-center col-lg-1 col-md-1 col-sm-1" style="line-height: 40px;"><%= activities[i].version %></div>
+											<div class="text-center col-lg-2 col-md-2 col-sm-2" style="line-height: 40px;"><%= activities[i].version %></div>
 											<div class="text-center col-lg-1 col-md-1 col-sm-1">
 												<div class="favoriteBox">
 														<label data-id="<%= activities[i].id %>">
@@ -52,7 +52,7 @@
 														</label>
 												</div>
 											</div>
-											<div class="text-center col-lg-2 col-md-2 col-sm-2" style="line-height: 40px;">
+											<div class="text-center col-lg-1 col-md-1 col-sm-1" style="line-height: 40px;">
 												<a href="javascript:launch_activity('/dashboard/activities/launch?aid=<%= activities[i].id %>')" data-l10n-id="launch" title="Launch"> 
 													<i class="material-icons text-muted">launch</i>
 												</a>

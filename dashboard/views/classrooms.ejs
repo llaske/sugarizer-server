@@ -37,13 +37,13 @@
                         <div class="card-header row" data-background-color="black">
                             <div class="col-md-4 col-sm-4 col-lg-4 text-left">
                             <% if(data.links.prev_page) { %>
-                               <a href="<%= data.links.prev_page %>" data-l10n-id="prevPage"><< Prev page</a>
+                               <a href="<%= data.links.prev_page %>" class="page-button" data-l10n-id="prevPage"><< Prev page</a>
                             <% } %>
                             </div>
                             <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset + 1 %>", "to": "<%= data.offset + data.classrooms.length %>", "total": "<%= data.total %>" }'></div>
                             <div class="col-md-4 col-sm-4 col-lg-4 text-right">
                             <% if(data.links.next_page) { %>
-                               <a href="<%= data.links.next_page %>" data-l10n-id="nextPage">Next page >></a>
+                               <a href="<%= data.links.next_page %>" class="page-button" data-l10n-id="nextPage">Next page >></a>
                             <% } %>
                             </div>
                         </div>
@@ -53,9 +53,9 @@
                                     <tr>
                                         <th>#</th>
                                         <th data-l10n-id="icon">Icon</th>
-                                        <th data-l10n-id="name">Name</th>
+                                        <th><button data-l10n-id="name" id="name-column" onclick="sortBy('name')"></button></th>
                                         <th data-l10n-id="studentsCount">Students Count</th>
-                                        <th data-l10n-id="lastUpdated">Timestamp</th>
+                                        <th><button data-l10n-id="lastUpdated" id="last-column" onclick="sortBy('time')"></button></th>
                                         <th data-l10n-id="action">Action</th>
                                     </tr>
                                 </thead>
@@ -99,3 +99,6 @@
 	</div>
 </div>
 <% include includes/footer %>
+<script>
+    handleSort();
+</script>
