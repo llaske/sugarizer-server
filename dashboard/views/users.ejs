@@ -206,13 +206,13 @@
                             <div class="card-header row" data-background-color="black">
                                 <div class="col-md-4 col-sm-4 col-lg-4 text-left">
                                 <% if(data.links.prev_page) { %>
-                                   <a href="<%= data.links.prev_page %>" data-l10n-id="prevPage"><< Prev Page</a>
+                                   <a href="<%= data.links.prev_page %>" class="page-button" data-l10n-id="prevPage"><< Prev Page</a>
                                 <% } %>
                                 </div>
                                 <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset + 1 %>", "to": "<%= data.offset + data.users.length %>", "total": "<%= data.total %>" }'></div>
                                 <div class="col-md-4 col-sm-4 col-lg-4 text-right">
                                 <% if(data.links.next_page) { %>
-                                   <a href="<%= data.links.next_page %>" data-l10n-id="nextPage">Next Page >></a>
+                                   <a href="<%= data.links.next_page %>" class="page-button" data-l10n-id="nextPage">Next Page >></a>
                                 <% } %>
                                 </div>
                             </div>
@@ -222,10 +222,10 @@
                                         <tr>
                                             <th>#</th>
                                                                                   <% if(query.role != 'admin'){ %><th data-l10n-id="buddy">Buddy</th><% } %>
-                                            <th data-l10n-id="username">Username</th>
+                                            <th><button id="name-column" data-l10n-id="username" onclick="sortBy('name')"></button></th>
                                             <th data-l10n-id="language">Language</th>
                                             <th data-l10n-id="role">Role</th>
-                                            <th data-l10n-id="lastSeen">Timestamp</th>
+                                            <th><button id="last-column" data-l10n-id="lastSeen" onclick="sortBy('time')"></button></th>
                                             <th data-l10n-id="action">Action</th>
                                         </tr>
                                     </thead>
@@ -288,4 +288,7 @@ function show_class_fields() {
     }
 }
 show_class_fields('<% if(typeof query == "object"){ %><%= query.role || "student" %><% } %>')
+</script>
+<script>
+    handleSort();
 </script>

@@ -22,6 +22,7 @@ module.exports = function getEntries(req, res) {
 			journal: req.params.jid,
 			type: req.query.type,
 			limit: (req.query.limit ? req.query.limit : 10),
+			sort: (req.query.sort ? req.query.sort : '-timestamp'),
 			offset: (req.query.offset ? req.query.offset : 0)
 		};
 

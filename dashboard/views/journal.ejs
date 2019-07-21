@@ -67,13 +67,13 @@
 								<div class="card-header row" data-background-color="">
 										<div class="col-md-4 col-sm-4 col-lg-4 text-left">
 										<% if(entries.links.prev_page) { %>
-											 <a data-l10n-id="prevPage" href="<%= query.journal %><%= entries.links.prev_page %>&type=<%= query.type %>"><< Prev page</a>
+											 <a data-l10n-id="prevPage" class="page-button" href="<%= query.journal %><%= entries.links.prev_page %>&type=<%= query.type %>"><< Prev page</a>
 										<% } %>
 										</div>
 										<div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= entries.offset + 1 %>", "to": "<%= entries.offset + entries.entries.length %>", "total": "<%= entries.total %>" }'></div>
 										<div class="col-md-4 col-sm-4 col-lg-4 text-right">
 										<% if(entries.links.next_page) { %>
-											 <a data-l10n-id="nextPage" href="<%= query.journal %><%= entries.links.next_page %>&type=<%= query.type %>">Next page >></a>
+											 <a data-l10n-id="nextPage" class="page-button" href="<%= query.journal %><%= entries.links.next_page %>&type=<%= query.type %>">Next page >></a>
 										<% } %>
 										</div>
 								</div>
@@ -84,8 +84,8 @@
 																<th class="text-muted">#</th>
 																<th data-l10n-id="icon" class="text-muted"></th>
 																<th data-l10n-id="title" class="text-muted"></th>
-																<th data-l10n-id="timestamp" class="text-muted"></th>
-																<th data-l10n-id="size" class="text-muted"></th>
+																<th class="text-muted"><button data-l10n-id="timestamp" id="last-column" onclick="sortBy('time')"></button></th>
+																<th class="text-muted"><button data-l10n-id="size" id="journal-size" onclick="sortBy('size')"></button></th>
 																<th data-l10n-id="action" class="text-muted"></th>
 														</tr>
 												</thead>
@@ -144,3 +144,6 @@
 	</div>
 </div>
 <% include includes/footer %>
+<script>
+    handleSort();
+</script>

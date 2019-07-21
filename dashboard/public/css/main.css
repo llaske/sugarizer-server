@@ -282,6 +282,47 @@
   animation: pace-spinner 400ms linear infinite;
 }
 
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+.arrow {
+  border: solid black;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 3px;
+  margin-left: 5px;
+}
+#name-column{
+  border: none;
+  background: none;
+}
+#last-column{
+  border: none;
+  background: none;
+}
+#journal-size{
+  border: none;
+  background: none;
+}
+#activity-id{
+  border: none;
+  background: none;
+}
+#activity-version{
+  border: none;
+  background: none;
+}
+.sort{
+  padding-top: 1px !important;
+  padding-bottom: 1px !important;
+  margin-left: 10px !important;
+}
+
 @font-face {
 	font-family: "Noto Emoji";
 	src: url("../fonts/NotoEmoji.woff") format('woff');
