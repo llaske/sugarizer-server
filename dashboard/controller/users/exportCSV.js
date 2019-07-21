@@ -13,7 +13,8 @@ module.exports = function exportCSV(req, res) {
 			name: "",
 			type: "",
 			language: "",
-			color: "",
+			stroke: "",
+			fill: "",
 			password: "",
 			classroom: ""
 		};
@@ -30,7 +31,10 @@ module.exports = function exportCSV(req, res) {
 			validUser.language = user.language;
 		}
 		if (user.color && typeof user.color == "object") {
-			validUser.color = JSON.stringify(user.color);
+			if (user.color && user.color.stroke && user.color.fill) {
+				validUser.stroke = user.color.stroke;
+				validUser.fill = user.color.fill;
+			}
 		}
 		if (user.password) {
 			validUser.password = user.password;
