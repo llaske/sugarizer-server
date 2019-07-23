@@ -457,6 +457,10 @@ function handleSort() {
 			document.getElementById("journal-size").innerHTML += '<i class="arrow up"></i>';
 		} else if (query.sort == "-textsize") {
 			document.getElementById("journal-size").innerHTML += '<i class="arrow down"></i>';
+		}  else if (query.sort == "+title" || query.sort == " title") {
+			document.getElementById("journal-title").innerHTML += '<i class="arrow up"></i>';
+		} else if (query.sort == "-title") {
+			document.getElementById("journal-title").innerHTML += '<i class="arrow down"></i>';
 		}
 	}
 }
@@ -488,6 +492,14 @@ function sortBy(params) {
 			delete query.sort;
 		} else {
 			query['sort'] = "+textsize";
+		}
+	} else if (params == "title") {
+		if (prev == "+title" || prev == " title") {
+			query['sort'] = "-title";
+		} else if (prev == "-title") {
+			delete query.sort;
+		} else {
+			query['sort'] = "+title";
 		}
 	} else {
 		delete query.sort;
