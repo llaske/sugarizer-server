@@ -8,7 +8,7 @@
           <% include includes/flash-errors %>
           <div class="row">
               <div class="col-md-12">
-                  <div class="card">
+                  <div class="card" id="user-serach-row">
                       <form method="get" id="user-form">
                             <div class="col-md-2">
                           <div class="form-group form-black label-floating is-empty">
@@ -77,7 +77,7 @@
                             });
                             </script>
                         <div class="col-md-6">
-                            <div class="btn pull-right btn-round" onclick="downloadUsers()">Export Users</div>
+                            <div class="btn pull-right btn-round" onclick="downloadUsers()" id="users-exportusers">Export Users</div>
                             <script>
                                 function downloadUsers(event) {
                                     $.ajax({
@@ -126,7 +126,7 @@
                                 }
                             </script>
                             <div>
-                                <label for="csv-upload" class="btn pull-right btn-round" >Add From CSV<div class="ripple-container"></div></label>
+                                <label for="csv-upload" class="btn pull-right btn-round" id="users-addfromcsv">Add From CSV<div class="ripple-container"></div></label>
                                 <input id="csv-upload" style="visibility:hidden; display:none;" type="file" name="csv-file" accept="text/csv">
                                 <script>
                                     $("#csv-upload").change(function() {
@@ -190,13 +190,13 @@
                                     });
                                 </script>
                             </div>
-                            <a class="btn btn-round pull-right " href="/dashboard/users/add" data-l10n-id="addUser"><div class="ripple-container"></div></a>
+                            <a class="btn btn-round pull-right " href="/dashboard/users/add" data-l10n-id="addUser" id="users-adduser"><div class="ripple-container"></div></a>
                             <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>
                       </form>
                   </div>
               </div>
-              <div class="col-md-12">
+              <div class="col-md-12" id="users-userlist">
                   <% if(data.users.length == 0) {%>
                     <div class="text-center" style="margin-top:50px;">
                             <i class="material-icons dp96">info_outline</i>
@@ -260,10 +260,10 @@
                                               <td><%= moment(data.users[i].timestamp).calendar() %></td>
                                               <td>
                                                 <% if(data.users[i].role == 'student') {%>
-                                                <a data-l10n-id="seeJournalEntries" title="See Journal Entries" href="/dashboard/journal/<%= data.users[i].private_journal %>?uid=<%= data.users[i]._id %>&type=private"><span class="journal-icon2"></span></a>
+                                                <a data-l10n-id="seeJournalEntries" title="See Journal Entries" href="/dashboard/journal/<%= data.users[i].private_journal %>?uid=<%= data.users[i]._id %>&type=private"><span class="journal-icon2" id="seeJournalEntries"></span></a>
                                                 <% } %>
-                                                <a data-l10n-id="editUser" title="Edit User" href="/dashboard/users/edit/<%= data.users[i]._id %>"><i class="material-icons text-muted">edit</i></a>
-                                                <a data-l10n-id="deleteUser" title="Delete User" href="/dashboard/users/delete/<%= data.users[i]._id %>?role=<%= data.users[i].role %>&name=<%= data.users[i].name %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteUser',{user:'<%= data.users[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
+                                                <a data-l10n-id="editUser" title="Edit User" href="/dashboard/users/edit/<%= data.users[i]._id %>"><i class="material-icons text-muted" id="editUser">edit</i></a>
+                                                <a data-l10n-id="deleteUser" title="Delete User" href="/dashboard/users/delete/<%= data.users[i]._id %>?role=<%= data.users[i].role %>&name=<%= data.users[i].name %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteUser',{user:'<%= data.users[i].name %>'}))"><i class="material-icons text-muted" id="deleteUser">delete_forever</i></a>
                                               </td>
                                           </tr>
                                         <% } %>
@@ -293,4 +293,6 @@ show_class_fields('<% if(typeof query == "object"){ %><%= query.role || "student
 </script>
 <script>
     handleSort();
+    var usersTour = sugarizerTour("users", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+    usersTour.start();
 </script>

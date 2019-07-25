@@ -62,3 +62,7 @@
 <script>createGraph('what-type-of-client-connected', 'what-type-of-client-connected-chart', 'stats/graph');</script>
 <script>createGraph('how-user-launch-activities', 'how-user-launch-activities-chart', 'stats/graph');</script>
 <script>createGraph('how-often-user-change-settings', 'how-often-user-change-settings-chart', 'stats/graph');</script>
+<script>
+	var statsTour = sugarizerTour("stats", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+	statsTour.start();
+</script>

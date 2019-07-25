@@ -72,6 +72,12 @@
             }
         },
         {
+            "files": ["dashboard/public/js/tutorial.js"],
+            "rules": {
+                "no-unused-vars": "off"
+            }
+        },
+        {
             "files": ["dashboard/controller/users/importCSV.js"],
             "parserOptions": {
                 "ecmaVersion": 6

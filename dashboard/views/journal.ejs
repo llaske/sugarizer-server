@@ -7,7 +7,7 @@
 			<div class="container-fluid">
 				<% include includes/flash-errors %>
 				<div class="row">
-					<div class="card">
+					<div class="card" id="journal-search-card">
 							<form method="get" action="" id="getJournalEntries">
 								<div class="col-md-4">
 									<div class="form-group form-black label-floating is-empty">
@@ -63,7 +63,7 @@
 								<p data-l10n-id="noEntryText"></p>
 							</div>
 						<% } else { %>
-						<div class="card">
+						<div class="card" id="journal-cards-parent">
 								<div class="card-header row" data-background-color="">
 										<div class="col-md-4 col-sm-4 col-lg-4 text-left">
 										<% if(entries.links.prev_page) { %>
@@ -91,7 +91,7 @@
 												</thead>
 												<tbody>
 														<% for(var i=0; i < entries.entries.length; i++) { %>
-															<tr>
+															<tr id="journal-entry-card">
 																	<td><%= entries.offset + i + 1 %></td>
 																	<td>
 																		<div class="color" id="<%= entries.entries[i].objectId %>">
@@ -127,8 +127,8 @@
 																		<% if(format=="-") {%> <div style="display: inline"><%= format %></div> <%}%>
 																	</td>
 																	<td>
-																		<a href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
-																		<a data-l10n-id="deleteEntry" title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>&title=<%= entries.entries[i].metadata.title %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteEntry', {activity:`<%= entries.entries[i].metadata.title %>`}))"><i class="material-icons text-muted">delete_forever</i></a>
+																		<a id="journal-activity-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
+																		<a id="journal-activity-delete" data-l10n-id="deleteEntry" title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>&title=<%= entries.entries[i].metadata.title %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteEntry', {activity:`<%= entries.entries[i].metadata.title %>`}))"><i class="material-icons text-muted">delete_forever</i></a>
 																	</td>
 															</tr>
 														<% } %>
@@ -145,5 +145,13 @@
 </div>
 <% include includes/footer %>
 <script>
-    handleSort();
+	handleSort();
+	var journalList = document.getElementById("journal-cards-parent");
+	if (!journalList) {
+		var journalTour1 = sugarizerTour("journal1", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+ 		journalTour1.start();
+	} else {
+		var journalTour2 = sugarizerTour("journal2", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+ 		journalTour2.start();
+	}
 </script>
