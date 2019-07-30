@@ -1,7 +1,6 @@
 // Tutorial handling
 
 function sugarizerTour(currentView, role) {
-	console.log("sugarizerTour", currentView, role);
 	var tutorial = {};
 	var tour;
 	var launched = false;
@@ -10,9 +9,9 @@ function sugarizerTour(currentView, role) {
 
 	// Init tutorial
 	tutorial.init = function() {
-		var prevString = "Prev";
-		var nextString = "Next";
-		var endString = "End";
+		var prevString = document.webL10n.get("TutoPrev");
+		var nextString = document.webL10n.get("TutoNext");
+		var endString = document.webL10n.get("TutoEnd");
 		tour = new window.Tour({
 			name: currentView,
 			template: "\
@@ -61,56 +60,56 @@ function sugarizerTour(currentView, role) {
 					element: "",
 					orphan: true,
 					placement: "bottom",
-					title: "Welcome to Sugarizer Server",
-					content: "Sugarizer Server allow deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application."
+					title: document.webL10n.get("homeTitle1"),
+					content: document.webL10n.get("homeContent1")
 				},
 				{
 					element: "#dashboard-home-cards",
 					placement: "bottom",
-					title: "Sugarizer Summary Cards",
-					content: "These cards contains realtime user summary of the deployed server like total number of students, total classrooms, available activities and total journal entry count."
+					title: document.webL10n.get("homeTitle2"),
+					content: document.webL10n.get("homeContent2")
 				},
 				{
 					element: "#top-contributor-chart-parent",
 					placement: "right",
-					title: "Top Contributor Chart",
-					content: "This chart shows top 5 contributing students of all time."
+					title: document.webL10n.get("homeTitle3"),
+					content: document.webL10n.get("homeContent3")
 				},
 				{
 					element: "#top-activities-chart-parent",
 					placement: "left",
-					title: "Top Activities Chart",
-					content: "This chart shows most frequently used Sugarizer Activities."
+					title: document.webL10n.get("homeTitle4"),
+					content: document.webL10n.get("homeContent4")
 				},
 				{
 					element: "#recent-users-table-parent",
 					placement: "top",
-					title:  "Recent Students Table",
-					content: "This table shows the list of most recently active users."
+					title:  document.webL10n.get("homeTitle5"),
+					content: document.webL10n.get("homeContent5")
 				},
 				{
 					element: "#recent-activities-table-parent",
 					placement: "top",
-					title: "Recent Entries Table",
-					content: "This table shows the most recenly added journal entries by the students."
+					title: document.webL10n.get("homeTitle6"),
+					content: document.webL10n.get("homeContent6")
 				},
 				{
 					element: "#sugarizer-sidebar",
 					placement: "right",
-					title: "Sugarizer Server Sidebar",
-					content: "This is the Sugarizer Server Sidebar, use this to navigate through the application."
+					title: document.webL10n.get("homeTitle7"),
+					content: document.webL10n.get("homeContent7")
 				},
 				{
 					element: "#languageSelection",
 					placement: "bottom",
-					title: "Language Selection",
-					content: "This is the Language Selection dropdown. Use this to switch Sugarizer-Server language."
+					title: document.webL10n.get("homeTitle8"),
+					content: document.webL10n.get("homeContent8")
 				},
 				{
 					element: "#navbar-xo-icon",
 					placement: "left",
-					title: "Navbar XO",
-					content: "This is the XO icon. Use this to access your Profile or Logout from Sugarizer Server."
+					title: document.webL10n.get("homeTitle9"),
+					content: document.webL10n.get("homeContent9")
 				}
 			]);
 		} else if (currentView == "users") {
@@ -119,50 +118,50 @@ function sugarizerTour(currentView, role) {
 					element: "",
 					orphan: true,
 					placement: "bottom",
-					title: "Welcome to the Users View",
-					content: "This is the users view. You can create, view, edit and delete users from this view."
+					title: document.webL10n.get("usersTitle1"),
+					content: document.webL10n.get("usersContent1")
 				},
 				{
 					element: "#user-serach-row",
 					placement: "bottom",
-					title: "User Search",
-					content: "You can search for the users from here by entering the name and clicking on Show Results button."
+					title: document.webL10n.get("usersTitle2"),
+					content: document.webL10n.get("usersContent2")
 				},
 				{
 					element: "#users-adduser",
 					placement: "left",
-					title: "Add User",
-					content: "This button will take you to the Add User view where you can create a new user."
+					title: document.webL10n.get("usersTitle3"),
+					content: document.webL10n.get("usersContent3")
 				},
 				{
 					element: "#users-addfromcsv",
 					placement: "bottom",
-					title:  "Add From CSV",
-					content: "This button will let you upload multiple users at one by using a CSV file as input."
+					title:  document.webL10n.get("usersTitle4"),
+					content: document.webL10n.get("usersContent4")
 				},
 				{
 					element: "#users-exportusers",
 					placement: "bottom",
-					title: "Export Users",
-					content: "This button will export all the existing users as a CSV file."
+					title: document.webL10n.get("usersTitle5"),
+					content: document.webL10n.get("usersContent5")
 				},
 				{
 					element: "#seeJournalEntries",
 					placement: "left",
-					title: "See Journal Entries",
-					content: "This button opens all the journal entries for a user."
+					title: document.webL10n.get("usersTitle6"),
+					content: document.webL10n.get("usersContent6")
 				},
 				{
 					element: "#editUser",
 					placement: "left",
-					title: "Edit User",
-					content: "This button opens the edit user view."
+					title: document.webL10n.get("usersTitle7"),
+					content: document.webL10n.get("usersContent7")
 				},
 				{
 					element: "#deleteUser",
 					placement: "left",
-					title: "Delete User",
-					content: "This button removes the user from the Sugarizer-Server."
+					title: document.webL10n.get("usersTitle8"),
+					content: document.webL10n.get("usersContent8")
 				}
 			]);
 		} else if (currentView == "activities") {
@@ -171,44 +170,44 @@ function sugarizerTour(currentView, role) {
 					element: "",
 					orphan: true,
 					placement: "bottom",
-					title: "Welcome to the Activities View",
-					content: "In this view, you can view and launch the Sugarizer activities. You can also reorder them and add/remove them from the favourites."
+					title: document.webL10n.get("activitiesTitle1"),
+					content: document.webL10n.get("activitiesContent1")
 				},
 				{
 					element: "#activities-list-parent",
 					placement: "left",
-					title: "Activities List",
-					content: "This is the list of all the Sugarizer Activities."
+					title: document.webL10n.get("activitiesTitle2"),
+					content: document.webL10n.get("activitiesContent2")
 				},
 				{
 					element: "#activities-searchbox",
 					placement: "left",
-					title: "Activity Search",
-					content: "You can search for an activity using this search box."
+					title: document.webL10n.get("activitiesTitle3"),
+					content: document.webL10n.get("activitiesContent3")
 				},
 				{
 					element: "#activities-card",
 					placement: "bottom",
-					title:  "Activity Card",
-					content: "Each activity card contains the icon, name and version of the activity."
+					title: document.webL10n.get("activitiesTitle4"),
+					content: document.webL10n.get("activitiesContent4")
 				},
 				{
 					element: "#activities-draggable",
 					placement: "right",
-					title: "Reorder Activity",
-					content: "You can drag and drop an activity by this handle to reorder."
+					title: document.webL10n.get("activitiesTitle5"),
+					content: document.webL10n.get("activitiesContent5")
 				},
 				{
 					element: "#activities-favoriteBox",
 					placement: "left",
-					title: "Toggle Favourite",
-					content: "This button will toggle the activity from the favourites list."
+					title: document.webL10n.get("activitiesTitle6"),
+					content: document.webL10n.get("activitiesContent6")
 				},
 				{
 					element: "#activity-launch",
 					placement: "left",
-					title: "Launch Activity",
-					content: "This button will launch the activity in another tab."
+					title: document.webL10n.get("activitiesTitle7"),
+					content: document.webL10n.get("activitiesContent7")
 				}
 			]);
 		} else if (currentView == "journal1") {
@@ -217,14 +216,14 @@ function sugarizerTour(currentView, role) {
 					element: "",
 					orphan: true,
 					placement: "bottom",
-					title: "Welcome to the Journal View",
-					content: "In this view, you can view the journal entries of the students and launch them exactly as they appear in the student's device."
+					title: document.webL10n.get("journalTitle1"),
+					content: document.webL10n.get("journalContent1")
 				},
 				{
 					element: "#journal-search-card",
 					placement: "bottom",
-					title: "Find Journal",
-					content: "Select the student and journal type and click on Show Results to list the journal entries."
+					title: document.webL10n.get("journalTitle2"),
+					content: document.webL10n.get("journalContent2")
 				}
 			]);
 		} else if (currentView == "journal2") {
@@ -236,14 +235,14 @@ function sugarizerTour(currentView, role) {
 						element: "",
 						orphan: true,
 						placement: "bottom",
-						title: "Welcome to the Journal View",
-						content: "In this view, you can view the journal entries of the students and launch them exactly as they appear in the student's device."
+						title: document.webL10n.get("journalTitle1"),
+						content: document.webL10n.get("journalContent1")
 					},
 					{
 						element: "#journal-search-card",
 						placement: "bottom",
-						title: "Find Journal",
-						content: "Select the student and journal type and click on Show Results to list the journal entries."
+						title: document.webL10n.get("journalTitle2"),
+						content: document.webL10n.get("journalContent2")
 					}
 				]);
 			}
@@ -252,38 +251,38 @@ function sugarizerTour(currentView, role) {
 					element: "",
 					orphan: true,
 					placement: "bottom",
-					title: "Welcome to the Journal View",
-					content: "In this view, you can view the journal entries of the students and launch them exactly as they appear in the student's device."
+					title: document.webL10n.get("journalTitle1"),
+					content: document.webL10n.get("journalContent1")
 				},
 				{
 					element: "#journal-search-card",
 					placement: "bottom",
-					title: "Find Journal",
-					content: "Select the student and journal type and click on Show Results to list the journal entries."
+					title: document.webL10n.get("journalTitle2"),
+					content: document.webL10n.get("journalContent2")
 				},
 				{
 					element: "#journal-cards-parent",
 					placement: "top",
-					title: "Entrites",
-					content: "This is the list of all the Journal Entries by the user."
+					title: document.webL10n.get("journalTitle3"),
+					content: document.webL10n.get("journalContent3")
 				},
 				{
 					element: "#journal-entry-card",
 					placement: "bottom",
-					title: "Journal Entry",
-					content: "Each journal entry card contains icon, title, timestamp and size of the entry."
+					title: document.webL10n.get("journalTitle4"),
+					content: document.webL10n.get("journalContent4")
 				},
 				{
 					element: "#journal-activity-launch",
 					placement: "left",
-					title: "Launch Activity",
-					content: "This button will launch the activity in another tab exactly as they appear in the student's device."
+					title: document.webL10n.get("journalTitle5"),
+					content: document.webL10n.get("journalContent5")
 				},
 				{
 					element: "#journal-activity-delete",
 					placement: "left",
-					title: "Delete User",
-					content: "This button removes the entry from the student's journal."
+					title: document.webL10n.get("journalTitle6"),
+					content: document.webL10n.get("journalContent6")
 				}
 			]);
 		} else if (currentView == "classroom") {
@@ -292,50 +291,50 @@ function sugarizerTour(currentView, role) {
 					element: "",
 					orphan: true,
 					placement: "bottom",
-					title: "Welcome to the Classroom View",
-					content: "In this view, you can add, list, edit and delete the classrooms."
+					title: document.webL10n.get("classroomTitle1"),
+					content: document.webL10n.get("classroomContent1")
 				},
 				{
 					element: "#classroom-serach-row",
 					placement: "bottom",
-					title: "Classroom Search",
-					content: "You can search for the classrooms from here by entering the name and clicking on Show Results button."
+					title: document.webL10n.get("classroomTitle2"),
+					content: document.webL10n.get("classroomContent2")
 				},
 				{
 					element: "#classroom-addclassroom",
 					placement: "left",
-					title: "Add Classroom",
-					content: "This button will take you to the Add Classroom view where you can create a new classroom."
+					title: document.webL10n.get("classroomTitle3"),
+					content: document.webL10n.get("classroomContent3")
 				},
 				{
 					element: "#classroom-cards-parent",
 					placement: "top",
-					title: "Classrooms",
-					content: "This is the list of all the classrooms."
+					title: document.webL10n.get("classroomTitle4"),
+					content: document.webL10n.get("classroomContent4")
 				},
 				{
 					element: "#classroom-card",
 					placement: "bottom",
-					title: "Classroom",
-					content: "Each classroom row contains icon, name, student count and timestamp of the last update."
+					title: document.webL10n.get("classroomTitle5"),
+					content: document.webL10n.get("classroomContent5")
 				},
 				{
 					element: "#classroom-view-students",
 					placement: "left",
-					title: "View Students",
-					content: "This will open the list of students present in this classroom."
+					title: document.webL10n.get("classroomTitle6"),
+					content: document.webL10n.get("classroomContent6")
 				},
 				{
 					element: "#classroom-edit-class",
 					placement: "left",
-					title: "Edit Classroom",
-					content: "This button opens the edit classroom view."
+					title: document.webL10n.get("classroomTitle7"),
+					content: document.webL10n.get("classroomContent7")
 				},
 				{
 					element: "#classroom-delete-class",
 					placement: "left",
-					title: "Delete Classroom",
-					content: "This button removes the classroom from the Sugarizer-Server."
+					title: document.webL10n.get("classroomTitle8"),
+					content: document.webL10n.get("classroomContent8")
 				}
 			]);
 		} else if (currentView == "stats") {
@@ -344,8 +343,8 @@ function sugarizerTour(currentView, role) {
 					element: "",
 					orphan: true,
 					placement: "bottom",
-					title: "Welcome to the Statistics View",
-					content: "In this view, you can view the statistics of the deployed Sugarizer Server."
+					title: document.webL10n.get("statsTitle1"),
+					content: document.webL10n.get("statsContent1")
 				}
 			]);
 		}
@@ -354,9 +353,16 @@ function sugarizerTour(currentView, role) {
 
 	// Start tutorial
 	tutorial.start = function() {
-		tutorial.init();
-		tour.start(true);
-		launched = true;
+		document.webL10n.ready(function() {
+			var refreshIntervalId = setInterval(function() {
+				if (document.webL10n.getReadyState() == "complete") {
+					clearInterval(refreshIntervalId);
+					tutorial.init();
+					tour.start(true);
+					launched = true;
+				}
+			}, 100);
+		});
 	};
 
 	// Test if launched
