@@ -4,8 +4,6 @@ function sugarizerTour(currentView, role) {
 	var tutorial = {};
 	var tour;
 	var launched = false;
-    
-	tutorial.elements = [];
 
 	// Init tutorial
 	tutorial.init = function() {
@@ -49,10 +47,7 @@ function sugarizerTour(currentView, role) {
 			backdrop: true,
 			autoscroll: true,
 			steps: [],
-			keyboard: true,
-			onEnd: function() {
-				tutorial.elements = [];
-			}
+			keyboard: true
 		});
 		if (currentView == "home") {
 			tour.addSteps([
@@ -363,6 +358,17 @@ function sugarizerTour(currentView, role) {
 				}
 			}, 100);
 		});
+	};
+
+	// Check if already finished
+	tutorial.isFinished = function() {
+		if (window.localStorage[currentView + "_end"] == "yes") return true;
+		return false;
+	};
+
+	tutorial.restart = function() {
+		localStorage.setItem(currentView + "_current_step", 0);
+		tutorial.start();
 	};
 
 	// Test if launched

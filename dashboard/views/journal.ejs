@@ -148,10 +148,10 @@
 	handleSort();
 	var journalList = document.getElementById("journal-cards-parent");
 	if (!journalList) {
-		var journalTour1 = sugarizerTour("journal1", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
- 		journalTour1.start();
+		var currTour = sugarizerTour("journal1", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+ 		if (!currTour.isFinished()) currTour.start();
 	} else {
-		var journalTour2 = sugarizerTour("journal2", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
- 		journalTour2.start();
+		var currTour = sugarizerTour("journal2", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+ 		if (!currTour.isFinished()) currTour.start();
 	}
 </script>

@@ -514,3 +514,9 @@ function sortBy(params) {
 	}
 	window.location.href = url;
 }
+
+function launchTutorial() {
+	if (window.currTour && typeof window.currTour.restart == "function") {
+		window.currTour.restart();
+	}
+}

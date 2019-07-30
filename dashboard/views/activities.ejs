@@ -80,6 +80,6 @@ var url = '<%= url %>';
 <% if(account.user && account.user.role=="admin") { %>
 	initDragDrop();
 <% } %>
-var activitiesTour = sugarizerTour("activities", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
-activitiesTour.start();
+var currTour = sugarizerTour("activities", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+if (!currTour.isFinished()) currTour.start();
 </script>

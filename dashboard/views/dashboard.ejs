@@ -152,6 +152,6 @@
 <script>createTable('recent-activities', 'recent-activities-table');</script>
 <script>createTable('recent-users', 'recent-users-table');</script>
 <script>
-	var homeTour = sugarizerTour("home", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
-	homeTour.start();
+	var currTour = sugarizerTour("home", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+	if (!currTour.isFinished()) currTour.start();
 </script>

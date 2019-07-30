@@ -101,6 +101,6 @@
 <% include includes/footer %>
 <script>
     handleSort();
-    var classroomTour = sugarizerTour("classroom", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
-	classroomTour.start();
+    var currTour = sugarizerTour("classroom", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+	if (!currTour.isFinished()) currTour.start();
 </script>

@@ -293,6 +293,6 @@ show_class_fields('<% if(typeof query == "object"){ %><%= query.role || "student
 </script>
 <script>
     handleSort();
-    var usersTour = sugarizerTour("users", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
-    usersTour.start();
+    var currTour = sugarizerTour("users", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+    if (!currTour.isFinished()) currTour.start();
 </script>
