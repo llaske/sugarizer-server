@@ -47,317 +47,112 @@ function sugarizerTour(currentView, role) {
 			backdrop: true,
 			autoscroll: true,
 			steps: [],
-			keyboard: true
+			keyboard: true,
+			onNext: function(tour) {
+				if (currentView == "home") {
+					if (tour._current == "3" || tour._current == "4") {
+						$('.main-panel').animate({
+							scrollTop: (document.getElementsByClassName('main-panel')[0].scrollHeight)
+						}, 500);
+					}
+					if (tour._current == "5") {
+						$('.main-panel').animate({
+							scrollTop: 0
+						}, 500);
+					}
+				}
+			},
+			onPrev: function(tour) {
+				if (currentView == "home") {
+					if (tour._current == "4") {
+						$('.main-panel').animate({
+							scrollTop: 0
+						}, 500);
+					}
+					if (tour._current == "5" || tour._current == "6") {
+						$('.main-panel').animate({
+							scrollTop: (document.getElementsByClassName('main-panel')[0].scrollHeight)
+						}, 500);
+					}
+				}
+			},
+			onEnd: function() {
+				if (currentView == "home") {
+					unlockScroll();
+				}
+			}
 		});
 		if (currentView == "home") {
-			tour.addSteps([
-				{
-					element: "",
-					orphan: true,
-					placement: "bottom",
-					title: document.webL10n.get("homeTitle1"),
-					content: document.webL10n.get("homeContent1")
-				},
-				{
-					element: "#dashboard-home-cards",
-					placement: "bottom",
-					title: document.webL10n.get("homeTitle2"),
-					content: document.webL10n.get("homeContent2")
-				},
-				{
-					element: "#top-contributor-chart-parent",
-					placement: "right",
-					title: document.webL10n.get("homeTitle3"),
-					content: document.webL10n.get("homeContent3")
-				},
-				{
-					element: "#top-activities-chart-parent",
-					placement: "left",
-					title: document.webL10n.get("homeTitle4"),
-					content: document.webL10n.get("homeContent4")
-				},
-				{
-					element: "#recent-users-table-parent",
-					placement: "top",
-					title:  document.webL10n.get("homeTitle5"),
-					content: document.webL10n.get("homeContent5")
-				},
-				{
-					element: "#recent-activities-table-parent",
-					placement: "top",
-					title: document.webL10n.get("homeTitle6"),
-					content: document.webL10n.get("homeContent6")
-				},
-				{
-					element: "#sugarizer-sidebar",
-					placement: "right",
-					title: document.webL10n.get("homeTitle7"),
-					content: document.webL10n.get("homeContent7")
-				},
-				{
-					element: "#languageSelection",
-					placement: "bottom",
-					title: document.webL10n.get("homeTitle8"),
-					content: document.webL10n.get("homeContent8")
-				},
-				{
-					element: "#navbar-xo-icon",
-					placement: "left",
-					title: document.webL10n.get("homeTitle9"),
-					content: document.webL10n.get("homeContent9")
-				}
-			]);
+			lockScroll();
+			tour.addStep(getStep("home", "", "bottom", 1, true));
+			tour.addStep(getStep("home", "#dashboard-home-cards", "bottom", 2));
+			tour.addStep(getStep("home", "#top-contributor-chart-parent", "right", 3));
+			tour.addStep(getStep("home", "#top-activities-chart-parent", "left", 4));
+			tour.addStep(getStep("home", "#recent-users-table-parent", "top", 5));
+			tour.addStep(getStep("home", "#recent-activities-table-parent", "top", 6));
+			tour.addStep(getStep("home", "#sugarizer-sidebar", "right", 7));
+			tour.addStep(getStep("home", "#languageSelection", "bottom", 8));
+			tour.addStep(getStep("home", "#navbar-xo-icon", "left", 9));
 		} else if (currentView == "users") {
-			tour.addSteps([
-				{
-					element: "",
-					orphan: true,
-					placement: "bottom",
-					title: document.webL10n.get("usersTitle1"),
-					content: document.webL10n.get("usersContent1")
-				},
-				{
-					element: "#user-serach-row",
-					placement: "bottom",
-					title: document.webL10n.get("usersTitle2"),
-					content: document.webL10n.get("usersContent2")
-				},
-				{
-					element: "#users-adduser",
-					placement: "left",
-					title: document.webL10n.get("usersTitle3"),
-					content: document.webL10n.get("usersContent3")
-				},
-				{
-					element: "#users-addfromcsv",
-					placement: "bottom",
-					title:  document.webL10n.get("usersTitle4"),
-					content: document.webL10n.get("usersContent4")
-				},
-				{
-					element: "#users-exportusers",
-					placement: "bottom",
-					title: document.webL10n.get("usersTitle5"),
-					content: document.webL10n.get("usersContent5")
-				},
-				{
-					element: "#seeJournalEntries",
-					placement: "left",
-					title: document.webL10n.get("usersTitle6"),
-					content: document.webL10n.get("usersContent6")
-				},
-				{
-					element: "#editUser",
-					placement: "left",
-					title: document.webL10n.get("usersTitle7"),
-					content: document.webL10n.get("usersContent7")
-				},
-				{
-					element: "#deleteUser",
-					placement: "left",
-					title: document.webL10n.get("usersTitle8"),
-					content: document.webL10n.get("usersContent8")
-				}
-			]);
+			tour.addStep(getStep("users", "", "bottom", 1, true));
+			tour.addStep(getStep("users", "#user-serach-row", "bottom", 2));
+			tour.addStep(getStep("users", "#users-adduser", "left", 3));
+			tour.addStep(getStep("users", "#users-addfromcsv", "bottom", 4));
+			tour.addStep(getStep("users", "#users-exportusers", "bottom", 5));
+			tour.addStep(getStep("users", "#seeJournalEntries", "left", 6));
+			tour.addStep(getStep("users", "#editUser", "left", 7));
+			tour.addStep(getStep("users", "#deleteUser", "left", 8));
 		} else if (currentView == "activities") {
-			tour.addSteps([
-				{
-					element: "",
-					orphan: true,
-					placement: "bottom",
-					title: document.webL10n.get("activitiesTitle1"),
-					content: document.webL10n.get("activitiesContent1")
-				},
-				{
-					element: "#activities-list-parent",
-					placement: "left",
-					title: document.webL10n.get("activitiesTitle2"),
-					content: document.webL10n.get("activitiesContent2")
-				},
-				{
-					element: "#activities-searchbox",
-					placement: "left",
-					title: document.webL10n.get("activitiesTitle3"),
-					content: document.webL10n.get("activitiesContent3")
-				},
-				{
-					element: "#activities-card",
-					placement: "bottom",
-					title: document.webL10n.get("activitiesTitle4"),
-					content: document.webL10n.get("activitiesContent4")
-				},
-				{
-					element: "#activities-draggable",
-					placement: "right",
-					title: document.webL10n.get("activitiesTitle5"),
-					content: document.webL10n.get("activitiesContent5")
-				},
-				{
-					element: "#activities-favoriteBox",
-					placement: "left",
-					title: document.webL10n.get("activitiesTitle6"),
-					content: document.webL10n.get("activitiesContent6")
-				},
-				{
-					element: "#activity-launch",
-					placement: "left",
-					title: document.webL10n.get("activitiesTitle7"),
-					content: document.webL10n.get("activitiesContent7")
-				}
-			]);
+			tour.addStep(getStep("activities", "", "bottom", 1, true));
+			tour.addStep(getStep("activities", "#activities-list-parent", "left", 2));
+			tour.addStep(getStep("activities", "#activities-searchbox", "left", 3));
+			tour.addStep(getStep("activities", "#activities-card", "bottom", 4));
+			tour.addStep(getStep("activities", "#activities-draggable", "right", 5));
+			tour.addStep(getStep("activities", "#activities-favoriteBox", "left", 6));
+			tour.addStep(getStep("activities", "#activity-launch", "left", 7));
 		} else if (currentView == "journal1") {
-			tour.addSteps([
-				{
-					element: "",
-					orphan: true,
-					placement: "bottom",
-					title: document.webL10n.get("journalTitle1"),
-					content: document.webL10n.get("journalContent1")
-				},
-				{
-					element: "#journal-search-card",
-					placement: "bottom",
-					title: document.webL10n.get("journalTitle2"),
-					content: document.webL10n.get("journalContent2")
-				}
-			]);
+			tour.addStep(getStep("journal", "", "bottom", 1, true));
+			tour.addStep(getStep("journal", "#journal-search-card", "bottom", 2));
 		} else if (currentView == "journal2") {
-			if (window.localStorage.journal1_end != "yes") {
+			if (!(window.localStorage.journal1_end == "yes" || window.localStorage.journal1_current_step == "1")) {
 				localStorage.setItem('journal1_end', 'yes');
 				localStorage.setItem('journal1_current_step', 1);
-				tour.addSteps([
-					{
-						element: "",
-						orphan: true,
-						placement: "bottom",
-						title: document.webL10n.get("journalTitle1"),
-						content: document.webL10n.get("journalContent1")
-					},
-					{
-						element: "#journal-search-card",
-						placement: "bottom",
-						title: document.webL10n.get("journalTitle2"),
-						content: document.webL10n.get("journalContent2")
-					}
-				]);
+				tour.addStep(getStep("journal", "", "bottom", 1, true));
+				tour.addStep(getStep("journal", "#journal-search-card", "bottom", 2));
 			}
-			tour.addSteps([
-				{
-					element: "",
-					orphan: true,
-					placement: "bottom",
-					title: document.webL10n.get("journalTitle1"),
-					content: document.webL10n.get("journalContent1")
-				},
-				{
-					element: "#journal-search-card",
-					placement: "bottom",
-					title: document.webL10n.get("journalTitle2"),
-					content: document.webL10n.get("journalContent2")
-				},
-				{
-					element: "#journal-cards-parent",
-					placement: "top",
-					title: document.webL10n.get("journalTitle3"),
-					content: document.webL10n.get("journalContent3")
-				},
-				{
-					element: "#journal-entry-card",
-					placement: "bottom",
-					title: document.webL10n.get("journalTitle4"),
-					content: document.webL10n.get("journalContent4")
-				},
-				{
-					element: "#journal-activity-launch",
-					placement: "left",
-					title: document.webL10n.get("journalTitle5"),
-					content: document.webL10n.get("journalContent5")
-				},
-				{
-					element: "#journal-activity-delete",
-					placement: "left",
-					title: document.webL10n.get("journalTitle6"),
-					content: document.webL10n.get("journalContent6")
-				}
-			]);
+			tour.addStep(getStep("journal", "#journal-cards-parent", "top", 3));
+			tour.addStep(getStep("journal", "#journal-entry-card", "bottom", 4));
+			tour.addStep(getStep("journal", "#journal-activity-launch", "left", 5));
+			tour.addStep(getStep("journal", "#journal-activity-delete", "left", 6));
 		} else if (currentView == "classroom") {
-			tour.addSteps([
-				{
-					element: "",
-					orphan: true,
-					placement: "bottom",
-					title: document.webL10n.get("classroomTitle1"),
-					content: document.webL10n.get("classroomContent1")
-				},
-				{
-					element: "#classroom-serach-row",
-					placement: "bottom",
-					title: document.webL10n.get("classroomTitle2"),
-					content: document.webL10n.get("classroomContent2")
-				},
-				{
-					element: "#classroom-addclassroom",
-					placement: "left",
-					title: document.webL10n.get("classroomTitle3"),
-					content: document.webL10n.get("classroomContent3")
-				},
-				{
-					element: "#classroom-cards-parent",
-					placement: "top",
-					title: document.webL10n.get("classroomTitle4"),
-					content: document.webL10n.get("classroomContent4")
-				},
-				{
-					element: "#classroom-card",
-					placement: "bottom",
-					title: document.webL10n.get("classroomTitle5"),
-					content: document.webL10n.get("classroomContent5")
-				},
-				{
-					element: "#classroom-view-students",
-					placement: "left",
-					title: document.webL10n.get("classroomTitle6"),
-					content: document.webL10n.get("classroomContent6")
-				},
-				{
-					element: "#classroom-edit-class",
-					placement: "left",
-					title: document.webL10n.get("classroomTitle7"),
-					content: document.webL10n.get("classroomContent7")
-				},
-				{
-					element: "#classroom-delete-class",
-					placement: "left",
-					title: document.webL10n.get("classroomTitle8"),
-					content: document.webL10n.get("classroomContent8")
-				}
-			]);
+			tour.addStep(getStep("classroom", "", "bottom", 1, true));
+			tour.addStep(getStep("classroom", "#classroom-serach-row", "bottom", 2));
+			tour.addStep(getStep("classroom", "#classroom-addclassroom", "left", 3));
+			tour.addStep(getStep("classroom", "#classroom-cards-parent", "top", 4));
+			tour.addStep(getStep("classroom", "#classroom-card", "bottom", 5));
+			tour.addStep(getStep("classroom", "#classroom-view-students", "left", 6));
+			tour.addStep(getStep("classroom", "#classroom-edit-class", "left", 7));
+			tour.addStep(getStep("classroom", "#classroom-delete-class", "left", 8));
 		} else if (currentView == "stats") {
-			tour.addSteps([
-				{
-					element: "",
-					orphan: true,
-					placement: "bottom",
-					title: document.webL10n.get("statsTitle1"),
-					content: document.webL10n.get("statsContent1")
-				}
-			]);
+			tour.addStep(getStep("stats", "", "bottom", 1, true));
 		}
 		tour.init();
 	};
 
 	// Start tutorial
 	tutorial.start = function() {
-		document.webL10n.ready(function() {
-			var refreshIntervalId = setInterval(function() {
-				if (document.webL10n.getReadyState() == "complete") {
-					clearInterval(refreshIntervalId);
-					tutorial.init();
-					tour.start(true);
-					launched = true;
-				}
-			}, 100);
-		});
+		if ($(window).width() > 992) {
+			document.webL10n.ready(function() {
+				var refreshIntervalId = setInterval(function() {
+					if (document.webL10n.getReadyState() == "complete") {
+						clearInterval(refreshIntervalId);
+						tutorial.init();
+						tour.start(true);
+						launched = true;
+					}
+				}, 100);
+			});
+		}
 	};
 
 	// Check if already finished
@@ -375,6 +170,38 @@ function sugarizerTour(currentView, role) {
 	tutorial.isLaunched = function() {
 		return launched;
 	};
+
+	function getStep(view, element, placement, step, orphan){
+		var step = {
+			title: document.webL10n.get(view + "Title" + step),
+			content: document.webL10n.get(view + "Content" + step),
+			element: element,
+			placement: placement
+		};
+		if (orphan == true) {
+			step['orphan'] = true;
+		}
+		return step;
+	}
+
+	function lockScroll() {
+		var scrollPosition = [
+			self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+			self.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop
+		];
+		var html = jQuery('html'); // it would make more sense to apply this to body, but IE7 won't have that
+		html.data('scroll-position', scrollPosition);
+		html.data('previous-overflow', html.css('overflow'));
+		html.css('overflow', 'hidden');
+		window.scrollTo(scrollPosition[0], scrollPosition[1]);
+	}
+
+	function unlockScroll() {
+		var html = jQuery('html');
+		var scrollPosition = html.data('scroll-position');
+		html.css('overflow', html.data('previous-overflow'));
+		window.scrollTo(scrollPosition[0], scrollPosition[1]);
+	}
 
 	return tutorial;
 }
