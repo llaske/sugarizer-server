@@ -1,11 +1,16 @@
 // include libraries
 var common = require('../../helper/common'),
-	getGraph = require('./getGraph');
+	getGraph = require('./getGraph'),
+	addStats = require('./addStats');
 
 // init settings
 var ini = null;
 exports.init = function(settings) {
 	ini = settings;
+};
+
+exports.ini = function() {
+	return ini;
 };
 
 // main landing page
@@ -24,3 +29,5 @@ exports.index = function(req, res) {
 };
 
 exports.getGraph = getGraph;
+
+exports.addStats = addStats;

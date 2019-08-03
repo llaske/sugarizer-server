@@ -45,6 +45,7 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/activities/launch', authController.validateSession, activitiesController.fakeLaunch);
 	app.get('/dashboard/activities/launch/:jid', authController.validateSession, activitiesController.launch);
 	app.get('/dashboard/stats', authController.validateSession, authController.checkRole(statsController.index));
+	app.get('/dashboard/stats/add', authController.validateSession, authController.checkRole(statsController.addStats));
 	app.get('/dashboard/stats/graph', authController.validateSession, statsController.getGraph);
 	app.get('/dashboard/graph', authController.validateSession, graphController.getGraph);
 	app.get('/dashboard/profile', authController.validateSession, usersController.profile);

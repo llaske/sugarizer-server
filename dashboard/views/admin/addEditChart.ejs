@@ -1,0 +1,95 @@
+<% include ../includes/header %>
+  <div class="wrapper">
+  	<% include ../includes/sidebar %>
+    	<div class="main-panel">
+    	<% include ../includes/navbar %>
+    		<div class="content">
+    			<div class="container-fluid">
+            <div class="col-md-8 col-lg-8 col-sm-12">
+              <div class="card">
+                <div class="card-content">
+                    <% include ../includes/flash-errors %>
+                    <form id="classroom-add-edit-form" method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-black label-floating">
+                                    <label class="control-label">Chart Title</label>
+                                    <input class="form-control" name="name" type="text">
+                                    <span class="material-input"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row color_input">
+                            <div class="col-md-12">
+                                <div class="form-group form-black label-floating">
+                                    <label class="control-label">Type</label>
+                                    <div class="type-selector">
+                                        <input id="timeline" type="radio" name="type" value="timeline" />
+                                        <label class="type-selector-card chart-timeline" for="timeline" title="Timeline"></label>
+                                        <input id="table" type="radio" name="type" value="table" />
+                                        <label class="type-selector-card chart-table" for="table" title="Table"></label>
+                                        <input id="pie" type="radio" name="type" value="pie" />
+                                        <label class="type-selector-card chart-pie" for="pie" title="Pie Chart"></label>
+                                        <input id="bar" type="radio" name="type" value="bar" />
+                                        <label class="type-selector-card chart-bar" for="bar" title="Bar Chart"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row color_input">
+                            <div class="col-md-12">
+                                <div class="form-group form-black">
+                                    <label class="control-label">Select Chart</label>
+                                    <div class="chart-list" id="chart-list">
+                                        <label>No Chart Selected</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            var chartList = <%- JSON.stringify(charts) %>;
+                            $('input[type="radio"]').on('change', function(e) {
+                                if (e && e.target && e.target.value) {
+                                    var filteredCharts = chartList.filter(function (chart) {
+                                        return chart.type == e.target.value;
+                                    })
+                                    var innerHTML = '';
+                                    for (var i=0; i<filteredCharts.length; i++) {
+                                        innerHTML += `<label for="`+ filteredCharts[i].key +`">
+                                            <input type="radio" id="` + filteredCharts[i].key + `" name="chart" value="` + filteredCharts[i].key + `" />
+                                            <div>
+                                                `+ document.webL10n.get(filteredCharts[i].description) +`
+                                                <span>`+ filteredCharts[i].key +`</span>
+                                            </div>
+                                        </label>`
+                                    }
+                                    if (innerHTML == '') {
+                                        innerHTML = "<label>No Charts Available</label>";
+                                    }
+                                    $("#chart-list").html(innerHTML);
+                                }
+                            });
+                        </script>
+                        <div class="row color_input">
+                            <div class="col-md-12">
+                                <div class="form-group form-black">
+                                    <label class="control-label">Display</label>
+                                    <div class="display-check" >
+                                        <input type="checkbox" id="scales" name="hidden">
+                                        <label for="hidden">Hidden</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
+                        <a class="btn pull-right btn-round" href="/dashboard/classrooms" data-l10n-id="cancel"></a>
+                        <div class="clearfix"></div>
+                    </form>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% include ../includes/footer %>
