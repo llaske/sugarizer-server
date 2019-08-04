@@ -1,7 +1,9 @@
 // include libraries
 var common = require('../../helper/common'),
 	getGraph = require('./getGraph'),
-	addStats = require('./addStats');
+	addChart = require('./addChart'),
+	deleteChart = require('./deleteChart'),
+	editChart = require('./editChart');
 
 // init settings
 var ini = null;
@@ -30,4 +32,8 @@ exports.index = function(req, res) {
 
 exports.getGraph = getGraph;
 
-exports.addStats = addStats;
+exports.addChart = addChart;
+
+exports.deleteChart = deleteChart;
+
+exports.editChart = editChart;

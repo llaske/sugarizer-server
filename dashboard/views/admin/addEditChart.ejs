@@ -9,12 +9,12 @@
               <div class="card">
                 <div class="card-content">
                     <% include ../includes/flash-errors %>
-                    <form id="classroom-add-edit-form" method="post">
+                    <form id="classroom-add-edit-form" method="post" <% if(typeof chart == 'object'){ %> action="<%= chart._id %>" <% } %>>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label">Chart Title</label>
-                                    <input class="form-control" name="name" type="text">
+                                    <input class="form-control" name="title" value="<% if(typeof chart == 'object'){ %><%= chart.title %><% } %>" type="text">
                                     <span class="material-input"></span>
                                 </div>
                             </div>
@@ -24,13 +24,13 @@
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label">Type</label>
                                     <div class="type-selector">
-                                        <input id="timeline" type="radio" name="type" value="timeline" />
+                                        <input class="type-selector-input" id="timeline" type="radio" name="type" value="timeline" <% if(typeof chart == 'object' && chart.type == "timeline"){ %> checked <% } %>/>
                                         <label class="type-selector-card chart-timeline" for="timeline" title="Timeline"></label>
-                                        <input id="table" type="radio" name="type" value="table" />
+                                        <input class="type-selector-input" id="table" type="radio" name="type" value="table" <% if(typeof chart == 'object' && chart.type == "table"){ %> checked <% } %>/>
                                         <label class="type-selector-card chart-table" for="table" title="Table"></label>
-                                        <input id="pie" type="radio" name="type" value="pie" />
+                                        <input class="type-selector-input" id="pie" type="radio" name="type" value="pie" <% if(typeof chart == 'object' && chart.type == "pie"){ %> checked <% } %>/>
                                         <label class="type-selector-card chart-pie" for="pie" title="Pie Chart"></label>
-                                        <input id="bar" type="radio" name="type" value="bar" />
+                                        <input class="type-selector-input" id="bar" type="radio" name="type" value="bar" <% if(typeof chart == 'object' && chart.type == "bar"){ %> checked <% } %>/>
                                         <label class="type-selector-card chart-bar" for="bar" title="Bar Chart"></label>
                                     </div>
                                 </div>
@@ -48,15 +48,21 @@
                         </div>
                         <script>
                             var chartList = <%- JSON.stringify(charts) %>;
-                            $('input[type="radio"]').on('change', function(e) {
+                            $('input[name="type"]').on('change', function(e) {
                                 if (e && e.target && e.target.value) {
                                     var filteredCharts = chartList.filter(function (chart) {
                                         return chart.type == e.target.value;
                                     })
                                     var innerHTML = '';
+                                    var selectedKey = <% if(typeof chart == 'object'){ %> "<%= chart.key %>" <% } else { %> "" <% } %>;
+                                    var checked;
                                     for (var i=0; i<filteredCharts.length; i++) {
+                                        checked = "";
+                                        if (selectedKey && filteredCharts[i].key == selectedKey) {
+                                            checked = "checked";
+                                        }
                                         innerHTML += `<label for="`+ filteredCharts[i].key +`">
-                                            <input type="radio" id="` + filteredCharts[i].key + `" name="chart" value="` + filteredCharts[i].key + `" />
+                                            <input type="radio" id="` + filteredCharts[i].key + `" name="key" value="` + filteredCharts[i].key + `" ` + checked + ` />
                                             <div>
                                                 `+ document.webL10n.get(filteredCharts[i].description) +`
                                                 <span>`+ filteredCharts[i].key +`</span>
@@ -69,13 +75,23 @@
                                     $("#chart-list").html(innerHTML);
                                 }
                             });
+                            <% if (typeof chart == 'object') { %>
+                                document.webL10n.ready(function() {
+                                    var refreshIntervalId = setInterval(function() {
+                                        if (document.webL10n.getReadyState() == "complete") {
+                                            clearInterval(refreshIntervalId);
+                                            $('#<%= chart.type %>').trigger('change');
+                                        }
+                                    }, 100);
+                                });
+                            <% } %>
                         </script>
                         <div class="row color_input">
                             <div class="col-md-12">
                                 <div class="form-group form-black">
                                     <label class="control-label">Display</label>
                                     <div class="display-check" >
-                                        <input type="checkbox" id="scales" name="hidden">
+                                        <input type="checkbox" id="scales" name="hidden" <% if(typeof chart == 'object' && chart.hidden == true){ %> checked <% } %>>
                                         <label for="hidden">Hidden</label>
                                     </div>
                                 </div>
