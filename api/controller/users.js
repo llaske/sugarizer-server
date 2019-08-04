@@ -262,6 +262,7 @@ exports.getAllUsers = function(query, options, callback) {
 					shared_journal: 1,
 					favorites: 1,
 					classrooms: 1,
+					charts: 1,
 					insensitive: { "$toLower": "$name" }
 				}
 			},

@@ -23,13 +23,30 @@ exports.findAll = function(req, res) {
 	query = addQuery('key', req.query, query);
 	query = addQuery("q", req.query, query);
 
+	var options = {};
+
 	//get options
-	var options = getOptions(req, '+timestamp');
+	if (req.query.sort) {
+		options = getOptions(req, '+timestamp');
+	}
 
 	//get data
 	db.collection(chartsCollection, function(err, collection) {
 		collection.find(query, options).toArray(function(err, data) {
-			res.send({charts: data});
+			if (!(req.query.key || req.query.q || req.query.sort) && typeof req.user.charts == 'object' && req.user.charts.length > 0) {
+				var expectedOrder = req.user.charts.map(function (chart) {
+					return chart.toString();
+				});
+				var orderedData = new Array(req.user.charts.length);
+				for (var i=0; i<data.length; i++) {
+					if (expectedOrder.indexOf(data[i]._id.toString()) != -1) {
+						orderedData[expectedOrder.indexOf(data[i]._id.toString())] = data[i];
+					}
+				}
+				res.send({charts: orderedData});
+			} else {
+				res.send({charts: data});
+			}
 		});
 	});
 };
@@ -266,6 +283,59 @@ exports.updateChart = function(req, res) {
 				}
 			}
 		);
+	});
+};
+
+// Reorder chart list
+exports.reorderChart = function (req, res) {
+	//validate
+	if (!req.body.chart) {
+		res.status(401).send({
+			error: "Chart object not defined!",
+			code: 22
+		});
+		return;
+	}
+
+	var chart = JSON.parse(req.body.chart);
+
+	var list = [];
+	if (chart.list) {
+		list = chart.list.map(function(id) {
+			return new mongo.ObjectID(id);
+		});
+	}
+
+	db.collection(usersCollection, function(err, collection) {
+		collection.updateOne({
+			_id: new mongo.ObjectID(req.user._id)
+		},
+		{
+			$set: {
+				charts: list
+			}
+		}, {
+			safe: true
+		},
+		function(err, result) {
+			if (err) {
+				return res.status(500).send({
+					'error': 'An error has occurred',
+					'code': 10
+				});
+			} else {
+				if (result && result.result && result.result.n == 1) {
+					res.send({
+						charts: list
+					});
+				} else {
+					return res.status(401).send({
+						'error': 'Error while updating charts',
+						'code': 15
+					});
+				}
+			}
+		});
 	});
 };
 

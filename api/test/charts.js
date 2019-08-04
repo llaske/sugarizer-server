@@ -258,6 +258,42 @@ describe('Charts', function() {
 		}); 
 	});
 
+	describe('/PUT/reorder charts', () => {
+
+		it('it should not update the chart for unauthorized user', (done) => {
+
+			chai.request(server)
+				.put('/api/v1/charts/reorder')
+				.set('x-access-token', fake.teacher.token)
+				.set('x-key', fake.teacher.user._id)
+				.send({
+					chart: JSON.stringify({list: [fake.chart2._id, fake.chart1._id]})
+				})
+				.end((err, res) => {
+					res.should.have.status(401);
+					res.body.code.should.be.eql(19);
+					done();
+				});
+		});
+
+		it('it should update the valid chart', (done) => {
+
+			chai.request(server)
+				.put('/api/v1/charts/reorder')
+				.set('x-access-token', fake.admin1.token)
+				.set('x-key', fake.admin1.user._id)
+				.send({
+					chart: JSON.stringify({list: [fake.chart2._id, fake.chart1._id]})
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.an('object');
+					res.body.should.have.property('charts').be.an('array');
+					res.body.charts.should.eql([fake.chart2._id, fake.chart1._id]);
+					done();
+				});
+		});	
+	});
 
 	describe('/PUT/:id charts', () => {
 

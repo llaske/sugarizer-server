@@ -166,11 +166,8 @@ function initChartDragDrop() {
 				_super($item, container);
 			});
 
-			// Update Chart Order
-			console.log('Update Chart Order');
-			console.log($item),
-			console.log(container);
-			console.log(_super);
+			// Update chart order
+			updateChartOrder();
 		},
 
 		// set $item relative to cursor position
@@ -189,6 +186,41 @@ function initChartDragDrop() {
 			$item.css({
 				left: position.left - adjustment.left,
 				top: position.top - adjustment.top
+			});
+		}
+	});
+}
+
+function updateChartOrder() {
+	var list = [];
+	$.each($('[name="hiddenCharts"]'), function(index, value) {
+		list.push($(this).parent().data('id'));
+	});
+	console.log(list);
+	var data = {
+		chart: JSON.stringify({
+			list: list
+		})
+	};
+
+	$.ajax({
+		url: (url + 'api/v1/charts/reorder' + '?' + decodeURIComponent($.param({
+			x_key: headers['x-key'],
+			access_token: headers['x-access-token']
+		}))),
+		type: 'PUT',
+		data: data,
+		success: function(result) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('successChartUpdate')
+			}, {
+				type: 'success',
+				timer: 2000,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
 			});
 		}
 	});

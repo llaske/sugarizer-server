@@ -50,17 +50,19 @@
                             <li>
                                 <div class="card">
                                     <div class="card-content">
-                                    <div class="col-lg-1 col-md-1 col-sm-1"><img <% if(account.user && account.user.role=="admin") { %> class="draggable pointer" <% } %> src="../../public/img/font-awesome-ellipsis-v.png" alt="drag" style="width:40px;height:40px;" data-l10n-id="reorder" title="Drag to Reorder" ></div>
+                                        <div class="col-lg-1 col-md-1 col-sm-1"><img <% if(account.user && account.user.role=="admin") { %> class="draggable pointer" <% } %> src="../../public/img/font-awesome-ellipsis-v.png" alt="drag" style="width:40px;height:40px;" data-l10n-id="reorder" title="Drag to Reorder" ></div>
                                         <div class="text-center col-lg-4 col-md-4 col-sm-4 search_textbox" style="line-height: 40px;"><%= charts[i].title %></div>
                                         <div class="text-center col-lg-2 col-md-2 col-sm-2" style="line-height: 40px;"><%= charts[i].type %></div>
                                         <div class="text-center col-lg-3 col-md-3 col-sm-3" style="line-height: 40px;"><%= charts[i].key %></div>
-                                        <div class="text-center col-lg-2 col-md-2 col-sm-2" style="line-height: 40px;">
-                                            <div class="favoriteBox" style="height: 40px;">
+                                        <div class="text-center col-lg-2 col-md-2 col-sm-2" style="line-height: 40px; display:inline-flex; justify-content:center;">
+                                            <div class="hideshowBox" style="height: 40px; padding: 0px 5px 0px 5px;">
                                                 <label data-id="<%= charts[i]._id %>">
                                                     <input id="<%= charts[i]._id %>" <% if(charts[i].hidden == true) { %> checked <% } %> name="hiddenCharts" type="checkbox" onclick="updateChart('<%= charts[i]._id %>')" data-l10n-id="toggle-hidden" title="Toggle Hidden" >
                                                     <span class="checkbox-material"></span>
                                                 </label>
                                             </div>
+                                            <a title="Edit Chart" href="/dashboard/stats/edit/<%= charts[i]._id %>" style="height: 40px; padding: 0px 5px 0px 5px;"><i class="material-icons text-muted">edit</i></a>
+                                            <a title="Delete Chart" href="/dashboard/stats/delete/<%= charts[i]._id %>?&title=<%= charts[i].title %>" style="height: 40px; padding: 0px 5px 0px 5px;" onclick="return confirm(document.webL10n.get('DoYouWantDeleteChart', {chart:'<%= charts[i].title %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
                                         </div>
                                     </div>
 

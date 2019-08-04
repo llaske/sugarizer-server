@@ -69,6 +69,7 @@ module.exports = function(app, ini, db) {
 	app.get("/api/v1/charts", auth.allowedRoles([Admin]), charts.findAll);
 	app.get("/api/v1/charts/:chartid", auth.allowedRoles([Admin]), charts.findById);
 	app.post("/api/v1/charts", auth.allowedRoles([Admin]), charts.addChart);
+	app.put("/api/v1/charts/reorder", auth.allowedRoles([Admin]), charts.reorderChart);
 	app.put("/api/v1/charts/:chartid", auth.allowedRoles([Admin]), charts.updateChart);
 	app.delete("/api/v1/charts/:chartid", auth.allowedRoles([Admin]), charts.removeChart);
 
