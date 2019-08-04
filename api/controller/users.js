@@ -8,12 +8,14 @@ var db;
 var usersCollection;
 var classroomsCollection;
 var journalCollection;
+var chartsCollection;
 
 // Init database
 exports.init = function(settings, database) {
 	usersCollection = settings.collections.users;
 	classroomsCollection = settings.collections.classrooms;
 	journalCollection = settings.collections.journal;
+	chartsCollection = settings.collections.charts;
 	db = database;
 };
 
@@ -677,33 +679,55 @@ exports.removeUser = function(req, res) {
 				});
 			} else {
 				if (user && user.ok && user.value) {
-					// Remove user form classroom
-					db.collection(classroomsCollection, function(err, collection) {
-						collection.updateMany({},
-							{
-								$pull: { students: uid}
-							}, {
-								safe: true
-							},
-							function(err) {
-								if (err) {
-									res.status(500).send({
-										error: "An error has occurred",
-										code: 10
-									});
-								} else {
-									if (user.value.private_journal) {
-										db.collection(journalCollection, function(err, collection) {
-											collection.deleteMany({
-												_id: new mongo.ObjectID(user.value.private_journal)
-											}, {
-												safe: true
-											},
-											function(err) {
-												if (err) {
-													res.status(500).send({
-														error: "An error has occurred",
-														code: 10
+					// Remove user charts
+					db.collection(chartsCollection, function(err, collection) {
+						collection.deleteMany({
+							user_id: new mongo.ObjectID(uid)
+						}, {
+							safe: true
+						},
+						function(err) {
+							if (err) {
+								res.status(500).send({
+									error: "An error has occurred",
+									code: 10
+								});
+							} else {
+								// Remove user form classroom
+								db.collection(classroomsCollection, function(err, collection) {
+									collection.updateMany({},
+										{
+											$pull: { students: uid}
+										}, {
+											safe: true
+										},
+										function(err) {
+											if (err) {
+												res.status(500).send({
+													error: "An error has occurred",
+													code: 10
+												});
+											} else {
+												if (user.value.private_journal) {
+													db.collection(journalCollection, function(err, collection) {
+														collection.deleteMany({
+															_id: new mongo.ObjectID(user.value.private_journal)
+														}, {
+															safe: true
+														},
+														function(err) {
+															if (err) {
+																res.status(500).send({
+																	error: "An error has occurred",
+																	code: 10
+																});
+															} else {
+																res.send({
+																	'user_id': uid
+																});
+															}
+														}
+														);
 													});
 												} else {
 													res.send({
@@ -711,16 +735,11 @@ exports.removeUser = function(req, res) {
 													});
 												}
 											}
-											);
-										});
-									} else {
-										res.send({
-											'user_id': uid
-										});
-									}
-								}
+										}
+									);
+								});
 							}
-						);
+						});
 					});
 				} else {
 					res.status(401).send({
