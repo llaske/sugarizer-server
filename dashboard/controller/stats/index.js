@@ -3,7 +3,8 @@ var common = require('../../helper/common'),
 	getGraph = require('./getGraph'),
 	addChart = require('./addChart'),
 	deleteChart = require('./deleteChart'),
-	editChart = require('./editChart');
+	editChart = require('./editChart'),
+	listCharts = require('./listCharts');
 
 // init settings
 var ini = null;
@@ -37,3 +38,5 @@ exports.addChart = addChart;
 exports.deleteChart = deleteChart;
 
 exports.editChart = editChart;
+
+exports.listCharts = listCharts;

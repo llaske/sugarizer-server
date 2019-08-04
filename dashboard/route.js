@@ -50,6 +50,7 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/stats/edit/:chartid', authController.validateSession, authController.checkRole(statsController.editChart));
 	app.post('/dashboard/stats/edit/:chartid', authController.validateSession, authController.checkRole(statsController.editChart));
 	app.get('/dashboard/stats/delete/:chartid', authController.validateSession, authController.checkRole(statsController.deleteChart));
+	app.get('/dashboard/stats/list', authController.validateSession, authController.checkRole(statsController.listCharts));
 	app.get('/dashboard/stats/graph', authController.validateSession, statsController.getGraph);
 	app.get('/dashboard/graph', authController.validateSession, graphController.getGraph);
 	app.get('/dashboard/profile', authController.validateSession, usersController.profile);
