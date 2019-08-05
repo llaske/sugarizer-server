@@ -18,6 +18,41 @@
 							</form>
 						</div>
 					</div>
+					<% if(typeof charts=='object' && charts.length > 0) { %>
+						<% for(var i=0; i<charts.length; i++) { %>
+							<% if (charts[i].type=="table" && !charts[i].hidden) { %>
+								<div class="col-md-6">
+									<div class="card" style="margin-top:0px;">
+										<div class="card-content table-responsive">
+											<p class="title text-muted dashboard-table-title" data-l10n-id="<%= chartList[charts[i].key].description %>"></p>
+											<table class="table table-hover dashboard-table"  id="<%= charts[i]._id %>">
+												<% if (typeof chartList[charts[i].key].headers == "object" && chartList[charts[i].key].headers.length > 0) { %>
+												<thead class="text-muted">
+													<tr>
+														<% for(var j=0; j < chartList[charts[i].key].headers.length; j++) { %>
+															<th <% if (chartList[charts[i].key].headers[j]) { %> data-l10n-id="<%= chartList[charts[i].key].headers[j] %>" <% } %> ><%= chartList[charts[i].key].headers[j].toUpperCase() %></th>
+														<% } %>
+													</tr>
+												</thead>
+												<% } %>
+												<tbody>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							<% } else if (!charts[i].hidden) { %>
+								<div class="col-md-6">
+									<div class="card" style="margin-top:0px;">
+										<div class="card-content">
+											<p class="title text-muted" data-l10n-id="<%= chartList[charts[i].key].description %>"></p><hr>
+											<canvas id="<%= charts[i]._id %>" width="400" height="250"></canvas>
+										</div>
+									</div>
+								</div>
+							<% } %>
+						<% } %>
+					<% } else { %>
 					<div class="col-md-6">
 						<div class="card" style="margin-top:0px;">
 							<div class="card-content">
@@ -58,6 +93,7 @@
 							</div>
 						</div>
 					</div>
+					<% } %>
 				</div>
 			</div>
 		</div>
@@ -65,8 +101,18 @@
 </div>
 <% include ../includes/footer %>
 
-<script>createGraph('how-users-are-active', 'how-users-are-active-chart', 'stats/graph');</script>
-<script>createGraph('how-many-entries-by-journal', 'how-many-entries-by-journal-chart', 'stats/graph');</script>
-<script>createGraph('what-type-of-client-connected', 'what-type-of-client-connected-chart', 'stats/graph');</script>
-<script>createGraph('how-user-launch-activities', 'how-user-launch-activities-chart', 'stats/graph');</script>
-<script>createGraph('how-often-user-change-settings', 'how-often-user-change-settings-chart', 'stats/graph');</script>
+<% if(typeof charts=='object' && charts.length > 0) { %>
+	<% for(var i=0; i<charts.length; i++) { %>
+		<% if (charts[i].type == "table" && !charts[i].hidden) { %>
+			<script>createTable("<%= charts[i].key %>", "<%= charts[i]._id %>", "<%= chartList[charts[i].key].url %>");</script>
+		<% } else if (!charts[i].hidden) { %>
+			<script>createGraph("<%= charts[i].key %>", "<%= charts[i]._id %>", "<%= chartList[charts[i].key].url %>");</script>
+		<% } %>
+	<% } %>
+<% } else { %>
+	<script>createGraph('how-users-are-active', 'how-users-are-active-chart', 'stats/graph');</script>
+	<script>createGraph('how-many-entries-by-journal', 'how-many-entries-by-journal-chart', 'stats/graph');</script>
+	<script>createGraph('what-type-of-client-connected', 'what-type-of-client-connected-chart', 'stats/graph');</script>
+	<script>createGraph('how-user-launch-activities', 'how-user-launch-activities-chart', 'stats/graph');</script>
+	<script>createGraph('how-often-user-change-settings', 'how-often-user-change-settings-chart', 'stats/graph');</script>
+<% } %>

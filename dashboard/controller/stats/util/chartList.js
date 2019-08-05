@@ -47,13 +47,15 @@ module.exports = function() {
 			type: "table",
 			description: "RecentStudents",
 			key: "recent-users",
-			url: "graph"
+			url: "graph",
+			headers: ["", "icon", "username", "timestamp"]
 		},
 		{
 			type: "table",
 			description: "RecentEntries",
 			key: "recent-activities",
-			url: "graph"
+			url: "graph",
+			headers: ["", "icon", "activity", "username", "timestamp"]
 		}
 	];
 
