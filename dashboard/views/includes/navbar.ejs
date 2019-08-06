@@ -14,7 +14,7 @@
             <ul class="nav navbar-nav navbar-right">
   							<li class="dropdown hide-mob-el">
   								<a href="/dashboard/logout" class="dropdown-toggle" data-toggle="dropdown">
-                                      <p class="custom-icon xo-icon"></p>
+                                      <p class="custom-icon xo-icon" id="navbar-xo-icon"></p>
                                       <p class="hidden-lg hidden-md" data-l10n-id="logout">Logout</p>
                                 </a>
   								<ul class="dropdown-menu">
@@ -24,6 +24,7 @@
                                         <li>
                                     <% }%>
                                     <a class="pointer" data-l10n-id="profile" onclick="jumpTo('/dashboard/profile')">Profile</a></li>
+                                    <li><a class="pointer hide-mob-el" data-l10n-id="help" onclick="launchTutorial()">Help</a></li>
   									<li><a href="/dashboard/logout" data-l10n-id="logout">Logout</a></li>
   								</ul>
   							</li>
