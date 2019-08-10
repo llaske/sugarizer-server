@@ -365,12 +365,12 @@ function getActiveUsersByTime(req, res) {
 				data: {
 					labels: labels,
 					datasets: [{
-						label: common.l10n.get('CountEntries'),
+						label: common.l10n.get('CountStudents'),
 						data: dataset
 					}]
 				},
 				element: req.query.element,
-				graph: 'bar',
+				graph: 'line',
 				options: {
 					scales: {
 						yAxes: [{

@@ -44,6 +44,24 @@ module.exports = function() {
 			url: "graph"
 		},
 		{
+			type: "timeline",
+			description: "HowManyUsersActiveLastWeek",
+			key: "how-many-users-active-last-week",
+			url: "stats/graph"
+		},
+		{
+			type: "timeline",
+			description: "HowManyUsersActiveLastMonth",
+			key: "how-many-users-active-last-month",
+			url: "stats/graph"
+		},
+		{
+			type: "timeline",
+			description: "HowManyUsersActiveLastYear",
+			key: "how-many-users-active-last-year",
+			url: "stats/graph"
+		},
+		{
 			type: "table",
 			description: "RecentStudents",
 			key: "recent-students",
