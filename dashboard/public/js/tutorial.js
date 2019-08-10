@@ -13,7 +13,7 @@ function sugarizerTour(currentView, role) {
 		tour = new window.Tour({
 			name: currentView,
 			template: "\
-			<div class='popover tour'>\
+			<div class='popover tour popover-tour'>\
 				<div class='arrow'></div>\
 				<h3 class='popover-title tutorial-title'></h3>\
 				<table><tr><td style='vertical-align:top;'><div id='icon-tutorial' style='visibility:hidden;display:inline-block;'></div>\
