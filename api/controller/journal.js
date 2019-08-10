@@ -798,7 +798,7 @@ exports.removeInJournal = function(req, res) {
  * @apiName GetAllJournalEntries
  * @apiDescription It will get all the journals with their entries present in the database. Private and shared can be filtered using the "type" query param. If the param is not specified, it will get all the journals.
  * @apiGroup Journal
- * @apiVersion 1.0.0
+ * @apiVersion 1.2.0
  *
  * @apiExample Example usage:
  *     "/api/v1/aggregate"

@@ -13,7 +13,47 @@ exports.init = function(settings, database) {
 	db = database;
 };
 
-// Find all charts
+/**
+ * @api {get} api/v1/charts/ Get all charts
+ * @apiName GetAllcharts
+ * @apiDescription Retrieve all charts registered on the server for a user.
+ * @apiGroup Charts
+ * @apiVersion 1.2.0
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ *
+ * @apiExample Example usage:
+ *     "/api/v1/charts"
+ *
+ * @apiSuccess {Object[]} charts List of charts
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "charts": [
+ *         {
+ *           "_id": '5d4f1f0380b17154007ac04f',
+ *           "title": 'SugarizerChart1_1565466370822',
+ *           "key": 'how-often-user-change-settings',
+ *           "type": 'bar',
+ *           "hidden": true,
+ *           "created_time": 1565466371781,
+ *           "timestamp": 1565466371781,
+ *           "user_id": '5d4f1f0380b17154007ac04c'
+ *         },
+ *         {
+ *           "_id": '5d4f1f0380b17154007ac050',
+ *           "title": 'SugarizerChart2_1565466370822',
+ *           "key": 'how-users-are-active',
+ *           "type": 'pie',
+ *           "hidden": false,
+ *           "created_time": 1565466371796,
+ *           "timestamp": 1565466371796,
+ *           "user_id": '5d4f1f0380b17154007ac04c'
+ *         }
+ *       ]
+ *     }
+ **/
 exports.findAll = function(req, res) {
 	//form query
 	var query = {
@@ -51,7 +91,37 @@ exports.findAll = function(req, res) {
 	});
 };
 
-// Find chart by ID
+/**
+ * @api {get} api/v1/charts/:id Get chart detail
+ * @apiName GetChart
+ * @apiDescription Retrieve detail for a specific chart.
+ * @apiGroup Charts
+ * @apiVersion 1.2.0
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ *
+ * @apiSuccess {String} _id Unique chart id
+ * @apiSuccess {String} title Chart title or name
+ * @apiSuccess {String} key Key that identifies the chart features
+ * @apiSuccess {String} type Type of the chart (timeline, bar, pie, table)
+ * @apiSuccess {Boolean} hidden Will the chart be rendered in statistics view
+ * @apiSuccess {Number} created_time When the chart was created on the server
+ * @apiSuccess {Number} timestamp When the chart last edited on the server
+ * @apiSuccess {String} user_id Unique id of the user who created the chart
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "_id": '5d4f1f0380b17154007ac04f',
+ *       "title": 'SugarizerChart1_1565466370822',
+ *       "key": 'how-often-user-change-settings',
+ *       "type": 'bar',
+ *       "hidden": true,
+ *       "created_time": 1565466371781,
+ *       "timestamp": 1565466371781,
+ *       "user_id": '5d4f1f0380b17154007ac04c'
+ *     }
+ **/
 exports.findById = function(req, res) {
 	if (!mongo.ObjectID.isValid(req.params.chartid)) {
 		res.status(401).send({
@@ -77,7 +147,37 @@ exports.findById = function(req, res) {
 	});
 };
 
-// Create Chart
+/**
+ * @api {post} api/v1/charts Add chart
+ * @apiName Addchart
+ * @apiDescription Add chart in the database. Returns the inserted chart.
+ * @apiGroup Charts
+ * @apiVersion 1.2.0
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ *
+ * @apiSuccess {String} _id Unique chart id
+ * @apiSuccess {String} title Chart title or name
+ * @apiSuccess {String} key Key that identifies the chart features
+ * @apiSuccess {String} type Type of the chart (timeline, bar, pie, table)
+ * @apiSuccess {Boolean} hidden Will the chart be rendered in statistics view
+ * @apiSuccess {Number} created_time When the chart was created on the server
+ * @apiSuccess {Number} timestamp When the chart last edited on the server
+ * @apiSuccess {String} user_id Unique id of the user who created the chart
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "_id": '5d4f2375e1043a5743275a7f',
+ *       "title": 'SugarizerChart1_1565467508677',
+ *       "key": 'how-often-user-change-settings',
+ *       "type": 'bar',
+ *       "hidden": true,
+ *       "created_time": 1565467509661,
+ *       "timestamp": 1565467509661,
+ *       "user_id": '5d4f2375e1043a5743275a7c'
+ *     }
+ **/
 exports.addChart = function(req, res) {
 	//validate
 	if (!req.body.chart) {
@@ -152,7 +252,22 @@ exports.addChart = function(req, res) {
 	});
 };
 
-// Delete Chart
+/**
+ * @api {delete} api/v1/charts/:id  Remove chart
+ * @apiName RemoveChart
+ * @apiDescription Remove the chart by id.
+ * @apiGroup Charts
+ * @apiVersion 1.2.0
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ * @apiParam {String} id Unique id of the chart to delete
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "id": "5d4f2375e1043a5743275a7f"
+ *     }
+ **/
 exports.removeChart = function(req, res) {
 	//validate
 	if (!mongo.ObjectID.isValid(req.params.chartid)) {
@@ -219,7 +334,37 @@ exports.removeChart = function(req, res) {
 	});
 };
 
-// Edit Chart
+/**
+ * @api {put} api/v1/charts/:id Update chart
+ * @apiName UpdateChart
+ * @apiDescription Update an chart. Return the chart updated.
+ * @apiGroup Charts
+ * @apiVersion 1.2.0
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ *
+ * @apiSuccess {String} _id Unique chart id
+ * @apiSuccess {String} title Chart title or name
+ * @apiSuccess {String} key Key that identifies the chart features
+ * @apiSuccess {String} type Type of the chart (timeline, bar, pie, table)
+ * @apiSuccess {Boolean} hidden Will the chart be rendered in statistics view
+ * @apiSuccess {Number} created_time When the chart was created on the server
+ * @apiSuccess {Number} timestamp When the chart last edited on the server
+ * @apiSuccess {String} user_id Unique id of the user who created the chart
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "_id": '5d4f2375e1043a5743275a80',
+ *       "title": 'SugarizerChart2_new_1565467508677',
+ *       "key": 'how-users-are-active',
+ *       "type": 'pie',
+ *       "hidden": false,
+ *       "created_time": 1565467509677,
+ *       "timestamp": 1565467509724,
+ *       "user_id": '5d4f2375e1043a5743275a7c'
+ *     }
+ **/
 exports.updateChart = function(req, res) {
 	if (!mongo.ObjectID.isValid(req.params.chartid)) {
 		res.status(401).send({
@@ -286,7 +431,26 @@ exports.updateChart = function(req, res) {
 	});
 };
 
-// Reorder chart list
+/**
+ * @api {put} api/v1/charts/reorder Reorder Charts
+ * @apiName ReorderCharts
+ * @apiDescription Update the order in which the charts are displayed.
+ * @apiGroup Charts
+ * @apiVersion 1.2.0
+ *
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ * @apiSuccess {Object[]} charts List of charts ids
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "charts": [
+ *     	  '5d4f2375e1043a5743275a80',
+ *     	  '5d4f2375e1043a5743275a7f'
+ *       ]
+ *     }
+ **/
 exports.reorderChart = function (req, res) {
 	//validate
 	if (!req.body.chart) {
