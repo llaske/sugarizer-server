@@ -56,7 +56,7 @@ exports.findById = function(req, res) {
 	if (!mongo.ObjectID.isValid(req.params.chartid)) {
 		res.status(401).send({
 			error: "Invalid chart id",
-			code: 23
+			code: 27
 		});
 		return;
 	}
@@ -83,7 +83,7 @@ exports.addChart = function(req, res) {
 	if (!req.body.chart) {
 		res.status(401).send({
 			error: "Chart object not defined!",
-			code: 22
+			code: 28
 		});
 		return;
 	}
@@ -134,7 +134,7 @@ exports.addChart = function(req, res) {
 									} else {
 										return res.status(401).send({
 											'error': 'Error while adding chart',
-											'code': 15
+											'code': 25
 										});
 									}
 								}
@@ -143,7 +143,7 @@ exports.addChart = function(req, res) {
 					} else {
 						res.status(401).send({
 							error: "Inexisting chart id",
-							code: 23
+							code: 26
 						});
 					}
 				}
@@ -158,7 +158,7 @@ exports.removeChart = function(req, res) {
 	if (!mongo.ObjectID.isValid(req.params.chartid)) {
 		res.status(401).send({
 			error: "Invalid chart id",
-			code: 23
+			code: 27
 		});
 		return;
 	}
@@ -201,7 +201,7 @@ exports.removeChart = function(req, res) {
 									} else {
 										return res.status(401).send({
 											'error': 'Error while adding chart',
-											'code': 15
+											'code': 25
 										});
 									}
 								}
@@ -210,7 +210,7 @@ exports.removeChart = function(req, res) {
 					} else {
 						res.status(401).send({
 							error: "Inexisting chart id",
-							code: 23
+							code: 26
 						});
 					}
 				}
@@ -224,7 +224,7 @@ exports.updateChart = function(req, res) {
 	if (!mongo.ObjectID.isValid(req.params.chartid)) {
 		res.status(401).send({
 			error: "Invalid chart id",
-			code: 23
+			code: 27
 		});
 		return;
 	}
@@ -233,7 +233,7 @@ exports.updateChart = function(req, res) {
 	if (!req.body.chart) {
 		res.status(401).send({
 			error: "Chart object not defined!",
-			code: 22
+			code: 28
 		});
 		return;
 	}
@@ -277,7 +277,7 @@ exports.updateChart = function(req, res) {
 					} else {
 						res.status(401).send({
 							error: "Inexisting chart id",
-							code: 23
+							code: 26
 						});
 					}
 				}
@@ -292,7 +292,7 @@ exports.reorderChart = function (req, res) {
 	if (!req.body.chart) {
 		res.status(401).send({
 			error: "Chart object not defined!",
-			code: 22
+			code: 28
 		});
 		return;
 	}
@@ -331,7 +331,7 @@ exports.reorderChart = function (req, res) {
 				} else {
 					return res.status(401).send({
 						'error': 'Error while updating charts',
-						'code': 15
+						'code': 29
 					});
 				}
 			}

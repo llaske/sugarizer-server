@@ -26,7 +26,7 @@ module.exports = function addChart(req, res) {
 		}
 		if (!isValidChart) {
 			req.flash('errors', {
-				msg: common.l10n.get('InvalidType')
+				msg: common.l10n.get('InvalidChart')
 			});
 			return res.redirect('/dashboard/stats/add');
 		}
@@ -49,7 +49,7 @@ module.exports = function addChart(req, res) {
 
 					// send to classrooms page
 					req.flash('success', {
-						msg: common.l10n.get('ChartAdded', {name: req.body.name})
+						msg: common.l10n.get('ChartAdded', {title: req.body.title})
 					});
 					return res.redirect('/dashboard/stats/list');
 				} else {

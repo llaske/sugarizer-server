@@ -308,7 +308,7 @@ describe('Charts', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
-					res.body.code.should.be.eql(23);
+					res.body.code.should.be.eql(27);
 					done();
 				});
 		});
@@ -324,7 +324,7 @@ describe('Charts', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
-					res.body.code.should.be.eql(23);
+					res.body.code.should.be.eql(26);
 					done();
 				});
 		});
@@ -358,7 +358,7 @@ describe('Charts', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
-					res.body.code.should.be.eql(23);
+					res.body.code.should.be.eql(26);
 					done();
 				});
 		});
@@ -375,7 +375,7 @@ describe('Charts', function() {
 				.set('x-key', fake.admin1.user._id)
 				.end((err, res) => {
 					res.should.have.status(401);
-					res.body.code.should.be.eql(23);
+					res.body.code.should.be.eql(27);
 					done();
 				});
 		});
@@ -448,7 +448,7 @@ describe('Charts', function() {
 				.set('x-key', fake.admin1.user._id)
 				.end((err, res) => {
 					res.should.have.status(401);
-					res.body.code.should.be.eql(23);
+					res.body.code.should.be.eql(27);
 					done();
 				});
 		});
@@ -461,7 +461,7 @@ describe('Charts', function() {
 				.set('x-key', fake.admin1.user._id)
 				.end((err, res) => {
 					res.should.have.status(401);
-					res.body.code.should.be.eql(23);
+					res.body.code.should.be.eql(26);
 					done();
 				});
 		});

@@ -27,7 +27,7 @@ module.exports = function editChart(req, res) {
 			}
 			if (!isValidChart) {
 				req.flash('errors', {
-					msg: common.l10n.get('InvalidType')
+					msg: common.l10n.get('InvalidChart')
 				});
 				return res.redirect('/dashboard/stats/edit/' + req.params.chartid);
 			}

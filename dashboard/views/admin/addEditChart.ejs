@@ -13,7 +13,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
-                                    <label class="control-label">Chart Title</label>
+                                    <label class="control-label" data-l10n-id="chartTitle"></label>
                                     <input class="form-control" name="title" value="<% if(typeof chart == 'object'){ %><%= chart.title %><% } %>" type="text">
                                     <span class="material-input"></span>
                                 </div>
@@ -22,16 +22,16 @@
                         <div class="row color_input">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
-                                    <label class="control-label">Type</label>
+                                    <label class="control-label" data-l10n-id="type"></label>
                                     <div class="type-selector">
                                         <input class="type-selector-input" id="timeline" type="radio" name="type" value="timeline" <% if(typeof chart == 'object' && chart.type == "timeline"){ %> checked <% } %>/>
-                                        <label class="type-selector-card chart-timeline" for="timeline" title="Timeline"></label>
+                                        <label class="type-selector-card chart-timeline" data-l10n-id="timelineTitle" for="timeline"></label>
                                         <input class="type-selector-input" id="table" type="radio" name="type" value="table" <% if(typeof chart == 'object' && chart.type == "table"){ %> checked <% } %>/>
-                                        <label class="type-selector-card chart-table" for="table" title="Table"></label>
+                                        <label class="type-selector-card chart-table" data-l10n-id="tableTitle" for="table"></label>
                                         <input class="type-selector-input" id="pie" type="radio" name="type" value="pie" <% if(typeof chart == 'object' && chart.type == "pie"){ %> checked <% } %>/>
-                                        <label class="type-selector-card chart-pie" for="pie" title="Pie Chart"></label>
+                                        <label class="type-selector-card chart-pie" data-l10n-id="pieTitle" for="pie"></label>
                                         <input class="type-selector-input" id="bar" type="radio" name="type" value="bar" <% if(typeof chart == 'object' && chart.type == "bar"){ %> checked <% } %>/>
-                                        <label class="type-selector-card chart-bar" for="bar" title="Bar Chart"></label>
+                                        <label class="type-selector-card chart-bar" data-l10n-id="barTitle" for="bar"></label>
                                     </div>
                                 </div>
                             </div>
@@ -39,9 +39,9 @@
                         <div class="row color_input">
                             <div class="col-md-12">
                                 <div class="form-group form-black">
-                                    <label class="control-label">Select Chart</label>
+                                    <label class="control-label" data-l10n-id="selectChart"></label>
                                     <div class="chart-list" id="chart-list">
-                                        <label>No Chart Selected</label>
+                                        <label data-l10n-id="noChartSelected"></label>
                                     </div>
                                 </div>
                             </div>
@@ -70,7 +70,7 @@
                                         </label>`
                                     }
                                     if (innerHTML == '') {
-                                        innerHTML = "<label>No Charts Available</label>";
+                                        innerHTML = "<label data-l10n-id='noChartsAvailable></label>";
                                     }
                                     $("#chart-list").html(innerHTML);
                                 }
@@ -89,10 +89,10 @@
                         <div class="row color_input">
                             <div class="col-md-12">
                                 <div class="form-group form-black">
-                                    <label class="control-label">Display</label>
+                                    <label class="control-label" data-l10n-id="display"></label>
                                     <div class="display-check" >
                                         <input type="checkbox" id="scales" name="hidden" <% if(typeof chart == 'object' && chart.hidden == true){ %> checked <% } %>>
-                                        <label for="hidden">Hidden</label>
+                                        <label for="hidden" data-l10n-id="hidden"></label>
                                     </div>
                                 </div>
                             </div>
