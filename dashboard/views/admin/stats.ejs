@@ -116,3 +116,7 @@
 	<script>createGraph('how-user-launch-activities', 'how-user-launch-activities-chart', 'stats/graph');</script>
 	<script>createGraph('how-often-user-change-settings', 'how-often-user-change-settings-chart', 'stats/graph');</script>
 <% } %>
+<script>
+	var currTour = sugarizerTour("stats", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+	if (!currTour.isFinished()) currTour.start();
+</script>

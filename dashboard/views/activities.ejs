@@ -5,9 +5,9 @@
 		<% include includes/navbar %>
 		<div class="content ">
 			<div class="container-fluid">
-				<div class="row">
+				<div class="row" id="activities-list-parent">
 						<div class="col-md-12">
-								<div class="navbar-form navbar-right">
+								<div class="navbar-form navbar-right" id="activities-searchbox">
 		                <div class="form-group form-black is-empty" style="margin:0;">
 											<label data-l10n-id="activityNotFound" class="control-label hidden">Activity not found</label>
 											<input class="form-control search_query" style="width: 300px;" oninput="hideLabel(this.value)" onchange="highlight(this.value.trim())"  value="" data-l10n-id="searchActivity" placeholder="" type="text">
@@ -35,9 +35,9 @@
 							<ol class="simple_with_animation">
 								<% for(var i=0; i < activities.length; i++) { %>
 								<li>
-									<div class="card">
+									<div class="card" id="activities-card">
 										<div class="card-content">
-										<div class="col-lg-1 col-md-1 col-sm-1"><img <% if(account.user && account.user.role=="admin") { %> class="draggable pointer" <% } %> src="../public/img/font-awesome-ellipsis-v.png" alt="drag" style="width:40px;height:40px;" data-l10n-id="reorder" title="Drag to Reorder" ></div>
+										<div class="col-lg-1 col-md-1 col-sm-1"><img <% if(account.user && account.user.role=="admin") { %> class="draggable pointer" id="activities-draggable"<% } %> src="../public/img/font-awesome-ellipsis-v.png" alt="drag" style="width:40px;height:40px;" data-l10n-id="reorder" title="Drag to Reorder" ></div>
 											<div class="text-center col-lg-1 col-md-1 col-sm-1 ">
 													<img style="width: 30px;height: 30px;margin: 5px;" src="/<%= activities[i].directory + '/' + activities[i].icon %>" />
 											</div>
@@ -47,14 +47,14 @@
 											<div class="text-center col-lg-1 col-md-1 col-sm-1">
 												<div class="favoriteBox">
 														<label data-id="<%= activities[i].id %>">
-															<input <% if(activities[i].favorite == true) { %> checked <% } %> name="favoriteActivities" type="checkbox" <% if(account.user && account.user.role=="admin") { %> onclick="updateActivities()" data-l10n-id="toggle-favourite" title="Toggle Favourite" <% } else { %>disabled<% } %>  >
+															<input id="activities-favoriteBox" <% if(activities[i].favorite == true) { %> checked <% } %> name="favoriteActivities" type="checkbox" <% if(account.user && account.user.role=="admin") { %> onclick="updateActivities()" data-l10n-id="toggle-favourite" title="Toggle Favourite" <% } else { %>disabled<% } %>  >
 															<span class="checkbox-material"></span>
 														</label>
 												</div>
 											</div>
 											<div class="text-center col-lg-1 col-md-1 col-sm-1" style="line-height: 40px;">
 												<a href="javascript:launch_activity('/dashboard/activities/launch?aid=<%= activities[i].id %>')" data-l10n-id="launch" title="Launch"> 
-													<i class="material-icons text-muted">launch</i>
+													<i id="activity-launch" class="material-icons text-muted">launch</i>
 												</a>
 											</div>
 										</div>
@@ -80,5 +80,6 @@ var url = '<%= url %>';
 <% if(account.user && account.user.role=="admin") { %>
 	initDragDrop();
 <% } %>
-
+var currTour = sugarizerTour("activities", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+if (!currTour.isFinished()) currTour.start();
 </script>
