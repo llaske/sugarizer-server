@@ -165,8 +165,7 @@ exports.getTopActivities = function(req, res) {
 	});
 };
 
-exports.getRecentUsers = function(req, res) {
-
+exports.getRecentStudents = function(req, res) {
 	//get all entries
 	dashboard_utils.getAllUsers(req, res, function(users) {
 
@@ -187,6 +186,64 @@ exports.getRecentUsers = function(req, res) {
 									<td title="' + users[i].name + '">' + users[i].name + '</td>\
 									<td class="text-muted">' + moment(users[i].timestamp).calendar(); + '</td>\
 							</tr>';
+		}
+
+		return res.json({
+			data: data,
+			element: req.query.element,
+			graph: 'table'
+		});
+	});
+};
+
+exports.getRecentTeachers = function(req, res) {
+	req.query.role = 'teacher';
+	//get all entries
+	dashboard_utils.getAllUsers(req, res, function(users) {
+
+		//get users object
+		users = users.users;
+
+		//limit 5
+		users = users.splice(0, 5);
+
+		var data = '';
+		for (var i = 0; i < users.length; i++) {
+
+			data += '<tr>\
+						<td>' + (i + 1) + '</td>\
+						<td title="' + users[i].name + '">' + users[i].name + '</td>\
+						<td class="text-muted">' + moment(users[i].timestamp).calendar(); + '</td>\
+					</tr>';
+		}
+
+		return res.json({
+			data: data,
+			element: req.query.element,
+			graph: 'table'
+		});
+	});
+};
+
+exports.getRecentAdmins = function(req, res) {
+	req.query.role = 'admin';
+	//get all entries
+	dashboard_utils.getAllUsers(req, res, function(users) {
+
+		//get users object
+		users = users.users;
+
+		//limit 5
+		users = users.splice(0, 5);
+
+		var data = '';
+		for (var i = 0; i < users.length; i++) {
+
+			data += '<tr>\
+						<td>' + (i + 1) + '</td>\
+						<td title="' + users[i].name + '">' + users[i].name + '</td>\
+						<td class="text-muted">' + moment(users[i].timestamp).calendar(); + '</td>\
+					</tr>';
 		}
 
 		return res.json({

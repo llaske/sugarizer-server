@@ -46,9 +46,23 @@ module.exports = function() {
 		{
 			type: "table",
 			description: "RecentStudents",
-			key: "recent-users",
+			key: "recent-students",
 			url: "graph",
 			headers: ["", "icon", "username", "timestamp"]
+		},
+		{
+			type: "table",
+			description: "RecentTeachers",
+			key: "recent-teachers",
+			url: "graph",
+			headers: ["", "username", "timestamp"]
+		},
+		{
+			type: "table",
+			description: "RecentAdmins",
+			key: "recent-admins",
+			url: "graph",
+			headers: ["", "username", "timestamp"]
 		},
 		{
 			type: "table",
