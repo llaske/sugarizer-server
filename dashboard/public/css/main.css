@@ -349,6 +349,7 @@
 
 .type-selector{
   padding-top: 15px;
+  padding-left: 40px;
 }
 
 .type-selector input{
@@ -683,10 +684,22 @@
 }
 
 @media (max-width: 768px) {
+  .pull-right-mobinterrupt {
+    float: none !important;
+  }
   .hide-mob-el {
     display: none !important;
   }
   .hide-desk-el {
     display: block !important;
+  }
+  .type-selector {
+    padding-left: 0px;
+  }
+  .chart-list {
+    padding-left: 0px;
+  }
+  .display-check {
+    padding-left: 0px;
   }
 }

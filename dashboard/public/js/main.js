@@ -390,10 +390,17 @@ function highlight(text) {
 			.parent()
 			.removeClass('label-floating has-error is-focused');
 	}
+
 	//scroll
-	$('.main-panel').animate({
-		scrollTop: (offset - 30)
-	}, 500);
+	if ($(window).width() < 992) {
+		$('.main-panel').animate({
+			scrollTop: (offset - 86)
+		}, 500);
+	} else {
+		$('.main-panel').animate({
+			scrollTop: (offset - 30)
+		}, 500);
+	}
 }
 
 //hide label when input is empty
