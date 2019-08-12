@@ -62,6 +62,7 @@ exports.findAll = function(req, res) {
 
 	query = addQuery('key', req.query, query);
 	query = addQuery("q", req.query, query);
+	query = addQuery("hidden", req.query, query);
 
 	var options = {};
 
@@ -83,6 +84,9 @@ exports.findAll = function(req, res) {
 						orderedData[expectedOrder.indexOf(data[i]._id.toString())] = data[i];
 					}
 				}
+				orderedData = orderedData.filter(function(data) {
+					return data != null;
+				});
 				res.send({charts: orderedData});
 			} else {
 				res.send({charts: data});
@@ -528,6 +532,12 @@ function addQuery(filter, params, query, default_val) {
 			query["title"] = {
 				$regex: new RegExp(params[filter], "i")
 			};
+		} else if (filter == "hidden") {
+			if (params["hidden"] == "false") {
+				query["hidden"] = false;
+			} else if (params["hidden"] == "true") {
+				query["hidden"] = true;
+			}
 		} else {
 			query[filter] = {
 				$regex: new RegExp("^" + params[filter] + "$", "i")

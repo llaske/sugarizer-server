@@ -33,6 +33,9 @@ exports.index = function(req, res) {
 		headers: common.getHeaders(req),
 		json: true,
 		method: 'GET',
+		qs: {
+			hidden: false,
+		},
 		uri: common.getAPIUrl(req) + 'api/v1/charts'
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
