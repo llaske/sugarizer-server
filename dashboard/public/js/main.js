@@ -143,6 +143,124 @@ function updateActivities() {
 	});
 }
 
+function initChartDragDrop() {
+	var adjustment;
+
+	$("ol.simple_with_animation").sortable({
+		handle: '.draggable',
+		group: 'simple_with_animation',
+		pullPlaceholder: false,
+		placeholder: '<div class="placeholder"></div>',
+		// animation on drop
+		onDrop: function($item, container, _super) {
+			var $clonedItem = $('<li/>').css({
+				height: 0
+			});
+			$item.before($clonedItem);
+			$clonedItem.animate({
+				'height': $item.height()
+			});
+
+			$item.animate($clonedItem.position(), function() {
+				$clonedItem.detach();
+				_super($item, container);
+			});
+
+			// Update chart order
+			updateChartOrder();
+		},
+
+		// set $item relative to cursor position
+		onDragStart: function($item, container, _super) {
+			var offset = $item.offset(),
+				pointer = container.rootGroup.pointer;
+
+			adjustment = {
+				left: pointer.left - offset.left,
+				top: pointer.top - offset.top
+			};
+
+			_super($item, container);
+		},
+		onDrag: function($item, position) {
+			$item.css({
+				left: position.left - adjustment.left,
+				top: position.top - adjustment.top
+			});
+		}
+	});
+}
+
+function updateChartOrder() {
+	var list = [];
+	$.each($('[name="hiddenCharts"]'), function(index, value) {
+		list.push($(this).parent().data('id'));
+	});
+	console.log(list);
+	var data = {
+		chart: JSON.stringify({
+			list: list
+		})
+	};
+
+	$.ajax({
+		url: (url + 'api/v1/charts/reorder' + '?' + decodeURIComponent($.param({
+			x_key: headers['x-key'],
+			access_token: headers['x-access-token']
+		}))),
+		type: 'PUT',
+		data: data,
+		success: function(result) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('successChartUpdate')
+			}, {
+				type: 'success',
+				timer: 2000,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+	});
+}
+
+function updateChart(chartid) {
+	if (!chartid) return;
+	var hidden = false;
+	if ($('#' + chartid).is(":checked")) {
+		hidden = true;
+	}
+	var data = {
+		chart: JSON.stringify({
+			hidden: hidden
+		})
+	};
+
+	$.ajax({
+		url: (url + 'api/v1/charts/' + chartid + '?' + decodeURIComponent($.param({
+			x_key: headers['x-key'],
+			access_token: headers['x-access-token']
+		}))),
+		type: 'PUT',
+		data: data,
+		success: function(result) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('successChartUpdate')
+			}, {
+				type: 'success',
+				timer: 2000,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+	});
+}
+
 function formatUserField(state) {
 	if (!state.id) {
 		return state.text;
@@ -272,10 +390,17 @@ function highlight(text) {
 			.parent()
 			.removeClass('label-floating has-error is-focused');
 	}
+
 	//scroll
-	$('.main-panel').animate({
-		scrollTop: (offset - 30)
-	}, 500);
+	if ($(window).width() < 992) {
+		$('.main-panel').animate({
+			scrollTop: (offset - 86)
+		}, 500);
+	} else {
+		$('.main-panel').animate({
+			scrollTop: (offset - 30)
+		}, 500);
+	}
 }
 
 //hide label when input is empty

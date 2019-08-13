@@ -440,6 +440,468 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "api/v1/charts",
+    "title": "Add chart",
+    "name": "Addchart",
+    "description": "<p>Add chart in the database. Returns the inserted chart.</p>",
+    "group": "Charts",
+    "version": "1.2.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>Unique chart id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "title",
+            "description": "<p>Chart title or name</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "key",
+            "description": "<p>Key that identifies the chart features</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>Type of the chart (timeline, bar, pie, table)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "hidden",
+            "description": "<p>Will the chart be rendered in statistics view</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "created_time",
+            "description": "<p>When the chart was created on the server</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "timestamp",
+            "description": "<p>When the chart last edited on the server</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>Unique id of the user who created the chart</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"_id\": '5d4f2375e1043a5743275a7f',\n  \"title\": 'SugarizerChart1_1565467508677',\n  \"key\": 'how-often-user-change-settings',\n  \"type\": 'bar',\n  \"hidden\": true,\n  \"created_time\": 1565467509661,\n  \"timestamp\": 1565467509661,\n  \"user_id\": '5d4f2375e1043a5743275a7c'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/charts.js",
+    "groupTitle": "Charts"
+  },
+  {
+    "type": "get",
+    "url": "api/v1/charts/",
+    "title": "Get all charts",
+    "name": "GetAllcharts",
+    "description": "<p>Retrieve all charts registered on the server for a user.</p>",
+    "group": "Charts",
+    "version": "1.2.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "\"/api/v1/charts\"",
+        "type": "json"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "charts",
+            "description": "<p>List of charts</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"charts\": [\n    {\n      \"_id\": '5d4f1f0380b17154007ac04f',\n      \"title\": 'SugarizerChart1_1565466370822',\n      \"key\": 'how-often-user-change-settings',\n      \"type\": 'bar',\n      \"hidden\": true,\n      \"created_time\": 1565466371781,\n      \"timestamp\": 1565466371781,\n      \"user_id\": '5d4f1f0380b17154007ac04c'\n    },\n    {\n      \"_id\": '5d4f1f0380b17154007ac050',\n      \"title\": 'SugarizerChart2_1565466370822',\n      \"key\": 'how-users-are-active',\n      \"type\": 'pie',\n      \"hidden\": false,\n      \"created_time\": 1565466371796,\n      \"timestamp\": 1565466371796,\n      \"user_id\": '5d4f1f0380b17154007ac04c'\n    }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/charts.js",
+    "groupTitle": "Charts"
+  },
+  {
+    "type": "get",
+    "url": "api/v1/charts/:id",
+    "title": "Get chart detail",
+    "name": "GetChart",
+    "description": "<p>Retrieve detail for a specific chart.</p>",
+    "group": "Charts",
+    "version": "1.2.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>Unique chart id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "title",
+            "description": "<p>Chart title or name</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "key",
+            "description": "<p>Key that identifies the chart features</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>Type of the chart (timeline, bar, pie, table)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "hidden",
+            "description": "<p>Will the chart be rendered in statistics view</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "created_time",
+            "description": "<p>When the chart was created on the server</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "timestamp",
+            "description": "<p>When the chart last edited on the server</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>Unique id of the user who created the chart</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"_id\": '5d4f1f0380b17154007ac04f',\n  \"title\": 'SugarizerChart1_1565466370822',\n  \"key\": 'how-often-user-change-settings',\n  \"type\": 'bar',\n  \"hidden\": true,\n  \"created_time\": 1565466371781,\n  \"timestamp\": 1565466371781,\n  \"user_id\": '5d4f1f0380b17154007ac04c'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/charts.js",
+    "groupTitle": "Charts"
+  },
+  {
+    "type": "delete",
+    "url": "api/v1/charts/:id",
+    "title": "Remove chart",
+    "name": "RemoveChart",
+    "description": "<p>Remove the chart by id.</p>",
+    "group": "Charts",
+    "version": "1.2.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Unique id of the chart to delete</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"id\": \"5d4f2375e1043a5743275a7f\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/charts.js",
+    "groupTitle": "Charts"
+  },
+  {
+    "type": "put",
+    "url": "api/v1/charts/reorder",
+    "title": "Reorder Charts",
+    "name": "ReorderCharts",
+    "description": "<p>Update the order in which the charts are displayed.</p>",
+    "group": "Charts",
+    "version": "1.2.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "charts",
+            "description": "<p>List of charts ids</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"charts\": [\n\t  '5d4f2375e1043a5743275a80',\n\t  '5d4f2375e1043a5743275a7f'\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/charts.js",
+    "groupTitle": "Charts"
+  },
+  {
+    "type": "put",
+    "url": "api/v1/charts/:id",
+    "title": "Update chart",
+    "name": "UpdateChart",
+    "description": "<p>Update an chart. Return the chart updated.</p>",
+    "group": "Charts",
+    "version": "1.2.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>Unique chart id</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "title",
+            "description": "<p>Chart title or name</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "key",
+            "description": "<p>Key that identifies the chart features</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>Type of the chart (timeline, bar, pie, table)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "hidden",
+            "description": "<p>Will the chart be rendered in statistics view</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "created_time",
+            "description": "<p>When the chart was created on the server</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "timestamp",
+            "description": "<p>When the chart last edited on the server</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>Unique id of the user who created the chart</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"_id\": '5d4f2375e1043a5743275a80',\n  \"title\": 'SugarizerChart2_new_1565467508677',\n  \"key\": 'how-users-are-active',\n  \"type\": 'pie',\n  \"hidden\": false,\n  \"created_time\": 1565467509677,\n  \"timestamp\": 1565467509724,\n  \"user_id\": '5d4f2375e1043a5743275a7c'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/charts.js",
+    "groupTitle": "Charts"
+  },
+  {
+    "type": "post",
     "url": "api/v1/classrooms",
     "title": "Add classroom",
     "name": "Addclassroom",
@@ -1119,7 +1581,7 @@ define({ "api": [
     "name": "GetAllJournalEntries",
     "description": "<p>It will get all the journals with their entries present in the database. Private and shared can be filtered using the &quot;type&quot; query param. If the param is not specified, it will get all the journals.</p>",
     "group": "Journal",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "examples": [
       {
         "title": "Example usage:",

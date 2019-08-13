@@ -18,11 +18,31 @@
   background-image: url('/public/img/star_active.png');
 }
 
+.hideshowBox input[type=checkbox] {
+  display: block;
+  width: 30px;
+  height: 30px;
+  -webkit-appearance: none;
+  outline: 0;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.hideshowBox input[type=checkbox]:not(:checked) {
+  background-image: url('/public/img/visible.svg');
+}
+
+.hideshowBox input[type=checkbox]:checked {
+  background-image: url('/public/img/invisible.svg');
+}
+
 #recent-activities-table tr{
   cursor: pointer;
 }
 
-#recent-users-table tr{
+#recent-students-table tr{
   cursor: pointer;
 }
 
@@ -327,6 +347,146 @@
   margin-left: 10px !important;
 }
 
+.type-selector{
+  padding-top: 15px;
+  padding-left: 40px;
+}
+
+.type-selector input{
+  margin:0;
+  padding:0;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  appearance:none;
+}
+
+.type-selector input:active +.type-selector-card{
+  opacity: .9;
+}
+
+.type-selector input:checked +.type-selector-card{
+  -webkit-filter: none;
+  -moz-filter: none;
+  filter: none;
+}
+
+.type-selector-card{
+  cursor:pointer;
+  background-size:contain;
+  background-repeat:no-repeat;
+  display:inline-block;
+  width:100px;height:70px;
+  -webkit-transition: all 100ms ease-in;
+  -moz-transition: all 100ms ease-in;
+  transition: all 100ms ease-in;
+  -webkit-filter: brightness(1.8) grayscale(1) opacity(.4);
+  -moz-filter: brightness(1.8) grayscale(1) opacity(.4);
+  filter: brightness(1.8) grayscale(1) opacity(.4);
+}
+
+.type-selector-card:hover{
+  -webkit-filter: brightness(1.2) grayscale(.5) opacity(.9);
+  -moz-filter: brightness(1.2) grayscale(.5) opacity(.9);
+  filter: brightness(1.2) grayscale(.5) opacity(.9);
+}
+
+.chart-timeline{
+  background-image: url('/public/img/line-chart.svg');
+}
+
+.chart-table{
+  background-image: url('/public/img/list.svg');
+}
+
+.chart-pie{
+  background-image: url('/public/img/pie-chart.svg');
+}
+
+.chart-bar{
+  background-image: url('/public/img/bar-chart.svg');
+}
+
+.chart-list {
+  position: relative;
+  display: block;
+  padding-left: 40px;
+}
+
+.chart-list label {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 2px 0 0;
+  padding: 10px 0;
+}
+.chart-list label input[type="radio"] {
+  position: relative;
+  display: inline-block;
+  margin-top: 3px;
+  margin-right: 15px;
+  font-size: 12px;
+  float: left;
+  z-index: 1;
+}
+.chart-list label input[type="radio"]:checked + div span {
+  position: absolute;
+  display: inline-block;
+  left: 100%;
+  top: -5px;
+  margin: 0 0 0 20px;
+  padding: 8px 15px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background-color: rgba(34, 34, 34, 0.9);
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(34, 34, 34, 0.2);
+  clear: both;
+  visibility: visible;
+  transform: translateX(0px);
+  transition: transform 200ms ease;
+}
+.chart-list input[type="radio"]:checked + div span:before {
+  position: absolute;
+  content: "";
+  top: 4px;
+  left: -1px;
+  border-top: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid rgba(34, 34, 34, 0.9);
+  transform: rotate(45deg);
+}
+.chart-list label div {
+  position: relative;
+  display: inline-block;
+}
+.chart-list label div span {
+  position: absolute;
+  visibility: hidden;
+  transform: translateX(-10px);
+  transition: transform 200ms ease;
+}
+.chart-list label input[type="radio"]:checked + div span {
+  background-color: #3498db;
+}
+.chart-list label input[type="radio"]:checked + div span:before {
+  border-top: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid rgba(52, 152, 219, 0.9);
+}
+
+.display-check {
+  padding-left: 40px;
+  padding-top: 5px;
+}
+
+.display-check input {
+  margin-top: 3px;
+  margin-right: 15px;
+}
+
 .icon-button {
 	border-radius: 22px;
 	margin-top: 5px;
@@ -535,10 +695,22 @@
 }
 
 @media (max-width: 768px) {
+  .pull-right-mobinterrupt {
+    float: none !important;
+  }
   .hide-mob-el {
     display: none !important;
   }
   .hide-desk-el {
     display: block !important;
+  }
+  .type-selector {
+    padding-left: 0px;
+  }
+  .chart-list {
+    padding-left: 0px;
+  }
+  .display-check {
+    padding-left: 0px;
   }
 }
