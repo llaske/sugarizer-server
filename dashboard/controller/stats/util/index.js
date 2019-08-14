@@ -419,6 +419,85 @@ exports.getMostActiveClassrooms = function(req, res) {
 	}
 };
 
+exports.getClassroomByStudents = function(req, res) {
+	function compare(a, b) {
+		if (!a.count) {
+			return 1;
+		} else if (!b.count) {
+			return -1;
+		} else if (a.count > b.count) {
+			return -1;
+		} else {
+			return 1;
+		}
+	}
+
+	request({
+		headers: common.getHeaders(req),
+		json: true,
+		method: 'GET',
+		qs: {
+			'limit': 100000000
+		},
+		uri: common.getAPIUrl(req) + 'api/v1/classrooms'
+	}, function(error, response, body) {
+		if (response.statusCode == 200) {
+			var classrooms = body.classrooms;
+			for (var i=0; i<classrooms.length; i++) {
+				if (classrooms[i] && typeof classrooms[i].students == 'object' && classrooms[i].students.length >= 0) {
+					classrooms[i].count = classrooms[i].students.length;
+				}
+			}
+
+			classrooms.sort(compare);
+			classrooms.splice(5);
+
+			var dataset = [];
+			var labels = [];
+			for (var i=0; i<classrooms.length; i++) {
+				if (classrooms[i].count > 0) {
+					dataset.push(classrooms[i].count);
+					labels.push(classrooms[i].name);
+				} else {
+					break;
+				}
+			}
+
+			return res.json({
+				data: {
+					labels: labels,
+					datasets: [{
+						label: common.l10n.get('CountStudents'),
+						data: dataset,
+						backgroundColor: [
+							'rgba(155, 99, 132, 0.8)',
+							'rgba(54, 162, 235, 0.8)',
+							'rgba(255, 206, 86, 0.8)',
+							'rgba(75, 192, 192, 0.8)',
+							'rgba(153, 102, 255, 0.8)'
+						]
+					}]
+				},
+				element: req.query.element,
+				graph: 'bar',
+				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								min: 0
+							}
+						}]
+					}
+				}
+			});
+		} else {
+			req.flash('errors', {
+				msg: common.l10n.get('ErrorCode'+body.code)
+			});
+		}
+	});
+};
+
 exports.getLastWeekActiveUsers = function(req, res) {
 	req.timeLimit = "week";
 	getActiveUsersByTime(req, res);

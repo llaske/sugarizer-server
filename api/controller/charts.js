@@ -534,7 +534,9 @@ function addQuery(filter, params, query, default_val) {
 			};
 		} else if (filter == "hidden") {
 			if (params["hidden"] == "false") {
-				query["hidden"] = false;
+				query["hidden"] = {
+					$ne: true
+				};
 			} else if (params["hidden"] == "true") {
 				query["hidden"] = true;
 			}
