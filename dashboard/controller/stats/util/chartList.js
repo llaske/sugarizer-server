@@ -38,6 +38,12 @@ module.exports = function() {
 			url: "graph"
 		},
 		{
+			type: "bar",
+			description: "MostActiveClassrooms",
+			key: "most-active-classrooms",
+			url: "stats/graph"
+		},
+		{
 			type: "pie",
 			description: "TopActivities",
 			key: "top-activities",
