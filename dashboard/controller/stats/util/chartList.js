@@ -33,9 +33,21 @@ module.exports = function() {
 		},
 		{
 			type: "bar",
+			description: "MostActiveClassrooms",
+			key: "most-active-classrooms",
+			url: "stats/graph"
+		},
+		{
+			type: "bar",
 			description: "TopContributors",
 			key: "top-contributor",
 			url: "graph"
+		},
+		{
+			type: "bar",
+			description: "TopClassrooms",
+			key: "classrooms-by-student-count",
+			url: "stats/graph"
 		},
 		{
 			type: "pie",

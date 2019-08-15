@@ -7,7 +7,9 @@ var _util = require('./util'),
 	getHowManyEntriesByJournal = _util.getHowManyEntriesByJournal,
 	getLastWeekActiveUsers = _util.getLastWeekActiveUsers,
 	getLastMonthActiveUsers = _util.getLastMonthActiveUsers,
-	getLastYearActiveUsers = _util.getLastYearActiveUsers;
+	getLastYearActiveUsers = _util.getLastYearActiveUsers,
+	getMostActiveClassrooms = _util.getMostActiveClassrooms,
+	getClassroomByStudents= _util.getClassroomByStudents;
 
 module.exports = function getGraph(req, res) {
 	if (req.query.type == 'how-user-launch-activities') {
@@ -26,5 +28,9 @@ module.exports = function getGraph(req, res) {
 		getLastMonthActiveUsers(req, res);
 	} else if (req.query.type == 'how-many-users-active-last-year') {
 		getLastYearActiveUsers(req, res);
+	} else if (req.query.type == 'most-active-classrooms') {
+		getMostActiveClassrooms(req, res);
+	} else if (req.query.type == 'classrooms-by-student-count') {
+		getClassroomByStudents(req, res);
 	}
 };
