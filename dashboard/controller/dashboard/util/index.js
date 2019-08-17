@@ -46,12 +46,13 @@ exports.getAllActivities = function(req, res, callback) {
 };
 
 exports.getAllUsers = function(req, res, callback) {
+	var role = req.query.role || 'student';
 	request({
 		headers: common.getHeaders(req),
 		json: true,
 		method: 'GET',
 		qs: {
-			role: 'student',
+			role: role,
 			sort: '-timestamp',
 			limit: 100000000
 		},

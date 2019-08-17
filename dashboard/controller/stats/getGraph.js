@@ -4,7 +4,12 @@ var _util = require('./util'),
 	getHowOftenUserChangeSettings = _util.getHowOftenUserChangeSettings,
 	getHowUsersAreActive = _util.getHowUsersAreActive,
 	getWhatTypeOfClientConnected = _util.getWhatTypeOfClientConnected,
-	getHowManyEntriesByJournal = _util.getHowManyEntriesByJournal;
+	getHowManyEntriesByJournal = _util.getHowManyEntriesByJournal,
+	getLastWeekActiveUsers = _util.getLastWeekActiveUsers,
+	getLastMonthActiveUsers = _util.getLastMonthActiveUsers,
+	getLastYearActiveUsers = _util.getLastYearActiveUsers,
+	getMostActiveClassrooms = _util.getMostActiveClassrooms,
+	getClassroomByStudents= _util.getClassroomByStudents;
 
 module.exports = function getGraph(req, res) {
 	if (req.query.type == 'how-user-launch-activities') {
@@ -17,5 +22,15 @@ module.exports = function getGraph(req, res) {
 		getWhatTypeOfClientConnected(req, res);
 	} else if (req.query.type == 'how-many-entries-by-journal') {
 		getHowManyEntriesByJournal(req, res);
+	} else if (req.query.type == 'how-many-users-active-last-week') {
+		getLastWeekActiveUsers(req, res);
+	} else if (req.query.type == 'how-many-users-active-last-month') {
+		getLastMonthActiveUsers(req, res);
+	} else if (req.query.type == 'how-many-users-active-last-year') {
+		getLastYearActiveUsers(req, res);
+	} else if (req.query.type == 'most-active-classrooms') {
+		getMostActiveClassrooms(req, res);
+	} else if (req.query.type == 'classrooms-by-student-count') {
+		getClassroomByStudents(req, res);
 	}
 };

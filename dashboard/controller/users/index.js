@@ -49,6 +49,9 @@ exports.index = function(req, res) {
 	if (req.query.classid != '') {
 		query['classid'] = req.query.classid;
 	}
+	if(req.query.sort !=''){
+		query['sort'] = req.query.sort;
+	}
 
 	var classroom_id;
 	if (req.query.classroom_id) {

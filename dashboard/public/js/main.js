@@ -259,6 +259,124 @@ function updateActivities() {
 	});
 }
 
+function initChartDragDrop() {
+	var adjustment;
+
+	$("ol.simple_with_animation").sortable({
+		handle: '.draggable',
+		group: 'simple_with_animation',
+		pullPlaceholder: false,
+		placeholder: '<div class="placeholder"></div>',
+		// animation on drop
+		onDrop: function($item, container, _super) {
+			var $clonedItem = $('<li/>').css({
+				height: 0
+			});
+			$item.before($clonedItem);
+			$clonedItem.animate({
+				'height': $item.height()
+			});
+
+			$item.animate($clonedItem.position(), function() {
+				$clonedItem.detach();
+				_super($item, container);
+			});
+
+			// Update chart order
+			updateChartOrder();
+		},
+
+		// set $item relative to cursor position
+		onDragStart: function($item, container, _super) {
+			var offset = $item.offset(),
+				pointer = container.rootGroup.pointer;
+
+			adjustment = {
+				left: pointer.left - offset.left,
+				top: pointer.top - offset.top
+			};
+
+			_super($item, container);
+		},
+		onDrag: function($item, position) {
+			$item.css({
+				left: position.left - adjustment.left,
+				top: position.top - adjustment.top
+			});
+		}
+	});
+}
+
+function updateChartOrder() {
+	var list = [];
+	$.each($('[name="hiddenCharts"]'), function(index, value) {
+		list.push($(this).parent().data('id'));
+	});
+	console.log(list);
+	var data = {
+		chart: JSON.stringify({
+			list: list
+		})
+	};
+
+	$.ajax({
+		url: (url + 'api/v1/charts/reorder' + '?' + decodeURIComponent($.param({
+			x_key: headers['x-key'],
+			access_token: headers['x-access-token']
+		}))),
+		type: 'PUT',
+		data: data,
+		success: function(result) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('successChartUpdate')
+			}, {
+				type: 'success',
+				timer: 2000,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+	});
+}
+
+function updateChart(chartid) {
+	if (!chartid) return;
+	var hidden = false;
+	if ($('#' + chartid).is(":checked")) {
+		hidden = true;
+	}
+	var data = {
+		chart: JSON.stringify({
+			hidden: hidden
+		})
+	};
+
+	$.ajax({
+		url: (url + 'api/v1/charts/' + chartid + '?' + decodeURIComponent($.param({
+			x_key: headers['x-key'],
+			access_token: headers['x-access-token']
+		}))),
+		type: 'PUT',
+		data: data,
+		success: function(result) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('successChartUpdate')
+			}, {
+				type: 'success',
+				timer: 2000,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+	});
+}
+
 function formatUserField(state) {
 	if (!state.id) {
 		return state.text;
@@ -388,10 +506,17 @@ function highlight(text) {
 			.parent()
 			.removeClass('label-floating has-error is-focused');
 	}
+
 	//scroll
-	$('.main-panel').animate({
-		scrollTop: (offset - 30)
-	}, 500);
+	if ($(window).width() < 992) {
+		$('.main-panel').animate({
+			scrollTop: (offset - 86)
+		}, 500);
+	} else {
+		$('.main-panel').animate({
+			scrollTop: (offset - 30)
+		}, 500);
+	}
 }
 
 //hide label when input is empty
@@ -504,12 +629,8 @@ function convertToCSV(objArray) {
 			flag = true;
 
 			try {
-				var test = JSON.parse(array[i][index]);
-				if (test.stroke && test.fill) {
-					line += '"{stroke:""' + test.stroke + '"",fill:""' + test.fill + '""}"';
-				} else {
-					line += array[i][index];
-				}
+				JSON.parse(array[i][index]);
+				line += array[i][index];
 			} catch (e) {
 				line += JSON.stringify(array[i][index]);
 			}
@@ -548,5 +669,95 @@ function exportCSVFile(headers, items, fileTitle) {
 			link.click();
 			document.body.removeChild(link);
 		}
+	}
+}
+
+function getJsonFromUrl(url) {
+	if(!url) url = location.search;
+	var query = url.substr(1);
+	var result = {};
+	query.split("&").forEach(function(part) {
+		var item = part.split("=");
+		result[item[0]] = decodeURIComponent(item[1]);
+	});
+	return result;
+}
+
+function handleSort() {
+	var query = getJsonFromUrl();
+	if (query.sort) {
+		if (query.sort == "+name" || query.sort == " name") {
+			document.getElementById("name-column").innerHTML = document.getElementById("name-column").innerHTML + '<i class="arrow up"></i>';
+		} else if (query.sort == "-name") {
+			document.getElementById("name-column").innerHTML += '<i class="arrow down"></i>';
+		} else if (query.sort == "+timestamp" || query.sort == " timestamp") {
+			document.getElementById("last-column").innerHTML += '<i class="arrow up"></i>';
+		} else if (query.sort == "-timestamp") {
+			document.getElementById("last-column").innerHTML += '<i class="arrow down"></i>';
+		} else if (query.sort == "+textsize" || query.sort == " textsize") {
+			document.getElementById("journal-size").innerHTML += '<i class="arrow up"></i>';
+		} else if (query.sort == "-textsize") {
+			document.getElementById("journal-size").innerHTML += '<i class="arrow down"></i>';
+		}  else if (query.sort == "+title" || query.sort == " title") {
+			document.getElementById("journal-title").innerHTML += '<i class="arrow up"></i>';
+		} else if (query.sort == "-title") {
+			document.getElementById("journal-title").innerHTML += '<i class="arrow down"></i>';
+		}
+	}
+}
+
+function sortBy(params) {
+	var query = getJsonFromUrl();
+	var prev = "";
+	if (query['sort']) {
+		prev = query['sort'];
+	}
+	if (params == "name") {
+		if (prev == "-name") {
+			query['sort'] = "+name";
+		} else {
+			query['sort'] = "-name";
+		}
+	} else if (params == "time") {
+		if (prev == "+timestamp" || prev == " timestamp") {
+			query['sort'] = "-timestamp";
+		} else if (prev == "-timestamp") {
+			delete query.sort;
+		} else {
+			query['sort'] = "+timestamp";
+		}
+	} else if (params == "size") {
+		if (prev == "+textsize" || prev == " textsize") {
+			query['sort'] = "-textsize";
+		} else if (prev == "-textsize") {
+			delete query.sort;
+		} else {
+			query['sort'] = "+textsize";
+		}
+	} else if (params == "title") {
+		if (prev == "+title" || prev == " title") {
+			query['sort'] = "-title";
+		} else if (prev == "-title") {
+			delete query.sort;
+		} else {
+			query['sort'] = "+title";
+		}
+	} else {
+		delete query.sort;
+	}
+
+	var url = location.origin + location.pathname + '?';
+	for (var key in query) {
+		if (key && query.hasOwnProperty(key)) {
+			var val = query[key];
+			url += key + '=' + val + '&';
+		}
+	}
+	window.location.href = url;
+}
+
+function launchTutorial() {
+	if (window.currTour && typeof window.currTour.restart == "function") {
+		window.currTour.restart();
 	}
 }

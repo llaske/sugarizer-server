@@ -7,7 +7,7 @@
 			<div class="container-fluid">
 				<% include includes/flash-errors %>
 				<div class="row">
-					<div class="card">
+					<div class="card" id="journal-search-card">
 							<form method="get" action="" id="getJournalEntries">
 								<div class="col-md-4">
 									<div class="form-group form-black label-floating is-empty">
@@ -63,17 +63,17 @@
 								<p data-l10n-id="noEntryText"></p>
 							</div>
 						<% } else { %>
-						<div class="card">
+						<div class="card" id="journal-cards-parent">
 								<div class="card-header row" data-background-color="">
 										<div class="col-md-4 col-sm-4 col-lg-4 text-left">
 										<% if(entries.links.prev_page) { %>
-											 <a data-l10n-id="prevPage" href="<%= query.journal %><%= entries.links.prev_page %>&type=<%= query.type %>"><< Prev page</a>
+											 <a data-l10n-id="prevPage" class="page-button" href="<%= query.journal %><%= entries.links.prev_page %>&type=<%= query.type %>"><< Prev page</a>
 										<% } %>
 										</div>
 										<div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= entries.offset + 1 %>", "to": "<%= entries.offset + entries.entries.length %>", "total": "<%= entries.total %>" }'></div>
 										<div class="col-md-4 col-sm-4 col-lg-4 text-right">
 										<% if(entries.links.next_page) { %>
-											 <a data-l10n-id="nextPage" href="<%= query.journal %><%= entries.links.next_page %>&type=<%= query.type %>">Next page >></a>
+											 <a data-l10n-id="nextPage" class="page-button" href="<%= query.journal %><%= entries.links.next_page %>&type=<%= query.type %>">Next page >></a>
 										<% } %>
 										</div>
 								</div>
@@ -83,15 +83,15 @@
 														<tr>
 																<th class="text-muted">#</th>
 																<th data-l10n-id="icon" class="text-muted"></th>
-																<th data-l10n-id="title" class="text-muted"></th>
-																<th data-l10n-id="timestamp" class="text-muted"></th>
-																<th data-l10n-id="size" class="text-muted"></th>
+																<th class="text-muted"><button data-l10n-id="title" id="journal-title" onclick="sortBy('title')"></button></th>
+																<th class="text-muted"><button data-l10n-id="timestamp" id="last-column" onclick="sortBy('time')"></button></th>
+																<th class="text-muted"><button data-l10n-id="size" id="journal-size" onclick="sortBy('size')"></button></th>
 																<th data-l10n-id="action" class="text-muted"></th>
 														</tr>
 												</thead>
 												<tbody>
 														<% for(var i=0; i < entries.entries.length; i++) { %>
-															<tr>
+															<tr id="journal-entry-card">
 																	<td><%= entries.offset + i + 1 %></td>
 																	<td>
 																		<div class="color" id="<%= entries.entries[i].objectId %>">
@@ -127,8 +127,8 @@
 																		<% if(format=="-") {%> <div style="display: inline"><%= format %></div> <%}%>
 																	</td>
 																	<td>
-																		<a href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
-																		<a data-l10n-id="deleteEntry" title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>&title=<%= entries.entries[i].metadata.title %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteEntry', {activity:`<%= entries.entries[i].metadata.title %>`}))"><i class="material-icons text-muted">delete_forever</i></a>
+																		<a id="journal-activity-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
+																		<a id="journal-activity-delete" data-l10n-id="deleteEntry" title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>&title=<%= entries.entries[i].metadata.title %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteEntry', {activity:`<%= entries.entries[i].metadata.title %>`}))"><i class="material-icons text-muted">delete_forever</i></a>
 																	</td>
 															</tr>
 														<% } %>
@@ -144,3 +144,14 @@
 	</div>
 </div>
 <% include includes/footer %>
+<script>
+	handleSort();
+	var journalList = document.getElementById("journal-cards-parent");
+	if (!journalList) {
+		var currTour = sugarizerTour("journal1", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+ 		if (!currTour.isFinished()) currTour.start();
+	} else {
+		var currTour = sugarizerTour("journal2", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+ 		if (!currTour.isFinished()) currTour.start();
+	}
+</script>

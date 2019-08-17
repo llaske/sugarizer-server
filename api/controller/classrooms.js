@@ -204,23 +204,62 @@ exports.findAll = function(req, res) {
 			var route = req.route.path;
 			var options = getOptions(req, count, "+name");
 
-			//get data
-			collection.find(query, options).toArray(function(err, classrooms) {
-				//add pagination
-				var data = {
-					classrooms: classrooms,
-					offset: options.skip,
-					limit: options.limit,
-					total: options.total,
-					sort: options.sort[0][0] + "(" + options.sort[0][1] + ")",
-					links: {
-						prev_page: (options.skip - options.limit >= 0) ? formPaginatedUrl(route, params, options.skip - options.limit, options.limit) : undefined,
-						next_page: (options.skip + options.limit < options.total) ? formPaginatedUrl(route, params, options.skip + options.limit, options.limit) : undefined
+			var conf = [
+				{
+					$match: query
+				},
+				{
+					$project: {
+						name: 1,
+						students: 1,
+						color: 1,
+						options: 1,
+						created_time: 1,
+						timestamp: 1,
+						insensitive: { "$toLower": "$name" }
 					}
-				};
-
-				// Return
-				res.send(data);
+				},
+				{ 
+					$sort: {
+						"insensitive": 1
+					}
+				}
+			];
+	
+			if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >=2) {
+				conf[1]["$project"]["insensitive"] = { "$toLower": "$" + options.sort[0][0] };
+	
+				if (options.sort[0][1] == 'desc') {
+					conf[2]["$sort"] = {
+						"insensitive": -1
+					};
+				} else {
+					conf[2]["$sort"] = {
+						"insensitive": 1
+					};
+				}
+			}
+	
+			collection.aggregate(conf, function (err, classroom) {
+				if (options.skip) classroom.skip(options.skip);
+				if (options.limit) classroom.limit(options.limit);
+				//return
+				classroom.toArray(function(err, classrooms) {
+					//add pagination
+					var data = {
+						classrooms: classrooms,
+						offset: options.skip,
+						limit: options.limit,
+						total: options.total,
+						sort: options.sort[0][0] + "(" + options.sort[0][1] + ")",
+						links: {
+							prev_page: (options.skip - options.limit >= 0) ? formPaginatedUrl(route, params, options.skip - options.limit, options.limit) : undefined,
+							next_page: (options.skip + options.limit < options.total) ? formPaginatedUrl(route, params, options.skip + options.limit, options.limit) : undefined
+						}
+					};
+					// Return
+					res.send(data);
+				});
 			});
 		});
 	});

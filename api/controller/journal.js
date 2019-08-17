@@ -505,7 +505,8 @@ function getOptions(req) {
 				'_id': 0,
 				'journalId': {
 					$literal: req.params.jid
-				}
+				},
+				'insensitive': { "$toLower": "$content.metadata.title" }
 			}
 		});
 	}
@@ -556,7 +557,9 @@ function getOptions(req) {
 	var sort_val = (typeof req.query.sort === "string" ? req.query.sort : '+timestamp');
 	var sort_type = sort_val.indexOf("-") == 0 ? -1 : 1;
 	var sort = {};
-	sort['metadata.' + sort_val.substring(1).toLowerCase()] = sort_type;
+	sort_val = 'metadata.' + sort_val.substring(1).toLowerCase();
+	if (sort_val == "metadata.title") sort_val = 'insensitive';
+	sort[sort_val] = sort_type;
 	options.push({
 		$sort: sort
 	});
@@ -969,7 +972,7 @@ exports.removeInJournal = function(req, res) {
  * @apiName GetAllJournalEntries
  * @apiDescription It will get all the journals with their entries present in the database. Private and shared can be filtered using the "type" query param. If the param is not specified, it will get all the journals.
  * @apiGroup Journal
- * @apiVersion 1.0.0
+ * @apiVersion 1.2.0
  *
  * @apiExample Example usage:
  *     "/api/v1/aggregate"

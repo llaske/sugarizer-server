@@ -8,6 +8,7 @@ var db;
 var usersCollection;
 var classroomsCollection;
 var journalCollection;
+var chartsCollection;
 
 // eslint-disable-next-line no-unused-vars
 var gridfsbucket, CHUNKS_COLL, FILES_COLL;
@@ -17,6 +18,7 @@ exports.init = function(settings, database) {
 	usersCollection = settings.collections.users;
 	classroomsCollection = settings.collections.classrooms;
 	journalCollection = settings.collections.journal;
+	chartsCollection = settings.collections.charts;
 	db = database;
 
 	var bucket = 'textBucket';
@@ -212,7 +214,6 @@ exports.findAll = function(req, res) {
 			var params = JSON.parse(JSON.stringify(req.query));
 			var route = req.route.path;
 			var options = getOptions(req, count, "+name");
-
 			//get data
 			exports.getAllUsers(query, options, function(users) {
 
@@ -254,15 +255,52 @@ exports.getAllUsers = function(query, options, callback) {
 
 	//get data
 	db.collection(usersCollection, function(err, collection) {
-		
-		//get users
-		collection.find(query, function(err, users) {
+		var conf = [
+			{
+				$match: query
+			},
+			{
+				$project: {
+					name: 1,
+					language: 1,
+					role: 1,
+					color: 1,
+					password: 1,
+					options: 1,
+					created_time: 1,
+					timestamp: 1,
+					private_journal: 1,
+					shared_journal: 1,
+					favorites: 1,
+					classrooms: 1,
+					charts: 1,
+					insensitive: { "$toLower": "$name" }
+				}
+			},
+			{ 
+				$sort: {
+					"insensitive": 1
+				}
+			}
+		];
 
-			//skip sort limit
-			if (options.sort) users.sort(options.sort);
+		if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >=2) {
+			conf[1]["$project"]["insensitive"] = { "$toLower": "$" + options.sort[0][0] };
+
+			if (options.sort[0][1] == 'desc') {
+				conf[2]["$sort"] = {
+					"insensitive": -1
+				};
+			} else {
+				conf[2]["$sort"] = {
+					"insensitive": 1
+				};
+			}
+		}
+
+		collection.aggregate(conf, function (err, users) {
 			if (options.skip) users.skip(options.skip);
 			if (options.limit) users.limit(options.limit);
-
 			//return
 			users.toArray(function(err, usersList) {
 				callback(usersList);
@@ -653,77 +691,87 @@ exports.removeUser = function(req, res) {
 				});
 			} else {
 				if (user && user.ok && user.value) {
-					// Remove user form classroom
-					db.collection(classroomsCollection, function(err, collection) {
-						collection.updateMany({},
-							{
-								$pull: { students: uid}
-							}, {
-								safe: true
-							},
-							function(err) {
-								if (err) {
-									res.status(500).send({
-										error: "An error has occurred",
-										code: 10
-									});
-								} else {
-									if (user.value.private_journal) {
-										db.collection(journalCollection, function(err, collection) {
-											collection.findOneAndDelete({
-												_id: new mongo.ObjectID(user.value.private_journal)
-											}, {
-												safe: true
-											},
-											function(err, result) {
-												if (err) {
-													return res.status(500).send({
-														'error': 'An error has occurred',
-														'code': 10
-													});
-												} else {
-													if (result && result.value && result.ok) {
-														if (typeof result.value.content == 'object') {
-															var cont = [];
-															for (var i=0; i<result.value.content.length; i++) {
-																if (result.value.content[i] && mongo.ObjectID.isValid(result.value.content[i].text)) {
-																	cont.push(result.value.content[i].text);
-																}
-															}
-															var deleteCount = 0;
-															for (var i=0; i < cont.length; i++) {
-																gridfsbucket.delete(cont[i], function() {
-																	deleteCount++;
-																	if (deleteCount == cont.length) return res.send({
+					// Remove user charts
+					db.collection(chartsCollection, function(err, collection) {
+						collection.deleteMany({
+							user_id: new mongo.ObjectID(uid)
+						}, {
+							safe: true
+						},
+						function(err) {
+							if (err) {
+								res.status(500).send({
+									error: "An error has occurred",
+									code: 10
+								});
+							} else {
+								// Remove user form classroom
+								db.collection(classroomsCollection, function(err, collection) {
+									collection.updateMany({},
+										{
+											$pull: { students: uid }
+										}, {
+											safe: true
+										},
+										function(err) {
+											if (err) {
+												res.status(500).send({
+													error: "An error has occurred",
+													code: 10
+												});
+											} else {
+												if (user.value.private_journal) {
+													db.collection(journalCollection, function(err, collection) {
+														collection.findOneAndDelete({
+															_id: new mongo.ObjectID(user.value.private_journal)
+														}, {
+															safe: true
+														},
+														function(err, result) {
+															if (err) {
+																return res.status(500).send({
+																	'error': 'An error has occurred',
+																	'code': 10
+																});
+															} else {
+																if (result && result.value && result.ok && typeof result.value.content == 'object') {
+																	var cont = [];
+																	for (var i=0; i<result.value.content.length; i++) {
+																		if (result.value.content[i] && mongo.ObjectID.isValid(result.value.content[i].text)) {
+																			cont.push(result.value.content[i].text);
+																		}
+																	}
+																	var deleteCount = 0;
+																	for (var i=0; i < cont.length; i++) {
+																		gridfsbucket.delete(cont[i], function() {
+																			deleteCount++;
+																			if (deleteCount == cont.length) return res.send({
+																				'user_id': uid
+																			});
+																		});
+																	}
+																	if (cont.length == 0) return res.send({
 																		'user_id': uid
 																	});
-																});
+																} else {
+																	return res.send({
+																		'user_id': uid
+																	});
+																}
 															}
-															if (cont.length == 0) return res.send({
-																'user_id': uid
-															});
-														} else {
-															return res.send({
-																'user_id': uid
-															});
-														}
-													} else {
-														return res.send({
-															'user_id': uid
 														});
-													}
+													});
+												} else {
+													return res.send({
+														'user_id': uid
+													});
 												}
 											}
-											);
-										});
-									} else {
-										res.send({
-											'user_id': uid
-										});
-									}
-								}
+										}
+									);
+								});
 							}
-						);
+						});
 					});
 				} else {
 					res.status(401).send({

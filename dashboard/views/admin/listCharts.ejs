@@ -1,0 +1,92 @@
+<% include ../includes/header %>
+<div class="wrapper">
+	<% include ../includes/sidebar %>
+	<div class="main-panel">
+		<% include ../includes/navbar %>
+		<div class="content ">
+			<div class="container-fluid">
+				<div class="row">
+                    <div class="col-md-12">
+						<div class="card">
+                            <div class="col-md-6 col-sm-12 col-xs-12">
+                                <div>
+                                    <div class="form-group form-black is-empty" style="float:left; margin:15px 0px 0px 0px; padding:0px;">
+                                        <label data-l10n-id="chartNotFound" class="control-label hidden">Chart not found</label>
+                                        <input class="form-control search_query" style="width: 200px;" oninput="hideLabel(this.value)" onchange="highlight(this.value.trim())"  value="" data-l10n-id="searchChart" placeholder="" type="text">
+                                    </div>
+                                    <button class="btn btn-white btn-round btn-just-icon" style="float:left;color:#ffffff; background:#999999; margin:8px 15px 0px 10px;" onclick="highlight($('.search_query').val().trim())">
+                                        <i class="material-icons">search</i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12 col-xs-12">
+                                <a data-l10n-id="addChart" class="btn btn-round pull-right" href="/dashboard/stats/add"><div class="ripple-container"></div></a>
+                                <a data-l10n-id="viewChart" class="btn btn-round pull-right" href="/dashboard/stats"><div class="ripple-container"></div></a>
+                            </div>
+						</div>
+					</div>
+                    <% if(charts.length == 0){%>
+                    <div class="col-md-12">
+                        <div class="text-center" style="margin-top:20vh;">
+                            <i class="material-icons dp96">info_outline</i>
+                            <p data-l10n-id="noChartsText"></p>
+                        </div>
+                    </div>
+                    <% } else { %>
+                    <div class="col-md-12">
+                        <div class="card card-plain" style="margin:10px;">
+                            <div class="card-content" style="padding-left:28px; padding-right:11px;">
+                                <div class="col-lg-1 col-md-1 col-sm-1 hide-mob-el"></div>
+                                <div data-l10n-id="title" class="text-center text-muted col-lg-4 col-md-4 col-sm-4 col-xs-5"></div>
+                                <div data-l10n-id="type" class="text-center text-muted col-lg-2 col-md-2 col-sm-2 hide-mob-el"></div>
+                                <div data-l10n-id="key" class="text-center text-muted col-lg-3 col-md-3 col-sm-3 hide-mob-el"></div>
+                                <div data-l10n-id="action" class="text-center text-muted col-lg-2 col-md-2 col-sm-2 col-xs-7"></div>
+                            </div>
+                        </div>
+                    </div>
+				    <div class="col-md-12">
+                        <ol class="simple_with_animation">
+                            <% for(var i=0; i < charts.length; i++) { %>
+                            <li>
+                                <div class="card">
+                                    <div class="card-content">
+                                        <div class="col-lg-1 col-md-1 col-sm-1 hide-mob-el"><img <% if(account.user && account.user.role=="admin") { %> class="draggable pointer" <% } %> src="../../public/img/font-awesome-ellipsis-v.png" alt="drag" style="width:40px;height:40px;" data-l10n-id="reorder" title="Drag to Reorder" ></div>
+                                        <div class="text-center col-lg-4 col-md-4 col-sm-4 col-xs-5 search_textbox" style="line-height: 40px;"><%= charts[i].title %></div>
+                                        <div class="text-center col-lg-2 col-md-2 col-sm-2 hide-mob-el" style="line-height: 40px;" data-l10n-id="<%= charts[i].type %>" ><%= charts[i].type %></div>
+                                        <div class="text-center col-lg-3 col-md-3 col-sm-3 hide-mob-el" style="line-height: 40px;"><%= charts[i].key %></div>
+                                        <div class="text-center col-lg-2 col-md-2 col-sm-2 col-xs-7" style="line-height: 40px; display:inline-flex; justify-content:center;">
+                                            <div class="hideshowBox" style="height: 40px; padding: 0px 5px 0px 5px;">
+                                                <label data-id="<%= charts[i]._id %>">
+                                                    <input id="<%= charts[i]._id %>" <% if(charts[i].hidden == true) { %> checked <% } %> name="hiddenCharts" type="checkbox" onclick="updateChart('<%= charts[i]._id %>')" data-l10n-id="toggle-hidden" title="Toggle Hidden" >
+                                                    <span class="checkbox-material"></span>
+                                                </label>
+                                            </div>
+                                            <a data-l10n-id="editChart" title="Edit Chart" href="/dashboard/stats/edit/<%= charts[i]._id %>" style="height: 40px; padding: 0px 5px 0px 5px;"><i class="material-icons text-muted">edit</i></a>
+                                            <a data-l10n-id="deleteChart" title="Delete Chart" href="/dashboard/stats/delete/<%= charts[i]._id %>?&title=<%= charts[i].title %>" style="height: 40px; padding: 0px 5px 0px 5px;" onclick="return confirm(document.webL10n.get('DoYouWantDeleteChart', {chart:'<%= charts[i].title %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </li>
+                            <% } %>
+                        </ol>
+				   </div>
+                   <% } %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<% include ../includes/footer %>
+<script>
+
+//set headers
+var headers = <%- JSON.stringify(headers) %>;
+var url = '<%= url %>';
+
+//init drag drop on desktop
+if ($(window).width() > 992) {
+    initChartDragDrop();
+}
+
+</script>
