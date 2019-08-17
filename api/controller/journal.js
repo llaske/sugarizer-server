@@ -1,7 +1,9 @@
 // Journal handling
 var mongo = require('mongodb'),
 	users = require("./users"),
-	streamifier = require('streamifier');
+	streamifier = require('streamifier'),
+	fs = require('fs'),
+	path = require('path');
 
 
 var db;
@@ -9,6 +11,8 @@ var db;
 var journalCollection;
 
 var shared = null;
+
+var sugarizerVersion = null;
 
 // eslint-disable-next-line no-unused-vars
 var gridfsbucket, CHUNKS_COLL, FILES_COLL;
@@ -48,11 +52,47 @@ exports.init = function(settings, database) {
 
 	var bucket = 'textBucket';
 	gridfsbucket = new mongo.GridFSBucket(db,{
-		chunkSizeBytes:1024,
+		chunkSizeBytes:102400,
 		bucketName: bucket
 	});
 	CHUNKS_COLL = bucket + ".chunks";
 	FILES_COLL = bucket + ".files";
+
+
+
+	// Get sugarizer version
+	var sugarizerPath = settings.client.path;
+	if (sugarizerPath[0] != '/') {
+		sugarizerPath = __dirname + '/../../' + settings.client.path;
+	}
+	sugarizerPath += (sugarizerPath[sugarizerPath.length-1] == '/' ? '' : '/');
+
+	var packageName = 'package.json';
+	// Read activities directory
+
+	fs.readdir(sugarizerPath, function(err, files) {
+		if (err) {
+			console.log("ERROR: can't find sugarizer path '"+sugarizerPath+"'");
+			throw err;
+		}
+		files.forEach(function(file) {
+			if (file == packageName) {
+				// Get the file name
+				var filePath = sugarizerPath + path.sep + file;
+				fs.stat(filePath, function(err, stats) {
+					if (err) {
+						console.log("ERROR: can't read '"+filePath+"'");
+						throw err;
+					}
+					// If it's a directory, it's an activity
+					if (!stats.isDirectory()) {
+						var sugarizerPackage = require(filePath);
+						sugarizerVersion = sugarizerPackage.version;
+					}
+				});
+			}
+		});
+	});
 };
 
 // Get shared journal
@@ -243,6 +283,7 @@ exports.addJournal = function(req, res) {
  * @apiSuccess {Number} limit Limit on number of results
  * @apiSuccess {Number} total total number of results
  * @apiSuccess {Object} link pagination links
+ * @apiSuccess {String} version sugarizer version
  *
  * @apiSuccessExample {Json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -294,7 +335,8 @@ exports.addJournal = function(req, res) {
  *     "links": {
  *     	"prev_page": "/api/v1/journal/5569f4b019e0b4c9525b3c96?limit=10&offset=10",
  *     	"next_page": "/api/v1/journal/5569f4b019e0b4c9525b3c96?limit=10&offset=30"
- *     }
+ *     },
+ *     "version": 1.2.0-alpha
  *    }
  **/
 exports.findJournalContent = function(req, res) {
@@ -342,10 +384,20 @@ exports.findJournalContent = function(req, res) {
 						db.collection(CHUNKS_COLL, function(err, collection) {
 							var ind = i;
 							collection.find({ files_id: items[i].text }).toArray(function(error, docs) {
-								if (!error) {
-									items[ind].text = docs[0].data.toString("utf8");
+								items[ind].text = "";
+								if (error || (docs && docs.length == 0)) {
+									resCount++;
+								} else {
+									for (var k=0; k<docs.length; k++) {
+										items[ind].text += docs[k].data ? docs[k].data.toString("utf8") : "";
+										if (k == docs.length - 1) {
+											resCount++;
+											if (resCount == reqCount) {
+												return returnResponse();
+											}
+										}
+									}
 								}
-								resCount++;
 								if (resCount == reqCount) {
 									return returnResponse();
 								}
@@ -369,7 +421,8 @@ exports.findJournalContent = function(req, res) {
 							'prev_page': ((skip - limit) >= 0) ? formPaginatedUrl(route, params, (skip - limit), limit) : undefined,
 							'curr_page': formPaginatedUrl(route, params, (skip), limit),
 							'next_page': ((skip + limit) < total) ? formPaginatedUrl(route, params, (skip + limit), limit) : undefined,
-						}
+						},
+						'version': sugarizerVersion
 					});
 				}
 			});

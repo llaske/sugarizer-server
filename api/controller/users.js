@@ -21,7 +21,7 @@ exports.init = function(settings, database) {
 
 	var bucket = 'textBucket';
 	gridfsbucket = new mongo.GridFSBucket(db,{
-		chunkSizeBytes:1024,
+		chunkSizeBytes:102400,
 		bucketName: bucket
 	});
 	CHUNKS_COLL = bucket + ".chunks";

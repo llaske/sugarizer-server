@@ -47,8 +47,112 @@ function initDragDrop() {
 	});
 }
 
+// -- HTML5 IndexedDB handling
+var html5indexedDB = {};
+html5indexedDB.db = null;
+var filestoreName = 'sugar_filestore';
+
+// Test indexedDB support
+html5indexedDB.test = function() {
+	return window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+};
+
+// Load database or create database on first launch
+html5indexedDB.load = function(then) {
+	if (html5indexedDB.db != null) {
+		then(null);
+		return;
+	}
+	if (!html5indexedDB.test()) {
+		if (then) {
+			then(-1);
+		}
+		return;
+	}
+	var request = window.indexedDB.open(filestoreName, 1);
+	request.onerror = function() {
+		if (then) {
+			then(-2);
+		}
+	};
+	request.onsuccess = function() {
+		html5indexedDB.db = request.result;
+		if (then) {
+			then(null);
+		}
+	};
+	request.onupgradeneeded = function(event) {
+		var db = event.target.result;
+		var objectStore = db.createObjectStore(filestoreName, {keyPath: "objectId"});
+		objectStore.createIndex("objectId", "objectId", { unique: true });
+	};
+};
+
+// Set a value in the database
+html5indexedDB.setValue = function(key, value, then) {
+	var transaction = html5indexedDB.db.transaction([filestoreName], "readwrite");
+	var objectStore = transaction.objectStore(filestoreName);
+	var request = objectStore.put({objectId: key, text: value});
+	request.onerror = function() {
+		if (then) {
+			then(request.errorCode);
+		}
+	};
+	request.onsuccess = function() {
+		if (then) {
+			then(null);
+		}
+	};
+};
+
+// Remove a value from the database
+html5indexedDB.removeValue = function(key, then) {
+	var transaction = html5indexedDB.db.transaction([filestoreName], "readwrite");
+	var objectStore = transaction.objectStore(filestoreName);
+	var request = objectStore.delete(key);
+	request.onerror = function() {
+		if (then) {
+			then(request.errorCode);
+		}
+	};
+	request.onsuccess = function() {
+		if (then) {
+			then(null);
+		}
+	};
+};
 
 function launch_activity(callurl) {
+	function loadDataDeprec(response, lsBackup) {
+		for (var index in response.lsObj) {
+			lsBackup[index] = localStorage.getItem(index);
+			var encodedValue = response.lsObj[index];
+			var rawValue = JSON.parse(encodedValue);
+			if (rawValue && rawValue.server) {
+				rawValue.server.url = window.location.protocol+"//"+window.location.hostname+":"+rawValue.server.web;
+				encodedValue = JSON.stringify(rawValue);
+			}
+			localStorage.setItem(index, encodedValue);
+		}
+	}
+
+	function loadData(response, lsBackup) {
+		for (var index in response.lsObj) {
+			lsBackup[index] = localStorage.getItem(index);
+			if (index == "sugar_datastoretext_" + response.objectId) {
+				html5indexedDB.setValue(response.objectId, response.lsObj[index]);
+			} else {
+				var encodedValue = response.lsObj[index];
+				var rawValue = JSON.parse(encodedValue);
+				if (rawValue && rawValue.server) {
+					rawValue.server.url = window.location.protocol+"//"+window.location.hostname+":"+rawValue.server.web;
+					encodedValue = JSON.stringify(rawValue);
+				}
+				localStorage.setItem(index, encodedValue);
+			}
+		}
+	}
+
 	$.get((callurl), function(response) {
 		// backup current storage and create a virtual context in local storage
 		var keyHistory = [];
@@ -59,16 +163,23 @@ function launch_activity(callurl) {
 				keyHistory.push(key);
 			}
 		}
+
+		// Check Sugarizer Version -- Backward Compatibilty
 		var lsBackup = [];
-		for (var index in response.lsObj) {
-			lsBackup[index] = localStorage.getItem(index);
-			var encodedValue = response.lsObj[index];
-			var rawValue = JSON.parse(encodedValue);
-			if (rawValue && rawValue.server) {
-				rawValue.server.url = window.location.protocol+"//"+window.location.hostname+":"+rawValue.server.web;
-				encodedValue = JSON.stringify(rawValue);
+		if (response.version > 1.1) {
+			if (html5indexedDB.db == null) {
+				html5indexedDB.load(function(err) {
+					if (err) {
+						console.log("FATAL ERROR: indexedDB not supported, could be related to use of private mode");
+					} else {
+						loadData(response, lsBackup);
+					}
+				});
+			} else {
+				loadData(response, lsBackup);
 			}
-			localStorage.setItem(index, encodedValue);
+		} else {
+			loadDataDeprec(response, lsBackup);
 		}
 
 		// open window
@@ -101,6 +212,11 @@ function launch_activity(callurl) {
 						if (!found) {
 							localStorage.removeItem(key);
 						}
+					}
+
+					// // Remove IndexDB storage
+					if (response.version > 1.1 && html5indexedDB.db != null) {
+						html5indexedDB.removeValue(response.objectId);
 					}
 				};
 			} else {
