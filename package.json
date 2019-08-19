@@ -11,7 +11,7 @@
 		"cors": "2.8.x",
 		"csv-parser": "^2.2.0",
 		"csv-writer": "~1.2.0",
-		"ejs": "~2.5.5",
+		"ejs": "^2.6.2",
 		"express": "4.16.4",
 		"express-flash": "~0.0.2",
 		"express-session": "1.15.6",
