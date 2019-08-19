@@ -18,13 +18,18 @@ exports.index = function(req, res) {
 		common.l10n.setLanguage(req.query.lang);
 	}
 
+	var sort = '+index';
+	if (req.query && req.query.sort) {
+		sort = req.query.sort;
+	}
+
 	// call
 	request({
 		headers: common.getHeaders(req),
 		json: true,
 		method: 'GET',
 		qs: {
-			sort: '+index',
+			sort: sort,
 			name: (req.query.search ? req.query.search.trim() : undefined)
 		},
 		uri: common.getAPIUrl(req) + 'api/v1/activities'

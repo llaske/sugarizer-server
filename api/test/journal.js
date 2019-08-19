@@ -5,17 +5,17 @@ process.env.NODE_ENV = 'test';
 var server = require('../../sugarizer.js');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
-var should = chai.should();
 var timestamp = +new Date();
 
 //fake user for testing auth
 var fakeUser = {
 	'student': '{"name":"Sugarizer' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"pass","language":"fr"}',
-	'admin': '{"name":"TarunFake' + (timestamp.toString()) + '","password":"pokemon","role":"admin"}'
-}
+	'admin': '{"name":"TarunFake' + (timestamp.toString()) + '","password":"pokemon","language":"en","role":"admin"}'
+};
 
 //init server
 chai.use(chaiHttp);
+chai.should();
 
 describe('Journal', function() {
 
@@ -27,20 +27,40 @@ describe('Journal', function() {
 			chai.request(server)
 				.post('/auth/signup')
 				.send({
-					"user": fakeUser.student
+					"user": fakeUser.admin
 				})
-				.end((err, res) => {
+				.end(() => {
 
 					//login user
 					chai.request(server)
 						.post('/auth/login')
 						.send({
-							"user": fakeUser.student
+							"user": fakeUser.admin
 						})
 						.end((err, res) => {
 							//store user data
-							fakeUser.student = res.body;
-							done();
+							fakeUser.admin = res.body;
+
+							//create fake users
+							chai.request(server)
+								.post('/auth/signup')
+								.send({
+									"user": fakeUser.student
+								})
+								.end(() => {
+
+									//login user
+									chai.request(server)
+										.post('/auth/login')
+										.send({
+											"user": fakeUser.student
+										})
+										.end((err, res) => {
+											//store user data
+											fakeUser.student = res.body;
+											done();
+										});
+								});
 						});
 				});
 		}, 300);
@@ -87,6 +107,19 @@ describe('Journal', function() {
 		});
 	});
 
+	describe('/GET/aggregate journal', () => {
+		it('it should get all journal entries', (done) => {
+			chai.request(server)
+				.get('/api/v1/journal/aggregate')
+				.set('x-access-token', fakeUser.admin.token)
+				.set('x-key', fakeUser.admin.user._id)
+				.end((err, res) => {
+					res.should.have.status(200);
+					done();
+				});
+		});
+	});
+
 	describe('/POST/:id journal', function() {
 		it('it should do nothing on invalid journal', (done) => {
 
@@ -99,7 +132,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
-					res.body.code.should.be.eql(12);
+					res.body.code.should.be.eql(8);
 					done();
 				});
 		});
@@ -161,7 +194,7 @@ describe('Journal', function() {
 				.set('x-key', fakeUser.student.user._id)
 				.end((err, res) => {
 					res.should.have.status(401);
-					res.body.code.should.be.eql(11);
+					res.body.code.should.be.eql(8);
 					done();
 				});
 		});
@@ -450,7 +483,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
-					res.body.code.should.be.eql(13);
+					res.body.code.should.be.eql(8);
 					done();
 				});
 		});
@@ -540,7 +573,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(401);
-					res.body.code.should.be.eql(11);
+					res.body.code.should.be.eql(8);
 					done();
 				});
 		});
@@ -644,7 +677,14 @@ describe('Journal', function() {
 			.set('x-key', fakeUser.student.user._id)
 			.end((err, res) => {
 				res.should.have.status(200);
-				done();
+				chai.request(server)
+					.delete('/api/v1/users/' + fakeUser.admin.user._id)
+					.set('x-access-token', fakeUser.admin.token)
+					.set('x-key', fakeUser.admin.user._id)
+					.end((err, res) => {
+						res.should.have.status(200);
+						done();
+					});
 			});
 	});
 });
@@ -662,5 +702,5 @@ function genFakeJournalEntry(i, text) {
 			"timestamp": (+new Date() - parseInt(1000 * Math.random())),
 			"activity": (i.toString() + ".mocha.org")
 		}
-	})
+	});
 }

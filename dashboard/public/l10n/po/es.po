@@ -70,7 +70,7 @@ msgstr "Acción"
 
 #: role
 msgctxt "role"
-msgid "role"
+msgid "Role"
 msgstr "Papel"
 
 #: title
@@ -98,10 +98,10 @@ msgctxt "successActivityUpdate"
 msgid "Activities successfully updated!"
 msgstr "Actividades actualizadas con éxito!"
 
-#: viewAllUsers
-msgctxt "viewAllUsers"
-msgid "View all users"
-msgstr "Ver todos los usuarios"
+#: viewAllStudents
+msgctxt "viewAllStudents"
+msgid "View all students"
+msgstr "Ver todos los estudiantes"
 
 #: viewAllActivities
 msgctxt "viewAllActivities"
@@ -199,15 +199,15 @@ msgctxt "noGraphDataText"
 msgid "Not Enough Data"
 msgstr "No hay datos suficientes"
 
-#: HowUsersAreLaunchingActivities
-msgctxt "HowUsersAreLaunchingActivities"
-msgid "How users are launching activities?"
-msgstr "Cómo los usuarios están poniendo en marcha actividades?"
+#: HowStudentsAreLaunchingActivities
+msgctxt "HowStudentsAreLaunchingActivities"
+msgid "How students are launching activities?"
+msgstr "¿Cómo están lanzando los estudiantes las actividades?"
 
-#: HowOftenUsersAreChangingTheirProfileSettings
-msgctxt "HowOftenUsersAreChangingTheirProfileSettings"
-msgid "How often users are changing their profile settings?"
-msgstr "¿Con qué frecuencia a los usuarios Hey cambiar su configuración de perfil?"
+#: HowOftenStudentsAreChangingTheirProfileSettings
+msgctxt "HowOftenStudentsAreChangingTheirProfileSettings"
+msgid "How often students are changing their profile settings?"
+msgstr "¿Con qué frecuencia los estudiantes están cambiando la configuración de su perfil?"
 
 #: TopContributors
 msgctxt "TopContributors"
@@ -219,10 +219,10 @@ msgctxt "TopActivities"
 msgid "Top Activities"
 msgstr "arriba Actividades"
 
-#: RecentUsers
-msgctxt "RecentUsers"
-msgid "Recent Users"
-msgstr "Usuarios recientes"
+#: RecentStudents
+msgctxt "RecentStudents"
+msgid "Recent Students"
+msgstr "Estudiantes recientes"
 
 #: RecentEntries
 msgctxt "RecentEntries"
@@ -365,6 +365,11 @@ msgctxt "PasswordBlank"
 msgid "Password cannot be blank"
 msgstr "Password cannot be blank"
 
+#: PasswordInvalid
+msgctxt "PasswordInvalid"
+msgid "Password is not valid"
+msgstr "La contraseña no es valida"
+
 #: CantOpenWindow
 msgctxt "CantOpenWindow"
 msgid "Can't open window, check your browser for popup blocker"
@@ -430,6 +435,11 @@ msgctxt "ErrorCode19"
 msgid "You don't have permission to perform this action"
 msgstr "You don't have permission to perform this action"
 
+#: ErrorCode20
+msgctxt "ErrorCode20"
+msgid "Please login with another admin account before deleting your account"
+msgstr "Please login with another admin account before deleting your account"
+
 #: ErrorCode21
 msgctxt "ErrorCode21"
 msgid "User not defined!"
@@ -480,10 +490,10 @@ msgctxt "CountEntries"
 msgid "# of Entries"
 msgstr "# of Entries"
 
-#: HowUsersAreActive
-msgctxt "HowUsersAreActive"
-msgid "How many users actives during last month?"
-msgstr "How many users actives during last month?"
+#: HowStudentsAreActive
+msgctxt "HowStudentsAreActive"
+msgid "How many students active during last month?"
+msgstr "¿Cuántos estudiantes activos durante el mes pasado?"
 
 #: UserActive
 msgctxt "UserActive"
@@ -502,8 +512,8 @@ msgstr "What type of client connected?"
 
 #: HowManyEntriesByJournal
 msgctxt "HowManyEntriesByJournal"
-msgid "How many entries by user?"
-msgstr "How many entries by user?"
+msgid "How many entries by student?"
+msgstr "¿Cuántas entradas por alumno?"
 
 #: AverageEntries
 msgctxt "AverageEntries"

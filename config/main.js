@@ -1,7 +1,4 @@
 var express = require('express'),
-	fs = require('fs'),
-	ini = require('ini'),
-	ejs = require('ejs'),
 	bodyParser = require('body-parser'),
 	expressSession = require('express-session'),
 	cookieParser = require('cookie-parser'),
@@ -17,7 +14,7 @@ module.exports = function(app, ini) {
 	// add an artificial delay for debug
 	if (artificialDelay) {
 		app.use(function(req,res,next) {
-			setTimeout(next, artificialDelay)
+			setTimeout(next, artificialDelay);
 		});
 	}
 
@@ -36,11 +33,11 @@ module.exports = function(app, ini) {
 	app.use(bodyParser.urlencoded({
 		limit: '16mb',
 		extended: false
-	}))
+	}));
 	app.use(bodyParser.json({
 		limit: '16mb',
-		type: '*/*'
-	}))
+		type: 'application/json'
+	}));
 
 	//include expressValidator
 	app.use(expressValidator());

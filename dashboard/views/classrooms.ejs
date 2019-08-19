@@ -8,23 +8,25 @@
           <% include includes/flash-errors %>
           <div class="row">
               <div class="col-md-12">
-                  <div class="card">
+                  <div class="card" id="classroom-serach-row" >
                       <form method="get" id="user-form">
                         <div class="col-md-3">
                           <div class="form-group form-black label-floating is-empty">
-                              <input placeholder="Class-A..." class="form-control" name="classroom" value="<% if(query.q){ %><%= query.q %><% } %>" type="text">
+                              <input data-l10n-id="doe" placeholder="Search Class..." class="form-control" name="classroom" value="<% if(query.q){ %><%= query.q %><% } %>" type="text">
                               <span class="material-input"></span>
                           </div>
                         </div>
                         <div class="col-md-3"></div>
                         <div class="col-md-6">
-						  <a class="btn btn-round pull-right " href="classrooms/add" data-l10n-id="addClassroom"><div class="ripple-container"></div></a>
-                          <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+                            <% if (account.user && account.user.role=="admin") { %>
+                                <a class="btn btn-round pull-right " href="/dashboard/classrooms/add" data-l10n-id="addClassroom" id="classroom-addclassroom"><div class="ripple-container"></div></a>
+                            <% } %>
+                           <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>
                       </form>
                   </div>
               </div>
-              <div class="col-md-12">
+              <div class="col-md-12" id="classroom-cards-parent">
                   <% if(data.classrooms.length == 0){%>
                     <div class="text-center" style="margin-top:50px;">
                             <i class="material-icons dp96">info_outline</i>
@@ -35,13 +37,13 @@
                         <div class="card-header row" data-background-color="black">
                             <div class="col-md-4 col-sm-4 col-lg-4 text-left">
                             <% if(data.links.prev_page) { %>
-                               <a href="<%= data.links.prev_page %>" data-l10n-id="prevPage"><< previous page</a>
+                               <a href="<%= data.links.prev_page %>" class="page-button" data-l10n-id="prevPage"><< Prev page</a>
                             <% } %>
                             </div>
                             <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset + 1 %>", "to": "<%= data.offset + data.classrooms.length %>", "total": "<%= data.total %>" }'></div>
                             <div class="col-md-4 col-sm-4 col-lg-4 text-right">
                             <% if(data.links.next_page) { %>
-                               <a href="<%= data.links.next_page %>" data-l10n-id="nextPage">next page >></a>
+                               <a href="<%= data.links.next_page %>" class="page-button" data-l10n-id="nextPage">Next page >></a>
                             <% } %>
                             </div>
                         </div>
@@ -51,15 +53,15 @@
                                     <tr>
                                         <th>#</th>
                                         <th data-l10n-id="icon">Icon</th>
-                                        <th data-l10n-id="name">Name</th>
+                                        <th><button data-l10n-id="name" id="name-column" onclick="sortBy('name')"></button></th>
                                         <th data-l10n-id="studentsCount">Students Count</th>
-                                        <th data-l10n-id="lastSeen">Timestamp</th>
+                                        <th><button data-l10n-id="lastUpdated" id="last-column" onclick="sortBy('time')"></button></th>
                                         <th data-l10n-id="action">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <% for(var i=0; i < data.classrooms.length; i++) { %>
-                                      <tr>
+                                      <tr id="classroom-card">
                                           <td><%= data.offset + i + 1 %></td>
                                           <td>
                                               <div class="color" id="<%= data.classrooms[i]._id %>">
@@ -74,12 +76,14 @@
                                           <td><%= moment(data.classrooms[i].timestamp).calendar() %></td>
                                           <td>
                                               <% if(Array.isArray(data.classrooms[i].students) && data.classrooms[i].students.length > 0) { %>
-                                                  <a title="View Students" href="users?role=student&classid=<%- data.classrooms[i].students.join(',') %>"><span class="student-icon"></span></a>
+                                                  <a data-l10n-id="viewStudents" title="View Students" href="/dashboard/users?role=student&classroom_id=<%- data.classrooms[i]._id %>&classid=<%- data.classrooms[i].students.join(',') %>"><span id="classroom-view-students" class="student-icon"></span></a>
                                               <% } else { %>
-                                                  <a title="View Students" style="pointer-events: none;"><span class="student-icon" style="opacity: 0.4;"></span></a>
+                                                  <a title="View Students" style="pointer-events: none;"><span id="classroom-view-students" class="student-icon" style="opacity: 0.4;"></span></a>
                                               <% } %>
-                                              <a title="Edit Classroom" href="classrooms/edit/<%= data.classrooms[i]._id %>"><i class="material-icons text-muted">edit</i></a>
-                                              <a title="Delete Classroom" href="classrooms/delete/<%= data.classrooms[i]._id %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom', {classroom:'<%= data.classrooms[i].name %>'}))"><i class="material-icons text-muted">delete_forever</i></a>
+                                              <% if (account.user && account.user.role=="admin") { %>
+                                              <a data-l10n-id="editClassroom" title="Edit Classroom" href="/dashboard/classrooms/edit/<%= data.classrooms[i]._id %>"><i id="classroom-edit-class" class="material-icons text-muted">edit</i></a>
+                                              <a data-l10n-id="deleteClassroom" title="Delete Classroom" href="/dashboard/classrooms/delete/<%= data.classrooms[i]._id %>?&name=<%= data.classrooms[i].name %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteClassroom', {classroom:'<%= data.classrooms[i].name %>'}))"><i id="classroom-delete-class" class="material-icons text-muted">delete_forever</i></a>
+                                              <% } %>
                                           </td>
                                       </tr>
                                     <% } %>
@@ -95,3 +99,8 @@
 	</div>
 </div>
 <% include includes/footer %>
+<script>
+    handleSort();
+    var currTour = sugarizerTour("classroom", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+	if (!currTour.isFinished()) currTour.start();
+</script>

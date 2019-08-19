@@ -1,26 +1,16 @@
 // classrooms handling
 
 var mongo = require("mongodb"),
-  users = require("./users");
+	users = require("./users");
 
 var db;
 
 var classroomsCollection;
 
 // Init database
-exports.init = function(settings, callback) {
-  classroomsCollection = settings.collections.classrooms;
-  var client = new mongo.MongoClient(
-	  'mongodb://'+settings.database.server+':'+settings.database.port+'/'+settings.database.name,
-	  {auto_reconnect: false, w:1, useNewUrlParser: true});
-
-  // Open the db
-  client.connect(function(err, client) {
-	  db = client.db(settings.database.name);
-    if (err) {
-    }
-    if (callback) callback();
-  });
+exports.init = function(settings, database) {
+	classroomsCollection = settings.collections.classrooms;
+	db = database;
 };
 
 /**
@@ -59,53 +49,52 @@ exports.init = function(settings, callback) {
  *
  **/
 exports.addClassroom = function(req, res) {
-  //validate
-  if (!req.body.classroom) {
-    res.status(401).send({
-      error: "Classroom object not defined!",
-      code: 22
-    });
-    return;
-  }
+	//validate
+	if (!req.body.classroom) {
+		res.status(401).send({
+			error: "Classroom object not defined!",
+			code: 22
+		});
+		return;
+	}
 
-  //parse user details
-  var classroom = JSON.parse(req.body.classroom);
+	//parse user details
+	var classroom = JSON.parse(req.body.classroom);
 
-  //add timestamp & language
-  classroom.created_time = +new Date();
-  classroom.timestamp = +new Date();
+	//add timestamp & language
+	classroom.created_time = +new Date();
+	classroom.timestamp = +new Date();
 
-  // store
-  db.collection(classroomsCollection, function(err, collection) {
-    collection.insertOne(
-      classroom,
-      {
-        safe: true
-      },
-      function(err, result) {
-        if (err) {
-          res.status(500).send({
-            error: "An error has occurred",
-            code: 10
-          });
-        } else {
-          res.send(result.ops[0]);
-        }
-      }
-    );
-  });
+	// store
+	db.collection(classroomsCollection, function(err, collection) {
+		collection.insertOne(
+			classroom,
+			{
+				safe: true
+			},
+			function(err, result) {
+				if (err) {
+					res.status(500).send({
+						error: "An error has occurred",
+						code: 10
+					});
+				} else {
+					res.send(result.ops[0]);
+				}
+			}
+		);
+	});
 };
 
 /**
- * @api {delete} api/v1/classrooms Remove classroom
+ * @api {delete} api/v1/classrooms/:id  Remove classroom
  * @apiName RemoveClassroom
  * @apiDescription Remove the classroom by id.
  * @apiGroup Classrooms
  * @apiVersion 1.1.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
- *
- * @apiParam {String} classid Unique id of the classroom to delete Classroom
+ * @apiParam {String} id Unique id of the classroom to delete
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -114,41 +103,41 @@ exports.addClassroom = function(req, res) {
  *     }
  **/
 exports.removeClassroom = function(req, res) {
-  //validate
-  if (!mongo.ObjectID.isValid(req.params.classid)) {
-    res.status(401).send({
-      error: "Invalid classroom id",
-      code: 23
-    });
-    return;
-  }
+	//validate
+	if (!mongo.ObjectID.isValid(req.params.classid)) {
+		res.status(401).send({
+			error: "Invalid classroom id",
+			code: 23
+		});
+		return;
+	}
 
-  db.collection(classroomsCollection, function(err, collection) {
-    collection.remove(
-      {
-        _id: new mongo.ObjectID(req.params.classid)
-      },
-      function(err, result) {
-        if (err) {
-          res.status(500).send({
-            error: "An error has occurred",
-            code: 10
-          });
-        } else {
-          if (result && result.result && result.result.n == 1) {
-            res.send({
-              id: req.params.classid
-            });
-          } else {
-            res.status(401).send({
-              error: "Inexisting classroom id",
-              code: 23
-            });
-          }
-        }
-      }
-    );
-  });
+	db.collection(classroomsCollection, function(err, collection) {
+		collection.deleteOne(
+			{
+				_id: new mongo.ObjectID(req.params.classid)
+			},
+			function(err, result) {
+				if (err) {
+					res.status(500).send({
+						error: "An error has occurred",
+						code: 10
+					});
+				} else {
+					if (result && result.result && result.result.n == 1) {
+						res.send({
+							id: req.params.classid
+						});
+					} else {
+						res.status(401).send({
+							error: "Inexisting classroom id",
+							code: 23
+						});
+					}
+				}
+			}
+		);
+	});
 };
 
 /**
@@ -193,55 +182,87 @@ exports.removeClassroom = function(req, res) {
  *    }
  **/
 exports.findAll = function(req, res) {
-  //prepare condition
-  var query = {};
-  query = addQuery("q", req.query, query);
+	//prepare condition
+	var query = {};
+	query = addQuery("q", req.query, query);
 
-  // add filter and pagination
-  db.collection(classroomsCollection, function(err, collection) {
-    //count data
-    collection.countDocuments(query, function(err, count) {
-      //define var
-      var params = JSON.parse(JSON.stringify(req.query));
-      var route = req.route.path;
-      var options = getOptions(req, count, "+name");
+	if (req.user && req.user.role == "teacher") {
+		query['_id'] = {
+			$in: req.user.classrooms.map(function(id) {
+				return new mongo.ObjectID(id);
+			})
+		};
+	}
 
-      //get data
-      collection.find(query, options).toArray(function(err, classrooms) {
-        //add pagination
-        var data = {
-          classrooms: classrooms,
-          offset: options.skip,
-          limit: options.limit,
-          total: options.total,
-          sort: options.sort[0][0] + "(" + options.sort[0][1] + ")",
-          links: {
-            prev_page:
-              options.skip - options.limit >= 0
-                ? formPaginatedUrl(
-                    route,
-                    params,
-                    options.skip - options.limit,
-                    options.limit
-                  )
-                : undefined,
-            next_page:
-              options.skip + options.limit < options.total
-                ? formPaginatedUrl(
-                    route,
-                    params,
-                    options.skip + options.limit,
-                    options.limit
-                  )
-                : undefined
-          }
-        };
 
-        // Return
-        res.send(data);
-      });
-    });
-  });
+	// add filter and pagination
+	db.collection(classroomsCollection, function(err, collection) {
+		//count data
+		collection.countDocuments(query, function(err, count) {
+			//define var
+			var params = JSON.parse(JSON.stringify(req.query));
+			var route = req.route.path;
+			var options = getOptions(req, count, "+name");
+
+			var conf = [
+				{
+					$match: query
+				},
+				{
+					$project: {
+						name: 1,
+						students: 1,
+						color: 1,
+						options: 1,
+						created_time: 1,
+						timestamp: 1,
+						insensitive: { "$toLower": "$name" }
+					}
+				},
+				{ 
+					$sort: {
+						"insensitive": 1
+					}
+				}
+			];
+	
+			if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >=2) {
+				conf[1]["$project"]["insensitive"] = { "$toLower": "$" + options.sort[0][0] };
+	
+				if (options.sort[0][1] == 'desc') {
+					conf[2]["$sort"] = {
+						"insensitive": -1
+					};
+				} else {
+					conf[2]["$sort"] = {
+						"insensitive": 1
+					};
+				}
+			}
+	
+			collection.aggregate(conf, function (err, classroom) {
+				if (options.skip) classroom.skip(options.skip);
+				if (options.limit) classroom.limit(options.limit);
+				//return
+				classroom.toArray(function(err, classrooms) {
+					//add pagination
+					var data = {
+						classrooms: classrooms,
+						offset: options.skip,
+						limit: options.limit,
+						total: options.total,
+						sort: options.sort[0][0] + "(" + options.sort[0][1] + ")",
+						links: {
+							prev_page: (options.skip - options.limit >= 0) ? formPaginatedUrl(route, params, options.skip - options.limit, options.limit) : undefined,
+							next_page: (options.skip + options.limit < options.total) ? formPaginatedUrl(route, params, options.skip + options.limit, options.limit) : undefined
+						}
+					};
+					// Return
+					res.send(data);
+				});
+			});
+		});
+	});
 };
 
 /**
@@ -307,44 +328,44 @@ exports.findAll = function(req, res) {
  *      }
  **/
 exports.findById = function(req, res) {
-  if (!mongo.ObjectID.isValid(req.params.classid)) {
-    res.status(401).send({
-      error: "Invalid classroom id",
-      code: 23
-    });
-    return;
-  }
-  db.collection(classroomsCollection, function(err, collection) {
-    collection.findOne(
-      {
-        _id: new mongo.ObjectID(req.params.classid)
-      },
-      function(err, classroom) {
-        if (!classroom) {
-          res.status(401).send({});
-          return;
-        }
+	if (!mongo.ObjectID.isValid(req.params.classid)) {
+		res.status(401).send({
+			error: "Invalid classroom id",
+			code: 23
+		});
+		return;
+	}
+	db.collection(classroomsCollection, function(err, collection) {
+		collection.findOne(
+			{
+				_id: new mongo.ObjectID(req.params.classid)
+			},
+			function(err, classroom) {
+				if (!classroom) {
+					res.status(401).send({});
+					return;
+				}
 
-        // get student mappings
-        users.getAllUsers({
-          role: 'student'
-        }, {}, function(users) {
-            // append all students with selected flag
-            var studentList = classroom.students;
-            classroom.students = users.map(function(student){
-              student.is_member = false;
-              if(studentList.indexOf(student._id.toString()) > -1){
-                student.is_member = true;
-              }
-              return student;
-            });
-            // return
-            res.send(classroom);
-          }
-        );
-      }
-    );
-  });
+				// get student mappings
+				users.getAllUsers({
+					role: 'student'
+				}, {}, function(users) {
+					// append all students with selected flag
+					var studentList = classroom.students;
+					classroom.students = users.map(function(student){
+						student.is_member = false;
+						if(studentList.indexOf(student._id.toString()) > -1){
+							student.is_member = true;
+						}
+						return student;
+					});
+					// return
+					res.send(classroom);
+				}
+				);
+			}
+		);
+	});
 };
 
 /**
@@ -410,144 +431,183 @@ exports.findById = function(req, res) {
  *      }
  **/
 exports.updateClassroom = function(req, res) {
-  if (!mongo.ObjectID.isValid(req.params.classid)) {
-    res.status(401).send({
-      error: "Invalid classroom id",
-      code: 23
-    });
-    return;
-  }
+	if (!mongo.ObjectID.isValid(req.params.classid)) {
+		res.status(401).send({
+			error: "Invalid classroom id",
+			code: 23
+		});
+		return;
+	}
 
-  //validate
-  if (!req.body.classroom) {
-    res.status(401).send({
-      error: "Classroom object not defined!",
-      code: 22
-    });
-    return;
-  }
+	//validate
+	if (!req.body.classroom) {
+		res.status(401).send({
+			error: "Classroom object not defined!",
+			code: 22
+		});
+		return;
+	}
 
-  var classid = req.params.classid;
-  var classroom = JSON.parse(req.body.classroom);
+	var classid = req.params.classid;
+	var classroom = JSON.parse(req.body.classroom);
 
-  //add timestamp & language
-  classroom.timestamp = +new Date();
+	//add timestamp & language
+	classroom.timestamp = +new Date();
 
-  //update the classroom
-  db.collection(classroomsCollection, function(err, collection) {
-    collection.updateOne(
-      {
-        _id: new mongo.ObjectID(classid)
-      },
-      {
-        $set: classroom
-      },
-      {
-        safe: true
-      },
-      function(err, result) {
-        if (err) {
-          res.status(500).send({
-            error: "An error has occurred",
-            code: 10
-          });
-        } else {
-          if (result && result.result && result.result.n == 1) {
-            collection.findOne(
-              {
-                _id: new mongo.ObjectID(classid)
-              },
-              function(err, classroomResponse) {
-                // get student mappings
-                users.getAllUsers(
-                  {
-                    _id: {
-                      $in: classroomResponse.students.map(
-                        id => new mongo.ObjectID(id)
-                      )
-                    }
-                  },
-                  {},
-                  function(users) {
-                    // append students
-                    classroomResponse.students = users;
+	//update the classroom
+	db.collection(classroomsCollection, function(err, collection) {
+		collection.updateOne(
+			{
+				_id: new mongo.ObjectID(classid)
+			},
+			{
+				$set: classroom
+			},
+			{
+				safe: true
+			},
+			function(err, result) {
+				if (err) {
+					res.status(500).send({
+						error: "An error has occurred",
+						code: 10
+					});
+				} else {
+					if (result && result.result && result.result.n == 1) {
+						collection.findOne(
+							{
+								_id: new mongo.ObjectID(classid)
+							},
+							function(err, classroomResponse) {
+								// get student mappings
+								users.getAllUsers(
+									{
+										_id: {
+											$in: classroomResponse.students.map(function(id) {
+												return new mongo.ObjectID(id);
+											})
+										}
+									},
+									{},
+									function(users) {
+										// append students
+										classroomResponse.students = users;
 
-                    // return
-                    res.send(classroomResponse);
-                  }
-                );
-              }
-            );
-          } else {
-            res.status(401).send({
-              error: "Inexisting classroom id",
-              code: 23
-            });
-          }
-        }
-      }
-    );
-  });
+										// return
+										res.send(classroomResponse);
+									}
+								);
+							}
+						);
+					} else {
+						res.status(401).send({
+							error: "Inexisting classroom id",
+							code: 23
+						});
+					}
+				}
+			}
+		);
+	});
 };
 
 //private function for filtering and sorting
 function getOptions(req, count, def_sort) {
-  //prepare options
-  var sort_val = typeof req.query.sort === "string" ? req.query.sort : def_sort;
-  var sort_type = sort_val.indexOf("-") == 0 ? "desc" : "asc";
-  var options = {
-    sort: [[sort_val.substring(1), sort_type]],
-    skip: req.query.offset || 0,
-    total: count,
-    limit: req.query.limit || 10
-  };
+	//prepare options
+	var sort_val = typeof req.query.sort === "string" ? req.query.sort : def_sort;
+	var sort_type = sort_val.indexOf("-") == 0 ? "desc" : "asc";
+	var options = {
+		sort: [[sort_val.substring(1), sort_type]],
+		skip: req.query.offset || 0,
+		total: count,
+		limit: req.query.limit || 10
+	};
 
-  //cast to int
-  options.skip = parseInt(options.skip);
-  options.limit = parseInt(options.limit);
+	//cast to int
+	options.skip = parseInt(options.skip);
+	options.limit = parseInt(options.limit);
 
-  //return
-  return options;
+	//return
+	return options;
 }
 
 function addQuery(filter, params, query, default_val) {
-  //check default case
-  query = query || {};
+	//check default case
+	query = query || {};
 
-  //validate
-  if (
-    typeof params[filter] != "undefined" &&
+	//validate
+	if (
+		typeof params[filter] != "undefined" &&
     typeof params[filter] === "string"
-  ) {
-    if (filter == "q") {
-      query["name"] = {
-        $regex: new RegExp(params[filter], "i")
-      };
-    } else {
-      query[filter] = {
-        $regex: new RegExp("^" + params[filter] + "$", "i")
-      };
-    }
-  } else {
-    //default case
-    if (typeof default_val != "undefined") {
-      query[filter] = default_val;
-    }
-  }
+	) {
+		if (filter == "q") {
+			query["name"] = {
+				$regex: new RegExp(params[filter], "i")
+			};
+		} else {
+			query[filter] = {
+				$regex: new RegExp("^" + params[filter] + "$", "i")
+			};
+		}
+	} else {
+		//default case
+		if (typeof default_val != "undefined") {
+			query[filter] = default_val;
+		}
+	}
 
-  //return
-  return query;
+	//return
+	return query;
 }
 
 //form query params
 function formPaginatedUrl(route, params, offset, limit) {
-  //set params
-  params.offset = offset;
-  params.limit = limit;
-  var str = [];
-  for (var p in params)
-    if (params.hasOwnProperty(p)) {
-      str.push(p + "=" + params[p]);
-    }
-  return "?" + str.join("&");
+	//set params
+	params.offset = offset;
+	params.limit = limit;
+	var str = [];
+	for (var p in params)
+		if (params.hasOwnProperty(p)) {
+			str.push(p + "=" + params[p]);
+		}
+	return "?" + str.join("&");
 }
+
+exports.findStudents = function(classID) {
+	return new Promise(function(resolve, reject) {
+		if (!mongo.ObjectID.isValid(classID)) {
+			resolve([]);
+		} else {
+			db.collection(classroomsCollection, function(err, collection) {
+				if (err) {
+					reject(err);
+				} else {
+					collection.findOne(
+						{
+							_id: new mongo.ObjectID(classID)
+						},
+						function(err, classroom) {
+							if (err) {
+								reject(err);
+							} else if (!classroom || typeof classroom.students != "object" || classroom.students.length == 0) {
+								resolve([]);
+							} else {
+								// get student mappings
+								users.getAllUsers({
+									role: 'student',
+									_id: {
+										$in: classroom.students.map(function(id) {
+											return new mongo.ObjectID(id);
+										})
+									}
+								}, {}, function(list) {
+									resolve(list);
+								});
+							}
+						}
+					);
+				}
+			});
+		}
+	});
+};

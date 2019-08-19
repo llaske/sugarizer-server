@@ -5,19 +5,19 @@
 	<% include includes/navbar %>
 		<div class="content">
 			<div class="container-fluid">
-				<div class="row">
+				<div class="row" id="dashboard-home-cards">
 					<div class="col-lg-3 col-md-3 col-sm-3">
 						<div class="card card-stats">
 							<div class="card-header" data-background-color="black">
 								<p class="custom-icon xo-icon"></p>
 							</div>
 							<div class="card-content">
-								<p class="category" data-l10n-id="users">Users</p>
+								<p class="category" data-l10n-id="students">Students</p>
 								<h3 class="title"><%= data.users.total %></h3>
 							</div>
 							<div class="card-footer">
 								<div class="stats">
-									<a href="/dashboard/users" data-l10n-id="viewAllUsers">View all users</a>
+									<a class="pointer" onclick="jumpTo('/dashboard/users')" data-l10n-id="viewAllStudents">View all students</a>
 								</div>
 							</div>
 						</div>
@@ -33,7 +33,7 @@
 							</div>
 							<div class="card-footer">
 								<div class="stats">
-									<a href="/dashboard/activities" data-l10n-id="viewAllActivities">View all activities</a>
+									<a class="pointer" onclick="jumpTo('/dashboard/activities')" data-l10n-id="viewAllActivities">View all activities</a>
 								</div>
 							</div>
 						</div>
@@ -49,7 +49,7 @@
 							</div>
 							<div class="card-footer">
 								<div class="stats">
-									<a href="/dashboard/journal" data-l10n-id="viewAllJournal">View all journal entries</a>
+									<a class="pointer" onclick="jumpTo('/dashboard/journal')" data-l10n-id="viewAllJournal">View all journal entries</a>
 								</div>
 							</div>
 						</div>
@@ -65,7 +65,7 @@
 							</div>
 							<div class="card-footer">
 								<div class="stats">
-									<a href="/dashboard/classrooms" data-l10n-id="viewAllClassrooms">View all classrooms</a>
+									<a class="pointer" onclick="jumpTo('/dashboard/classrooms')" data-l10n-id="viewAllClassrooms">View all classrooms</a>
 								</div>
 							</div>
 						</div>
@@ -73,27 +73,27 @@
 				</div>
 				<div class="row">
 					<div class="col-md-6">
-						<div class="card" style="margin-top:0px;">
+						<div class="card" style="margin-top:0px;" id="top-contributor-chart-parent">
 							<div class="card-content">
 								<p class="title text-muted" data-l10n-id="TopContributors"></p>
 								<canvas onload="" id="top-contributor-chart" width="400" height="250"></canvas>
 							</div>
 							<div class="card-footer">
 								<div class="stats">
-									<a href="/dashboard/users" data-l10n-id="viewAllUsers">View all users</a>
+									<a class="pointer" onclick="jumpTo('/dashboard/users')" data-l10n-id="viewAllStudents">View all students</a>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-6">
-						<div class="card" style="margin-top:0px;">
+						<div class="card" style="margin-top:0px;" id="top-activities-chart-parent">
 							<div class="card-content">
 								<p class="title text-muted" data-l10n-id="TopActivities"></p>
 								<canvas id="top-activities-chart" width="400" height="250"></canvas>
 							</div>
 							<div class="card-footer">
 								<div class="stats">
-									<a href="/dashboard/activities" data-l10n-id="viewAllActivities">View all activities</a>
+									<a class="pointer" onclick="jumpTo('/dashboard/activities')" data-l10n-id="viewAllActivities">View all activities</a>
 								</div>
 							</div>
 						</div>
@@ -102,40 +102,41 @@
 
 				<div class="row">
 					<div class="col-md-6">
-						<div class="card" style="margin-top:0px;">
-							<div class="card-content">
-								<p class="title text-muted" data-l10n-id="RecentUsers"></p>
-								<table class="table table-hover" id="recent-users-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-														<th data-l10n-id="icon">Icon</th>
-                            <th data-l10n-id="name">Name</th>
-                            <th data-l10n-id="timestamp">Timestamp</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+						<div class="card" style="margin-top:0px;" id="recent-users-table-parent">
+							<div class="card-content table-responsive">
+								<p class="title text-muted dashboard-table-title" data-l10n-id="RecentStudents"></p>
+								<table class="table table-hover dashboard-table" id="recent-students-table">
+									<thead class="text-muted">
+										<tr>
+											<th>#</th>
+											<th data-l10n-id="icon">Icon</th>
+											<th data-l10n-id="username">Username</th>
+											<th data-l10n-id="timestamp">Timestamp</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-6">
-						<div class="card" style="margin-top:0px;">
-							<div class="card-content">
-								<p class="title text-muted" data-l10n-id="RecentEntries"></p>
-								<table class="table table-hover"  id="recent-activities-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-														<th data-l10n-id="icon">Icon</th>
-                            <th data-l10n-id="name">Name</th>
-														<th data-l10n-id="timestamp">Timestamp</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+						<div class="card" style="margin-top:0px;" id="recent-activities-table-parent">
+							<div class="card-content table-responsive">
+								<p class="title text-muted dashboard-table-title" data-l10n-id="RecentEntries"></p>
+								<table class="table table-hover dashboard-table"  id="recent-activities-table">
+									<thead class="text-muted">
+										<tr>
+											<th>#</th>
+											<th data-l10n-id="icon">Icon</th>
+											<th data-l10n-id="activity">Activity</th>
+											<th data-l10n-id="username">Username</th>
+											<th data-l10n-id="timestamp">Timestamp</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
 							</div>
 						</div>
 					</div>
@@ -149,4 +150,8 @@
 <script>createGraph('top-contributor', 'top-contributor-chart');</script>
 <script>createGraph('top-activities', 'top-activities-chart');</script>
 <script>createTable('recent-activities', 'recent-activities-table');</script>
-<script>createTable('recent-users', 'recent-users-table');</script>
+<script>createTable('recent-students', 'recent-students-table');</script>
+<script>
+	var currTour = sugarizerTour("home", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+	if (!currTour.isFinished()) currTour.start();
+</script>

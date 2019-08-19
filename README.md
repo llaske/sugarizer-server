@@ -4,143 +4,20 @@
 
 [Sugarizer](https://github.com/llaske/sugarizer) is the open source learning platform based on Sugar that began in the famous One Laptop Per Child project.
 
-Sugarizer Server allow deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed on any computer with Node.js 6+ and MongoDB 2.6+, or in a Docker container.
+Sugarizer Server allow deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 6+ and MongoDB 2.6+.
 
 
-## Running using Docker
+## Running Sugarizer Server
 
-To run Sugarizer Server with a few command lines using Docker and Docker Compose:
-
-**Clone Sugarizer Client and Sugarizer Server**
+The easiest way to run Sugarizer is to use Docker. To do that, type command lines:
 
 	git clone https://github.com/llaske/sugarizer
 	git clone https://github.com/llaske/sugarizer-server
-
-**Install Docker and Docker Compose on Ubuntu**
-
-	curl -fsSL https://get.docker.com/ | sh
-
-Install Docker Compose
-
-	curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" > /usr/local/bin/docker-compose
-	chmod +x /usr/local/bin/docker-compose
-
-To install Docker Compose on ARM architectures (e.g. for the Raspberry Pi 3), the link above will not work.  You need to use [arm-compose](https://github.com/hypriot/arm-compose) instead.
-
-You can find more details about the installation of **Docker** [here](https://docker.github.io/engine/installation/)
-
-You can	find more details about	the installation of **Docker Compose** [here](https://docs.docker.com/compose/install/)
-
-After that, go to the Sugarizer Server folder and launch
-
 	cd sugarizer-server
 	sh generate-docker-compose.sh
 	docker-compose up -d
 
-Your Sugarizer server will start automatically and will be accessible on http://127.0.0.1:8080 and your public IP. The database will be persisted inside the folder docker/db.
-
-## Running using the classic way
-
-To run Sugarizer Server **without Docker**, follow the step behind. Commands are shown from a new Debian Linux machine and could be different for other platforms or for an already installed machine:
-
-
-**Install Node.js**: Install Node.js (6+) and npm to manage packages. See [here](http://nodejs.org/ "here") more information.
-
-    sudo apt-get install nodejs
-
-**Install MongoDB**: Install MongoDB (2.6+). Don't forget to create a /data/db directory to store databases. See [here](http://www.mongodb.org/ "here") more information.
-
-    sudo apt-get install mongodb
-    sudo mkdir -p /data/db
-
-**Install Sugarizer Client and Server**: If need, you could update sugarizer-server/sugarizer.ini file (update port for web, mongodb or presence, see below)
-
-    sudo apt-get install git
-    cd /home/root
-    sudo git clone https://github.com/llaske/sugarizer
-    sudo git clone https://github.com/llaske/sugarizer-server
-    cd /home/root/sugarizer-server
-    sudo npm install
-
-**Run MongoDB and Sugarizer Server**:Run mongo daemon and Sugarizer a background process.
-
-    sudo mongod --fork --port 27018 --logpath /home/root/mongo.log
-    sudo nohup node sugarizer.js > /home/root/sugarizer.log &
-
-*Warning:* If your server had an unclean shutdown on previous boot,  MongoDB could not start correctly telling that some files are locked. In that case, launch first:
-
-	sudo mongod --repair
-
-**Check your install**: To check your install, run "http://127.0.0.1:8080" in your browser:
-
-* once a new user created, you should see the home with all activities,
-* go to Journal view, you should see at the bottom of the screen the two icons to switch to private/shared journal,
-* go to the neighborhood view, you should see one icon for the server and one for you.
-
-## Running on Macosx:Installation on macosx machine
-
-**Install homebrew**:Run this command on terminal
-
-        /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-*To check the version type the following command.*
-        
-        brew -v
-
-**Installing Node.js**:In the terminal type the following command to install Node.
-        
-        brew install node
-
-*If everything installed successfully then you can type in the following command in the terminal to check the Node and NPM version.*
-        
-        node -v
-        npm -v
-
-**Install and Run MongoDB with Homebrew**
-
-*Open the Terminal and type*
-
-        brew install mongodb
-
-*After downloading Mongo, create the “db” directory. This is where the Mongo data files will live. You can create the directory in the default location by running*
-        
-        mkdir -p /data/db
-
-*Make sure that the /data/db directory has the right permissions by running*
-        
-        sudo chown -R `id -un` /data/db
-
-Run the Mongo daemon, in one of your terminal windows run " mongod ". This should start the Mongo server. 
-
-To stop the Mongo daemon hit ctrl-c
-
-
-**Install Sugarizer Client and Server**
-
-        brew install git
-        cd desktop
-        git clone https://github.com/llaske/sugarizer
-        git clone https://github.com/llaske/sugarizer-server
-        cd sugarizer-server
-        npm install
-
-**Run MongoDB and Sugarizer Server**:Run mongod and Sugarizer.
-
-        mongod
-        node sugarizer.js
-
-**Check your install**: To check your install, run "http://127.0.0.1:8080" in your browser:
-
-## Running from a Raspberry Pi
-
-To deploy Sugarizer Server from a Raspberry Pi, a specific packaging name [Sugarizer Schoolbox](https://github.com/llaske/sugarizer-school-box) is available [here](https://github.com/llaske/sugarizer-school-box).
-
-## Running from the cloud
-
-You could install on any existing cloud platform (Amazon, Microsoft Azure, Google Cloud Platform, ...). Detail of settings for:
-
-* **Google Cloud Platform** is available [here](docs/deploytoGCP.md),
-* **Amazon Web Services** is available [here](docs/deploytoAWS.md).
+For other options to install Sugarizer on your computer, to install it on the cloud or on a RaspberryPI, see [here](docs/install.md).
 
 
 ## Global architecture
@@ -221,11 +98,14 @@ Sugarizer Server Dashboard is an admin tool for teachers and deployment administ
 * Users: how many users have been registered on the server, recent users, top users on the server, create/edit/remove a user.
 * Journal: how many Journals and how many entries in Journal on the server, last Journal, and last entries, edit a journal (see/update/remove) entries.
 * Activities: how many activities are available on the server, change activities visibility from Client, update order and way to appear in the favorite view.
+* Classrooms: a way to organize users on the server side to handle them more easily.
 * Graphic and request: display graphics and report on previous data.
 
 To login to the Dashboard the first time, you will have to create an admin account using this command:
 
 	sh add-admin.sh admin password http://127.0.0.1:8080/auth/signup
+
+Note: For security reason, the script should be launched from the local machine. On Docker, attach a new shell to the container and launch the script from this shell.
 
 Where **admin** is the login for the new admin account and **password** is the password.
 
@@ -309,7 +189,50 @@ A full documentation of the API is available in http://127.0.0.1:8080/docs.
 
 To generate docs, run the following command in `terminal`.
 
-    apidoc -i api/controller  -i dashboard/helper -o docs/www/
+	npm install -d
+	npm install apidoc -g
+	apidoc -i api/controller  -i dashboard/helper -o docs/www/
+
+
+## Import users from a CSV file
+
+Sugarizer Server comes with a script to import a set of students, administrators and classrooms from a CSV file.
+
+To launch it, run the command line:
+
+    cd sugarizer-server
+    export NODE_ENV=settings
+    node scripts/seed_users.js filename.csv
+
+Where `settings` is the name of the .ini file to use for settings (default is `sugarizer`). `filename.csv` is the CSV who contains items to create. Here's an example of CSV file:
+
+    name,type,language,color,password,classroom
+    Lionel,admin,fr,"{""stroke"":""#F8E800"",""fill"":""#FF8F00""}",aaaa,
+    Nikhil,student,,,,CM2
+
+Note that the header line is needed.
+
+The signification of each field is:
+
+* `name` is the name of the account to create.
+* `type` is the type of account. Should be `student` or `admin`.
+* `language` is the language for the account. If missing, the default is `en`.
+* `color` is the color for the account. If missing, it's generated randomly.
+* `password` is the password for the account. If missing, it's generated randomly.
+* `classroom` is the classroom for the student. If a classroom with this name exist, the student is add to the classroom. If a classroom don't exist, the classroom is created first. If missing, the student is let without classroom.
+
+At the end of the script a new CSV file named `output.csv` is generated. The output file has the same format than the input field with two more fields:
+
+* `status` is 1 if item created, 0 if an error happened.
+* `comment` is the detail of action done.
+
+Here's an example of output file:
+
+    name,type,language,color,password,classroom,status,comment
+    Lionel,admin,fr,"{""stroke"":""#F8E800"",""fill"":""#FF8F00""}",aaaa,,1,
+    Nikhil,student,en,"{""stroke"":""#807500"",""fill"":""#FF8F00""}",l0dU,CM2,1,Given password was invalid (Generated random password).
+
+Note: For security reason, the script should be launched from the local machine. On Docker, attach a new shell to the container and launch the script from this shell.
 
 
 ## Running Server securely using SSL
@@ -327,11 +250,49 @@ Few parameters in the **[security]** section of the setting file are dedicated t
 Sugarizer Server includes a set of unit tests on the API.
 To run unit tests for Sugarizer Server launch:
 
-	npm test
+    npm install -d
+    npm test
 
 Note that settings for unit testing are defined in [env/test.ini](env/test.ini).
+
+
+# Optimize performance
+
+If you want to optimize JavaScript performance, you could generate an optimized version of Sugarizer and Sugarizer-Server with [Grunt](http://gruntjs.com). This optimized version will minimize and reduce size of the public resources.
+
+First ensure than Node.js and npm is installed on your machine. See [here](http://nodejs.org/) for more information.
+
+The Gruntfile.js contains tasks settings to build an optimized version of Sugarizer and Sugarizer-Server. To do that, ensure first that Grunt is installed:
+
+	npm install -g grunt-cli
+
+Then navigate to Sugarizer directory install specific component for Sugarizer by running:
+
+	npm install
+
+Then launch Grunt task to minify Sugarizer JavaScript files:
+
+	grunt -v
+
+After minification, the `build` directory will contain the optimized version of each file in a same directory that the initial one, so you could just copy files:
+
+	cp -r build/* .
+
+Then navigate to Sugarizer-Server directory install specific component for Sugarizer-Server by running:
+
+	npm install
+
+Then launch Grunt task to minify Sugarizer-Server CSS, Image and JavaScript files:
+
+	grunt -v
+
+Similarly, after minification, you could copy files:
+
+	cp -r build/* .
 
 
 ## License
 
 This project is licensed under `Apache v2` License. See [LICENSE](LICENSE) for full license text.
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)

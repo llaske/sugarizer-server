@@ -10,7 +10,7 @@ var settingsData;
 exports.load = function(settings, callback) {
 
 	// Get settings
-	activities = []
+	activities = [];
 	settingsData = settings;
 	var activitiesDirName = settings.activities.activities_directory_name;
 	var templateDirName = settings.activities.template_directory_name;
@@ -51,11 +51,9 @@ exports.load = function(settings, callback) {
 
 							// Check if activity is favorite
 							var favorite = false;
-							var index = favorites.length + 1;
 							for (var i = 0; !favorite && i < favorites.length; i++) {
 								if (favorites[i].trim() == info.Activity.bundle_id) {
 									favorite = true;
-									index = i;
 								}
 							}
 
@@ -83,7 +81,7 @@ exports.load = function(settings, callback) {
 								callback = null;
 							}
 						});
-						stream.on('error', function(err) {
+						stream.on('error', function() {
 							console.log("WARNING: can't find info file for '"+activitiesDirName+path.sep + file+"'");
 						});
 					}
@@ -195,7 +193,7 @@ exports.findAll = function(req, res) {
 exports.findById = function(req, res) {
 
 	//process results based on filters and fields
-	data = process_results(req, activities);
+	var data = process_results(req, activities);
 
 	//find by id
 	var id = req.params.id;
@@ -230,7 +228,7 @@ function addOptions(field, params, options, default_val) {
 function process_results(req, activities) {
 
 	//duplicate activities
-	activities2 = [];
+	var activities2 = [];
 
 	//add options first for filtering
 	var opt = {};
@@ -249,10 +247,10 @@ function process_results(req, activities) {
 	opt.sort = [sort_val.substring(1), sort_type];
 
 	//filter now
-	activities.forEach(function(activity, key) {
+	activities.forEach(function(activity) {
 
 		//flag
-		isValid = true;
+		var isValid = true;
 
 		//filtering by name
 		if (opt.name) {
@@ -334,14 +332,6 @@ function process_results(req, activities) {
  **/
 exports.updateActivities = function(req, res) {
 
-	// validate on the basis of user's role
-	if (req.user.role == 'student') {
-		return res.status(401).send({
-			'error': 'You don\'t have permission to remove this journal',
-			'code': 8
-		});
-	}
-
 	//do changes
 	var locales = settingsData.locales;
 	if (req.body.favorites) {
@@ -363,4 +353,4 @@ exports.updateActivities = function(req, res) {
 	exports.load(settingsData, function() {
 		res.send(activities);
 	});
-}
+};

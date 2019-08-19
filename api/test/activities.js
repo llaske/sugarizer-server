@@ -5,16 +5,16 @@ process.env.NODE_ENV = 'test';
 var server = require('../../sugarizer.js');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
-var should = chai.should();
 var timestamp = +new Date();
 
 //fake user for testing auth
 var fakeUser = {
-	"user": '{"name":"TarunFake' + (timestamp.toString()) + '","password":"pokemon","role":"admin"}'
+	"user": '{"name":"TarunFake' + (timestamp.toString()) + '","password":"pokemon","language":"en","role":"admin"}'
 };
 
 //init server
 chai.use(chaiHttp);
+chai.should();
 
 describe('Activities', function() {
 
@@ -26,7 +26,7 @@ describe('Activities', function() {
 			chai.request(server)
 				.post('/auth/signup')
 				.send(fakeUser)
-				.end((err, res) => {
+				.end(() => {
 
 					//login user
 					chai.request(server)
@@ -50,7 +50,7 @@ describe('Activities', function() {
 				.set('x-key', fakeUser.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.should.be.a('array');
+					res.body.should.be.an('array');
 					res.body.length.should.be.gt(10);
 					done();
 				});
@@ -65,7 +65,7 @@ describe('Activities', function() {
 					res.should.have.status(200);
 					for (var i = 0; i < res.body.length; i++) {
 
-						res.body[i].should.be.a('object');
+						res.body[i].should.be.an('object');
 						res.body[i].should.have.property('id').not.eql(undefined);
 						res.body[i].should.have.property('name').not.eql(undefined);
 						res.body[i].should.have.property('version').not.eql(undefined);
@@ -88,7 +88,7 @@ describe('Activities', function() {
 				.set('x-key', fakeUser.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.should.be.a('array');
+					res.body.should.be.an('array');
 					res.body.length.should.be.eql(3);
 					done();
 				});
@@ -159,7 +159,7 @@ describe('Activities', function() {
 				.set('x-key', fakeUser.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.should.have.property('id').eql('org.olpcfrance.PaintActivity');;
+					res.body.should.have.property('id').eql('org.olpcfrance.PaintActivity');
 					res.body.should.have.property('name').not.eql(undefined);
 					res.body.should.have.property('version').not.eql(undefined);
 					res.body.should.have.property('directory').not.eql(undefined);
@@ -181,7 +181,7 @@ describe('Activities', function() {
 				.set('x-key', fakeUser.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.should.have.property('id').eql('org.olpcfrance.PaintActivity');;
+					res.body.should.have.property('id').eql('org.olpcfrance.PaintActivity');
 					res.body.should.have.property('name').not.eql(undefined);
 					res.body.should.not.have.property('version');
 					res.body.should.not.have.property('directory');
@@ -191,7 +191,7 @@ describe('Activities', function() {
 					done();
 				});
 		});
-	})
+	});
 
 	describe('/PUT activities', () => {
 		it('it should update favorites and order property of activities', (done) => {

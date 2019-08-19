@@ -1,0 +1,111 @@
+<% include ../includes/header %>
+  <div class="wrapper">
+  	<% include ../includes/sidebar %>
+    	<div class="main-panel">
+    	<% include ../includes/navbar %>
+    		<div class="content">
+    			<div class="container-fluid">
+            <div class="col-md-8 col-lg-8 col-sm-12">
+              <div class="card">
+                <div class="card-content">
+                    <% include ../includes/flash-errors %>
+                    <form id="classroom-add-edit-form" method="post" <% if(typeof chart == 'object'){ %> action="<%= chart._id %>" <% } %>>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-black label-floating">
+                                    <label class="control-label" data-l10n-id="chartTitle"></label>
+                                    <input class="form-control" name="title" value="<% if(typeof chart == 'object'){ %><%= chart.title %><% } %>" type="text">
+                                    <span class="material-input"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row color_input">
+                            <div class="col-md-12">
+                                <div class="form-group form-black label-floating">
+                                    <label class="control-label" data-l10n-id="type"></label>
+                                    <div class="type-selector">
+                                        <input class="type-selector-input" id="timeline" type="radio" name="type" value="timeline" <% if(typeof chart == 'object' && chart.type == "timeline"){ %> checked <% } %>/>
+                                        <label class="type-selector-card chart-timeline" data-l10n-id="timelineTitle" for="timeline"></label>
+                                        <input class="type-selector-input" id="table" type="radio" name="type" value="table" <% if(typeof chart == 'object' && chart.type == "table"){ %> checked <% } %>/>
+                                        <label class="type-selector-card chart-table" data-l10n-id="tableTitle" for="table"></label>
+                                        <input class="type-selector-input" id="pie" type="radio" name="type" value="pie" <% if(typeof chart == 'object' && chart.type == "pie"){ %> checked <% } %>/>
+                                        <label class="type-selector-card chart-pie" data-l10n-id="pieTitle" for="pie"></label>
+                                        <input class="type-selector-input" id="bar" type="radio" name="type" value="bar" <% if(typeof chart == 'object' && chart.type == "bar"){ %> checked <% } %>/>
+                                        <label class="type-selector-card chart-bar" data-l10n-id="barTitle" for="bar"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row color_input">
+                            <div class="col-md-12">
+                                <div class="form-group form-black">
+                                    <label class="control-label" data-l10n-id="selectChart"></label>
+                                    <div class="chart-list" id="chart-list">
+                                        <label data-l10n-id="noChartSelected"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            var chartList = <%- JSON.stringify(charts) %>;
+                            $('input[name="type"]').on('change', function(e) {
+                                if (e && e.target && e.target.value) {
+                                    var filteredCharts = chartList.filter(function (chart) {
+                                        return chart.type == e.target.value;
+                                    })
+                                    var innerHTML = '';
+                                    var selectedKey = <% if(typeof chart == 'object'){ %> "<%= chart.key %>" <% } else { %> "" <% } %>;
+                                    var checked;
+                                    for (var i=0; i<filteredCharts.length; i++) {
+                                        checked = "";
+                                        if (selectedKey && filteredCharts[i].key == selectedKey) {
+                                            checked = "checked";
+                                        }
+                                        innerHTML += `<label for="`+ filteredCharts[i].key +`">
+                                            <input type="radio" id="` + filteredCharts[i].key + `" name="key" value="` + filteredCharts[i].key + `" ` + checked + ` />
+                                            <div>
+                                                `+ document.webL10n.get(filteredCharts[i].description) +`
+                                                <span class="hide-mob-el">`+ filteredCharts[i].key +`</span>
+                                            </div>
+                                        </label>`
+                                    }
+                                    if (innerHTML == '') {
+                                        innerHTML = "<label data-l10n-id='noChartsAvailable></label>";
+                                    }
+                                    $("#chart-list").html(innerHTML);
+                                }
+                            });
+                            <% if (typeof chart == 'object') { %>
+                                document.webL10n.ready(function() {
+                                    var refreshIntervalId = setInterval(function() {
+                                        if (document.webL10n.getReadyState() == "complete") {
+                                            clearInterval(refreshIntervalId);
+                                            $('#<%= chart.type %>').trigger('change');
+                                        }
+                                    }, 100);
+                                });
+                            <% } %>
+                        </script>
+                        <div class="row color_input">
+                            <div class="col-md-12">
+                                <div class="form-group form-black">
+                                    <label class="control-label" data-l10n-id="display"></label>
+                                    <div class="display-check" >
+                                        <input type="checkbox" id="scales" name="hidden" <% if(typeof chart == 'object' && chart.hidden == true){ %> checked <% } %>>
+                                        <label for="hidden" data-l10n-id="hidden"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
+                        <a class="btn pull-right btn-round" href="/dashboard/stats/list" data-l10n-id="cancel"></a>
+                        <div class="clearfix"></div>
+                    </form>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% include ../includes/footer %>

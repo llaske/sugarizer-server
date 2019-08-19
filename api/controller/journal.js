@@ -1,6 +1,6 @@
 // Journal handling
 var mongo = require('mongodb'),
-	users = require('./users');
+	users = require("./users");
 
 
 var db;
@@ -12,51 +12,41 @@ var shared = null;
 //- Utility functions
 
 // Init database
-exports.init = function(settings, callback) {
+exports.init = function(settings, database) {
 
 	// Open the journal collection
 	journalCollection = settings.collections.journal;
-	var client = new mongo.MongoClient(
-		'mongodb://'+settings.database.server+':'+settings.database.port+'/'+settings.database.name,
-		{auto_reconnect: false, w:1, useNewUrlParser: true});
 
-	// Open the db
-	client.connect(function(err, client) {
-		db = client.db(settings.database.name);
-		if (!err) {
-			db.collection(journalCollection, function(err, collection) {
-				// Get the shared journal collection
-				collection.findOne({
-					'shared': true
-				}, function(err, item) {
-					// Not found, create one
-					if (!err && item == null) {
-						collection.insertOne({
-							content: [],
-							shared: true
-						}, {
-							safe: true
-						}, function(err, result) {
-							shared = result.ops[0];
-						});
-					}
-
-					// Already exist, save it
-					else if (item != null) {
-						shared = item;
-					}
-
-					if (callback) callback();
+	db = database;
+	db.collection(journalCollection, function(err, collection) {
+		// Get the shared journal collection
+		collection.findOne({
+			'shared': true
+		}, function(err, item) {
+			// Not found, create one
+			if (!err && item == null) {
+				collection.insertOne({
+					content: [],
+					shared: true
+				}, {
+					safe: true
+				}, function(err, result) {
+					shared = result.ops[0];
 				});
-			});
-		}
+			}
+
+			// Already exist, save it
+			else if (item != null) {
+				shared = item;
+			}
+		});
 	});
-}
+};
 
 // Get shared journal
 exports.getShared = function() {
 	return shared;
-}
+};
 
 // Create a new journal
 exports.createJournal = function(callback) {
@@ -66,9 +56,9 @@ exports.createJournal = function(callback) {
 			shared: false
 		}, {
 			safe: true
-		}, callback)
+		}, callback);
 	});
-}
+};
 
 /**
  * @api {get} api/v1/journal Get all journals
@@ -118,24 +108,75 @@ exports.findAll = function(req, res) {
 				new mongo.ObjectID(req.user.private_journal),
 				new mongo.ObjectID(req.user.shared_journal)
 			]
-		}
+		};
 	}
 
-	//get data
-	db.collection(journalCollection, function(err, collection) {
-		collection.find(options).toArray(function(err, items) {
-
-			//count
-			for (var i = 0; i < items.length; i++) {
-				items[i].count = items[i].content.length;
-				delete items[i].content;
+	if (req.user.role == "teacher") {
+		// get student mappings
+		users.getAllUsers({
+			role: 'student',
+			_id: {
+				$in: req.user.students.map(function(id) {
+					return new mongo.ObjectID(id);
+				})
 			}
+		}, {}, function(users) {
+			var journalList = [];
+			var map = new Map();
+			for (var i=0; i < users.length; i++) {
+				if(users[i].private_journal && !map.has(users[i].private_journal)){
+					map.set(users[i].private_journal, true);
+					journalList.push(users[i].private_journal);
+				}
+				if(users[i].shared_journal && !map.has(users[i].shared_journal)){
+					map.set(users[i].shared_journal, true);
+					journalList.push(users[i].shared_journal);
+				}
+			}
+			options['_id'] = {
+				$in: journalList
+			};
+			db.collection(journalCollection, function(err, collection) {
+				collection.find(options).toArray(function(err, items) {
 
-			//return
-			res.send(items);
+					//count
+					for (var i=0; i<items.length; i++) {
+						if (items[i].shared) {
+							items[i].count = 0;
+							for (var j=0; j<items[i].content.length; j++) {
+								if (items[i].content[j] && items[i].content[j].metadata && items[i].content[j].metadata.user_id && req.user.students.includes(items[i].content[j].metadata.user_id)) {
+									items[i].count++;
+								}
+							}
+							delete items[i].content;
+						} else {
+							items[i].count = items[i].content.length;
+							delete items[i].content;
+						}
+					}
+
+					//return
+					res.send(items);
+				});
+			});
 		});
-	});
-}
+	} else {
+		//get data
+		db.collection(journalCollection, function(err, collection) {
+			collection.find(options).toArray(function(err, items) {
+
+				//count
+				for (var i = 0; i < items.length; i++) {
+					items[i].count = items[i].content.length;
+					delete items[i].content;
+				}
+
+				//return
+				res.send(items);
+			});
+		});
+	}
+};
 
 //- REST interface
 
@@ -151,7 +192,7 @@ exports.addJournal = function(req, res) {
 			res.send(result.ops[0]);
 		}
 	});
-}
+};
 
 /**
  * @api {get} api/v1/journal/:jid Get journal entries
@@ -201,9 +242,9 @@ exports.addJournal = function(req, res) {
  *           "title_set_by_user": "0",
  *           "activity": "org.sugarlabs.Markdown",
  *           "activity_id": "caa97e48-d33c-470a-99e9-495ff02afe01",
- *           "creation_time": ​1423341000747,
- *           "timestamp": ​1423341066909,
- *           "file_size": ​0,
+ *           "creation_time": 1423341000747,
+ *           "timestamp": 1423341066909,
+ *           "file_size": 0,
  *           "user_id": "5569f4b019e0b4c9525b3c97",
  *           "buddy_name": "Sugarizer server",
  *           "buddy_color": {
@@ -220,9 +261,9 @@ exports.addJournal = function(req, res) {
  *           "title_set_by_user": "0",
  *           "activity": "org.olpg-france.physicsjs",
  *           "activity_id": "43708a15-f48e-49b1-85ef-da4c1419b364",
- *           "creation_time": ​1436003632237,
- *           "timestamp": ​1436025389565,
- *           "file_size": ​0,
+ *           "creation_time": 1436003632237,
+ *           "timestamp": 1436025389565,
+ *           "file_size": 0,
  *           "user_id": "5569f4b019e0b4c9525b3c97",
  *           "buddy_name": "Lionel",
  *           "buddy_color": {
@@ -254,9 +295,6 @@ exports.findJournalContent = function(req, res) {
 		});
 		return;
 	}
-
-	// validate on the basis of user's role
-	validateUser(req, res);
 
 	//get options
 	var options = getOptions(req);
@@ -299,7 +337,7 @@ exports.findJournalContent = function(req, res) {
 			});
 		});
 	});
-}
+};
 
 //form query params
 function formPaginatedUrl(route, params, offset, limit) {
@@ -376,7 +414,8 @@ function getOptions(req) {
 				'_id': 0,
 				'journalId': {
 					$literal: req.params.jid
-				}
+				},
+				'insensitive': { "$toLower": "$content.metadata.title" }
 			}
 		});
 	}
@@ -427,7 +466,9 @@ function getOptions(req) {
 	var sort_val = (typeof req.query.sort === "string" ? req.query.sort : '+timestamp');
 	var sort_type = sort_val.indexOf("-") == 0 ? -1 : 1;
 	var sort = {};
-	sort['metadata.' + sort_val.substring(1).toLowerCase()] = sort_type;
+	sort_val = 'metadata.' + sort_val.substring(1).toLowerCase();
+	if (sort_val == "metadata.title") sort_val = 'insensitive';
+	sort[sort_val] = sort_type;
 	options.push({
 		$sort: sort
 	});
@@ -475,9 +516,9 @@ function getOptions(req) {
  *         "title_set_by_user": "0",
  *         "activity": "org.sugarlabs.Markdown",
  *         "activity_id": "caa97e48-d33c-470a-99e9-495ff02afe01",
- *         "creation_time": ​1423341000747,
- *         "timestamp": ​1423341000747,
- *         "file_size": ​0,
+ *         "creation_time": 1423341000747,
+ *         "timestamp": 1423341000747,
+ *         "file_size": 0,
  *         "user_id": "5569f4b019e0b4c9525b3c97",
  *         "buddy_name": "Lionel",
  *         "buddy_color": {
@@ -500,9 +541,6 @@ exports.addEntryInJournal = function(req, res) {
 	}
 	var jid = req.params.jid;
 	var journal = JSON.parse(req.body.journal);
-
-	// validate on the basis of user's role
-	validateUser(req, res);
 
 	// Look for existing entry with the same objectId
 	var filter = {
@@ -548,7 +586,7 @@ exports.addEntryInJournal = function(req, res) {
 			}
 		});
 	});
-}
+};
 
 /**
  * @api {put} api/v1/journal/:jid Update entry
@@ -590,10 +628,10 @@ exports.addEntryInJournal = function(req, res) {
  *         "title_set_by_user": "0",
  *         "activity": "org.sugarlabs.Markdown",
  *         "activity_id": "caa97e48-d33c-470a-99e9-495ff02afe01",
- *         "creation_time": ​1423341000747,
- *         "timestamp": ​1423341066120,
- *         "file_size": ​0,
- *         "user_id": ​"5569f4b019e0b4c9525b3c97",
+ *         "creation_time": 1423341000747,
+ *         "timestamp": 1423341066120,
+ *         "file_size": 0,
+ *         "user_id": "5569f4b019e0b4c9525b3c97",
  *         "buddy_name": "Lionel",
  *         "buddy_color": {
  *           "stroke": "#005FE4",
@@ -615,9 +653,6 @@ exports.updateEntryInJournal = function(req, res) {
 	var jid = req.params.jid;
 	var oid = req.query.oid;
 
-	// validate on the basis of user's role
-	validateUser(req, res);
-
 	// Delete the entry
 	var deletecontent = {
 		$pull: {
@@ -631,7 +666,7 @@ exports.updateEntryInJournal = function(req, res) {
 			'_id': new mongo.ObjectID(jid)
 		}, deletecontent, {
 			safe: true
-		}, function(err, result) {
+		}, function(err) {
 			if (err) {
 				return res.status(500).send({
 					'error': 'An error has occurred',
@@ -643,7 +678,7 @@ exports.updateEntryInJournal = function(req, res) {
 			}
 		});
 	});
-}
+};
 
 /**
  * @api {delete} api/v1/journal/:jid Remove entry/journal
@@ -687,16 +722,13 @@ exports.removeInJournal = function(req, res) {
 		return;
 	}
 	var jid = req.params.jid;
-	var oid = (req.query.oid) ? req.query.oid : false;;
+	var oid = (req.query.oid) ? req.query.oid : false;
 	var type = (req.query.type) ? req.query.type : 'partial';
-
-	// validate on the basis of user's role
-	validateUser(req, res);
 
 	//whether or partial is deleted!
 	if (type == 'full') {
 		db.collection(journalCollection, function(err, collection) {
-			collection.remove({
+			collection.deleteOne({
 				'_id': new mongo.ObjectID(jid)
 			}, function(err, result) {
 				if (err) {
@@ -759,17 +791,181 @@ exports.removeInJournal = function(req, res) {
 			});
 		}
 	}
-}
+};
 
-//check user permission
-var validateUser = function(req, res) {
-	// validate on the basis of user's role
-	if (req.user.role == 'student') {
-		if ([req.user.private_journal.toString(), req.user.shared_journal.toString()].indexOf(req.params.jid) == -1) {
-			return res.status(401).send({
-				'error': 'You don\'t have permission to remove this journal',
-				'code': 8
-			});
-		}
+/**
+ * @api {get} api/v1/aggregate Get all journals with entries
+ * @apiName GetAllJournalEntries
+ * @apiDescription It will get all the journals with their entries present in the database. Private and shared can be filtered using the "type" query param. If the param is not specified, it will get all the journals.
+ * @apiGroup Journal
+ * @apiVersion 1.2.0
+ *
+ * @apiExample Example usage:
+ *     "/api/v1/aggregate"
+ *     "/api/v1/aggregate?type=shared"
+ *     "/api/v1/aggregate?type=private"
+ *
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ *
+ * @apiParam {String} [type] Type of the journal (shared or private)
+ *
+ * @apiSuccess {String} _id Unique id of the journal
+ * @apiSuccess {Object} content Array containing data of the entries
+ * @apiSuccess {Object} content[i].metadata Metadata of the entries, i.e. characteristics of the entry
+ * @apiSuccess {String} content[i].objectId Unique id of the entry in the journal
+ * @apiSuccess {String} content[i].objectId Unique id of the entry in the journal
+ * @apiSuccess {String} content[i].text Text of the entries, i.e. storage value of the entry. It depends of the entry type
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *      {
+ *       "_id": "5946d4fc9f0e36686c50a548",
+ *       "content": [
+ *        {
+ *         "metadata": {
+ *          "title": "Read me !",
+ *          "title_set_by_user": "0",
+ *          "activity": "org.sugarlabs.Markdown",
+ *          "activity_id": "caa97e48-d33c-470a-99e9-495ff02afe01",
+ *          "creation_time": 1423341000747,
+ *          "timestamp": 1423341066909,
+ *          "file_size": 0,
+ *          "user_id": "5569f4b019e0b4c9525b3c97",
+ *          "buddy_name": "Sugarizer server",
+ *          "buddy_color": {
+ *           "stroke": "#005FE4",
+ *           "fill": "#FF2B34"
+ *          }
+ *         },
+ *         "objectId": "4837240f-bf78-4d22-b936-3db96880f0a0",
+ *         "text" : ""
+ *        },
+ *        {
+ *         "metadata": {
+ *          "title": "Physics JS Activity",
+ *          "title_set_by_user": "0",
+ *          "activity": "org.olpg-france.physicsjs",
+ *          "activity_id": "43708a15-f48e-49b1-85ef-da4c1419b364",
+ *          "creation_time": 1436003632237,
+ *          "timestamp": 1436025389565,
+ *          "file_size": 0,
+ *          "user_id": "5569f4b019e0b4c9525b3c97",
+ *          "buddy_name": "Lionel",
+ *          "buddy_color": {
+ *           "stroke": "#00A0FF",
+ *           "fill": "#F8E800"
+ *          }
+ *         },
+ *         "objectId": "2acbcd69-aa14-4273-8a9f-47642b41ad9d",
+ *         "text" : ""
+ *        },
+ *        ...
+ *       ],
+ *       "shared": true
+ *      },
+ *      {
+ *       "_id": "5954089e088a9fd957734e46",
+ *       "content": [
+ *        {
+ *         "metadata" : {
+ *          "title" : "Paint Activity",
+ *          "title_set_by_user" : "0",
+ *          "activity" : "org.olpcfrance.PaintActivity",
+ *          "activity_id" : "c3863442-f524-4d17-868a-9eed8fb467e5",
+ *          "creation_time" : 1522441628767,
+ *          "timestamp" : 1522441631568,
+ *          "file_size" : 0,
+ *          "buddy_name" : "Local",
+ *          "buddy_color" : {
+ *           "stroke" : "#00B20D",
+ *           "fill" : "#00EA11"
+ *           },
+ *           "textsize" : 28687,
+ *           "user_id" : "5a9d84682feba60e001ee997"
+ *         },
+ *         "objectId" : "e02da731-690b-4347-8ae2-e8e88a692999",
+ *         "text" : ""
+ *        }
+ *       ],
+ *       "shared": false
+ *      }
+ *     ]
+ **/
+exports.findAllEntries = function(req, res) {
+	// set options
+	var options = {};
+	if (req.query.type == 'shared') {
+		options.shared = true;
+	} else if (req.query.type == 'private') {
+		options.shared = false;
 	}
-}
+
+	if (req.user.role == "teacher") {
+		// get student mappings
+		users.getAllUsers({
+			role: 'student',
+			_id: {
+				$in: req.user.students.map(function(id) {
+					return new mongo.ObjectID(id);
+				})
+			}
+		}, {}, function(users) {
+			var journalList = [];
+			var map = new Map();
+			for (var i=0; i < users.length; i++) {
+				if(users[i].private_journal && !map.has(users[i].private_journal)){
+					map.set(users[i].private_journal, true);
+					journalList.push(users[i].private_journal);
+				}
+				if(users[i].shared_journal && !map.has(users[i].shared_journal)){
+					map.set(users[i].shared_journal, true);
+					journalList.push(users[i].shared_journal);
+				}
+			}
+			options['_id'] = {
+				$in: journalList
+			};
+			db.collection(journalCollection, function(err, collection) {
+				collection.find(options).toArray(function(err, items) {
+					//check for errors
+					if (err) {
+						return res.status(500).send({
+							'error': err,
+							'code': 5
+						});
+					}
+					//count
+					for (var i=0; i<items.length; i++) {
+						if (items[i].shared && typeof items[i].content == "object") {
+							var content = [];
+							for (var j=0; j<items[i].content.length; j++) {
+								if (items[i].content[j] && items[i].content[j].metadata && items[i].content[j].metadata.user_id && req.user.students.includes(items[i].content[j].metadata.user_id)) {
+									content.push(items[i].content[j]);
+								}
+							}
+							items[i].content = content;
+						}
+					}
+					return res.send(items);
+				});
+			});
+		});
+	} else {
+		//get data
+		db.collection(journalCollection, function(err, collection) {
+			collection.find(options).toArray(function(err, items) {
+				//check for errors
+				if (err) {
+					return res.status(500).send({
+						'error': err,
+						'code': 5
+					});
+				}
+				// Return
+				return res.send(items);
+			});
+		});
+	}
+};

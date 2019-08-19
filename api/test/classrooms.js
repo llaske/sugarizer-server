@@ -5,18 +5,21 @@ process.env.NODE_ENV = 'test';
 var server = require('../../sugarizer.js');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
-var should = chai.should();
 var timestamp = +new Date();
 
 //fake user for testing auth
 var fake = {
-	'student': '{"name":"Sugarizer_' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"pass","language":"fr"}',
-	'admin': '{"name":"TarunFake_' + (timestamp.toString()) + '","password":"pokemon","role":"admin"}',
-	'classroom': '{"name":"group_a_' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"students":[]}'
-}
+	'student1': '{"name":"Sugarizer_1' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"pass","language":"fr"}',
+	'student2': '{"name":"Sugarizer_2' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"word","language":"en"}',
+	'admin': '{"name":"TarunFake_' + (timestamp.toString()) + '","password":"pokemon","language":"en","role":"admin"}',
+	'classroom': '{"name":"group_a_' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"students":[]}',
+	'teacher1': '{"name":"SugarizerTeach_1' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"teacher","password":"bulbasaur","language":"fr"}',
+	'teacher2': '{"name":"SugarizerTeach_2' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"teacher","password":"bulbasaur","language":"fr"}'
+};
 
 //init server
 chai.use(chaiHttp);
+chai.should();
 
 describe('Classrooms', function() {
 
@@ -30,7 +33,7 @@ describe('Classrooms', function() {
 				.send({
 					"user": fake.admin
 				})
-				.end((err, res) => {
+				.end(() => {
 
 					//login user
 					chai.request(server)
@@ -41,18 +44,28 @@ describe('Classrooms', function() {
 						.end((err, res) => {
 							//store user data
 							fake.admin = res.body;
-							done();
 
-							//create fake user
+							//create fake users
 							chai.request(server)
 								.post('/api/v1/users/')
 								.set('x-access-token', fake.admin.token)
 								.set('x-key', fake.admin.user._id)
 								.send({
-									"user": fake.student
+									"user": fake.student1
 								})
 								.end((err, res) => {
-									fake.student = res.body;
+									fake.student1 = res.body;
+									chai.request(server)
+										.post('/api/v1/users/')
+										.set('x-access-token', fake.admin.token)
+										.set('x-key', fake.admin.user._id)
+										.send({
+											"user": fake.student2
+										})
+										.end((err, res) => {
+											fake.student2 = res.body;
+											done();
+										});
 								});
 						});
 				});
@@ -60,8 +73,14 @@ describe('Classrooms', function() {
 	});
 
 	describe('/POST classroom', () => {
-		it('it should add a classroom', (done) => {
+		before(function(done) {
+			fake.classroom = JSON.parse(fake.classroom);
+			fake.classroom.students = [fake.student1._id, fake.student2._id];
+			fake.classroom = JSON.stringify(fake.classroom);
+			done();
+		});
 
+		it('it should add a classroom', (done) => {
 			chai.request(server)
 				.post('/api/v1/classrooms/')
 				.set('x-access-token', fake.admin.token)
@@ -72,11 +91,52 @@ describe('Classrooms', function() {
 				.end((err, res) => {
 					res.should.have.status(200);
 					fake.classroom = res.body;
-					res.body.should.be.a('object');
+					res.body.should.be.an('object');
 					res.body.should.have.property('_id').not.eql(undefined);
 					res.body.should.have.property('name').eql("group_a_" + (timestamp.toString()));
 					res.body.should.have.property('color').not.eql(undefined);
 					done();
+				});
+		});
+
+		after(function(done) {
+			fake.teacher1 = JSON.parse(fake.teacher1);
+			fake.teacher1['classrooms'] = [fake.classroom._id];
+			fake.teacher1 = JSON.stringify(fake.teacher1);
+			chai.request(server)
+				.post('/api/v1/users/')
+				.set('x-access-token', fake.admin.token)
+				.set('x-key', fake.admin.user._id)
+				.send({
+					"user": fake.teacher1
+				})
+				.end(() => {
+					chai.request(server)
+						.post('/auth/login')
+						.send({
+							"user": fake.teacher1
+						})
+						.end((err, res) => {
+							fake.teacher1 = res.body;
+							chai.request(server)
+								.post('/api/v1/users/')
+								.set('x-access-token', fake.admin.token)
+								.set('x-key', fake.admin.user._id)
+								.send({
+									"user": fake.teacher2
+								})
+								.end(() => {
+									chai.request(server)
+										.post('/auth/login')
+										.send({
+											"user": fake.teacher2
+										})
+										.end((err, res) => {
+											fake.teacher2 = res.body;
+											done();
+										});
+								});
+						});
 				});
 		});
 	});
@@ -109,6 +169,19 @@ describe('Classrooms', function() {
 				});
 		});
 
+		it('it should return nothing for unauthorized user', (done) => {
+
+			chai.request(server)
+				.get('/api/v1/classrooms/' + fake.classroom._id)
+				.set('x-access-token', fake.teacher2.token)
+				.set('x-key', fake.teacher2.user._id)
+				.end((err, res) => {
+					res.should.have.status(401);
+					res.body.code.should.be.eql(19);
+					done();
+				});
+		});
+
 		it('it should return right classroom by id', (done) => {
 
 			chai.request(server)
@@ -117,11 +190,72 @@ describe('Classrooms', function() {
 				.set('x-key', fake.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.should.be.a('object');
+					res.body.should.be.an('object');
 					res.body.should.have.property('_id').eql(fake.classroom._id);
 					res.body.should.have.property('name').eql("group_a_" + (timestamp.toString()));
 					res.body.should.have.property('color').not.eql(undefined);
+					res.body.should.have.property('students').be.an('array');
+					var studentList = res.body.students.reduce(function(list, student) {
+						if (student.is_member) {
+							list.push(student._id);
+						}
+						return list;
+					}, []);
+					chai.expect(studentList).to.eql(fake.classroom.students);
 					done();
+				});
+		});
+
+		it('it should return right classroom by id for authorized user', (done) => {
+
+			chai.request(server)
+				.get('/api/v1/classrooms/' + fake.classroom._id)
+				.set('x-access-token', fake.teacher1.token)
+				.set('x-key', fake.teacher1.user._id)
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.an('object');
+					res.body.should.have.property('_id').eql(fake.classroom._id);
+					res.body.should.have.property('name').eql("group_a_" + (timestamp.toString()));
+					res.body.should.have.property('color').not.eql(undefined);
+					res.body.should.have.property('students').be.an('array');
+					var studentList = res.body.students.reduce(function(list, student) {
+						if (student.is_member) {
+							list.push(student._id);
+						}
+						return list;
+					}, []);
+					chai.expect(studentList).to.eql(fake.classroom.students);
+					done();
+				});
+		});
+
+		it('it should update student property of the classroom on deleting user', (done) => {
+
+			chai.request(server)
+				.delete('/api/v1/users/' + fake.student1._id)
+				.set('x-access-token', fake.admin.token)
+				.set('x-key', fake.admin.user._id)
+				.end((err, res) => {
+					res.should.have.status(200);
+					fake.classroom.students = fake.classroom.students.filter(function(el) { return el != fake.student1._id; });
+					chai.request(server)
+						.get('/api/v1/classrooms/' + fake.classroom._id)
+						.set('x-access-token', fake.admin.token)
+						.set('x-key', fake.admin.user._id)
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.be.an('object');
+							res.body.should.have.property('students').be.an('array');
+							var studentList = res.body.students.reduce(function(list, student) {
+								if (student.is_member) {
+									list.push(student._id);
+								}
+								return list;
+							}, []);
+							chai.expect(studentList).to.eql(fake.classroom.students);
+							done();
+						});
 				});
 		});
 	});
@@ -135,8 +269,22 @@ describe('Classrooms', function() {
 				.set('x-key', fake.admin.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.classrooms.should.be.a('array');
+					res.body.classrooms.should.be.an('array');
 					res.body.classrooms.length.should.be.above(0);
+					done();
+				});
+		});
+
+		it('it should return all the classrooms for a teacher', (done) => {
+			chai.request(server)
+				.get('/api/v1/classrooms')
+				.set('x-access-token', fake.teacher1.token)
+				.set('x-key', fake.teacher1.user._id)
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.classrooms.should.be.an('array');
+					res.body.classrooms.length.should.eql(1);
+					res.body.classrooms[0]._id.should.be.eql(fake.classroom._id);
 					done();
 				});
 		});
@@ -150,7 +298,7 @@ describe('Classrooms', function() {
 				.end((err, res) => {
 					res.should.have.status(200);
 					for (var i = 0; i < res.body.classrooms.length; i++) {
-						res.body.classrooms[i].should.be.a('object');
+						res.body.classrooms[i].should.be.an('object');
 						res.body.classrooms[i].should.have.property('_id').not.eql(undefined);
 						res.body.classrooms[i].should.have.property('name').not.eql(undefined);
 						res.body.classrooms[i].should.have.property('color').not.eql(undefined);
@@ -222,12 +370,31 @@ describe('Classrooms', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.should.be.a('object');
+					res.body.should.be.an('object');
 					res.body.should.have.property('_id').eql(fake.classroom._id);
 					res.body.should.have.property('name').eql("group_new_a_" + (timestamp.toString()));
 					done();
 				});
 		});
+
+		it('it should update the valid classroom for teacher', (done) => {
+
+			chai.request(server)
+				.put('/api/v1/classrooms/' + fake.classroom._id)
+				.set('x-access-token', fake.teacher1.token)
+				.set('x-key', fake.teacher1.user._id)
+				.send({
+					classroom: '{"name":"group_new_b_' + (timestamp.toString()) + '"}'
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.an('object');
+					res.body.should.have.property('_id').eql(fake.classroom._id);
+					res.body.should.have.property('name').eql("group_new_b_" + (timestamp.toString()));
+					done();
+				});
+		});
+
 	});
 
 	describe('/DELETE/:id classrooms', () => {
@@ -258,6 +425,19 @@ describe('Classrooms', function() {
 				});
 		});
 
+		it('it should do nothing for teacher', (done) => {
+
+			chai.request(server)
+				.delete('/api/v1/classrooms/' + fake.classroom._id)
+				.set('x-access-token', fake.teacher1.token)
+				.set('x-key', fake.teacher1.user._id)
+				.end((err, res) => {
+					res.should.have.status(401);
+					res.body.code.should.be.eql(19);
+					done();
+				});
+		});
+
 		it('it should remove the valid classroom', (done) => {
 
 			chai.request(server)
@@ -273,20 +453,33 @@ describe('Classrooms', function() {
 
 	//delete fake user access key
 	after((done) => {
-
 		chai.request(server)
-			.delete('/api/v1/users/' + fake.student._id)
+			.delete('/api/v1/users/' + fake.teacher1.user._id)
 			.set('x-access-token', fake.admin.token)
 			.set('x-key', fake.admin.user._id)
 			.end((err, res) => {
 				res.should.have.status(200);
 				chai.request(server)
-					.delete('/api/v1/users/' + fake.admin.user._id)
+					.delete('/api/v1/users/' + fake.teacher2.user._id)
 					.set('x-access-token', fake.admin.token)
 					.set('x-key', fake.admin.user._id)
 					.end((err, res) => {
 						res.should.have.status(200);
-						done();
+						chai.request(server)
+							.delete('/api/v1/users/' + fake.student2._id)
+							.set('x-access-token', fake.admin.token)
+							.set('x-key', fake.admin.user._id)
+							.end((err, res) => {
+								res.should.have.status(200);
+								chai.request(server)
+									.delete('/api/v1/users/' + fake.admin.user._id)
+									.set('x-access-token', fake.admin.token)
+									.set('x-key', fake.admin.user._id)
+									.end((err, res) => {
+										res.should.have.status(200);
+										done();
+									});
+							});
 					});
 			});
 	});

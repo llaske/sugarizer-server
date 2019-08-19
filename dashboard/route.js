@@ -1,3 +1,9 @@
+// import multer for file upload
+var multer = require('multer');
+
+// Define upload path
+var upload = multer({ dest: 'tmp/csv/' });
+
 // require files
 var authController = require('./controller/auth'),
 	usersController = require('./controller/users'),
@@ -27,6 +33,8 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/users', authController.validateSession, usersController.index);
 	app.get('/dashboard/users/add', authController.validateSession, usersController.addUser);
 	app.post('/dashboard/users/add', authController.validateSession, usersController.addUser);
+	app.post('/dashboard/users/import', upload.single('file'), usersController.importCSV);
+	app.get('/dashboard/users/export', authController.validateSession, usersController.exportCSV);
 	app.get('/dashboard/users/edit/:uid', authController.validateSession, usersController.editUser);
 	app.post('/dashboard/users/edit/:uid', authController.validateSession, usersController.editUser);
 	app.get('/dashboard/users/delete/:uid', authController.validateSession, usersController.deleteUser);
@@ -36,17 +44,25 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/activities', authController.validateSession, activitiesController.index);
 	app.get('/dashboard/activities/launch', authController.validateSession, activitiesController.fakeLaunch);
 	app.get('/dashboard/activities/launch/:jid', authController.validateSession, activitiesController.launch);
-	app.get('/dashboard/stats', authController.validateSession, statsController.index);
+	app.get('/dashboard/stats', authController.validateSession, authController.checkRole(statsController.index));
+	app.get('/dashboard/stats/add', authController.validateSession, authController.checkRole(statsController.addChart));
+	app.post('/dashboard/stats/add', authController.validateSession, authController.checkRole(statsController.addChart));
+	app.get('/dashboard/stats/edit/:chartid', authController.validateSession, authController.checkRole(statsController.editChart));
+	app.post('/dashboard/stats/edit/:chartid', authController.validateSession, authController.checkRole(statsController.editChart));
+	app.get('/dashboard/stats/delete/:chartid', authController.validateSession, authController.checkRole(statsController.deleteChart));
+	app.get('/dashboard/stats/list', authController.validateSession, authController.checkRole(statsController.listCharts));
 	app.get('/dashboard/stats/graph', authController.validateSession, statsController.getGraph);
 	app.get('/dashboard/graph', authController.validateSession, graphController.getGraph);
+	app.get('/dashboard/profile', authController.validateSession, usersController.profile);
+	app.post('/dashboard/profile', authController.validateSession, usersController.profile);
 
 	// classrooms routes
 	app.get('/dashboard/classrooms', authController.validateSession, classroomsController.index);
-	app.get('/dashboard/classrooms/add', authController.validateSession, classroomsController.addClassroom);
-	app.post('/dashboard/classrooms/add', authController.validateSession, classroomsController.addClassroom);
-	app.get('/dashboard/classrooms/edit/:classid', authController.validateSession, classroomsController.editClassroom);
-	app.post('/dashboard/classrooms/edit/:classid', authController.validateSession, classroomsController.editClassroom);
-	app.get('/dashboard/classrooms/delete/:classid', authController.validateSession, classroomsController.deleteClassroom);
+	app.get('/dashboard/classrooms/add', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
+	app.post('/dashboard/classrooms/add', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
+	app.get('/dashboard/classrooms/edit/:classid', authController.validateSession, authController.checkRole(classroomsController.editClassroom));
+	app.post('/dashboard/classrooms/edit/:classid', authController.validateSession, authController.checkRole(classroomsController.editClassroom));
+	app.get('/dashboard/classrooms/delete/:classid', authController.validateSession, authController.checkRole(classroomsController.deleteClassroom));
 
 
 	// If no route is matched by now, it must be a 404
@@ -56,4 +72,4 @@ module.exports = function(app, ini) {
 			"url": req.protocol + '://' + req.get('host') + req.originalUrl
 		});
 	});
-}
+};

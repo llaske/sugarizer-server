@@ -1,7 +1,6 @@
 var jwt = require('jwt-simple'),
 	users = require('./users.js'),
 	mongo = require('mongodb'),
-	journal = require('./journal'),
 	common = require('../../dashboard/helper/common');
 
 
@@ -60,23 +59,35 @@ exports.login = function(req, res) {
 	var user = JSON.parse(req.body.user);
 	var name = user.name || '';
 	var password = user.password || '';
-	var role = user.role || 'student';
 	var query = {
 		'name': {
 			$regex: new RegExp("^" + name + "$", "i")
 		},
 		'password': {
 			$regex: new RegExp("^" + password + "$", "i")
-		},
-		'role': {
-			$regex: new RegExp("^" + role + "$", "i")
 		}
 	};
+
+	if (typeof user.role == "object" && user.role.length > 0) {
+		query['$or'] = [];
+		user.role.forEach(function(rl) {
+			query.$or.push({
+				role: {
+					$regex: new RegExp("^" + rl + "$", "i")
+				}
+			});
+		});
+	} else {
+		var role = user.role || 'student';
+		query.role = {
+			$regex: new RegExp("^" + role + "$", "i")
+		};
+	}
 
 	//find user by name & password
 	users.getAllUsers(query, {}, function(users) {
 
-		if (users.length > 0) {
+		if (users && users.length > 0) {
 
 			//take the first user incase of multple matches
 			user = users[0];
@@ -98,6 +109,8 @@ exports.login = function(req, res) {
  * @api {post} auth/signup/ Signup User
  * @apiName Signup User
  * @apiDescription Add a new user (Admin or Student). Return the user created.
+ *
+ * For security reason, call to signup for an Admin is only allowed from the server address.
  * @apiGroup Auth
  * @apiVersion 1.0.0
  *
@@ -167,21 +180,53 @@ exports.validateUser = function(uid, callback) {
 exports.updateTimestamp = function(uid, callback) {
 
 	//update user time stamp function
-	users.updateUserTimestamp(uid, callback)
-}
+	users.updateUserTimestamp(uid, callback);
+};
 
-//check admin
-exports.checkAdmin = function(req, res, next) {
-	if (req.user.role == 'student') {
-		if (req.user._id != req.query.uid) {
-			return res.status(401).send({
-				'error': 'You don\'t have permission to perform this action',
-				'code': 19
-			});
+//check role
+exports.allowedRoles = function (roles) {
+	return function (req, res, next) {
+		if (roles.includes(req.user.role)) {
+			if (req.user.role == "teacher") {
+				if (req.params.uid) {
+					if ((req.user._id == req.params.uid) || (req.user.students && (req.user.students.includes(req.params.uid)))) {
+						return next();
+					}
+				} else if (req.params.classid) {
+					if ((req.user._id == req.params.classid) || (req.user.classrooms && (req.user.classrooms.includes(req.params.classid)))) {
+						return next();
+					}
+				} else {
+					return next();
+				}
+			} else if (req.user.role == 'student') {
+				if (req.params.uid) {
+					if (req.user._id == req.params.uid) {
+						return next();
+					}
+				} else if (req.params.jid) {
+					if ([req.user.private_journal.toString(), req.user.shared_journal.toString()].includes(req.params.jid)) {
+						return next();
+					} else {
+						return res.status(401).send({
+							'error': 'You don\'t have permission to access this journal',
+							'code': 8
+						});
+					}
+				} else {
+					return next();
+				}
+			} else {
+				return next();
+			}
 		}
-	}
-	next();
-}
+		res.status(401).send({
+			'error': 'You don\'t have permission to perform this action',
+			'code': 19
+		});
+	};
+};
+
 exports.checkAdminOrLocal = function(req, res, next) {
 	var whishedRole = 'student';
 	if (req.body && req.body.user) {
@@ -197,7 +242,7 @@ exports.checkAdminOrLocal = function(req, res, next) {
 		});
 	}
 	next();
-}
+};
 
 // private method
 function genToken(user, age) {

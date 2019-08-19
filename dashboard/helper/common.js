@@ -2,10 +2,11 @@ var fs = require('fs');
 var os = require('os');
 var ini = null;
 var language = '*';
+var moment = require('moment');
 
 exports.init = function(settings) {
 	ini = settings;
-}
+};
 
 // language features
 exports.l10n = {
@@ -31,7 +32,15 @@ exports.l10n = {
 		}
 		return translate;
 	}
-}
+};
+
+exports.reinitLocale = function(req) {
+	// reinit l10n and moment with locale
+	if (req.query && req.query.lang) {
+		exports.l10n.setLanguage(req.query.lang);
+		moment.locale(req.query.lang);
+	}
+};
 
 exports.loadCredentials = function(settings) {
 	if (!settings.security.certificate_file || !settings.security.key_file) {
@@ -48,7 +57,7 @@ exports.loadCredentials = function(settings) {
 		return null;
 	}
 	return {cert: cert, key: key};
-}
+};
 
 exports.getHeaders = function(req) {
 
@@ -57,8 +66,8 @@ exports.getHeaders = function(req) {
 		"content-type": "application/json",
 		"x-access-token": (req.session.user ? req.session.user.token : ""),
 		"x-key": (req.session.user ? req.session.user.user._id : ""),
-	}
-}
+	};
+};
 
 exports.getClientIP = function(req) {
 
@@ -67,7 +76,7 @@ exports.getClientIP = function(req) {
 		req.connection.remoteAddress ||
 		req.socket.remoteAddress ||
 		req.connection.socket.remoteAddress;
-}
+};
 
 
 exports.getServerIP = function() {
@@ -85,11 +94,11 @@ exports.getServerIP = function() {
 	addresses.push("::1");
 	addresses.push("::ffff:127.0.0.1");
 	return addresses;
-}
+};
 
-exports.getAPIUrl = function(req) {
+exports.getAPIUrl = function() {
 	return (ini.security.https ? 'https' : 'http' ) + "://localhost:" + ini.web.port + '/';
-}
+};
 
 
 /**
@@ -108,7 +117,7 @@ exports.getAPIUrl = function(req) {
  * @apiSuccess {Object} settings.options Server options
  * @apiSuccess {String} settings.options.min-password-size Minimum size for password
  * @apiSuccess {Boolean} settings.options.statistics Statistics active or not
- * @apiSuccess {String} settings.options.cooke-age Expiration time for authentication token
+ * @apiSuccess {String} settings.options.cookie-age Expiration time for authentication token
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -139,4 +148,4 @@ exports.getAPIInfo = function(req, res) {
 			"cookie-age": ini.security.max_age
 		}
 	});
-}
+};

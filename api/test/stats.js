@@ -5,16 +5,16 @@ process.env.NODE_ENV = 'test';
 var server = require('../../sugarizer.js');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
-var should = chai.should();
 var timestamp = +new Date();
 
 //fake user for testing auth
 var fakeUser = {
 	'student': '{"name":"Sugarizer' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"student","password":"pass","language":"fr"}'
-}
+};
 
 //init server
 chai.use(chaiHttp);
+chai.should();
 
 describe('Stats', function() {
 
@@ -28,7 +28,7 @@ describe('Stats', function() {
 				.send({
 					"user": fakeUser.student
 				})
-				.end((err, res) => {
+				.end(() => {
 
 					//login user
 					chai.request(server)
@@ -159,7 +159,7 @@ function getLogs(num) {
 		"event_action": "search",
 		"event_label": "q=stopwatch",
 		"event_value": "null"
-	}
+	};
 
 	//add uid of the user
 	sampleLog.user_id = fakeUser.student.user._id;

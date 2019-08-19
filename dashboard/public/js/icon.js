@@ -5,8 +5,6 @@ icon = (function() {
 
 	'use strict';
 
-	var icon = {};
-
 	function changeColors(iconData, fillColor, strokeColor) {
 		var re;
 		if (fillColor) {
@@ -38,7 +36,7 @@ icon = (function() {
 
 		client.open("GET", source);
 		client.send();
-	};
+	}
 
 	function colorize(url, colors, uid) {
 
@@ -58,12 +56,36 @@ icon = (function() {
 				}
 			}
 		});
-	};
+	}
+
+	function colorizeByClass(url, colors, uid) {
+		var iconInfo = {
+			"uri": url,
+			"strokeColor": colors.stroke,
+			"fillColor": colors.fill
+		};
+		load(iconInfo, function(url) {
+			var ele = document.getElementsByClassName(uid);
+			if (ele && ele.length > 0) {
+				for (var i=0; i < ele.length; i++) {
+					for (var j = 0; j < ele[i].childNodes.length; j++) {
+						if (ele[i].childNodes[j].className == "xo-icon") {
+							ele[i].childNodes[j].style.backgroundImage = "url('" + url + "')";
+							ele[i].childNodes[j].style.backgroundSize = "30px";
+						}
+					}
+				}
+			}
+		});
+	}
 
 	// PUBLIC INTERFACE
 	return {
 		load: function(url, colors, uid) {
 			colorize(url, colors, uid);
-		}
+		},
+		loadByClass: function(url, colors, uid) {
+			colorizeByClass(url, colors, uid);
+		},
 	};
 });

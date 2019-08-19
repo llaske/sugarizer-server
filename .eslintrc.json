@@ -1,0 +1,100 @@
+{
+    "env": {
+        "browser": true,
+        "node": true,
+        "mocha": true,
+        "jquery": true,
+        "mongo": true,
+        "amd": true
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 5
+    },
+    "rules": {
+        "indent": [
+            "error",
+            "tab"
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "eol-last": [
+            "error",
+            "always"
+        ],
+        "no-mixed-spaces-and-tabs": "error",
+        "no-console": 0,
+        "no-redeclare": "off"
+    },
+    "overrides": [
+        {
+            "files": ["seed_users.js"],
+            "parserOptions": {
+                "ecmaVersion": 6
+            },
+            "env": {
+                "node": true,
+                "es6": true
+            },
+            "rules": {
+                "indent": "off"
+            }
+        },
+        {
+            "files": ["docs/www/main.js"],
+            "rules": {
+                "indent": "off"
+            },
+            "globals": {
+                "List": "readonly"
+            }
+        },
+        {
+            "files": ["dashboard/public/js/main.js"],
+            "rules": {
+                "no-unused-vars": "off"
+            },
+            "globals": {
+                "url": "writable",
+                "headers": "writable",
+                "icon": "readonly",
+                "Chart": "readonly"
+            }
+        },
+        {
+            "files": ["dashboard/public/js/tutorial.js"],
+            "rules": {
+                "no-unused-vars": "off"
+            }
+        },
+        {
+            "files": ["dashboard/controller/users/importCSV.js"],
+            "parserOptions": {
+                "ecmaVersion": 6
+            },
+            "env": {
+                "es6": true
+            }
+        },
+        {
+            "files": ["api/**/*.js"],
+            "parserOptions": {
+                "ecmaVersion": 6
+            },
+            "env": {
+                "node": true,
+                "es6": true
+            }
+        }
+    ]
+}

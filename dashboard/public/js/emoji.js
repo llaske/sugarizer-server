@@ -79,8 +79,11 @@ var getHtmlForEmoji = function(password) {
 		}
 	}
 	return html;
-}
+};
 
+// Set exports for EJS controller imports
 try {
 	exports.getHtml = getHtmlForEmoji;
-} catch(e) {}
+} catch(e) {
+	// If imported as JavaScript in HTML then fail export without popping an error
+}

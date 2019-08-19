@@ -19,7 +19,11 @@ process.on("uncaughtException", function(err) {
 });
 
 // wait for database
-wait4db.waitConnection(ini, function() {
+wait4db.waitConnection(ini, function(db) {
+	if (!db) {
+		console.log("Cannot connect with the database");
+		process.exit(-1);
+	}
 	// init common
 	common.init(ini);
 
@@ -27,7 +31,7 @@ wait4db.waitConnection(ini, function() {
 	require('./config/main')(app, ini);
 
 	// include api routes
-	require('./api/route')(app, ini);
+	require('./api/route')(app, ini, db);
 
 	// include dashboard routes
 	require('./dashboard/route')(app, ini);

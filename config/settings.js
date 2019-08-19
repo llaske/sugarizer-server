@@ -6,10 +6,10 @@ var fs = require('fs'),
 exports.load = function() {
 
 	//validate
-	env = (process.env.NODE_ENV ? process.env.NODE_ENV : 'sugarizer')
+	var env = (process.env.NODE_ENV ? process.env.NODE_ENV : 'sugarizer');
 
 	//add directory
-	confFile = "./env/" + env + '.ini';
+	var confFile = "./env/" + env + '.ini';
 
 	//check file
 	try {

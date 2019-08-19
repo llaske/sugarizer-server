@@ -18,11 +18,31 @@
   background-image: url('/public/img/star_active.png');
 }
 
+.hideshowBox input[type=checkbox] {
+  display: block;
+  width: 30px;
+  height: 30px;
+  -webkit-appearance: none;
+  outline: 0;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.hideshowBox input[type=checkbox]:not(:checked) {
+  background-image: url('/public/img/visible.svg');
+}
+
+.hideshowBox input[type=checkbox]:checked {
+  background-image: url('/public/img/invisible.svg');
+}
+
 #recent-activities-table tr{
   cursor: pointer;
 }
 
-#recent-users-table tr{
+#recent-students-table tr{
   cursor: pointer;
 }
 
@@ -103,6 +123,10 @@
   display: inline-block;
 }
 
+.lang-combo{
+  font-size: 11px !important;
+}
+
 .xo-icon {
   background-image: url('/public/img/owner-icon.svg');
 }
@@ -158,6 +182,10 @@
   background-image: url('/public/img/classroom-icon.svg')
 }
 
+.user-icon {
+  background-image: url('/public/img/user-icon.svg')
+}
+
 .material-icons.dp24 {
   font-size: 24px;
   line-height: 36px;
@@ -190,9 +218,20 @@
   border-radius: 1000px;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
+.dashboard-table-title {
+  position: fixed;
+}
+
+.dashboard-table {
+  margin-top: 20px;
+}
+
 .color {
   margin: 0 0 5px 0;
-  cursor: pointer;
 }
 
 .color .xo-icon {
@@ -263,6 +302,325 @@
   animation: pace-spinner 400ms linear infinite;
 }
 
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+.arrow {
+  border: solid black;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 3px;
+  margin-left: 5px;
+}
+#name-column{
+  border: none;
+  background: none;
+}
+#last-column{
+  border: none;
+  background: none;
+}
+#journal-size{
+  border: none;
+  background: none;
+}
+#journal-title{
+  border: none;
+  background: none;
+}
+#activity-id{
+  border: none;
+  background: none;
+}
+#activity-version{
+  border: none;
+  background: none;
+}
+.sort{
+  padding-top: 1px !important;
+  padding-bottom: 1px !important;
+  margin-left: 10px !important;
+}
+
+.type-selector{
+  padding-top: 15px;
+  padding-left: 40px;
+}
+
+.type-selector input{
+  margin:0;
+  padding:0;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  appearance:none;
+}
+
+.type-selector input:active +.type-selector-card{
+  opacity: .9;
+}
+
+.type-selector input:checked +.type-selector-card{
+  -webkit-filter: none;
+  -moz-filter: none;
+  filter: none;
+}
+
+.type-selector-card{
+  cursor:pointer;
+  background-size:contain;
+  background-repeat:no-repeat;
+  display:inline-block;
+  width:100px;height:70px;
+  -webkit-transition: all 100ms ease-in;
+  -moz-transition: all 100ms ease-in;
+  transition: all 100ms ease-in;
+  -webkit-filter: brightness(1.8) grayscale(1) opacity(.4);
+  -moz-filter: brightness(1.8) grayscale(1) opacity(.4);
+  filter: brightness(1.8) grayscale(1) opacity(.4);
+}
+
+.type-selector-card:hover{
+  -webkit-filter: brightness(1.2) grayscale(.5) opacity(.9);
+  -moz-filter: brightness(1.2) grayscale(.5) opacity(.9);
+  filter: brightness(1.2) grayscale(.5) opacity(.9);
+}
+
+.chart-timeline{
+  background-image: url('/public/img/line-chart.svg');
+}
+
+.chart-table{
+  background-image: url('/public/img/list.svg');
+}
+
+.chart-pie{
+  background-image: url('/public/img/pie-chart.svg');
+}
+
+.chart-bar{
+  background-image: url('/public/img/bar-chart.svg');
+}
+
+.chart-list {
+  position: relative;
+  display: block;
+  padding-left: 40px;
+}
+
+.chart-list label {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 2px 0 0;
+  padding: 10px 0;
+}
+.chart-list label input[type="radio"] {
+  position: relative;
+  display: inline-block;
+  margin-top: 3px;
+  margin-right: 15px;
+  font-size: 12px;
+  float: left;
+  z-index: 1;
+}
+.chart-list label input[type="radio"]:checked + div span {
+  position: absolute;
+  display: inline-block;
+  left: 100%;
+  top: -5px;
+  margin: 0 0 0 20px;
+  padding: 8px 15px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background-color: rgba(34, 34, 34, 0.9);
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(34, 34, 34, 0.2);
+  clear: both;
+  visibility: visible;
+  transform: translateX(0px);
+  transition: transform 200ms ease;
+}
+.chart-list input[type="radio"]:checked + div span:before {
+  position: absolute;
+  content: "";
+  top: 4px;
+  left: -1px;
+  border-top: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid rgba(34, 34, 34, 0.9);
+  transform: rotate(45deg);
+}
+.chart-list label div {
+  position: relative;
+  display: inline-block;
+}
+.chart-list label div span {
+  position: absolute;
+  visibility: hidden;
+  transform: translateX(-10px);
+  transition: transform 200ms ease;
+}
+.chart-list label input[type="radio"]:checked + div span {
+  background-color: #3498db;
+}
+.chart-list label input[type="radio"]:checked + div span:before {
+  border-top: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid rgba(52, 152, 219, 0.9);
+}
+
+.display-check {
+  padding-left: 40px;
+  padding-top: 5px;
+}
+
+.display-check input {
+  margin-top: 3px;
+  margin-right: 15px;
+}
+
+.icon-button {
+	border-radius: 22px;
+	margin-top: 5px;
+	height: 35px;
+	background-color: #808080;
+	border: 2px solid #808080;
+}
+
+.tutorial-title {
+	background-color: #808080 !important;
+	color: #ffffff !important;
+}
+
+.tutorial-prev-icon {
+	display: inline-flex;
+	width: 90px;
+}
+
+.tutorial-prev-icon.icon-button {
+	color: white;
+}
+
+.tutorial-prev-icon.icon-button.disabled {
+	color: black;
+}
+
+.tutorial-prev-icon1 {
+	margin-left: 6px;
+	margin-top: 6px;
+}
+
+.tutorial-prev-icon2 {
+	background-image: url("../img/go-left.svg");
+	width: 20px;
+	height: 20px;
+	background-size: 20px 20px;
+}
+
+.tutorial-prev-icon3 {
+	display: none;
+	width: 20px;
+	height: 20px;
+	background-size: 20px 20px;
+	background-color: white;
+	margin-top: -20px;
+}
+
+.tutorial-next-icon {
+	display: inline-flex;
+	width: 90px;
+}
+
+.tutorial-next-icon.icon-button {
+	color: white;
+}
+
+.tutorial-next-icon.icon-button.disabled {
+	color: black;
+}
+
+.tutorial-next-icon1 {
+	margin-left: 6px;
+	margin-top: 6px;
+}
+
+.tutorial-next-icon2 {
+	background-image: url("../img/go-right.svg");
+	width: 20px;
+	height: 20px;
+	background-size: 20px 20px;
+}
+
+.tutorial-next-icon3 {
+	display: none;
+	width: 20px;
+	height: 20px;
+	background-size: 20px 20px;
+	background-color: white;
+	margin-top: -20px;
+}
+
+.tutorial-end-icon {
+	display: inline-flex;
+	width: 90px;
+}
+
+.tutorial-end-icon.icon-button {
+	color: white;
+}
+
+.tutorial-end-icon.icon-button.disabled {
+	color: black;
+}
+
+.tutorial-end-icon1 {
+	margin-left: 6px;
+	margin-top: 6px;
+}
+
+.tutorial-end-icon2 {
+	background-image: url("../img/dialog-cancel.svg");
+	width: 20px;
+	height: 20px;
+	background-size: 20px 20px;
+}
+
+.tutorial-end-icon3 {
+	display: none;
+	width: 20px;
+	height: 20px;
+	background-size: 20px 20px;
+	background-color: white;
+	margin-top: -20px;
+}
+
+.icon-tutorial-text {
+	margin-top: 7px;
+	padding-left: 38px;
+	padding-right: 38px;
+  display: inline-block;
+  position: absolute;
+}
+
+.popover-tour {
+  background-color: #fff;
+  padding: 1px;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid rgba(0,0,0,.2);
+  border-radius: 6px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+  box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
 @font-face {
 	font-family: "Noto Emoji";
 	src: url("../fonts/NotoEmoji.woff") format('woff');
@@ -325,5 +683,34 @@
   100% {
     transform: rotate(360deg);
     transform: rotate(360deg);
+  }
+}
+
+.hide-mob-el {
+  display: block;
+}
+
+.hide-desk-el {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .pull-right-mobinterrupt {
+    float: none !important;
+  }
+  .hide-mob-el {
+    display: none !important;
+  }
+  .hide-desk-el {
+    display: block !important;
+  }
+  .type-selector {
+    padding-left: 0px;
+  }
+  .chart-list {
+    padding-left: 0px;
+  }
+  .display-check {
+    padding-left: 0px;
   }
 }

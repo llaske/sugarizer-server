@@ -1,5 +1,5 @@
 
-<div class="sidebar" data-color="black">
+<div class="sidebar" data-color="black" id="sugarizer-sidebar">
 
 	<div class="logo">
 		<a href="/dashboard" class="simple-text"><%= server.name %></a>
@@ -8,14 +8,21 @@
 
 	<div class="sidebar-wrapper">
 		<ul class="nav">
+			<li>
+				<a class="pointer hide-desk-el" onclick="jumpTo('/dashboard/logout')">
+					<i class="custom-icon shutdown-icon"></i>
+					<p data-l10n-id="logout">Logout</p>
+			  	</a>
+			</li>
+
 			<%if (module == 'dashboard') { %>
 				<li class="active">
 			<% } else {%>
 				<li>
 			<% }%>
-				<a onclick="jumpTo('/dashboard')">
+				<a class="pointer" onclick="jumpTo('/dashboard')">
 					<i class="custom-icon home-icon"></i>
-					<p data-l10n-id="dashboard"></p>
+					<p data-l10n-id="dashboard">Home</p>
 				</a>
 			</li>
 			<%if (module == 'users') { %>
@@ -23,9 +30,9 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a onclick="jumpTo('/dashboard/users')">
+				<a class="pointer" onclick="jumpTo('/dashboard/users')">
 					<i class="custom-icon xo-icon"></i>
-					<p data-l10n-id="users"></p>
+					<p data-l10n-id="users">Users</p>
 				</a>
 			</li>
 			<%if (module == 'activities') { %>
@@ -33,9 +40,9 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a onclick="jumpTo('/dashboard/activities')">
+				<a class="pointer" onclick="jumpTo('/dashboard/activities')">
 					<i class="custom-icon activity-icon"></i>
-					<p data-l10n-id="activities"></p>
+					<p data-l10n-id="activities">Activities</p>
 				</a>
 			</li>
 			<%if (module == 'journals') { %>
@@ -43,9 +50,9 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a onclick="jumpTo('/dashboard/journal')">
+				<a class="pointer" onclick="jumpTo('/dashboard/journal')">
 					<i class="custom-icon journal-icon"></i>
-					<p data-l10n-id="journals"></p>
+					<p data-l10n-id="journals">Journals</p>
 				</a>
 			</li>
 			<%if (module == 'classrooms') { %>
@@ -53,19 +60,31 @@
 			<% } else {%>
 				<li>
 			<% }%>
-				<a onclick="jumpTo('/dashboard/classrooms')">
+				<a class="pointer" onclick="jumpTo('/dashboard/classrooms')">
 					<i class="custom-icon classroom-icon"></i>
 					<p data-l10n-id="classrooms">Classrooms</p>
 				</a>
 			</li>
+			<%if (account.user && account.user.role == "admin") { %>
 			<%if (module == 'stats') { %>
 				<li class="active">
 			<% } else {%>
 				<li>
 			<% }%>
-				<a onclick="jumpTo('/dashboard/stats')">
+				<a class="pointer" onclick="jumpTo('/dashboard/stats')">
 					<i class="custom-icon stats-icon"></i>
 					<p data-l10n-id="stats">Statistics</p>
+				</a>
+			</li>
+			<% } %>
+			<%if (module == 'profile') { %>
+				<li class="active hide-desk-el">
+			<% } else {%>
+				<li class="hide-desk-el">
+			<% }%>
+				<a class="pointer" onclick="jumpTo('/dashboard/profile')">
+					<i class="custom-icon user-icon"></i>
+					<p data-l10n-id="profile">Profile</p>
 				</a>
 			</li>
 		</ul>
