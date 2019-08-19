@@ -41,7 +41,6 @@ module.exports = function launch(req, res) {
 
 			// process data and create context
 			var lsObj = {};
-			console.log('body.entries[0].text', body.entries[0].text.length);
 
 			if (ver > 1.1) {
 				lsObj['sugar_datastoretext_' + body.entries[0].objectId] = body.entries[0].text;
