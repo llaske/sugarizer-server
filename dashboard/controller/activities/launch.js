@@ -78,11 +78,18 @@ module.exports = function launch(req, res) {
 				lsObj['sugar_settings'].view = 0;
 				lsObj['sugar_settings'].activities = [];
 
+				if (!body.entries[0].metadata.activity) {
+					return res.json({
+						error: common.l10n.get('NoLinkedActivityFound')
+					});
+				}
 				getActivity(req, body.entries[0].metadata.activity, function(activity) {
 					if (!activity) {
-						return res.redirect('/dashboard/' + (req.query.source ? req.query.source : 'journal'));
+						return res.json({
+							error: common.l10n.get('NoLinkedActivityFound')
+						});
 					}
-
+					
 					activity.instances = [body.entries[0]];
 					lsObj['sugar_settings'].activities.push(activity);
 					lsObj['sugar_settings'] = JSON.stringify(lsObj['sugar_settings']);

@@ -154,6 +154,14 @@ function launch_activity(callurl) {
 	}
 
 	$.get((callurl), function(response) {
+		if (response.error) {
+			$.notify({
+				icon: "error",
+				message: response.error
+			},{
+				type: 'danger'
+			});
+		}
 		// backup current storage and create a virtual context in local storage
 		var keyHistory = [];
 		var datastorePrefix = 'sugar_datastore';
@@ -221,6 +229,7 @@ function launch_activity(callurl) {
 				};
 			} else {
 				$.notify({
+					icon: "error",
 					message: document.webL10n.get('CantOpenWindow')
 				},{
 					type: 'danger'
