@@ -1,6 +1,9 @@
 // Journal handling
 var mongo = require('mongodb'),
-	users = require("./users");
+	users = require("./users"),
+	streamifier = require('streamifier'),
+	fs = require('fs'),
+	path = require('path');
 
 
 var db;
@@ -8,6 +11,11 @@ var db;
 var journalCollection;
 
 var shared = null;
+
+var sugarizerVersion = null;
+
+// eslint-disable-next-line no-unused-vars
+var gridfsbucket, CHUNKS_COLL, FILES_COLL;
 
 //- Utility functions
 
@@ -38,6 +46,50 @@ exports.init = function(settings, database) {
 			// Already exist, save it
 			else if (item != null) {
 				shared = item;
+			}
+		});
+	});
+
+	var bucket = 'textBucket';
+	gridfsbucket = new mongo.GridFSBucket(db,{
+		chunkSizeBytes:102400,
+		bucketName: bucket
+	});
+	CHUNKS_COLL = bucket + ".chunks";
+	FILES_COLL = bucket + ".files";
+
+
+
+	// Get sugarizer version
+	var sugarizerPath = settings.client.path;
+	if (sugarizerPath[0] != '/') {
+		sugarizerPath = __dirname + '/../../' + settings.client.path;
+	}
+	sugarizerPath += (sugarizerPath[sugarizerPath.length-1] == '/' ? '' : '/');
+
+	var packageName = 'package.json';
+	// Read activities directory
+
+	fs.readdir(sugarizerPath, function(err, files) {
+		if (err) {
+			console.log("ERROR: can't find sugarizer path '"+sugarizerPath+"'");
+			throw err;
+		}
+		files.forEach(function(file) {
+			if (file == packageName) {
+				// Get the file name
+				var filePath = sugarizerPath + path.sep + file;
+				fs.stat(filePath, function(err, stats) {
+					if (err) {
+						console.log("ERROR: can't read '"+filePath+"'");
+						throw err;
+					}
+					// If it's a directory, it's an activity
+					if (!stats.isDirectory()) {
+						var sugarizerPackage = require(filePath);
+						sugarizerVersion = sugarizerPackage.version;
+					}
+				});
 			}
 		});
 	});
@@ -231,6 +283,7 @@ exports.addJournal = function(req, res) {
  * @apiSuccess {Number} limit Limit on number of results
  * @apiSuccess {Number} total total number of results
  * @apiSuccess {Object} link pagination links
+ * @apiSuccess {String} version sugarizer version
  *
  * @apiSuccessExample {Json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -282,7 +335,8 @@ exports.addJournal = function(req, res) {
  *     "links": {
  *     	"prev_page": "/api/v1/journal/5569f4b019e0b4c9525b3c96?limit=10&offset=10",
  *     	"next_page": "/api/v1/journal/5569f4b019e0b4c9525b3c96?limit=10&offset=30"
- *     }
+ *     },
+ *     "version": 1.2.0-alpha
  *    }
  **/
 exports.findJournalContent = function(req, res) {
@@ -322,18 +376,55 @@ exports.findJournalContent = function(req, res) {
 				//apply pagination
 				items = items.slice(skip, (skip + limit));
 
-				// Return
-				return res.send({
-					'entries': items,
-					'offset': skip,
-					'limit': limit,
-					'total': total,
-					'links': {
-						'prev_page': ((skip - limit) >= 0) ? formPaginatedUrl(route, params, (skip - limit), limit) : undefined,
-						'curr_page': formPaginatedUrl(route, params, (skip), limit),
-						'next_page': ((skip + limit) < total) ? formPaginatedUrl(route, params, (skip + limit), limit) : undefined,
+				var reqCount = 0, resCount = 0;
+
+				for (var i=0; i<items.length; i++) {
+					if (items[i] && items[i].text && mongo.ObjectID.isValid(items[i].text)) {
+						reqCount++;
+						db.collection(CHUNKS_COLL, function(err, collection) {
+							var ind = i;
+							collection.find({ files_id: items[i].text }).toArray(function(error, docs) {
+								items[ind].text = "";
+								if (error || (docs && docs.length == 0)) {
+									resCount++;
+								} else {
+									for (var k=0; k<docs.length; k++) {
+										items[ind].text += docs[k].data ? docs[k].data.toString("utf8") : "";
+										if (k == docs.length - 1) {
+											resCount++;
+											if (resCount == reqCount) {
+												return returnResponse();
+											}
+										}
+									}
+								}
+								if (resCount == reqCount) {
+									return returnResponse();
+								}
+							});
+						});
 					}
-				});
+				}
+
+				if (reqCount == 0) {
+					returnResponse();
+				}
+
+				function returnResponse() {
+					// Return
+					return res.send({
+						'entries': items,
+						'offset': skip,
+						'limit': limit,
+						'total': total,
+						'links': {
+							'prev_page': ((skip - limit) >= 0) ? formPaginatedUrl(route, params, (skip - limit), limit) : undefined,
+							'curr_page': formPaginatedUrl(route, params, (skip), limit),
+							'next_page': ((skip + limit) < total) ? formPaginatedUrl(route, params, (skip + limit), limit) : undefined,
+						},
+						'version': sugarizerVersion
+					});
+				}
 			});
 		});
 	});
@@ -551,34 +642,25 @@ exports.addEntryInJournal = function(req, res) {
 		collection.findOne(filter, function(err, item) {
 			if (item == null) {
 				// Add a new entry
-				var newcontent = {
-					$push: {
-						content: journal
-					}
-				};
-				db.collection(journalCollection, function(err, collection) {
-					collection.updateOne({
-						'_id': new mongo.ObjectID(jid)
-					}, newcontent, {
-						safe: true
-					}, function(err, result) {
-						if (err) {
-							return res.status(500).send({
+				if (journal.text) {
+					var text = journal.text;
+					var filename = mongo.ObjectId();
+
+					streamifier.createReadStream(journal.text)
+						.pipe(gridfsbucket.openUploadStreamWithId(filename, filename.toString()))
+						.on('error', function () {
+							return res.status(401).send({
 								'error': 'An error has occurred',
 								'code': 10
 							});
-						} else {
-							if (result && result.result && result.result.n == 1) {
-								return res.send(journal);
-							} else {
-								return res.status(401).send({
-									'error': 'An error has occurred',
-									'code': 10
-								});
-							}
-						}
-					});
-				});
+						})
+						.on('finish', function (uploadStr) {
+							journal.text = uploadStr._id;
+							updateJournal(req, res, journal, text);
+						});
+				} else {
+					updateJournal(req, res, journal);
+				}
 			} else {
 				// Update the entry
 				req.params.oid = journal.objectId;
@@ -587,6 +669,40 @@ exports.addEntryInJournal = function(req, res) {
 		});
 	});
 };
+
+function updateJournal(req, res, journal, text) {
+	var jid = req.params.jid;
+
+	var newcontent = {
+		$push: {
+			content: journal
+		}
+	};
+	db.collection(journalCollection, function(err, collection) {
+		collection.updateOne({
+			'_id': new mongo.ObjectID(jid)
+		}, newcontent, {
+			safe: true
+		}, function(err, result) {
+			if (err) {
+				return res.status(500).send({
+					'error': 'An error has occurred',
+					'code': 10
+				});
+			} else {
+				if (result && result.result && result.result.n == 1) {
+					journal.text = text;
+					return res.send(journal);
+				} else {
+					return res.status(401).send({
+						'error': 'An error has occurred',
+						'code': 10
+					});
+				}
+			}
+		});
+	});
+}
 
 /**
  * @api {put} api/v1/journal/:jid Update entry
@@ -662,16 +778,32 @@ exports.updateEntryInJournal = function(req, res) {
 		}
 	};
 	db.collection(journalCollection, function(err, collection) {
-		collection.updateOne({
+		collection.findOneAndUpdate({
 			'_id': new mongo.ObjectID(jid)
 		}, deletecontent, {
-			safe: true
-		}, function(err) {
+			safe: true,
+			returnNewDocument: false
+		}, function(err, doc) {
 			if (err) {
 				return res.status(500).send({
 					'error': 'An error has occurred',
 					'code': 10
 				});
+			} else if (doc && doc.value && typeof doc.value.content == 'object') {
+				var cont = [];
+				for (var i=0; i<doc.value.content.length; i++) {
+					if (doc.value.content[i] && doc.value.content[i].objectId == oid && mongo.ObjectID.isValid(doc.value.content[i].text)) {
+						cont.push(doc.value.content[i].text);
+					}
+				}
+				var deleteCount = 0;
+				for (var i=0; i < cont.length; i++) {
+					gridfsbucket.delete(cont[i], function() {
+						deleteCount++;
+						if (deleteCount == cont.length) exports.addEntryInJournal(req, res);
+					});
+				}
+				if (cont.length == 0) exports.addEntryInJournal(req, res);
 			} else {
 				// Add the updated entry
 				exports.addEntryInJournal(req, res);
@@ -728,7 +860,7 @@ exports.removeInJournal = function(req, res) {
 	//whether or partial is deleted!
 	if (type == 'full') {
 		db.collection(journalCollection, function(err, collection) {
-			collection.deleteOne({
+			collection.findOneAndDelete({
 				'_id': new mongo.ObjectID(jid)
 			}, function(err, result) {
 				if (err) {
@@ -737,10 +869,31 @@ exports.removeInJournal = function(req, res) {
 						'code': 10
 					});
 				} else {
-					if (result && result.result && result.result.n == 1) {
-						return res.send({
-							'jid': jid
-						});
+					if (result && result.value && result.ok) {
+						if (typeof result.value.content == 'object') {
+							var cont = [];
+							for (var i=0; i<result.value.content.length; i++) {
+								if (result.value.content[i] && mongo.ObjectID.isValid(result.value.content[i].text)) {
+									cont.push(result.value.content[i].text);
+								}
+							}
+							var deleteCount = 0;
+							for (var i=0; i < cont.length; i++) {
+								gridfsbucket.delete(cont[i], function() {
+									deleteCount++;
+									if (deleteCount == cont.length) return res.send({
+										'jid': jid
+									});
+								});
+							}
+							if (cont.length == 0) return res.send({
+								'jid': jid
+							});
+						} else {
+							return res.send({
+								'jid': jid
+							});
+						}
 					} else {
 						return res.status(401).send({
 							'error': 'Error while deleting journal!',
@@ -753,7 +906,7 @@ exports.removeInJournal = function(req, res) {
 	} else {
 		if (oid) {
 			db.collection(journalCollection, function(err, collection) {
-				collection.updateOne({
+				collection.findOneAndUpdate({
 					'_id': new mongo.ObjectID(jid)
 				}, {
 					$pull: {
@@ -770,10 +923,31 @@ exports.removeInJournal = function(req, res) {
 							'code': 10
 						});
 					} else {
-						if (result && result.result && result.result.n == 1) {
-							return res.send({
-								'objectId': oid
-							});
+						if (result && result.value && result.ok) {
+							if (typeof result.value.content == 'object') {
+								var cont = [];
+								for (var i=0; i<result.value.content.length; i++) {
+									if (result.value.content[i] && result.value.content[i].objectId == oid && mongo.ObjectID.isValid(result.value.content[i].text)) {
+										cont.push(result.value.content[i].text);
+									}
+								}
+								var deleteCount = 0;
+								for (var i=0; i < cont.length; i++) {
+									gridfsbucket.delete(cont[i], function() {
+										deleteCount++;
+										if (deleteCount == cont.length) return res.send({
+											'objectId': oid
+										});
+									});
+								}
+								if (cont.length == 0) return res.send({
+									'objectId': oid
+								});
+							} else {
+								return res.send({
+									'objectId': oid
+								});
+							}
 						} else {
 							return res.status(401).send({
 								'error': 'Error while deleting journal entry!',

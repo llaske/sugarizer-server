@@ -29,6 +29,7 @@ module.exports = function launch(req, res) {
 		uri: common.getAPIUrl(req) + 'api/v1/journal/' + req.params.jid
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
+			var ver = parseFloat(body.version);
 
 			//validate
 			if (body.entries.length == 0) {
@@ -40,11 +41,24 @@ module.exports = function launch(req, res) {
 
 			// process data and create context
 			var lsObj = {};
-			lsObj['sugar_datastoretext_' + body.entries[0].objectId] = JSON.stringify(body.entries[0].text);
 
-			body.entries[0].text = {
-				link: 'sugar_datastoretext_' + body.entries[0].objectId
-			};
+			if (ver > 1.1) {
+				lsObj['sugar_datastoretext_' + body.entries[0].objectId] = body.entries[0].text;
+			} else {
+				lsObj['sugar_datastoretext_' + body.entries[0].objectId] = JSON.stringify(body.entries[0].text);
+			}
+			
+			
+			if (ver > 1.1) {
+				body.entries[0].text = {
+					link: body.entries[0].objectId
+				};
+			} else {
+				body.entries[0].text = {
+					link: 'sugar_datastoretext_' + body.entries[0].objectId
+				};
+			}
+			
 			lsObj['sugar_datastore_' + body.entries[0].objectId] = JSON.stringify(body.entries[0]);
 
 			//sugar settings
@@ -64,11 +78,18 @@ module.exports = function launch(req, res) {
 				lsObj['sugar_settings'].view = 0;
 				lsObj['sugar_settings'].activities = [];
 
+				if (!body.entries[0].metadata.activity) {
+					return res.json({
+						error: common.l10n.get('NoLinkedActivityFound')
+					});
+				}
 				getActivity(req, body.entries[0].metadata.activity, function(activity) {
 					if (!activity) {
-						return res.redirect('/dashboard/' + (req.query.source ? req.query.source : 'journal'));
+						return res.json({
+							error: common.l10n.get('NoLinkedActivityFound')
+						});
 					}
-
+					
 					activity.instances = [body.entries[0]];
 					lsObj['sugar_settings'].activities.push(activity);
 					lsObj['sugar_settings'] = JSON.stringify(lsObj['sugar_settings']);
@@ -81,7 +102,9 @@ module.exports = function launch(req, res) {
 							a: activity.id,
 							o: body.entries[0].objectId,
 							n: activity.name
-						})
+						}),
+						version: ver,
+						objectId: body.entries[0].objectId
 					});
 				});
 			});

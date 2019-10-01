@@ -10,6 +10,9 @@ var classroomsCollection;
 var journalCollection;
 var chartsCollection;
 
+// eslint-disable-next-line no-unused-vars
+var gridfsbucket, CHUNKS_COLL, FILES_COLL;
+
 // Init database
 exports.init = function(settings, database) {
 	usersCollection = settings.collections.users;
@@ -17,6 +20,14 @@ exports.init = function(settings, database) {
 	journalCollection = settings.collections.journal;
 	chartsCollection = settings.collections.charts;
 	db = database;
+
+	var bucket = 'textBucket';
+	gridfsbucket = new mongo.GridFSBucket(db,{
+		chunkSizeBytes:102400,
+		bucketName: bucket
+	});
+	CHUNKS_COLL = bucket + ".chunks";
+	FILES_COLL = bucket + ".files";
 };
 
 /**
@@ -698,7 +709,7 @@ exports.removeUser = function(req, res) {
 								db.collection(classroomsCollection, function(err, collection) {
 									collection.updateMany({},
 										{
-											$pull: { students: uid}
+											$pull: { students: uid }
 										}, {
 											safe: true
 										},
@@ -711,27 +722,47 @@ exports.removeUser = function(req, res) {
 											} else {
 												if (user.value.private_journal) {
 													db.collection(journalCollection, function(err, collection) {
-														collection.deleteMany({
+														collection.findOneAndDelete({
 															_id: new mongo.ObjectID(user.value.private_journal)
 														}, {
 															safe: true
 														},
-														function(err) {
+														function(err, result) {
 															if (err) {
-																res.status(500).send({
-																	error: "An error has occurred",
-																	code: 10
+																return res.status(500).send({
+																	'error': 'An error has occurred',
+																	'code': 10
 																});
 															} else {
-																res.send({
-																	'user_id': uid
-																});
+																if (result && result.value && result.ok && typeof result.value.content == 'object') {
+																	var cont = [];
+																	for (var i=0; i<result.value.content.length; i++) {
+																		if (result.value.content[i] && mongo.ObjectID.isValid(result.value.content[i].text)) {
+																			cont.push(result.value.content[i].text);
+																		}
+																	}
+																	var deleteCount = 0;
+																	for (var i=0; i < cont.length; i++) {
+																		gridfsbucket.delete(cont[i], function() {
+																			deleteCount++;
+																			if (deleteCount == cont.length) return res.send({
+																				'user_id': uid
+																			});
+																		});
+																	}
+																	if (cont.length == 0) return res.send({
+																		'user_id': uid
+																	});
+																} else {
+																	return res.send({
+																		'user_id': uid
+																	});
+																}
 															}
-														}
-														);
+														});
 													});
 												} else {
-													res.send({
+													return res.send({
 														'user_id': uid
 													});
 												}

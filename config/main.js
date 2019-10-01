@@ -31,11 +31,11 @@ module.exports = function(app, ini) {
 
 	//include body parser
 	app.use(bodyParser.urlencoded({
-		limit: '16mb',
+		limit: '256mb',
 		extended: false
 	}));
 	app.use(bodyParser.json({
-		limit: '16mb',
+		limit: '256mb',
 		type: 'application/json'
 	}));
 
