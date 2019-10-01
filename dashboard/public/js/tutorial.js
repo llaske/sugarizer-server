@@ -135,6 +135,19 @@ function sugarizerTour(currentView, role) {
 			tour.addStep(getStep("classroom", "#classroom-delete-class", "left", 8));
 		} else if (currentView == "stats") {
 			tour.addStep(getStep("stats", "", "bottom", 1, true));
+			tour.addStep(getStep("stats", "#stats-addChart", "left", 2));
+			tour.addStep(getStep("stats", "#stats-listCharts", "left", 3));
+		} else if (currentView == "listCharts") {
+			tour.addStep(getStep("listCharts", "", "bottom", 1, true));
+			tour.addStep(getStep("listCharts", "#listCharts-chartList", "left", 2));
+			tour.addStep(getStep("listCharts", "#listCharts-viewCharts", "left", 3));
+			tour.addStep(getStep("listCharts", "#listCharts-addChart", "left", 4));
+			tour.addStep(getStep("listCharts", "#listCharts-searchbox", "bottom", 5));
+			tour.addStep(getStep("listCharts", "#listCharts-card", "bottom", 6));
+			tour.addStep(getStep("listCharts", "#listCharts-draggable", "right", 7));
+			tour.addStep(getStep("listCharts", "#listCharts-toggleBox", "left", 8));
+			tour.addStep(getStep("listCharts", "#listCharts-editChart", "left", 9));
+			tour.addStep(getStep("listCharts", "#listCharts-deleteChart", "left", 10));
 		}
 		tour.init();
 	};
