@@ -11,6 +11,9 @@
             <div class="navbar-brand" style="font-weight:500" data-l10n-id="<%= module %>"></div>
         </div>
         <div class="collapse navbar-collapse">
+            <div class="nav navbar-nav navbar-right">
+                <p class="custom-icon help-icon" id="navbar-help" onclick="launchTutorial()"></p>
+            </div>
             <ul class="nav navbar-nav navbar-right">
   							<li class="dropdown hide-mob-el">
   								<a href="/dashboard/logout" class="dropdown-toggle" data-toggle="dropdown">
@@ -24,7 +27,6 @@
                                         <li>
                                     <% }%>
                                     <a class="pointer" data-l10n-id="profile" onclick="jumpTo('/dashboard/profile')">Profile</a></li>
-                                    <li><a class="pointer hide-mob-el" data-l10n-id="help" onclick="launchTutorial()">Help</a></li>
   									<li><a href="/dashboard/logout" data-l10n-id="logout">Logout</a></li>
   								</ul>
   							</li>

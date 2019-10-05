@@ -96,12 +96,16 @@ function sugarizerTour(currentView, role) {
 		} else if (currentView == "users") {
 			tour.addStep(getStep("users", "", "bottom", 1, true));
 			tour.addStep(getStep("users", "#user-serach-row", "bottom", 2));
-			tour.addStep(getStep("users", "#users-adduser", "left", 3));
-			tour.addStep(getStep("users", "#users-addfromcsv", "bottom", 4));
-			tour.addStep(getStep("users", "#users-exportusers", "bottom", 5));
-			tour.addStep(getStep("users", "#seeJournalEntries", "left", 6));
-			tour.addStep(getStep("users", "#editUser", "left", 7));
-			tour.addStep(getStep("users", "#deleteUser", "left", 8));
+			tour.addStep(getStep("users", "#username", "bottom", 3));
+			tour.addStep(getStep("users", "#select2-user-type-select2-container", "bottom", 4));
+			tour.addStep(getStep("users", "#select2-classroom_select-container", "bottom", 5));
+			tour.addStep(getStep("users", "#show-result", "bottom", 6));
+			tour.addStep(getStep("users", "#users-adduser", "left", 7));
+			tour.addStep(getStep("users", "#users-addfromcsv", "bottom", 8));
+			tour.addStep(getStep("users", "#users-exportusers", "bottom", 9));
+			tour.addStep(getStep("users", "#seeJournalEntries", "left", 10));
+			tour.addStep(getStep("users", "#editUser", "left", 11));
+			tour.addStep(getStep("users", "#deleteUser", "left", 12));
 		} else if (currentView == "activities") {
 			tour.addStep(getStep("activities", "", "bottom", 1, true));
 			tour.addStep(getStep("activities", "#activities-list-parent", "left", 2));

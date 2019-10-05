@@ -12,7 +12,7 @@
                       <form method="get" id="user-form">
                             <div class="col-md-2">
                           <div class="form-group form-black label-floating is-empty">
-                              <input data-l10n-id="john" placeholder="John..." class="form-control" name="username" value="<% if(query.q){ %><%= query.q %><% } %>" type="text">
+                              <input data-l10n-id="john" placeholder="John..." class="form-control" id="username" name="username" value="<% if(query.q){ %><%= query.q %><% } %>" type="text">
                               <span class="material-input"></span>
                           </div>
                         </div>
@@ -76,8 +76,9 @@
                                 }
                             });
                             </script>
+							<button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults" id="show-result"><div class="ripple-container"></div></button>
                         <div class="col-md-6">
-                            <div class="btn pull-right btn-round" onclick="downloadUsers()" id="users-exportusers">Export Users</div>
+                            <div class="btn pull-right btn-round" onclick="downloadUsers()" data-l10n-id="ExportUsers" id="users-exportusers">Export Users</div>
                             <script>
                                 function downloadUsers(event) {
                                     $.ajax({
@@ -126,7 +127,8 @@
                                 }
                             </script>
                             <div>
-                                <label for="csv-upload" class="btn pull-right btn-round" id="users-addfromcsv">Add From CSV<div class="ripple-container"></div></label>
+                                <label for="csv-upload" class="btn pull-right btn-round" data-l10n-id="ImportUsers" id="users-addfromcsv">Add From CSV<div class="ripple-container"></div></label>
+								<a class="btn btn-round pull-right " href="/dashboard/users/add" data-l10n-id="addUser" id="users-adduser"><div class="ripple-container"></div></a>
                                 <input id="csv-upload" style="visibility:hidden; display:none;" type="file" name="csv-file" accept="text/csv">
                                 <script>
                                     $("#csv-upload").change(function() {
@@ -190,8 +192,6 @@
                                     });
                                 </script>
                             </div>
-                            <a class="btn btn-round pull-right " href="/dashboard/users/add" data-l10n-id="addUser" id="users-adduser"><div class="ripple-container"></div></a>
-                            <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>
                       </form>
                   </div>
@@ -284,7 +284,7 @@ function show_class_fields() {
     if($('#user-form [name="role"]').length && $('#user-form [name="role"]').select2('data')[0].id != 'student'){
         $('.classroom_input').addClass('hide');
         $('#user-form [name="classid"]').val('').trigger('change');
-        
+
     }else{
         $('.classroom_input').removeClass('hide');
     }

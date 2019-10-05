@@ -135,6 +135,16 @@
   background-image: url('/public/img/home-icon.svg');
 }
 
+.help-icon {
+  background-image: url('/public/img/help.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 30px 30px;
+  width: 30px;
+  height: 30px;
+  margin-top: 8px;
+}
+
 .custom-icon.invert {
   filter: invert(100%);
   -webkit-filter: invert(100%);
