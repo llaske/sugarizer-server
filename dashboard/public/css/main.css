@@ -145,6 +145,18 @@
   margin-top: 8px;
 }
 
+.qr-icon {
+  background-image: url('/public/img/qr-code.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 30px 30px;
+  width: 30px;
+  height: 30px;
+  margin-top: 15px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .custom-icon.invert {
   filter: invert(100%);
   -webkit-filter: invert(100%);

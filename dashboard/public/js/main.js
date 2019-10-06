@@ -770,3 +770,15 @@ function launchTutorial() {
 		window.currTour.restart();
 	}
 }
+
+function generateQRCode() {
+	var placeholder = document.getElementById("qrplaceholder");
+	placeholder.innerHTML = "";
+	var qrCode = new QRCode("qrplaceholder", {width: 300, height: 300, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H});
+	qrCode.clear();
+	qrCode.makeCode(window.location.protocol+"//"+window.location.host);
+	$('#qrpopup').on('show.bs.modal', function () {
+		$(this).find('.modal-dialog').css({width:'350px',height:'350px'});
+	});
+	$("#qrpopup").modal();
+}

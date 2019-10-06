@@ -4,6 +4,7 @@
 	<div class="logo">
 		<a href="/dashboard" class="simple-text"><%= server.name %></a>
 		<div class="server-description"><%= server.description %></div>
+		<div class="qr-icon" onclick="generateQRCode()"></div>
 	</div>
 
 	<div class="sidebar-wrapper">
@@ -88,5 +89,22 @@
 				</a>
 			</li>
 		</ul>
+	</div>
+</div>
+
+
+<div id="qrpopup" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" style="width: 30px; height: 30px;" class="close" data-dismiss="modal">x</button>
+			</div>
+			<div class="modal-body" style="margin-top: 15px;">
+				<div id="qrplaceholder"></div>
+			</div>
+			<div class="modal-footer">
+				<p style="text-align:center" data-l10n-id="scanqrcode">Scan this QR Code with your device to set automatically the server URL</p>
+			</div>
+		</div>
 	</div>
 </div>
