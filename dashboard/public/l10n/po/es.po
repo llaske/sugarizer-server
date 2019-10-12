@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: Sat Mar 24 2018 10:47:08 GMT+0100 (CET)\n"
+"POT-Creation-Date: Sat Oct 12 2019 11:05:31 GMT+0200 (GMT+02:00)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,6 +33,11 @@ msgctxt "activities"
 msgid "Activities"
 msgstr "Ocupaciones"
 
+#: activityNotFound
+msgctxt "activityNotFound"
+msgid "Activity not found"
+msgstr "Actividades no encontradas"
+
 #: stats
 msgctxt "stats"
 msgid "Statistics"
@@ -42,6 +47,11 @@ msgstr "Statistics"
 msgctxt "icon"
 msgid "Icon"
 msgstr "Icono"
+
+#: size
+msgctxt "size"
+msgid "Size"
+msgstr "tamaño"
 
 #: name
 msgctxt "name"
@@ -60,7 +70,7 @@ msgstr "Versión"
 
 #: favorite
 msgctxt "favorite"
-msgid "favorite"
+msgid "Favorite"
 msgstr "Favorito"
 
 #: action
@@ -76,7 +86,7 @@ msgstr "Papel"
 #: title
 msgctxt "title"
 msgid "Title"
-msgstr "título"
+msgstr "Título"
 
 #: language
 msgctxt "language"
@@ -86,7 +96,7 @@ msgstr "Guardar"
 #: timestamp
 msgctxt "timestamp"
 msgid "Timestamp"
-msgstr "fecha y hora"
+msgstr "Fecha y hora"
 
 #: searchActivity.placeholder
 msgctxt "searchActivity.placeholder"
@@ -112,6 +122,11 @@ msgstr "Ver todas las actividades"
 msgctxt "viewAllJournal"
 msgid "View all journal entries"
 msgstr "Ver todas las entradas de diario"
+
+#: viewAllClassrooms
+msgctxt "viewAllClassrooms"
+msgid "View all classrooms"
+msgstr "Ver todas las aulas"
 
 #: noEntryText
 msgctxt "noEntryText"
@@ -140,13 +155,13 @@ msgstr "Mostrar resultados"
 
 #: nextPage
 msgctxt "nextPage"
-msgid "next page >>"
-msgstr "página siguiente >>"
+msgid "Next page >>"
+msgstr "Página siguiente >>"
 
 #: prevPage
 msgctxt "prevPage"
-msgid "<< prev page"
-msgstr "<< página Anterior"
+msgid "<< Prev page"
+msgstr "<< Página Anterior"
 
 #. Do not translate {{offset}} {{to}} {{total}}
 #: showingResults
@@ -182,12 +197,12 @@ msgstr "Nombre de usuario"
 #: password
 msgctxt "password"
 msgid "Password"
-msgstr "contraseña"
+msgstr "Contraseña"
 
 #: login
 msgctxt "login"
 msgid "Login"
-msgstr "iniciar sesión"
+msgstr "Iniciar sesión"
 
 #: logout
 msgctxt "logout"
@@ -217,7 +232,7 @@ msgstr "Top Contribyutrs"
 #: TopActivities
 msgctxt "TopActivities"
 msgid "Top Activities"
-msgstr "arriba Actividades"
+msgstr "Arriba Actividades"
 
 #: RecentStudents
 msgctxt "RecentStudents"
@@ -227,7 +242,7 @@ msgstr "Estudiantes recientes"
 #: RecentEntries
 msgctxt "RecentEntries"
 msgid "Recent Entries"
-msgstr "entradas recientes"
+msgstr "Entradas recientes"
 
 #: SugarizerDashboard
 msgctxt "SugarizerDashboard"
@@ -237,7 +252,7 @@ msgstr "Sugarizer tablero de instrumentos"
 #: buddy
 msgctxt "buddy"
 msgid "Buddy"
-msgstr "amigo"
+msgstr "Amigo"
 
 #: color
 msgctxt "color"
@@ -254,6 +269,11 @@ msgctxt "lastSeen"
 msgid "Last Seen"
 msgstr "Visto por última vez"
 
+#: lastUpdated
+msgctxt "lastUpdated"
+msgid "Last Updated"
+msgstr "Última actualización"
+
 #: cancel
 msgctxt "cancel"
 msgid "Cancel"
@@ -267,228 +287,309 @@ msgstr "Guardar"
 #: deleteEntry.title
 msgctxt "deleteEntry.title"
 msgid "Delete Entry"
-msgstr "Delete Entry"
+msgstr "Eliminar la entrada"
 
 #: launch.title
 msgctxt "launch.title"
 msgid "Launch"
-msgstr "Launch"
+msgstr "Lanzamiento"
 
 #: seeJournalEntries.title
 msgctxt "seeJournalEntries.title"
 msgid "See Journal Entries"
-msgstr "See Journal Entries"
+msgstr "Ver las entradas de diario"
 
 #: editUser.title
 msgctxt "editUser.title"
 msgid "Edit User"
-msgstr "Edit User"
+msgstr "Editar usuario"
 
 #: deleteUser.title
 msgctxt "deleteUser.title"
 msgid "Delete User"
-msgstr "Delete User"
+msgstr "Borrar usuario"
 
 #: john.placeholder
 msgctxt "john.placeholder"
 msgid "Search User..."
-msgstr "Search User..."
+msgstr "Buscar usuario..."
+
+#: doe.placeholder
+msgctxt "doe.placeholder"
+msgid "Search Class..."
+msgstr "Buscar aula..."
 
 #: student
 msgctxt "student"
 msgid "Student"
-msgstr "Student"
+msgstr "Estudiante"
+
+#: students
+msgctxt "students"
+msgid "Students"
+msgstr "Estudiantes"
+
+#: classrooms
+msgctxt "classrooms"
+msgid "Classrooms"
+msgstr "Aulas"
+
+#: addClassroom
+msgctxt "addClassroom"
+msgid "Add Classroom"
+msgstr "Añadir aula"
+
+#: studentsCount
+msgctxt "studentsCount"
+msgid "Students Count"
+msgstr "Conteo de estudiantes"
+
+#: viewStudents.title
+msgctxt "viewStudents.title"
+msgid "View Students"
+msgstr "Ver estudiantes"
+
+#: editClassroom.title
+msgctxt "editClassroom.title"
+msgid "Edit Classroom"
+msgstr "Editar aula"
+
+#: deleteClassroom.title
+msgctxt "deleteClassroom.title"
+msgid "Delete Classroom"
+msgstr "Eliminar aula"
 
 #: admin
 msgctxt "admin"
 msgid "Admin"
-msgstr "Admin"
+msgstr "Administración"
 
-#: UserUpdated
-msgctxt "UserUpdated"
-msgid "User has been successfully updated!"
-msgstr "User has been successfully updated!"
-
-#: UserCreated
-msgctxt "UserCreated"
-msgid "User has been successfully created!"
-msgstr "User has been successfully created!"
-
-#: UserDeleted
-msgctxt "UserDeleted"
-msgid "User has been successfully deleted!"
-msgstr "User has been successfully deleted!"
-
-#: EntryDeleted
-msgctxt "EntryDeleted"
-msgid "Entry Successfully deleted!"
-msgstr "Entry Successfully deleted!"
-
-#: DoYouWantDeleteEntry
-msgctxt "DoYouWantDeleteEntry"
-msgid "Are you really want to delete the entry?"
-msgstr "Are you really want to delete the entry?"
-
-#. Do not translate {{user}}
-#: DoYouWantDeleteUser
-msgctxt "DoYouWantDeleteUser"
-msgid "Are you really want to delete the user {{user}}?"
-msgstr "Are you really want to delete the user {{user}}?"
-
-#: ThereIsError
-msgctxt "ThereIsError"
-msgid "There is some error!"
-msgstr "There is some error!"
-
-#: InvalidAid
-msgctxt "InvalidAid"
-msgid "Invalid activity!"
-msgstr "Invalid activity!"
-
-#: InvalidOidJid
-msgctxt "InvalidOidJid"
-msgid "Invalid item or journal!"
-msgstr "Invalid item or journal!"
-
-#: ObjectNotFound
-msgctxt "ObjectNotFound"
-msgid "Object Not Found!"
-msgstr "Object Not Found!"
-
-#: UsernameInvalid
-msgctxt "UsernameInvalid"
-msgid "Username is not valid"
-msgstr "Username is not valid"
-
-#: PasswordBlank
-msgctxt "PasswordBlank"
-msgid "Password cannot be blank"
-msgstr "Password cannot be blank"
+#. Do not translate {{count}}
+#: PasswordAtLeast
+msgctxt "PasswordAtLeast"
+msgid "Password should have at least {{count}} characters"
+msgstr "La contraseña debe tener al menos {{count}} caracteres"
 
 #: PasswordInvalid
 msgctxt "PasswordInvalid"
 msgid "Password is not valid"
 msgstr "La contraseña no es valida"
 
+#. Do not translate {{name}}
+#: UserUpdated
+msgctxt "UserUpdated"
+msgid "User {{name}} has been successfully updated!"
+msgstr "¡El usuario {{name}} ha sido actualizado exitosamente!"
+
+#. Do not translate {{name}}
+#: UserCreated
+msgctxt "UserCreated"
+msgid "User {{name}} has been successfully created!"
+msgstr "¡El usuario {{name}} ha sido creado exitosamente!"
+
+#. Do not translate {{name}}
+#: UserDeleted
+msgctxt "UserDeleted"
+msgid "User {{name}} has been successfully deleted!"
+msgstr "¡El usuario {{name}} ha sido eliminado exitosamente!"
+
+#. Do not translate {{activity}}
+#: EntryDeleted
+msgctxt "EntryDeleted"
+msgid "Entry for {{activity}} successfully deleted!"
+msgstr "Entrada para {{activity}} eliminada con éxito!"
+
+#. Do not translate {{activity}}
+#: DoYouWantDeleteEntry
+msgctxt "DoYouWantDeleteEntry"
+msgid "Do you really want to delete the entry for {{activity}}?"
+msgstr "¿Realmente quieres eliminar la entrada para {{activity}}?"
+
+#. Do not translate {{user}}
+#: DoYouWantDeleteUser
+msgctxt "DoYouWantDeleteUser"
+msgid "Are you really want to delete the user {{user}}?"
+msgstr "¿Realmente quieres eliminar el usuario {{user}}?"
+
+#: ThereIsError
+msgctxt "ThereIsError"
+msgid "There is some error!"
+msgstr "¡Hay algún error!"
+
+#: InvalidAid
+msgctxt "InvalidAid"
+msgid "Invalid activity!"
+msgstr "Actividad inválida!"
+
+#: InvalidOidJid
+msgctxt "InvalidOidJid"
+msgid "Invalid item or journal!"
+msgstr "¡Artículo o revista no válido!"
+
+#: ObjectNotFound
+msgctxt "ObjectNotFound"
+msgid "Object Not Found!"
+msgstr "¡Objeto no encontrado!"
+
+#: UsernameInvalid
+msgctxt "UsernameInvalid"
+msgid "Username is not valid"
+msgstr "El nombre de usuario no es válido"
+
+#: PasswordBlank
+msgctxt "PasswordBlank"
+msgid "Password cannot be blank"
+msgstr "La contraseña no puede estar en blanco"
+
 #: CantOpenWindow
 msgctxt "CantOpenWindow"
 msgid "Can't open window, check your browser for popup blocker"
-msgstr "Can't open window, check your browser for popup blocker"
+msgstr "No se puede abrir la ventana, compruebe su navegador para el bloqueador de ventanas emergentes"
 
 #: ErrorCode1
 msgctxt "ErrorCode1"
 msgid "Invalid username or password"
-msgstr "Invalid username or password"
+msgstr "Usuario o contraseña invalido"
 
-#: ErrocCode5
-msgctxt "ErrocCode5"
+#: ErrorCode5
+msgctxt "ErrorCode5"
 msgid "Server error"
-msgstr "Server error"
+msgstr "Error del Servidor"
+
+#: ErrorCode7
+msgctxt "ErrorCode7"
+msgid "Route not found"
+msgstr "Ruta no encontrada"
 
 #: ErrorCode8
 msgctxt "ErrorCode8"
 msgid "You don't have permission to remove this journal"
-msgstr "You don't have permission to remove this journal"
+msgstr "No tienes permiso para eliminar esta revista."
 
 #: ErrorCode10
 msgctxt "ErrorCode10"
 msgid "An error has occurred"
-msgstr "An error has occurred"
+msgstr "Se ha producido un error"
 
 #: ErrorCode11
 msgctxt "ErrorCode11"
 msgid "Invalid journal"
-msgstr "Invalid journal"
+msgstr "Revista inválida"
 
 #: ErrorCode12
 msgctxt "ErrorCode12"
 msgid "Invalid journal or entry"
-msgstr "Invalid journal or entry"
+msgstr "Diario o entrada inválida"
 
 #: ErrorCode13
 msgctxt "ErrorCode13"
 msgid "Invalid journal or object"
-msgstr "Invalid journal or object"
+msgstr "Diario u objeto inválido"
 
 #: ErrorCode14
 msgctxt "ErrorCode14"
 msgid "Error while deleting journal!"
-msgstr "Error while deleting journal!"
+msgstr "¡Error al borrar el diario!"
 
 #: ErrorCode15
 msgctxt "ErrorCode15"
 msgid "Error while deleting journal entry!"
-msgstr "Error while deleting journal entry!"
+msgstr "¡Error al eliminar la entrada de diario!"
 
 #: ErrorCode16
 msgctxt "ErrorCode16"
 msgid "Invalid object"
-msgstr "Invalid object"
+msgstr "Objeto inválido"
 
 #: ErrorCode18
 msgctxt "ErrorCode18"
 msgid "Invalid user id"
-msgstr "Invalid user id"
+msgstr "Identificación de usuario inválida"
 
 #: ErrorCode19
 msgctxt "ErrorCode19"
 msgid "You don't have permission to perform this action"
-msgstr "You don't have permission to perform this action"
+msgstr "No tienes permiso para realizar esta acción."
 
 #: ErrorCode20
 msgctxt "ErrorCode20"
 msgid "Please login with another admin account before deleting your account"
-msgstr "Please login with another admin account before deleting your account"
+msgstr "Por favor ingrese con otra cuenta de administrador antes de borrar su cuenta"
 
 #: ErrorCode21
 msgctxt "ErrorCode21"
 msgid "User not defined!"
-msgstr "User not defined!"
+msgstr "Usuario no definido!"
 
 #: ErrorCode22
 msgctxt "ErrorCode22"
 msgid "An user with same name already exist"
-msgstr "An user with same name already exist"
+msgstr "Ya existe un usuario con el mismo nombre."
 
 #: ErrorCode23
 msgctxt "ErrorCode23"
 msgid "Inexisting user"
-msgstr "Inexisting user"
+msgstr "Usuario inexistente"
 
 #: ErrorCode24
 msgctxt "ErrorCode24"
 msgid "An error has occurred while updating timestamp"
-msgstr "An error has occurred while updating timestamp"
+msgstr "Se ha producido un error al actualizar la marca de tiempo"
+
+#: ErrorCode25
+msgctxt "ErrorCode25"
+msgid "Error while adding chart"
+msgstr "Error al agregar gráfico"
+
+#: ErrorCode26
+msgctxt "ErrorCode26"
+msgid "Inexisting chart id"
+msgstr "ID de gráfico inexistente"
+
+#: ErrorCode27
+msgctxt "ErrorCode27"
+msgid "Invalid chart id"
+msgstr "ID de gráfico no válido"
+
+#: ErrorCode28
+msgctxt "ErrorCode28"
+msgid "Chart object not defined"
+msgstr "Objeto de gráfico no definido"
+
+#: ErrorCode29
+msgctxt "ErrorCode29"
+msgid "Error while updating charts"
+msgstr "Error al actualizar gráficos"
 
 #: LanguageSettings
 msgctxt "LanguageSettings"
 msgid "Language"
-msgstr "Language"
+msgstr "Idioma"
 
 #: NameColorSettings
 msgctxt "NameColorSettings"
 msgid "Name/Color"
-msgstr "Name/Color"
+msgstr "Nombre/Color"
 
 #: SecuritySettings
 msgctxt "SecuritySettings"
 msgid "Security"
-msgstr "Security"
+msgstr "Seguridad"
 
 #: PrivacySettings
 msgctxt "PrivacySettings"
 msgid "Privacy"
-msgstr "Privacy"
+msgstr "Intimidad"
 
 #: CountSettingsChanged
 msgctxt "CountSettingsChanged"
 msgid "# of times settings changed"
-msgstr "# of times settings changed"
+msgstr "# de veces la configuración cambió"
 
 #: CountEntries
 msgctxt "CountEntries"
 msgid "# of Entries"
-msgstr "# of Entries"
+msgstr "# de entradas"
 
 #: HowStudentsAreActive
 msgctxt "HowStudentsAreActive"
@@ -498,17 +599,17 @@ msgstr "¿Cuántos estudiantes activos durante el mes pasado?"
 #: UserActive
 msgctxt "UserActive"
 msgid "Active"
-msgstr "Active"
+msgstr "Activo"
 
 #: UserNotActive
 msgctxt "UserNotActive"
 msgid "Inactive"
-msgstr "Inactive"
+msgstr "Nactivo"
 
 #: WhatTypeOfClientConnected
 msgctxt "WhatTypeOfClientConnected"
 msgid "What type of client connected?"
-msgstr "What type of client connected?"
+msgstr "¿Qué tipo de cliente conectado?"
 
 #: HowManyEntriesByJournal
 msgctxt "HowManyEntriesByJournal"
@@ -518,5 +619,984 @@ msgstr "¿Cuántas entradas por alumno?"
 #: AverageEntries
 msgctxt "AverageEntries"
 msgid "Average entries"
-msgstr "Average entries"
+msgstr "Entradas promedio"
+
+#. Do not translate {{name}}
+#: ClassroomUpdated
+msgctxt "ClassroomUpdated"
+msgid "Classroom {{name}} has been successfully updated!"
+msgstr "¡Aula {{name}} ha sido actualizado exitosamente!"
+
+#. Do not translate {{name}}
+#: ClassroomCreated
+msgctxt "ClassroomCreated"
+msgid "Classroom {{name}} has been successfully created!"
+msgstr "¡Aula {{name}} ha sido creado exitosamente!"
+
+#. Do not translate {{name}}
+#: ClassroomDeleted
+msgctxt "ClassroomDeleted"
+msgid "Classroom {{name}} has been successfully deleted!"
+msgstr "¡Aula {{name}} ha sido eliminado exitosamente!"
+
+#. Do not translate {{classroom}}
+#: DoYouWantDeleteClassroom
+msgctxt "DoYouWantDeleteClassroom"
+msgid "Do you want to delete classroom {{classroom}}?"
+msgstr "¿Quieres borrar el aula {{classroom}}?"
+
+#: ShortForBytes
+msgctxt "ShortForBytes"
+msgid "B"
+msgstr "B"
+
+#: ShortForKilobytes
+msgctxt "ShortForKilobytes"
+msgid "KB"
+msgstr "KB"
+
+#: ShortForMegabytes
+msgctxt "ShortForMegabytes"
+msgid "MB"
+msgstr "MB"
+
+#: home_view
+msgctxt "home_view"
+msgid "Home View"
+msgstr "Vista casa"
+
+#: list_view
+msgctxt "list_view"
+msgid "List View"
+msgstr "Vista lista"
+
+#: neighborhood_view
+msgctxt "neighborhood_view"
+msgid "Neighborhood View"
+msgstr "Vista barrio"
+
+#: journal_view
+msgctxt "journal_view"
+msgid "Journal View"
+msgstr "Vista diario"
+
+#: WebApp
+msgctxt "WebApp"
+msgid "Web App"
+msgstr "Aplicación Web"
+
+#: App
+msgctxt "App"
+msgid "App"
+msgstr "Aplicación"
+
+#: english-nav
+msgctxt "english-nav"
+msgid "English (English)"
+msgstr "English (Inglés)"
+
+#: hindi-nav
+msgctxt "hindi-nav"
+msgid "हिंदी (Hindi)"
+msgstr "हिंदी (Hindi)"
+
+#: spanish-nav
+msgctxt "spanish-nav"
+msgid "Español (Spanish)"
+msgstr "Español (Espanol)"
+
+#: french-nav
+msgctxt "french-nav"
+msgid "Français (French)"
+msgstr "Français (Francés)"
+
+#: selectclassroom
+msgctxt "selectclassroom"
+msgid "Select Classroom"
+msgstr "Seleccionar aula"
+
+#: english
+msgctxt "english"
+msgid "English"
+msgstr "Inglés"
+
+#: spanish
+msgctxt "spanish"
+msgid "Spanish"
+msgstr "Español"
+
+#: french
+msgctxt "french"
+msgid "French"
+msgstr "Francés"
+
+#: german
+msgctxt "german"
+msgid "German"
+msgstr "Alemán"
+
+#: portuguese
+msgctxt "portuguese"
+msgid "Portuguese"
+msgstr "Portugués"
+
+#: arabic
+msgctxt "arabic"
+msgid "Arabic"
+msgstr "Arábica"
+
+#: japanese
+msgctxt "japanese"
+msgid "Japanese"
+msgstr "Japonés"
+
+#: polish
+msgctxt "polish"
+msgid "Polish"
+msgstr "Polaco"
+
+#: igbo
+msgctxt "igbo"
+msgid "Igbo"
+msgstr "Igbo"
+
+#: yoruba
+msgctxt "yoruba"
+msgid "Yoruba"
+msgstr "Yoruba"
+
+#: reorder.title
+msgctxt "reorder.title"
+msgid "Drag to Reorder"
+msgstr "Arrastre para Reordenar"
+
+#: toggle-favourite.title
+msgctxt "toggle-favourite.title"
+msgid "Toggle Favourite"
+msgstr "Toggle Favorite"
+
+#: teacher
+msgctxt "teacher"
+msgid "Teacher"
+msgstr "Profesor"
+
+#: profile
+msgctxt "profile"
+msgid "Profile"
+msgstr "Perfil"
+
+#: EmptyClassroom
+msgctxt "EmptyClassroom"
+msgid "Classroom cannot be empty"
+msgstr "El aula no puede estar vacía"
+
+#: NoUsers
+msgctxt "NoUsers"
+msgid "No valid users to insert"
+msgstr "No hay usuarios válidos para insertar"
+
+#. Do not translate {{count}}
+#: ImportSuccess
+msgctxt "ImportSuccess"
+msgid "Successfully inserted {{count}} users"
+msgstr "{{count}} usuarios exitosamente insertados"
+
+#: NoUsersFound
+msgctxt "NoUsersFound"
+msgid "No users to export"
+msgstr "No hay usuarios para exportar"
+
+#: ExportSuccess
+msgctxt "ExportSuccess"
+msgid "Successfully exported users"
+msgstr "Usuarios exportados exitosamente"
+
+#: RecentTeachers
+msgctxt "RecentTeachers"
+msgid "Recent Teachers"
+msgstr "Maestros recientes"
+
+#: RecentAdmins
+msgctxt "RecentAdmins"
+msgid "Recent Admins"
+msgstr "Administradores recientes"
+
+#: HowManyUsersActiveLastWeek
+msgctxt "HowManyUsersActiveLastWeek"
+msgid "How many users active in last week"
+msgstr "¿Cuántos usuarios activos en la semana pasada?"
+
+#: HowManyUsersActiveLastMonth
+msgctxt "HowManyUsersActiveLastMonth"
+msgid "How many users active in last month"
+msgstr "¿Cuántos usuarios activos en el último mes?"
+
+#: HowManyUsersActiveLastYear
+msgctxt "HowManyUsersActiveLastYear"
+msgid "How many users active in last year"
+msgstr "¿Cuántos usuarios activos en el año pasado?"
+
+#: CountStudents
+msgctxt "CountStudents"
+msgid "# of students"
+msgstr "# de estudiantes"
+
+#: ImportUsers
+msgctxt "ImportUsers"
+msgid "Import users"
+msgstr "Import users"
+
+#: ExportUsers
+msgctxt "ExportUsers"
+msgid "Export users"
+msgstr "Export users"
+
+#: TutoPrev
+msgctxt "TutoPrev"
+msgid "Prev"
+msgstr "Anterior"
+
+#: TutoNext
+msgctxt "TutoNext"
+msgid "Next"
+msgstr "Próxima"
+
+#: TutoEnd
+msgctxt "TutoEnd"
+msgid "End"
+msgstr "Final"
+
+#: homeTitle1
+msgctxt "homeTitle1"
+msgid "Welcome to Server Dashboard"
+msgstr "Welcome to Server Dashboard"
+
+#: homeContent1
+msgctxt "homeContent1"
+msgid "Sugarizer Server Dashboard is an admin tool for teachers and deployment administrator. This dashboard can be used to control and manage the work of learners and manage and analyze all activities on a Sugarizer Server."
+msgstr "Sugarizer Server Dashboard is an admin tool for teachers and deployment administrator. This dashboard can be used to control and manage the work of learners and manage and analyze all activities on a Sugarizer Server."
+
+#: homeTitle2
+msgctxt "homeTitle2"
+msgid "Summary Cards"
+msgstr "Summary Cards"
+
+#: homeContent2
+msgctxt "homeContent2"
+msgid "These cards contain real-time user summary of the deployed server like the total number of students, total classrooms, available activities, and total journal entry count."
+msgstr "These cards contain real-time user summary of the deployed server like the total number of students, total classrooms, available activities, and total journal entry count."
+
+#: homeTitle3
+msgctxt "homeTitle3"
+msgid "Top Contributors Chart"
+msgstr "Top Contributors Chart"
+
+#: homeContent3
+msgctxt "homeContent3"
+msgid "This chart shows the top 5 contributing students of all time. Click on the chart to see their works."
+msgstr "This chart shows the top 5 contributing students of all time. Click on the chart to see their works."
+
+#: homeTitle4
+msgctxt "homeTitle4"
+msgid "Top Activities Chart"
+msgstr "Top Activities Chart"
+
+#: homeContent4
+msgctxt "homeContent4"
+msgid "This chart shows the most frequently used Sugarizer Activities."
+msgstr "This chart shows the most frequently used Sugarizer Activities."
+
+#: homeTitle5
+msgctxt "homeTitle5"
+msgid "Recent Students Table"
+msgstr "Recent Students Table"
+
+#: homeContent5
+msgctxt "homeContent5"
+msgid "This table shows the list of most recently active users. Click on their name to see their works"
+msgstr "This table shows the list of most recently active users. Click on their name to see their works"
+
+#: homeTitle6
+msgctxt "homeTitle6"
+msgid "Recent Entries Table"
+msgstr "Recent Entries Table"
+
+#: homeContent6
+msgctxt "homeContent6"
+msgid "This table shows the most recently added journal entries by the students. Click on it to reopen it."
+msgstr "This table shows the most recently added journal entries by the students. Click on it to reopen it."
+
+#: homeTitle7
+msgctxt "homeTitle7"
+msgid "Sidebar"
+msgstr "Sidebar"
+
+#: homeContent7
+msgctxt "homeContent7"
+msgid "This is the sidebar, use this to navigate through the application."
+msgstr "This is the sidebar, use this to navigate through the application."
+
+#: homeTitle8
+msgctxt "homeTitle8"
+msgid "Language Selection"
+msgstr "Language Selection"
+
+#: homeContent8
+msgctxt "homeContent8"
+msgid "This is the Language Selection dropdown. Use this to switch language used in this interface."
+msgstr "This is the Language Selection dropdown. Use this to switch language used in this interface."
+
+#: homeTitle9
+msgctxt "homeTitle9"
+msgid "Profile"
+msgstr "Profile"
+
+#: homeContent9
+msgctxt "homeContent9"
+msgid "Use this icon to access your Profile, Logout from the Dashboard and replay this tutorial."
+msgstr "Use this icon to access your Profile, Logout from the Dashboard and replay this tutorial."
+
+#: usersTitle1
+msgctxt "usersTitle1"
+msgid "Users View"
+msgstr "Users View"
+
+#: usersContent1
+msgctxt "usersContent1"
+msgid "This is the users view. You can create, view, edit and delete users from this view."
+msgstr "This is the users view. You can create, view, edit and delete users from this view."
+
+#: usersTitle2
+msgctxt "usersTitle2"
+msgid "User Search"
+msgstr "User Search"
+
+#: usersContent2
+msgctxt "usersContent2"
+msgid "This form will let you search for a specific user."
+msgstr "This form will let you search for a specific user."
+
+#: usersTitle3
+msgctxt "usersTitle3"
+msgid "User Name"
+msgstr "User Name"
+
+#: usersContent3
+msgctxt "usersContent3"
+msgid "Type here the name of the user to search."
+msgstr "Type here the name of the user to search."
+
+#: usersTitle4
+msgctxt "usersTitle4"
+msgid "Filter by type"
+msgstr "Filter by type"
+
+#: usersContent4
+msgctxt "usersContent4"
+msgid "Select the type of user to search."
+msgstr "Select the type of user to search."
+
+#: usersTitle5
+msgctxt "usersTitle5"
+msgid "Filter by classroom"
+msgstr "Filter by classroom"
+
+#: usersContent5
+msgctxt "usersContent5"
+msgid "Select the classroom where user should be searched."
+msgstr "Select the classroom where user should be searched."
+
+#: usersTitle6
+msgctxt "usersTitle6"
+msgid "Launch Search"
+msgstr "Launch Search"
+
+#: usersContent6
+msgctxt "usersContent6"
+msgid "This button will launch the search."
+msgstr "This button will launch the search."
+
+#: usersTitle7
+msgctxt "usersTitle7"
+msgid "Add User"
+msgstr "Add User"
+
+#: usersContent7
+msgctxt "usersContent7"
+msgid "This button will take you to the Add User view where you can create a new user."
+msgstr "This button will take you to the Add User view where you can create a new user."
+
+#: usersTitle8
+msgctxt "usersTitle8"
+msgid "Import Users"
+msgstr "Import Users"
+
+#: usersContent8
+msgctxt "usersContent8"
+msgid "This button will let you upload multiple users at once by using a CSV file as input."
+msgstr "This button will let you upload multiple users at once by using a CSV file as input."
+
+#: usersTitle9
+msgctxt "usersTitle9"
+msgid "Export Users"
+msgstr "Export Users"
+
+#: usersContent9
+msgctxt "usersContent9"
+msgid "This button will export all the existing users as a CSV file."
+msgstr "This button will export all the existing users as a CSV file."
+
+#: usersTitle10
+msgctxt "usersTitle10"
+msgid "See Journal Entries"
+msgstr "See Journal Entries"
+
+#: usersContent10
+msgctxt "usersContent10"
+msgid "This button opens all the journal entries for a user."
+msgstr "This button opens all the journal entries for a user."
+
+#: usersTitle11
+msgctxt "usersTitle11"
+msgid "Edit User"
+msgstr "Edit User"
+
+#: usersContent11
+msgctxt "usersContent11"
+msgid "This button opens the edit user view."
+msgstr "This button opens the edit user view."
+
+#: usersTitle12
+msgctxt "usersTitle12"
+msgid "Delete User"
+msgstr "Delete User"
+
+#: usersContent12
+msgctxt "usersContent12"
+msgid "This button delete the user and all the content in its journal."
+msgstr "This button delete the user and all the content in its journal."
+
+#: activitiesTitle1
+msgctxt "activitiesTitle1"
+msgid "Activities View"
+msgstr "Activities View"
+
+#: activitiesContent1
+msgctxt "activitiesContent1"
+msgid "In this view, you can view and launch the Sugarizer activities installed on the server. You can also reorder them and add/remove them from the favorites."
+msgstr "In this view, you can view and launch the Sugarizer activities installed on the server. You can also reorder them and add/remove them from the favorites."
+
+#: activitiesTitle2
+msgctxt "activitiesTitle2"
+msgid "Activities List"
+msgstr "Activities List"
+
+#: activitiesContent2
+msgctxt "activitiesContent2"
+msgid "This is the list of all the Sugarizer activities installed on the server."
+msgstr "This is the list of all the Sugarizer activities installed on the server."
+
+#: activitiesTitle3
+msgctxt "activitiesTitle3"
+msgid "Activity Search"
+msgstr "Activity Search"
+
+#: activitiesContent3
+msgctxt "activitiesContent3"
+msgid "You can search for an activity using this search box."
+msgstr "You can search for an activity using this search box."
+
+#: activitiesTitle4
+msgctxt "activitiesTitle4"
+msgid "Activity Card"
+msgstr "Activity Card"
+
+#: activitiesContent4
+msgctxt "activitiesContent4"
+msgid "Each activity card contains the icon, name, and version of the activity."
+msgstr "Each activity card contains the icon, name, and version of the activity."
+
+#: activitiesTitle5
+msgctxt "activitiesTitle5"
+msgid "Reorder Activity"
+msgstr "Reorder Activity"
+
+#: activitiesContent5
+msgctxt "activitiesContent5"
+msgid "You can drag and drop an activity by this handle to reorder."
+msgstr "You can drag and drop an activity by this handle to reorder."
+
+#: activitiesTitle6
+msgctxt "activitiesTitle6"
+msgid "Toggle Favorite"
+msgstr "Toggle Favorite"
+
+#: activitiesContent6
+msgctxt "activitiesContent6"
+msgid "This button will toggle the activity from the favorites view."
+msgstr "This button will toggle the activity from the favorites view."
+
+#: activitiesTitle7
+msgctxt "activitiesTitle7"
+msgid "Launch Activity"
+msgstr "Launch Activity"
+
+#: activitiesContent7
+msgctxt "activitiesContent7"
+msgid "This button will launch the activity in another tab."
+msgstr "This button will launch the activity in another tab."
+
+#: journalTitle1
+msgctxt "journalTitle1"
+msgid "Journal View"
+msgstr "Journal View"
+
+#: journalContent1
+msgctxt "journalContent1"
+msgid "In this view, you can view the journal entries of the students and launch them exactly as they appear in the student's device."
+msgstr "In this view, you can view the journal entries of the students and launch them exactly as they appear in the student's device."
+
+#: journalTitle2
+msgctxt "journalTitle2"
+msgid "Find Journal"
+msgstr "Find Journal"
+
+#: journalContent2
+msgctxt "journalContent2"
+msgid "Select the student and journal type and click on Show Results to list the journal entries."
+msgstr "Select the student and journal type and click on Show Results to list the journal entries."
+
+#: journalTitle3
+msgctxt "journalTitle3"
+msgid "Entries"
+msgstr "Entries"
+
+#: journalContent3
+msgctxt "journalContent3"
+msgid "This is the list of all the Journal Entries by the user."
+msgstr "This is the list of all the Journal Entries by the user."
+
+#: journalTitle4
+msgctxt "journalTitle4"
+msgid "Journal Entry"
+msgstr "Journal Entry"
+
+#: journalContent4
+msgctxt "journalContent4"
+msgid "Each journal entry card contains icon, title, timestamp, and size of the entry."
+msgstr "Each journal entry card contains icon, title, timestamp, and size of the entry."
+
+#: journalTitle5
+msgctxt "journalTitle5"
+msgid "Launch Activity"
+msgstr "Launch Activity"
+
+#: journalContent5
+msgctxt "journalContent5"
+msgid "This button will launch the activity in another tab exactly as they appear in the student's device."
+msgstr "This button will launch the activity in another tab exactly as they appear in the student's device."
+
+#: journalTitle6
+msgctxt "journalTitle6"
+msgid "Delete Entry"
+msgstr "Delete Entry"
+
+#: journalContent6
+msgctxt "journalContent6"
+msgid "This button removes the entry from the student's journal."
+msgstr "This button removes the entry from the student's journal."
+
+#: classroomTitle1
+msgctxt "classroomTitle1"
+msgid "Classroom View"
+msgstr "Classroom View"
+
+#: classroomContent1
+msgctxt "classroomContent1"
+msgid "In this view, you can add, list, edit and delete the classrooms."
+msgstr "In this view, you can add, list, edit and delete the classrooms."
+
+#: classroomTitle2
+msgctxt "classroomTitle2"
+msgid "Classroom Search"
+msgstr "Classroom Search"
+
+#: classroomContent2
+msgctxt "classroomContent2"
+msgid "You can search for the classrooms from here by entering the name and clicking on the Show Results button."
+msgstr "You can search for the classrooms from here by entering the name and clicking on the Show Results button."
+
+#: classroomTitle3
+msgctxt "classroomTitle3"
+msgid "Add Classroom"
+msgstr "Add Classroom"
+
+#: classroomContent3
+msgctxt "classroomContent3"
+msgid "This button will take you to the Add Classroom view where you can create a new classroom."
+msgstr "This button will take you to the Add Classroom view where you can create a new classroom."
+
+#: classroomTitle4
+msgctxt "classroomTitle4"
+msgid "Classrooms"
+msgstr "Classrooms"
+
+#: classroomContent4
+msgctxt "classroomContent4"
+msgid "This is the list of all the classrooms."
+msgstr "This is the list of all the classrooms."
+
+#: classroomTitle5
+msgctxt "classroomTitle5"
+msgid "Classroom"
+msgstr "Classroom"
+
+#: classroomContent5
+msgctxt "classroomContent5"
+msgid "Each classroom row contains an icon, name, student count and timestamp of the last update."
+msgstr "Each classroom row contains an icon, name, student count and timestamp of the last update."
+
+#: classroomTitle6
+msgctxt "classroomTitle6"
+msgid "View Students"
+msgstr "View Students"
+
+#: classroomContent6
+msgctxt "classroomContent6"
+msgid "This will open the list of students present in this classroom."
+msgstr "This will open the list of students present in this classroom."
+
+#: classroomTitle7
+msgctxt "classroomTitle7"
+msgid "Edit Classroom"
+msgstr "Edit Classroom"
+
+#: classroomContent7
+msgctxt "classroomContent7"
+msgid "This button opens the edit classroom view."
+msgstr "This button opens the edit classroom view."
+
+#: classroomTitle8
+msgctxt "classroomTitle8"
+msgid "Delete Classroom"
+msgstr "Delete Classroom"
+
+#: classroomContent8
+msgctxt "classroomContent8"
+msgid "This button removes the classroom from the Sugarizer-Server."
+msgstr "This button removes the classroom from the Sugarizer-Server."
+
+#: statsTitle1
+msgctxt "statsTitle1"
+msgid "Statistics View"
+msgstr "Statistics View"
+
+#: statsContent1
+msgctxt "statsContent1"
+msgid "In this view, you can view the statistics usage of the server."
+msgstr "In this view, you can view the statistics usage of the server."
+
+#: statsTitle2
+msgctxt "statsTitle2"
+msgid "Add Chart"
+msgstr "Add Chart"
+
+#: statsContent2
+msgctxt "statsContent2"
+msgid "This button will take you to the Add Chart view from where you can add a new chart."
+msgstr "This button will take you to the Add Chart view from where you can add a new chart."
+
+#: statsTitle3
+msgctxt "statsTitle3"
+msgid "List Charts"
+msgstr "List Charts"
+
+#: statsContent3
+msgctxt "statsContent3"
+msgid "This button will take you to List Charts view from where you can view, reorder, edit, hide/show and delete your charts."
+msgstr "This button will take you to List Charts view from where you can view, reorder, edit, hide/show and delete your charts."
+
+#: listChartsTitle1
+msgctxt "listChartsTitle1"
+msgid "Welcome to List Charts View"
+msgstr "Welcome to List Charts View"
+
+#: listChartsContent1
+msgctxt "listChartsContent1"
+msgid "In this view, you can view, reorder, edit, hide/show and delete your charts."
+msgstr "In this view, you can view, reorder, edit, hide/show and delete your charts."
+
+#: listChartsTitle2
+msgctxt "listChartsTitle2"
+msgid "Charts List"
+msgstr "Charts List"
+
+#: listChartsContent2
+msgctxt "listChartsContent2"
+msgid "This is the list of all your created charts."
+msgstr "This is the list of all your created charts."
+
+#: listChartsTitle3
+msgctxt "listChartsTitle3"
+msgid "View Chart"
+msgstr "View Chart"
+
+#: listChartsContent3
+msgctxt "listChartsContent3"
+msgid "This button will take you to the Statistics view where you can view all the charts."
+msgstr "This button will take you to the Statistics view where you can view all the charts."
+
+#: listChartsTitle4
+msgctxt "listChartsTitle4"
+msgid "Add Chart"
+msgstr "Add Chart"
+
+#: listChartsContent4
+msgctxt "listChartsContent4"
+msgid "This button will take you to the Add Chart view from where you can add a new chart."
+msgstr "This button will take you to the Add Chart view from where you can add a new chart."
+
+#: listChartsTitle5
+msgctxt "listChartsTitle5"
+msgid "Chart Search"
+msgstr "Chart Search"
+
+#: listChartsContent5
+msgctxt "listChartsContent5"
+msgid "You can search for a chart using this search box."
+msgstr "You can search for a chart using this search box."
+
+#: listChartsTitle6
+msgctxt "listChartsTitle6"
+msgid "Chart Card"
+msgstr "Chart Card"
+
+#: listChartsContent6
+msgctxt "listChartsContent6"
+msgid "Each chart card contains Title, Type and Key of the chart."
+msgstr "Each chart card contains Title, Type and Key of the chart."
+
+#: listChartsTitle7
+msgctxt "listChartsTitle7"
+msgid "Reorder Chart"
+msgstr "Reorder Chart"
+
+#: listChartsContent7
+msgctxt "listChartsContent7"
+msgid "You can drag and drop a chart by this handle to reorder."
+msgstr "You can drag and drop a chart by this handle to reorder."
+
+#: listChartsTitle8
+msgctxt "listChartsTitle8"
+msgid "Toggle Visibility"
+msgstr "Toggle Visibility"
+
+#: listChartsContent8
+msgctxt "listChartsContent8"
+msgid "This button will toggle the visibility of this chart in the Statistics View."
+msgstr "This button will toggle the visibility of this chart in the Statistics View."
+
+#: listChartsTitle9
+msgctxt "listChartsTitle9"
+msgid "Edit Chart"
+msgstr "Edit Chart"
+
+#: listChartsContent9
+msgctxt "listChartsContent9"
+msgid "This button opens the Edit Chart view."
+msgstr "This button opens the Edit Chart view."
+
+#: listChartsTitle10
+msgctxt "listChartsTitle10"
+msgid "Delete Chart"
+msgstr "Delete Chart"
+
+#: listChartsContent10
+msgctxt "listChartsContent10"
+msgid "This button removes the chart from the user chart list."
+msgstr "This button removes the chart from the user chart list."
+
+#: help
+msgctxt "help"
+msgid "Help"
+msgstr "Ayuda"
+
+#: chartNotFound
+msgctxt "chartNotFound"
+msgid "Chart not found"
+msgstr "Gráfico no encontrado"
+
+#: noChartsText
+msgctxt "noChartsText"
+msgid "No charts found"
+msgstr "No se encontraron gráficos"
+
+#: noChartSelected
+msgctxt "noChartSelected"
+msgid "No Chart Selected"
+msgstr "No hay gráfico seleccionado"
+
+#: noChartsAvailable
+msgctxt "noChartsAvailable"
+msgid "No Charts Available"
+msgstr "No hay gráficos disponibles"
+
+#: addChart
+msgctxt "addChart"
+msgid "Add Chart"
+msgstr "Agregar gráfico"
+
+#: editChart.title
+msgctxt "editChart.title"
+msgid "Edit Chart"
+msgstr "Editar gráfico"
+
+#: viewChart
+msgctxt "viewChart"
+msgid "View Chart"
+msgstr "Ver gráfico"
+
+#: deleteChart.title
+msgctxt "deleteChart.title"
+msgid "Delete Chart"
+msgstr "Eliminar gráfico"
+
+#: listCharts
+msgctxt "listCharts"
+msgid "List Charts"
+msgstr "Gráficos de lista"
+
+#: type
+msgctxt "type"
+msgid "Type"
+msgstr "Tipo"
+
+#: key
+msgctxt "key"
+msgid "Key"
+msgstr "clave"
+
+#: display
+msgctxt "display"
+msgid "Display"
+msgstr "Monitora"
+
+#: hidden
+msgctxt "hidden"
+msgid "Hidden"
+msgstr "oculto"
+
+#: toggle-hidden.title
+msgctxt "toggle-hidden.title"
+msgid "Toggle Hidden"
+msgstr "Alternar oculto"
+
+#: timeline
+msgctxt "timeline"
+msgid "Timeline"
+msgstr "Línea de tiempo"
+
+#: timelineTitle.title
+msgctxt "timelineTitle.title"
+msgid "Timeline"
+msgstr "Línea de tiempo"
+
+#: bar
+msgctxt "bar"
+msgid "Bar"
+msgstr "Bar"
+
+#: barTitle.title
+msgctxt "barTitle.title"
+msgid "Bar Chart"
+msgstr "Gráfico de barras"
+
+#: pie
+msgctxt "pie"
+msgid "Pie"
+msgstr "Pie"
+
+#: pieTitle.title
+msgctxt "pieTitle.title"
+msgid "Pie Chart"
+msgstr "Gráfico circular"
+
+#: table
+msgctxt "table"
+msgid "Table"
+msgstr "Tabla"
+
+#: tableTitle.title
+msgctxt "tableTitle.title"
+msgid "Table"
+msgstr "Tabla"
+
+#: chartTitle
+msgctxt "chartTitle"
+msgid "Chart Title"
+msgstr "Título del gráfico"
+
+#: selectChart
+msgctxt "selectChart"
+msgid "Select Chart"
+msgstr "Seleccionar gráfico"
+
+#: TitleInvalid
+msgctxt "TitleInvalid"
+msgid "Invalid Title"
+msgstr "Título inválido"
+
+#: InvalidChart
+msgctxt "InvalidChart"
+msgid "Invalid Chart Selected"
+msgstr "Gráfico no válido seleccionado"
+
+#. Do not translate {{title}}
+#: ChartAdded
+msgctxt "ChartAdded"
+msgid "Chart {{title}} has been successfully added!"
+msgstr "¡El gráfico {{title}} se ha agregado con éxito!"
+
+#. Do not translate {{title}}
+#: ChartUpdated
+msgctxt "ChartUpdated"
+msgid "Chart {{title}} has been successfully updated!"
+msgstr "¡El gráfico {{title}} se ha actualizado correctamente!"
+
+#. Do not translate {{title}}
+#: ChartDeleted
+msgctxt "ChartDeleted"
+msgid "Chart {{title}} has been successfully deleted!"
+msgstr "¡El gráfico {{title}} se ha eliminado con éxito!"
+
+#: successChartUpdate
+msgctxt "successChartUpdate"
+msgid "Charts successfully updated!"
+msgstr "¡Gráficos actualizados con éxito!"
+
+#: MostActiveClassrooms
+msgctxt "MostActiveClassrooms"
+msgid "Most Active Classrooms"
+msgstr "Aulas más activas"
+
+#: TopClassrooms
+msgctxt "TopClassrooms"
+msgid "Top Classrooms"
+msgstr "Aulas superiores"
+
+#. Do not translate {{chart}}
+#: DoYouWantDeleteChart
+msgctxt "DoYouWantDeleteChart"
+msgid "Do you really want to delete the chart {{chart}}?"
+msgstr "¿Realmente desea eliminar el gráfico {{chart}}?"
+
+#: NoLinkedActivityFound
+msgctxt "NoLinkedActivityFound"
+msgid "No linked activity found"
+msgstr "No se encontró actividad vinculada"
+
+#: scanqrcode
+msgctxt "scanqrcode"
+msgid "Scan this QR Code with your device to set automatically the server URL"
+msgstr "Scan this QR Code with your device to set automatically the server URL"
 
