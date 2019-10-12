@@ -136,11 +136,20 @@ function launch_activity(callurl) {
 		}
 	}
 
-	function loadData(response, lsBackup) {
+	function loadData(response, lsBackup, callback) {
+		var len = 0;
+		for (var index in response.lsObj) {
+			len++;
+		}
+		var lastCall = function() {
+			if (--len == 0) {
+				callback();
+			}
+		}
 		for (var index in response.lsObj) {
 			lsBackup[index] = localStorage.getItem(index);
 			if (index == "sugar_datastoretext_" + response.objectId) {
-				html5indexedDB.setValue(response.objectId, response.lsObj[index]);
+				html5indexedDB.setValue(response.objectId, response.lsObj[index], lastCall);
 			} else {
 				var encodedValue = response.lsObj[index];
 				var rawValue = JSON.parse(encodedValue);
@@ -149,6 +158,7 @@ function launch_activity(callurl) {
 					encodedValue = JSON.stringify(rawValue);
 				}
 				localStorage.setItem(index, encodedValue);
+				lastCall();
 			}
 		}
 	}
@@ -172,6 +182,57 @@ function launch_activity(callurl) {
 			}
 		}
 
+		// open window
+		var openInWindow = function() {
+			if (response.url) {
+				var win = window.open(response.url+"&sa=1", '_blank');
+				if (win) {
+					win.focus();
+					win.onbeforeunload = function(){
+						// restore old context
+						for (var index in lsBackup) {
+							if (lsBackup[index] == null) {
+								localStorage.removeItem(index);
+							} else {
+								localStorage.setItem(index, lsBackup[index]);
+							}
+						}
+
+						// remove created storage
+						for (var i = 0 ; i < localStorage.length ; i++) {
+							var key = localStorage.key(i);
+							if (key.indexOf(datastorePrefix) == -1) {
+								continue;
+							}
+							var found = false;
+							for (var j = 0 ; !found && j < keyHistory.length ; j++) {
+								if (keyHistory[j] == key) {
+									found = true;
+								}
+							}
+							if (!found) {
+								localStorage.removeItem(key);
+							}
+						}
+
+						// Remove IndexDB storage if was not already there
+						if (response.version > 1.1 && html5indexedDB.db != null) {
+							if (!lsBackup["sugar_datastore_"+response.objectId]) {
+								html5indexedDB.removeValue(response.objectId);
+							}
+						}
+					};
+				} else {
+					$.notify({
+						icon: "error",
+						message: document.webL10n.get('CantOpenWindow')
+					},{
+						type: 'danger'
+					});
+				}
+			}
+		}
+
 		// Check Sugarizer Version -- Backward Compatibilty
 		var lsBackup = [];
 		if (response.version > 1.1) {
@@ -180,61 +241,19 @@ function launch_activity(callurl) {
 					if (err) {
 						console.log("FATAL ERROR: indexedDB not supported, could be related to use of private mode");
 					} else {
-						loadData(response, lsBackup);
+						loadData(response, lsBackup, function() {
+							openInWindow();
+						});
 					}
 				});
 			} else {
-				loadData(response, lsBackup);
+				loadData(response, lsBackup, function() {
+					openInWindow();
+				});
 			}
 		} else {
 			loadDataDeprec(response, lsBackup);
-		}
-
-		// open window
-		if (response.url) {
-			var win = window.open(response.url+"&sa=1", '_blank');
-			if (win) {
-				win.focus();
-				win.onbeforeunload = function(){
-					// restore old context
-					for (var index in lsBackup) {
-						if (lsBackup[index] == null) {
-							localStorage.removeItem(index);
-						} else {
-							localStorage.setItem(index, lsBackup[index]);
-						}
-					}
-
-					// remove created storage
-					for (var i = 0 ; i < localStorage.length ; i++) {
-						var key = localStorage.key(i);
-						if (key.indexOf(datastorePrefix) == -1) {
-							continue;
-						}
-						var found = false;
-						for (var j = 0 ; !found && j < keyHistory.length ; j++) {
-							if (keyHistory[j] == key) {
-								found = true;
-							}
-						}
-						if (!found) {
-							localStorage.removeItem(key);
-						}
-					}
-
-					// // Remove IndexDB storage
-					if (response.version > 1.1 && html5indexedDB.db != null) {
-						html5indexedDB.removeValue(response.objectId);
-					}
-				};
-			} else {
-				$.notify({
-					icon: "error",
-					message: document.webL10n.get('CantOpenWindow')
-				},{
-					type: 'danger'
-				});
-			}
+			openInWindow();
 		}
 	});
 }
