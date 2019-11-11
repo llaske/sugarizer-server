@@ -41,7 +41,7 @@
 		"grunt-contrib-uglify": "~0.5.0"
 	},
 	"scripts": {
-		"test": "mocha api/test/",
+		"test": "mocha api/test/ --timeout 20000",
 		"docs": "apidoc -i api/controller -i dashboard/helper -o docs/www/",
 		"start": "node sugarizer.js",
 		"start:watch": "nodemon sugarizer.js",

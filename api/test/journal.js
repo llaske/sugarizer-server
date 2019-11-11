@@ -204,7 +204,7 @@ describe('Journal', function() {
 		it('it should be able to add a 32Mb entry in the journal', (done) => {
 			var value = new Array(32768);
 			for (var i = 0 ; i < value.length ; i++) {
-				value[i] = i%8;
+				value[i] = new Array(1024);
 			}
 			var entry = genFakeJournalEntry(4, {value: value});
 			chai.request(server)
