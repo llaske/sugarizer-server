@@ -1366,6 +1366,13 @@
           },
           {
             "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "settings.version",
+            "description": "<p>Server version</p>"
+          },
+          {
+            "group": "Success 200",
             "type": "Object",
             "optional": false,
             "field": "settings.options",
@@ -1397,7 +1404,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"name\": \"Sugarizer Server\",\n  \"description\": \"Your Sugarizer Server\",\n  \"web\": \"8080\",\n  \"presence\": \"8039\",\n  \"secure\": false,\n  \"options\":\n  {\n    \"min-password-size\": \"4\",\n    \"statistics\": true,\n    \"cookie-age\": \"172800000\"\n  }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n  \"name\": \"Sugarizer Server\",\n  \"description\": \"Your Sugarizer Server\",\n  \"web\": \"8080\",\n  \"presence\": \"8039\",\n  \"secure\": false,\n  \"version\": \"1.2.0\",\n  \"options\":\n  {\n    \"min-password-size\": \"4\",\n    \"statistics\": true,\n    \"cookie-age\": \"172800000\"\n  }\n}",
           "type": "json"
         }
       ]

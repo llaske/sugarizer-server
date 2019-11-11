@@ -1,6 +1,6 @@
 {
   "name": "Sugarizer",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Sugarizer Server API",
   "title": "Sugarizer Server API",
   "url": "/",
@@ -50,7 +50,7 @@
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2019-08-19T08:28:22.185Z",
+    "time": "2019-11-11T14:11:35.451Z",
     "url": "http://apidocjs.com",
     "version": "0.17.7"
   }
