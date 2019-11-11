@@ -184,6 +184,22 @@ describe('Journal', function() {
 					done();
 				});
 		});
+
+		it('it should be able to add an object in the journal', (done) => {
+			var entry = genFakeJournalEntry(3, {id: 1});
+			chai.request(server)
+				.post('/api/v1/journal/' + fakeUser.student.user.private_journal)
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user._id)
+				.send({
+					"journal": entry
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.deep.equal(JSON.parse(entry));
+					done();
+				});
+		});
 	});
 
 	describe('/GET/:id journal', function() {
@@ -218,7 +234,7 @@ describe('Journal', function() {
 				.set('x-key', fakeUser.student.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(2);
+					res.body.entries.length.should.be.eql(3);
 					for (var i = 0; i < res.body.entries.length; i++) {
 						res.body.entries[i].should.have.property('metadata').not.eql(undefined);
 						res.body.entries[i].should.have.property('objectId').not.eql(undefined);
@@ -237,7 +253,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(2);
+					res.body.entries.length.should.be.eql(3);
 					for (var i = 0; i < res.body.entries.length; i++) {
 						res.body.entries[i].should.have.property('text').not.eql(undefined);
 						res.body.entries[i].should.have.property('metadata').not.eql(undefined);
@@ -257,7 +273,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(2);
+					res.body.entries.length.should.be.eql(3);
 					for (var i = 0; i < res.body.entries.length; i++) {
 						res.body.entries[i].should.have.property('objectId').not.eql(undefined);
 					}
@@ -271,7 +287,7 @@ describe('Journal', function() {
 				.set('x-access-token', fakeUser.student.token)
 				.set('x-key', fakeUser.student.user._id)
 				.query({
-					'aid': '3.mocha.org'
+					'aid': '99.mocha.org'
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
@@ -304,7 +320,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(2);
+					res.body.entries.length.should.be.eql(3);
 					done();
 				});
 		});
@@ -336,7 +352,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(1);
+					res.body.entries.length.should.be.eql(2);
 					res.body.entries[0].should.have.property('metadata');
 					res.body.entries[0].metadata.should.not.have.property('keep');
 					done();
@@ -353,7 +369,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(1);
+					res.body.entries.length.should.be.eql(2);
 					res.body.entries[0].should.have.property('metadata');
 					res.body.entries[0].metadata.should.have.property('title').include('XTe');
 					done();
@@ -443,7 +459,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(2);
+					res.body.entries.length.should.be.eql(3);
 					done();
 				});
 		});
@@ -458,7 +474,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(2);
+					res.body.entries.length.should.be.eql(3);
 					for (var i = 0; i < res.body.entries.length - 1; i++) {
 						if (parseInt(res.body.entries[i].metadata.timestamp) < parseInt(res.body.entries[i + 1].metadata.timestamp) > 0) {
 							throw new Error("Not in descending order");
@@ -555,7 +571,7 @@ describe('Journal', function() {
 						.set('x-key', fakeUser.student.user._id)
 						.end((err, res) => {
 							res.should.have.status(200);
-							res.body.entries.length.should.be.eql(3);
+							res.body.entries.length.should.be.eql(4);
 							done();
 						});
 				});
@@ -692,9 +708,15 @@ describe('Journal', function() {
 
 //gen fake entries
 function genFakeJournalEntry(i, text) {
+	var textValue;
+	if (text === undefined || typeof text !== 'object') {
+		textValue = "Entry_" + i.toString() + (text ? text : '');
+	} else {
+		textValue = text;
+	}
 	return JSON.stringify({
 		"objectId": ("ffffffff-ffff-ffff-ffff-fffffffffff" + i.toString()),
-		"text": ("Entry_" + i.toString() + (text ? text : '')),
+		"text": textValue,
 		"metadata": {
 			'user_id': fakeUser.student.user._id,
 			'keep': ((i % 2 == 0) ? 1 : undefined),

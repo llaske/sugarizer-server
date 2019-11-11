@@ -393,13 +393,31 @@ exports.findJournalContent = function(req, res) {
 										if (k == docs.length - 1) {
 											resCount++;
 											if (resCount == reqCount) {
+												try {
+													var textObject = JSON.parse(items[ind].text);
+													items[ind].text = textObject.text;
+ 												} catch (e) {
+													return res.status(500).send({'error': 'Invalid text value', 'code': 12});
+												}
 												return returnResponse();
 											}
 										}
 									}
 								}
 								if (resCount == reqCount) {
+									try {
+										var textObject = JSON.parse(items[ind].text);
+										items[ind].text = textObject.text;
+									} catch (e) {
+										return res.status(500).send({'error': 'Invalid text value', 'code': 12});
+									}
 									return returnResponse();
+								}
+								try {
+									var textObject = JSON.parse(items[ind].text);
+									items[ind].text = textObject.text;
+								} catch (e) {
+									return res.status(500).send({'error': 'Invalid text value', 'code': 12});
 								}
 							});
 						});
@@ -645,8 +663,12 @@ exports.addEntryInJournal = function(req, res) {
 				if (journal.text) {
 					var text = journal.text;
 					var filename = mongo.ObjectId();
+					var textContent = JSON.stringify({
+						text_type: typeof journal.text,
+						text: journal.text
+					});
 
-					streamifier.createReadStream(journal.text)
+					streamifier.createReadStream(textContent)
 						.pipe(gridfsbucket.openUploadStreamWithId(filename, filename.toString()))
 						.on('error', function () {
 							return res.status(401).send({
