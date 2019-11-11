@@ -145,7 +145,7 @@ function launch_activity(callurl) {
 			if (--len == 0) {
 				callback();
 			}
-		}
+		};
 		for (var index in response.lsObj) {
 			lsBackup[index] = localStorage.getItem(index);
 			if (index == "sugar_datastoretext_" + response.objectId) {
@@ -231,7 +231,7 @@ function launch_activity(callurl) {
 					});
 				}
 			}
-		}
+		};
 
 		// Check Sugarizer Version -- Backward Compatibilty
 		var lsBackup = [];
