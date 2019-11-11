@@ -200,6 +200,26 @@ describe('Journal', function() {
 					done();
 				});
 		});
+
+		it('it should be able to add a 32Mb entry in the journal', (done) => {
+			var value = new Array(32768);
+			for (var i = 0 ; i < value.length ; i++) {
+				value[i] = i%8;
+			}
+			var entry = genFakeJournalEntry(4, {value: value});
+			chai.request(server)
+				.post('/api/v1/journal/' + fakeUser.student.user.private_journal)
+				.set('x-access-token', fakeUser.student.token)
+				.set('x-key', fakeUser.student.user._id)
+				.send({
+					"journal": entry
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.deep.equal(JSON.parse(entry));
+					done();
+				});
+		});
 	});
 
 	describe('/GET/:id journal', function() {
@@ -234,7 +254,7 @@ describe('Journal', function() {
 				.set('x-key', fakeUser.student.user._id)
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(3);
+					res.body.entries.length.should.be.eql(4);
 					for (var i = 0; i < res.body.entries.length; i++) {
 						res.body.entries[i].should.have.property('metadata').not.eql(undefined);
 						res.body.entries[i].should.have.property('objectId').not.eql(undefined);
@@ -253,7 +273,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(3);
+					res.body.entries.length.should.be.eql(4);
 					for (var i = 0; i < res.body.entries.length; i++) {
 						res.body.entries[i].should.have.property('text').not.eql(undefined);
 						res.body.entries[i].should.have.property('metadata').not.eql(undefined);
@@ -273,7 +293,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(3);
+					res.body.entries.length.should.be.eql(4);
 					for (var i = 0; i < res.body.entries.length; i++) {
 						res.body.entries[i].should.have.property('objectId').not.eql(undefined);
 					}
@@ -320,7 +340,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(3);
+					res.body.entries.length.should.be.eql(4);
 					done();
 				});
 		});
@@ -335,7 +355,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(1);
+					res.body.entries.length.should.be.eql(2);
 					res.body.entries[0].should.have.property('metadata');
 					res.body.entries[0].metadata.should.have.property('keep').eql(1);
 					done();
@@ -459,7 +479,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(3);
+					res.body.entries.length.should.be.eql(4);
 					done();
 				});
 		});
@@ -474,7 +494,7 @@ describe('Journal', function() {
 				})
 				.end((err, res) => {
 					res.should.have.status(200);
-					res.body.entries.length.should.be.eql(3);
+					res.body.entries.length.should.be.eql(4);
 					for (var i = 0; i < res.body.entries.length - 1; i++) {
 						if (parseInt(res.body.entries[i].metadata.timestamp) < parseInt(res.body.entries[i + 1].metadata.timestamp) > 0) {
 							throw new Error("Not in descending order");
@@ -571,7 +591,7 @@ describe('Journal', function() {
 						.set('x-key', fakeUser.student.user._id)
 						.end((err, res) => {
 							res.should.have.status(200);
-							res.body.entries.length.should.be.eql(4);
+							res.body.entries.length.should.be.eql(5);
 							done();
 						});
 				});
