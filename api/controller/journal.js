@@ -587,7 +587,7 @@ function getOptions(req) {
 }
 
 /**
- * @api {post} api/v1/Journal/:jid Add entry
+ * @api {post} api/v1/journal/:jid Add entry
  * @apiName AddEntry
  * @apiDescription Add an entry in a journal. Return the entry created. If the entry already exist, update it instead. Admin has access to all journals but student can modify his/her journal only.
  * @apiGroup Journal
@@ -727,7 +727,7 @@ function updateJournal(req, res, journal, text) {
 }
 
 /**
- * @api {put} api/v1/journal/:jid Update entry
+ * @api {put} api/v1/journal/:jid?oid=:oid Update entry
  * @apiName UpdateEntry
  * @apiDescription Update an entry in a journal. Return the entry updated. If the entry don't exist, create a new one instead. Admin has access to all journals but student can modify his/her journal only.
  * @apiGroup Journal

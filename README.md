@@ -57,13 +57,14 @@ Following is the typical content of Sugarizer Server settings file:
 	server = localhost
 	port = 27018
 	name = sugarizer
+	waitdb = 1
 
 	[collections]
 	users = users
 	journal = journal
 	stats = stats
 	classrooms = classrooms
-	waitdb = 1
+	charts = charts
 
 	[statistics]
 	active = true
@@ -118,71 +119,76 @@ To implement the above functionalities, the sugarizer backend expose an API. The
 
 #### INFORMATION ROUTE
 
-        [GET]  /api/
+        [GET]    /api/
 
 #### ACTIVITIES ROUTES
 
-        [GET]  /api/v1/activities/org.olpcfrance.Abecedarium
-        [GET]  /api/v1/activities/org.olpcfrance.Abecedarium?fields=id,name,icon
-        [GET]  /api/v1/activities/
-        [GET]  /api/v1/activities?q=Abece
-        [GET]  /api/v1/activities?favorite=true
-        [GET]  /api/v1/activities?version=2
-        [GET]  /api/v1/activities?name=Gears
-        [GET]  /api/v1/activities?favorite=true&version=2
-        [GET]  /api/v1/activities?fields=id,name,icon
-        [GET]  /api/v1/activities?fields=id,name,icon&sort=-name
-        [GET]  /api/v1/activities?fields=id,name,icon&favorite=true&sort=name
+        [GET]    /api/v1/activities/org.olpcfrance.Abecedarium
+        [GET]    /api/v1/activities/org.olpcfrance.Abecedarium?fields=id,index,name,index
+        [GET]    /api/v1/activities
+        [GET]    /api/v1/activities?name=gears
+        [GET]    /api/v1/activities?favorite=false&sort=-version
+        [GET]    /api/v1/activities?favorite=true&fields=index,name&sort=+name
+        [POST]   /api/v1/activities
 
 #### USERS ROUTES
 
-        [POST]  /auth/login
-        [POST]  /auth/signup
-        [GET]   /api/v1/users
-        [GET]   /api/v1/users/:uid
-        [POST]  /api/v1/users
-        [PUT]   /api/v1/users/:uid
-        [GET]   /api/v1/adminusers
-        [GET]   /api/v1/adminusers/:uid
-        [POST]  /api/v1/adminusers
-        [PUT]   /api/v1/adminusers/:uid
-        [GET]   /api/v1/users?q=tarun&language=fr&page=3&limit=20
+        [POST]   /auth/login
+        [POST]   /auth/signup
+        [GET]    /api/v1/users
+        [GET]    /api/v1/users?name=tarun
+        [GET]    /api/v1/users?language=fr&sort=+name
+        [GET]    /api/v1/users?sort=+name&limit=5&offset=20
+        [GET]    /api/v1/users/:id
+        [POST]   /api/v1/users/
+        [PUT]    /api/v1/users/
+        [DELETE] /api/v1/users/:uid
 
 #### JOURNAL ROUTES
 
-        [GET]    api/v1/journal/
-        [GET]    api/v1/journal/type=shared
-        [GET]    api/v1/journal/:jid
-        [GET]    api/v1/journal/:jid?fields=metadata,text
-        [GET]    api/v1/journal/:jid?aid=:aid
-        [GET]    api/v1/journal/:jid?aid=:aid&fields=metadata,text
-        [GET]    api/v1/journal/:jid?aid=:aid&fields=metadata,text&page=3&limit=20&sort=-timestamp
-        [GET]    api/v1/journal/:jid?uid=:uid
-        [GET]    api/v1/journal/:jid?uid=:uid&fields=metadata,text
-        [GET]    api/v1/journal/:jid?uid=:uid&fields=metadata,text&page=3&limit=20
-        [GET]    api/v1/journal/:jid?uid=:uid&aid=:aid&fields=metadata,text&page=3&limit=20&sort=-timestamp
-        [GET]    api/v1/journal/:jid?oid=:oid
-        [POST]   api/v1/journal/:jid
-        [GET]    api/v1/journal/:jid?oid=:oid
-        [PUT]    api/v1/journal/:jid?oid=:oid
-        [DELETE] api/v1/journal/:jid?oid=:oid
-
+        [GET]    /api/v1/journal/
+        [GET]    /api/v1/journal/type=shared
+        [GET]    /api/v1/journal/type=private
+        [GET]    /api/v1/journal/:jid
+        [GET]    /api/v1/journal/:jid?aid=:aid
+        [GET]    /api/v1/journal/:jid?aid=:aid&uid=:uid
+        [GET]    /api/v1/journal/:jid?aid=:aid&sort=-timestamp
+        [GET]    /api/v1/journal/:jid?aid=:aid&sort=-timestamp&offset=15&limit=10
+        [GET]    /api/v1/journal/:jid?aid=:aid&sort=-timestamp&fields=text,metadata
+        [GET]    /api/v1/journal/:jid?aid=:aid&stime=712786812367
+        [POST]   /api/v1/journal/:jid
+        [PUT]    /api/v1/journal/:jid?oid=:oid
+        [DELETE] /api/v1/journal/?type=full
+        [DELETE] /api/v1/journal/?type=partial&oid=:oid
+        [GET]    /api/v1/aggregate
+        [GET]    /api/v1/aggregate?type=shared
+        [GET]    /api/v1/aggregate?type=private
 
 #### CLASSROOM ROUTES
 
-        [GET]    api/v1/classrooms/
-        [GET]    api/v1/classrooms/:cid
-        [POST]   api/v1/classrooms/
-        [PUT]    api/v1/classrooms/:cid
-        [DELETE] api/v1/classrooms/
+        [GET]    /api/v1/classrooms/
+        [GET]    /api/v1/classrooms/:id
+        [POST]   /api/v1/classrooms/
+        [PUT]    /api/v1/classrooms/:id
+        [DELETE] /api/v1/classrooms/:id
+
+#### CHARTS ROUTES
+
+        [GET]    /api/v1/charts/
+        [GET]    /api/v1/charts/:id
+        [POST]   /api/v1/charts/
+        [PUT]    /api/v1/charts/:id
+        [PUT]    /api/v1/charts/reorder
+        [DELETE] /api/v1/charts/:id
 
 #### STATS ROUTES
 
-        [GET]    api/v1/stats?user_id=592d4445cc8be9187abb284f
-        [GET]    api/v1/stats?event_object=home_view
-        [GET]    api/v1/stats?user_id=592d4445cc8be9187abb284f&sort=-timestamp
-        [POST]   api/v1/stats/
-        [DELETE] api/v1/stats/
+        [GET]    /api/v1/stats
+        [GET]    /api/v1/stats?user_id=:uid
+        [GET]    /api/v1/stats?event_object=home_view
+        [GET]    /api/v1/stats?user_id=:uid&sort=-timestamp
+        [POST]   /api/v1/stats
+        [DELETE] /api/v1/stats
 
 
 A full documentation of the API is available in http://127.0.0.1:8080/docs.

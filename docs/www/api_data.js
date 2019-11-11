@@ -1414,7 +1414,7 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "api/v1/Journal/:jid",
+    "url": "api/v1/journal/:jid",
     "title": "Add entry",
     "name": "AddEntry",
     "description": "<p>Add an entry in a journal. Return the entry created. If the entry already exist, update it instead. Admin has access to all journals but student can modify his/her journal only.</p>",
@@ -2024,7 +2024,7 @@ define({ "api": [
   },
   {
     "type": "put",
-    "url": "api/v1/journal/:jid",
+    "url": "api/v1/journal/:jid?oid=:oid",
     "title": "Update entry",
     "name": "UpdateEntry",
     "description": "<p>Update an entry in a journal. Return the entry updated. If the entry don't exist, create a new one instead. Admin has access to all journals but student can modify his/her journal only.</p>",
