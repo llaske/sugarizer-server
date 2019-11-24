@@ -28,6 +28,7 @@ exports.init = function(settings) {
 	var msgOnSharedActivityUserChanged = 7;
 	var msgSendMessage = 8;
 	var msgListSharedActivityUsers = 9;
+	var closedBecauseDuplicate = 4999;
 	/* eslint-enable no-unused-vars */
 
 	/**
@@ -79,10 +80,15 @@ exports.init = function(settings) {
 					var rjson = JSON.parse(message.utf8Data);
 
 					// Forbid user arlready connected on another device
-					if (findClient(rjson.networkId) != -1) {
-						// Reject user
-						connection.close();
-						console.log('User ' + rjson.networkId + ' rejected, already connected');
+					if ((userIndex = findClient(rjson.networkId)) != -1) {
+						// Disconnect user on other device
+						clients[userIndex].connection.close(closedBecauseDuplicate);
+
+						// Reset user
+						clients[userIndex].settings = rjson;
+						clients[userIndex].connection = connection;
+						userId = rjson.networkId;
+						console.log('User ' + userId + ' already connected, closed previous connection and reconnect it');
 					} else {
 						// Add client
 						userIndex = addClient(connection);
@@ -228,10 +234,14 @@ exports.init = function(settings) {
 		});
 
 		// user disconnected
-		connection.on('close', function() {
+		connection.on('close', function(reason) {
 			if (userId !== false) {
-				console.log("User " + userId + " disconnected");
-				removeClient(userIndex);
+				if (reason == closedBecauseDuplicate) {
+					console.log("User " + userId + " disconnected automatically");
+				} else {
+					console.log("User " + userId + " disconnected");
+					removeClient(userIndex);
+				}
 			}
 		});
 
