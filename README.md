@@ -69,6 +69,9 @@ Following is the typical content of Sugarizer Server settings file:
 	[statistics]
 	active = true
 
+	[log]
+	level = 1
+
 	[activities]
 	activities_directory_name = activities
 	template_directory_name = ActivityTemplate
@@ -88,6 +91,8 @@ The **[presence]** section describe the settings of the presence server. By defa
 The **[database]** and **[collections]** sections are for MongoDB settings. You could update the server name (by default MongoDB run locally) and the server port. Names of the database and collections had no reason to be changed. The `waitdb` parameter allow you to force server to wait for the database.
 
 The **[statistics]** section indicate if the server will log client usage.
+
+The **[log]** section indicate how the server log access. If `level` value is greater than 0 or is not present, Sugarizer Server will log all access to the server on the command line.
 
 The **[activities]** section describe information on where to find embedded activities. The favorites value list ids of activities that Web Application users will find by default on the home page. All values are self explained and had no reason to be changed.
 

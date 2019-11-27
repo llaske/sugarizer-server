@@ -47,7 +47,10 @@ module.exports = function(app, ini) {
 
 	//logger
 	if (process.env.NODE_ENV !== 'test') {
-		app.use(logger('dev'));
+		var level = ini.log?ini.log.level:1;
+		if (level != 0) {
+			app.use(logger('dev'));
+		}
 	}
 
 	// Handle CORS request
