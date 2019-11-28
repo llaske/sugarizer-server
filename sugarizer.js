@@ -48,6 +48,13 @@ wait4db.waitConnection(ini, function(db) {
 		server = http.createServer(app);
 	}
 
+	// Check node version
+	var nodev = (process.versions.node).split(".");
+	if (parseInt(nodev[0]) < 6) {
+		console.log("Ooops! Sugarizer require node v6+, current version is v"+process.versions.node);
+		process.exit(-1);
+	}
+
 	// Start listening
 	var info = JSON.parse(fs.readFileSync("./package.json", 'utf-8'));
 	console.log("   _____                        _              ");
@@ -59,6 +66,7 @@ wait4db.waitConnection(ini, function(db) {
 	console.log("                __/ |                          ");
 	console.log("               |___/                           ");
 	console.log(info.description+" v"+info.version);
+	console.log("node v"+process.versions.node);
 	console.log("Settings file './env/"+(process.env.NODE_ENV ? process.env.NODE_ENV : 'sugarizer')+".ini'");
 	server.listen(ini.web.port, function() {
 		console.log("API is listening on"+(ini.security.https ? " secure":"")+" port " + ini.web.port + "...");
