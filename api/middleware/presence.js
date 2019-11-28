@@ -28,6 +28,7 @@ exports.init = function(settings) {
 	var msgOnSharedActivityUserChanged = 7;
 	var msgSendMessage = 8;
 	var msgListSharedActivityUsers = 9;
+	var closedBecauseDuplicate = 4999;
 	/* eslint-enable no-unused-vars */
 
 	/**
@@ -50,6 +51,14 @@ exports.init = function(settings) {
 		console.log("Ooops! cannot launch presence on port "+ settings.presence.port + ", error code "+err.code);
 		process.exit(-1);
 	});
+
+	// Log message
+	var level = settings.log?settings.log.level:1;
+	var logmessage = function(buffer) {
+		if (level != 0) {
+			console.log(buffer);
+		}
+	};
 
 	/**
 	 * WebSocket server
@@ -79,10 +88,15 @@ exports.init = function(settings) {
 					var rjson = JSON.parse(message.utf8Data);
 
 					// Forbid user arlready connected on another device
-					if (findClient(rjson.networkId) != -1) {
-						// Reject user
-						connection.close();
-						console.log('User ' + rjson.networkId + ' rejected, already connected');
+					if ((userIndex = findClient(rjson.networkId)) != -1) {
+						// Disconnect user on other device
+						clients[userIndex].connection.close(closedBecauseDuplicate);
+
+						// Reset user
+						clients[userIndex].settings = rjson;
+						clients[userIndex].connection = connection;
+						userId = rjson.networkId;
+						logmessage('User ' + userId + ' already connected, closed previous connection and reconnect it');
 					} else {
 						// Add client
 						userIndex = addClient(connection);
@@ -90,7 +104,7 @@ exports.init = function(settings) {
 
 						// Get user name
 						userId = rjson.networkId;
-						console.log('User ' + userId + ' join the network');
+						logmessage('User ' + userId + ' join the network');
 					}
 				} else {
 					// Get message content
@@ -123,7 +137,7 @@ exports.init = function(settings) {
 						// Create shared activities
 						var activityId = rjson.activityId;
 						var groupId = createSharedActivity(activityId, userId);
-						console.log('Shared group ' + groupId + " (" + activityId + ") created");
+						logmessage('Shared group ' + groupId + " (" + activityId + ") created");
 
 						// Add user into group
 						addUserIntoGroup(groupId, userId);
@@ -228,10 +242,14 @@ exports.init = function(settings) {
 		});
 
 		// user disconnected
-		connection.on('close', function() {
+		connection.on('close', function(reason) {
 			if (userId !== false) {
-				console.log("User " + userId + " disconnected");
-				removeClient(userIndex);
+				if (reason == closedBecauseDuplicate) {
+					logmessage("User " + userId + " disconnected automatically");
+				} else {
+					logmessage("User " + userId + " disconnected");
+					removeClient(userIndex);
+				}
 			}
 		});
 
@@ -366,7 +384,7 @@ exports.init = function(settings) {
 		}
 		if (!foundUser) {
 			sharedActivities[groupIndex].users.push(userId);
-			console.log('User ' + userId + ' join group ' + groupId);
+			logmessage('User ' + userId + ' join group ' + groupId);
 			var userIndex = findClient(userId);
 			var message = {
 				type: msgOnSharedActivityUserChanged,
@@ -398,7 +416,7 @@ exports.init = function(settings) {
 			if (currentUser != userId)
 				newUsersInGroup.push(currentUser);
 			else {
-				console.log('User ' + userId + ' leave group ' + groupId);
+				logmessage('User ' + userId + ' leave group ' + groupId);
 				var userIndex = findClient(userId);
 				var message = {
 					type: msgOnSharedActivityUserChanged,
@@ -414,7 +432,7 @@ exports.init = function(settings) {
 		// If the group is now empty, remove it
 		sharedActivities[groupIndex].users = newUsersInGroup;
 		if (newUsersInGroup.length == 0) {
-			console.log('Shared group ' + groupId + " removed");
+			logmessage('Shared group ' + groupId + " removed");
 			sharedActivities[groupIndex] = null;
 		}
 	}
