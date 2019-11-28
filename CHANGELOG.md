@@ -4,6 +4,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- Teacher profile
+- Import/Export users from/to CSV files from dashboard
+- Stats screen customization
+- Sort on columns in dashboard
+- User count in classroom view
+- Tutorial on dashboard
+- QR Code generation in dashboard
+- ESLint
+- Grunt with minimize
+- Aggregate journal API
+- Stats API
+
+### Changed
+- Support for big files (until 256mb)
+- Improved responsive view on dashboard
+- Change disconnection strategy for same user connected multiple times
+- Fix deprecated connection call of MongoDB
+- Add server version in info API
+- Use a random color for new user/classroom created from dashboard
+- Print and check node version
+- Restructure dashboard controller
+
+### Fixed
+- Add students icon in dashboard in classroom edit #22
+- Make the docs clear about creating the user when running docker #29
+- Install linting in the project #41
+- Allow sorting users and classrooms in Dashboard #50
+- Add Minification to project #90  
+- Sugarizer logo not visible in dashboard on users menu #147
+- Logout button not working on mobile view #161
+- Can't see classroom from the user view in Dashboard #179
+
+
 ## [1.1.1] - 2019-07-30
 ### Fixed
 - Error on expressValidator when running Server #187
