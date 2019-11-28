@@ -3,7 +3,12 @@ var jwt = require('jwt-simple'),
 	mongo = require('mongodb'),
 	common = require('../../dashboard/helper/common');
 
+var security;
 
+// Init settings
+exports.init = function(settings) {
+	security = settings.security;
+};
 
 /**
  * @api {post} auth/login/ Login User
@@ -232,6 +237,12 @@ exports.checkAdminOrLocal = function(req, res, next) {
 	if (req.body && req.body.user) {
 		var user = JSON.parse(req.body.user);
 		whishedRole = user.role.toLowerCase();
+	}
+	if (whishedRole == 'student' && security.no_signup_mode) {
+		return res.status(401).send({
+			'error': 'You don\'t have permission to perform this action',
+			'code': 19
+		});
 	}
 	var ip = common.getClientIP(req);
 	var serverIp = common.getServerIP();

@@ -27,6 +27,7 @@ module.exports = function(app, ini, db) {
 	stats.init(ini, db);
 	classrooms.init(ini, db);
 	charts.init(ini, db);
+	auth.init(ini);
 
 	// Routes that can be accessed by any one
 	app.get('/api', common.getAPIInfo);

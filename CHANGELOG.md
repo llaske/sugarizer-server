@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Grunt with minimize
 - Aggregate journal API
 - Stats API
+- No sign-up mode
 
 ### Changed
 - Support for big files (until 256mb)
