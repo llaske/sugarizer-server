@@ -2,9 +2,9 @@
 
 # Sugarizer Server
 
-[Sugarizer](https://github.com/llaske/sugarizer) is the open source learning platform based on Sugar that began in the famous One Laptop Per Child project.
+[Sugarizer](https://github.com/llaske/sugarizer) is the open-source learning platform based on Sugar that began in the famous One Laptop Per Child project.
 
-Sugarizer Server allow deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 6+ and MongoDB 2.6+.
+Sugarizer Server allows the deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 6+ and MongoDB 2.6+.
 
 
 ## Running Sugarizer Server
@@ -81,32 +81,32 @@ Following is the typical content of Sugarizer Server settings file:
 
 The **[information]** section is for describing your server. It could be useful for clients connected to the server.
 
-The **[web]** section describe the settings of the node.js process. By default, the web server is on the port 8080.
+The **[web]** section describes the settings of the node.js process. By default, the web server is on the port 8080.
 
-The **[security]** section regroup security settings. `min_password_size` is the minimum number of characters for the password. `max_age` is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours). Parameters `https`, `certificate_file`, `key_file` and `strict_ssl` are explain above.
+The **[security]** section regroup security settings. `min_password_size` is the minimum number of characters for the password. `max_age` is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. The default time is 172800000 (48 hours). Parameters `https`, `certificate_file`, `key_file` and `strict_ssl` are explain above.
 It `no_signup_mode` is true, account creation is allowed only by an administrator or a teacher (no direct sign-up allowed by a student).
 
-The **[client]** indicate the place where is located Sugarizer Client. Sugarizer Client is need by the server.
+The **[client]** indicate the place where is located Sugarizer Client. Sugarizer Client is needed by the server.
 
-The **[presence]** section describe the settings of the presence server. By default, a web socket is created on port 8039. You need to change this value if you want to use another port.
+The **[presence]** section describes the settings of the presence server. By default, a web socket is created on port 8039. You need to change this value if you want to use another port.
 
-The **[database]** and **[collections]** sections are for MongoDB settings. You could update the server name (by default MongoDB run locally) and the server port. Names of the database and collections had no reason to be changed. The `waitdb` parameter allow you to force server to wait for the database.
+The **[database]** and **[collections]** sections are for MongoDB settings. You could update the server name (by default MongoDB run locally) and the server port. Names of the database and collections had no reason to be changed. The `waitdb` parameter allows you to force the server to wait for the database.
 
-The **[statistics]** section indicate if the server will log client usage.
+The **[statistics]** section indicates if the server will log client usage.
 
-The **[log]** section indicate how the server log access. If `level` value is greater than 0 or is not present, Sugarizer Server will log all access to the server on the command line.
+The **[log]** section indicates how the server log access. If `level` value is greater than 0 or is not present, Sugarizer Server will log all access to the server on the command line.
 
-The **[activities]** section describe information on where to find embedded activities. The favorites value list ids of activities that Web Application users will find by default on the home page. All values are self explained and had no reason to be changed.
+The **[activities]** section describes information on where to find embedded activities. The favorites value list ids of activities that Web Application users will find by default on the home page. All values are self explained and had no reason to be changed.
 
 
 ## Dashboard
 
-Sugarizer Server Dashboard is an admin tool for teachers and deployment administrator. This dashboard can be used to control and manage the work of learners and manage and analyze all activities on a Sugarizer Server. The Dashboard have following features:
+Sugarizer Server Dashboard is an admin tool for teachers and deployment administrator. This dashboard can be used to control and manage the work of learners and manage and analyze all activities on a Sugarizer Server. The Dashboard has following features:
 
 * Users: how many users have been registered on the server, recent users, top users on the server, create/edit/remove a user.
 * Journal: how many Journals and how many entries in Journal on the server, last Journal, and last entries, edit a journal (see/update/remove) entries.
 * Activities: how many activities are available on the server, change activities visibility from Client, update order and way to appear in the favorite view.
-* Classrooms: a way to organize users on the server side to handle them more easily.
+* Classrooms: a way to organize users on the server-side to handle them more easily.
 * Graphic and request: display graphics and report on previous data.
 
 To login to the Dashboard the first time, you will have to create an admin account using this command:
