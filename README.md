@@ -219,9 +219,9 @@ To launch it, run the command line:
 
 Where `settings` is the name of the .ini file to use for settings (default is `sugarizer`). `filename.csv` is the CSV who contains items to create. Here's an example of CSV file:
 
-    name,type,language,color,password,classroom
-    Lionel,admin,fr,"{""stroke"":""#F8E800"",""fill"":""#FF8F00""}",aaaa,
-    Nikhil,student,,,,CM2
+    name,type,language,stroke,fill,password,classroom
+    Lionel,admin,fr,#BCCDFF,#FF8F00,aaaa,
+    Nikhil,student,,,,,CM2
 
 Note that the header line is needed.
 
@@ -230,20 +230,22 @@ The signification of each field is:
 * `name` is the name of the account to create.
 * `type` is the type of account. Should be `student` or `admin`.
 * `language` is the language for the account. If missing, the default is `en`.
-* `color` is the color for the account. If missing, it's generated randomly.
+* `stroke` is the stroke color for the account. If missing, it's generated randomly.
+* `fill` is the fill color for the account. If missing, it's generated randomly.
 * `password` is the password for the account. If missing, it's generated randomly.
 * `classroom` is the classroom for the student. If a classroom with this name exists, the student is added to the classroom. If a classroom doesn't exist, the classroom is created first. If missing, the student is let without classroom.
 
-At the end of the script, a new CSV file named `output.csv` is generated. The output file has the same format than the input field with two more fields:
+At the end of the script, a new CSV file named `output.csv` is generated. The output file has the same format than the input field with three more fields:
 
 * `status` is 1 if item created, 0 if an error happened.
 * `comment` is the detail of action done.
+* `_id` is the ObjectId of the created account.
 
 Here's an example of output file:
 
-    name,type,language,color,password,classroom,status,comment
-    Lionel,admin,fr,"{""stroke"":""#F8E800"",""fill"":""#FF8F00""}",aaaa,,1,
-    Nikhil,student,en,"{""stroke"":""#807500"",""fill"":""#FF8F00""}",l0dU,CM2,1,Given password was invalid (Generated random password).
+    status,comment,_id,name,type,language,stroke,fill,password,classroom
+    1,,5d30162ced7ee117b842ad4a,Lionel,admin,fr,#BCCDFF,#FF8F00,aaaa,
+    1,Given password was invalid (Generated random password).,5d30162ced7ee117b842ad57,Nikhil,student,en,#D1A3FF,#AC32FF,l0dU,CM2
 
 Note: For security reason, the script should be launched from the local machine. On Docker, attach a new shell to the container and launch the script from this shell - in that case the port to use should be 80, not 8080.
 
