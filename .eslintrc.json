@@ -68,7 +68,8 @@
                 "url": "writable",
                 "headers": "writable",
                 "icon": "readonly",
-                "Chart": "readonly"
+                "Chart": "readonly",
+                "QRCode": "readonly"
             }
         },
         {
