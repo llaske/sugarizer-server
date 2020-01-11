@@ -76,7 +76,6 @@
                                 }
                             });
                             </script>
-							<button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults" id="show-result"><div class="ripple-container"></div></button>
                         <div class="col-md-6">
                             <div class="btn pull-right btn-round" onclick="downloadUsers()" data-l10n-id="ExportUsers" id="users-exportusers">Export Users</div>
                             <script>
@@ -128,7 +127,6 @@
                             </script>
                             <div>
                                 <label for="csv-upload" class="btn pull-right btn-round" data-l10n-id="ImportUsers" id="users-addfromcsv">Add From CSV<div class="ripple-container"></div></label>
-								<a class="btn btn-round pull-right " href="/dashboard/users/add" data-l10n-id="addUser" id="users-adduser"><div class="ripple-container"></div></a>
                                 <input id="csv-upload" style="visibility:hidden; display:none;" type="file" name="csv-file" accept="text/csv">
                                 <script>
                                     $("#csv-upload").change(function() {
@@ -192,6 +190,8 @@
                                     });
                                 </script>
                             </div>
+                            <a class="btn btn-round pull-right " href="/dashboard/users/add" data-l10n-id="addUser" id="users-adduser"><div class="ripple-container"></div></a>
+                            <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults" id="show-result"><div class="ripple-container"></div></button>
                         </div>
                       </form>
                   </div>

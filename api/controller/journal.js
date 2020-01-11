@@ -396,7 +396,7 @@ exports.findJournalContent = function(req, res) {
 												try {
 													var textObject = JSON.parse(items[ind].text);
 													items[ind].text = textObject.text;
- 												} catch (e) {
+												} catch (e) {
 													return res.status(500).send({'error': 'Invalid text value', 'code': 12});
 												}
 												return returnResponse();
