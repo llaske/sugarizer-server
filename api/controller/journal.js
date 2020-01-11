@@ -1138,6 +1138,7 @@ exports.findAllEntries = function(req, res) {
 							var content = [];
 							for (var j=0; j<items[i].content.length; j++) {
 								if (items[i].content[j] && items[i].content[j].metadata && items[i].content[j].metadata.user_id && req.user.students.includes(items[i].content[j].metadata.user_id)) {
+									delete items[i].content[j].text;
 									content.push(items[i].content[j]);
 								}
 							}
@@ -1159,6 +1160,18 @@ exports.findAllEntries = function(req, res) {
 						'code': 5
 					});
 				}
+
+				// Delete the text field from the data
+				for (var i=0; i<items.length; i++) {
+					if (typeof items[i].content == "object") {
+						for (var j=0; j<items[i].content.length; j++) {
+							if (items[i].content[j] && items[i].content[j].text) {
+								delete items[i].content[j].text;
+							}
+						}
+					}
+				}
+
 				// Return
 				return res.send(items);
 			});
