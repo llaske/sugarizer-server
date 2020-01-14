@@ -406,17 +406,20 @@ function updateChart(chartid) {
 }
 
 function formatUserField(state) {
-	if (!state.id) {
+	if (!state._id) {
 		return state.text;
 	}
+	var d = new Date(state.timestamp);
 	var $state = $(
-		'<div class="student" id="' + $(state.element).data('id') + '">\
+		'<div class="student" id="' + state._id + '">\
 			<div class="xo-icon"></div>\
-			<div class="name">' + state.text + '</div>\
-			<div class="timestamp">' + $(state.element).data('timestamp') + '</div>\
-		</div>'
+			<div class="name">' + state.name + '</div>\
+			<div class="timestamp">' + d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear() + '</div>\
+		</div>\
+		<script>\
+			new icon().load("/public/img/owner-icon.svg", ' + JSON.stringify(state.color) + ', "' + state._id + '");\
+		</script>'
 	);
-	new icon().load("/public/img/owner-icon.svg", $(state.element).data('color'), $(state.element).data('id'));
 	return $state;
 }
 
@@ -460,21 +463,58 @@ function matchColorField(params, data) {
 }
 
 $(document).ready(function() {
-	if ($("#users-select2").length > 0) {
-		$("#users-select2").select2({
-			templateResult: formatUserField
-		}).on("change", function(e) {
-			var pj = $("#users-select2 option:selected").data('private_journal');
-			var sj = $("#users-select2 option:selected").data('shared_journal');
-			$('#journal-type-select2').trigger("change");
-			if ($("#journal-type-select2 option:selected").val() == 'shared') {
-				$('#getJournalEntries').attr('action', '/dashboard/journal/' + sj);
-			} else {
-				$('#getJournalEntries').attr('action', '/dashboard/journal/' + pj);
+	document.webL10n.ready(function() {
+		var refreshIntervalId = setInterval(function() {
+			if (document.webL10n.getReadyState() == "complete") {
+				clearInterval(refreshIntervalId);
+				if ($("#users-select2").length > 0) {
+					$("#users-select2").select2({
+						ajax: {
+							url: "/dashboard/users/search",
+							dataType: 'json',
+							delay: 250,
+							data: function (params) {
+								return {
+									q: params.term
+								};
+							},
+							processResults: function (data) {
+								if (data && data.data && data.data.users && data.data.users.length > 0) {
+									for (var i=0; i<data.data.users.length; i++) {
+										data.data.users[i].id = data.data.users[i]._id;
+										data.data.users[i].text = data.data.users[i].name;
+									}
+									return {
+										results: data.data.users
+									};
+								} else {
+									return {
+										results: []
+									};
+								}
+							},
+							cache: true
+						},
+						templateResult: formatUserField,
+						placeholder: document.webL10n.get("searchUser")
+					}).on("select2:select", function (e) {
+						if (e.params && e.params.data && (e.params.data.private_journal || e.params.data.shared_journal)) {
+							document.pj_global = e.params.data.private_journal;
+							document.sj_global = e.params.data.shared_journal;
+							$('#journal-type-select2').trigger("change");
+						}
+					}).on("change", function(e) {
+						if ($("#users-select2 option:selected").data('private_journal') || $("#users-select2 option:selected").data('shared_journal')) {
+							document.pj_global = $("#users-select2 option:selected").data('private_journal');
+							document.sj_global = $("#users-select2 option:selected").data('shared_journal');
+							$('#journal-type-select2').trigger("change");
+						}
+					});
+					$("#users-select2").trigger("change");
+				}
 			}
-		});
-		$("#users-select2").trigger("change");
-	}
+		}, 100);
+	});
 
 	if ($("#color-select2").length > 0) {
 		$("#color-select2").select2({
@@ -486,12 +526,10 @@ $(document).ready(function() {
 
 	if ($("#journal-type-select2").length > 0) {
 		$("#journal-type-select2").select2().on("change", function(e) {
-			var pj = $("#users-select2 option:selected").data('private_journal');
-			var sj = $("#users-select2 option:selected").data('shared_journal');
 			if ($("#journal-type-select2 option:selected").val() == 'shared') {
-				$('#getJournalEntries').attr('action', '/dashboard/journal/' + sj);
+				$('#getJournalEntries').attr('action', '/dashboard/journal/' + document.sj_global);
 			} else {
-				$('#getJournalEntries').attr('action', '/dashboard/journal/' + pj);
+				$('#getJournalEntries').attr('action', '/dashboard/journal/' + document.pj_global);
 			}
 		});
 	}

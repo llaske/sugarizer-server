@@ -2,6 +2,7 @@
 var request = require('request'),
 	moment = require('moment'),
 	common = require('../../helper/common'),
+	searchUser = require('./searchUser'),
 	addUser = require('./addUser'),
 	editUser = require('./editUser'),
 	deleteUser = require('./deleteUser'),
@@ -90,6 +91,8 @@ exports.index = function(req, res) {
 		}
 	});
 };
+
+exports.searchUser = searchUser;
 
 exports.addUser = addUser;
 
