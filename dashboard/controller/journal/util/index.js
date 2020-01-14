@@ -49,22 +49,17 @@ exports.getJournalEntries = function(req, res, query, callback) {
 	});
 };
 
-exports.getUsers = function(req, res, callback) {
+exports.getUser = function(req, res, callback) {
 	// call
 	request({
 		headers: common.getHeaders(req),
 		json: true,
 		method: 'GET',
-		qs: {
-			sort: '-timestamp',
-			role: 'student',
-			limit: 100000000
-		},
-		uri: common.getAPIUrl(req) + 'api/v1/users'
+		uri: common.getAPIUrl(req) + 'api/v1/users/' + req.query.uid
 	}, function(error, response, body) {
 		if (response.statusCode == 200) {
 
-			callback(body.users);
+			callback(body);
 		} else {
 			req.flash('errors', {
 				msg: common.l10n.get('ErrorCode'+body.code)

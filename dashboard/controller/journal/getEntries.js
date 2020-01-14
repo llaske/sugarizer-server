@@ -5,7 +5,7 @@ var moment = require('moment'),
 var _util = require('./util'),
 	getActivities = _util.getActivities,
 	getJournalEntries = _util.getJournalEntries,
-	getUsers = _util.getUsers;
+	getUser = _util.getUser;
 
 var journal = require('./index');
 
@@ -14,8 +14,8 @@ module.exports = function getEntries(req, res) {
 	// reinit l10n and momemt with locale
 	common.reinitLocale(req);
 
-	//get users
-	getUsers(req, res, function(users) {
+	//get user
+	getUser(req, res, function(user) {
 
 		var query = {
 			uid: req.query.uid,
@@ -45,7 +45,7 @@ module.exports = function getEntries(req, res) {
 					entries: entries,
 					iconList: hashList,
 					query: query,
-					users: users,
+					user: user,
 					account: req.session.user,
 					server: journal.ini().information
 				});

@@ -12,17 +12,17 @@
 								<div class="col-md-4">
 									<div class="form-group form-black label-floating is-empty">
 											<select class="form-control" id="users-select2" name="uid">
-												 <% for(var i=0; i< users.length; i++) { %>
-												 <option data-id="<%= users[i]._id %>"
-													 data-private_journal="<%= users[i].private_journal %>"
-													 data-shared_journal="<%= users[i].shared_journal %>"
-													 <% if(users[i]._id == query.uid){%> selected="selected" <% } %>
-													 data-color='<%- JSON.stringify(users[i].color) %>'
-													 data-timestamp="<%= moment(users[i].timestamp).calendar() %>"
-													 value="<%= users[i]._id %>">
-													 <%- (users[i].name.replace(/[&<>]/g, "")) %>
+												<% if(user && user._id){%>
+												 <option data-id="<%= user._id %>"
+													 data-private_journal="<%= user.private_journal %>"
+													 data-shared_journal="<%= user.shared_journal %>"
+													 selected="selected"
+													 data-color='<%- JSON.stringify(user.color) %>'
+													 data-timestamp="<%= moment(user.timestamp).calendar() %>"
+													 value="<%= user._id %>">
+													 <%- (user.name.replace(/[&<>]/g, "")) %>
 												 </option>
-												 <% } %>
+												<% } %>
 											</select>
 									</div>
 								</div>

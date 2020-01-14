@@ -31,6 +31,7 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/logout', authController.logout);
 	app.get('/dashboard', authController.validateSession, dashboardController.index);
 	app.get('/dashboard/users', authController.validateSession, usersController.index);
+	app.get('/dashboard/users/search', authController.validateSession, usersController.searchUser);
 	app.get('/dashboard/users/add', authController.validateSession, usersController.addUser);
 	app.post('/dashboard/users/add', authController.validateSession, usersController.addUser);
 	app.post('/dashboard/users/import', upload.single('file'), usersController.importCSV);
