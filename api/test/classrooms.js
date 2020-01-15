@@ -196,9 +196,7 @@ describe('Classrooms', function() {
 					res.body.should.have.property('color').not.eql(undefined);
 					res.body.should.have.property('students').be.an('array');
 					var studentList = res.body.students.reduce(function(list, student) {
-						if (student.is_member) {
-							list.push(student._id);
-						}
+						list.push(student._id);
 						return list;
 					}, []);
 					chai.expect(studentList).to.eql(fake.classroom.students);
@@ -220,9 +218,7 @@ describe('Classrooms', function() {
 					res.body.should.have.property('color').not.eql(undefined);
 					res.body.should.have.property('students').be.an('array');
 					var studentList = res.body.students.reduce(function(list, student) {
-						if (student.is_member) {
-							list.push(student._id);
-						}
+						list.push(student._id);
 						return list;
 					}, []);
 					chai.expect(studentList).to.eql(fake.classroom.students);
@@ -248,9 +244,7 @@ describe('Classrooms', function() {
 							res.body.should.be.an('object');
 							res.body.should.have.property('students').be.an('array');
 							var studentList = res.body.students.reduce(function(list, student) {
-								if (student.is_member) {
-									list.push(student._id);
-								}
+								list.push(student._id);
 								return list;
 							}, []);
 							chai.expect(studentList).to.eql(fake.classroom.students);
