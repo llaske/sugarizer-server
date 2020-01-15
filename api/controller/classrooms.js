@@ -346,22 +346,21 @@ exports.findById = function(req, res) {
 					return;
 				}
 
-				// get student mappings
-				users.getAllUsers({
-					role: 'student'
-				}, {}, function(users) {
-					// append all students with selected flag
-					var studentList = classroom.students;
-					classroom.students = users.map(function(student){
-						student.is_member = false;
-						if(studentList.indexOf(student._id.toString()) > -1){
-							student.is_member = true;
-						}
-						return student;
-					});
-					// return
-					res.send(classroom);
-				}
+				users.getAllUsers(
+					{
+						_id: {
+							$in: classroom.students.map(function(id) {
+								return new mongo.ObjectID(id);
+							})
+						},
+						role: 'student'
+					},
+					{},
+					function(users) {
+						// append students
+						classroom.students = users;
+						res.send(classroom);
+					}
 				);
 			}
 		);

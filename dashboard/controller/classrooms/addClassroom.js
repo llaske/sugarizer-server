@@ -59,18 +59,14 @@ module.exports = function addClassroom(req, res) {
 		}
 
 	} else {
-		//get all users
-		dashboard_utils.getAllUsers(req, res, function(users) {
-			// send to classroom page
-			res.render('admin/addEditClassroom', {
-				module: 'classrooms',
-				xocolors: xocolors,
-				moment: moment,
-				students: users.users,
-				emoji: emoji,
-				account: req.session.user,
-				server: classroom.ini().information
-			});
+		// send to classroom page
+		res.render('admin/addEditClassroom', {
+			module: 'classrooms',
+			xocolors: xocolors,
+			moment: moment,
+			emoji: emoji,
+			account: req.session.user,
+			server: classroom.ini().information
 		});
 	}
 };
