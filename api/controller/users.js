@@ -244,7 +244,7 @@ function formPaginatedUrl(route, params, offset, limit) {
 	params.limit = limit;
 	var str = [];
 	for (var p in params)
-		if (params.hasOwnProperty(p)) {
+		if (p && Object.prototype.hasOwnProperty.call(params, p)) {
 			str.push((p) + "=" + (params[p]));
 		}
 	return '?' + str.join("&");

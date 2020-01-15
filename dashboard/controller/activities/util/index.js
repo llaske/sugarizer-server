@@ -35,7 +35,7 @@ exports.getUser = function(req, uid, callback) {
 exports.formQueryString = function(params) {
 	var str = [];
 	for (var p in params)
-		if (params.hasOwnProperty(p)) {
+		if (p && Object.prototype.hasOwnProperty.call(params, p)) {
 			str.push(encodeURIComponent(p) + "=" + encodeURIComponent(params[p]));
 		}
 	return '?' + str.join("&");

@@ -814,7 +814,7 @@ function sortBy(params) {
 
 	var url = location.origin + location.pathname + '?';
 	for (var key in query) {
-		if (key && query.hasOwnProperty(key)) {
+		if (key && Object.prototype.hasOwnProperty.call(query, key)) {
 			var val = query[key];
 			url += key + '=' + val + '&';
 		}
