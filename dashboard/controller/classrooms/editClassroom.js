@@ -24,6 +24,7 @@ module.exports = function editClassroom(req, res) {
 			}
 
 			req.body.color = JSON.parse(req.body.color);
+			req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
 
 			// get errors
 			var errors = req.validationErrors();
