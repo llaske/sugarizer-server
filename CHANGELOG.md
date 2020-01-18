@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Package vulnerability fix
 - Fixed button position in Users View
 - Server crash when dashboard call with several thousand of entries #208
+- Classroom name could be null or could already exist
 
 
 ## [1.2.0] - 2019-12-01
