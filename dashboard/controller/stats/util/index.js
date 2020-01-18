@@ -21,7 +21,7 @@ exports.getHowUserLaunchActivity = function(req, res) {
 
 			var d = {};
 			for (var i = 0; i < data.length; i++) {
-				if (!d.hasOwnProperty(data[i].event_object)) {
+				if (data[i].event_object && !Object.prototype.hasOwnProperty.call(d, data[i].event_object)) {
 					d[data[i].event_object] = 1;
 				} else {
 					d[data[i].event_object]++;
@@ -279,7 +279,7 @@ exports.getMostActiveClassrooms = function(req, res) {
 			var studentRequestCount = 0;
 			var studentResponseCount = 0;
 			for (var key in studentsHash) {
-				if (key && studentsHash.hasOwnProperty(key) && typeof studentsHash[key] == 'object') {
+				if (key && Object.prototype.hasOwnProperty.call(studentsHash, key) && typeof studentsHash[key] == 'object') {
 					studentRequestCount++;
 					request({
 						headers: common.getHeaders(req),
@@ -317,7 +317,7 @@ exports.getMostActiveClassrooms = function(req, res) {
 		var journalRequestCount = 0;
 		var journalResponseCount = 0;
 		for (var key in studentsHash) {
-			if (studentsHash.hasOwnProperty(key) && typeof studentsHash[key] == 'object' && studentsHash[key].jid) {
+			if (key && Object.prototype.hasOwnProperty.call(studentsHash, key) && typeof studentsHash[key] == 'object' && studentsHash[key].jid) {
 				makeJournalRequest(key);
 			}
 		}
