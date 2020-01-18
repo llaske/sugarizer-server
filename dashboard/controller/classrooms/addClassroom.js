@@ -1,7 +1,6 @@
 // include libraries
 var request = require('request'),
 	moment = require('moment'),
-	dashboard_utils = require('../dashboard/util'),
 	common = require('../../helper/common'),
 	xocolors = require('../../helper/xocolors')(),
 	emoji = require('../../public/js/emoji');
