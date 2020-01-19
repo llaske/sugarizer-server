@@ -60,10 +60,10 @@ class User {
     constructor(name, type, language, color, password, classroom, comment) {
         this.name = name;
         this.type = type;
-        this.language = language;
-        this.color = color;
-        this.password = password;
-        this.classroom = classroom;
+        this.language = language ? language : "";
+        this.color = color ? color : "";
+        this.password = password ? password : "";
+        this.classroom = classroom ? classroom : [];
         this.comment = comment ? comment : "";
         this.status = 0;
         this._id = "";
@@ -73,6 +73,7 @@ class User {
 // Initialize the array that will contains all the users read from CSV
 var AdminsStudents = [];
 var Teachers = [];
+var Deletables = [];
 var InvalidUsers = [];
 
 // Trim and lowercase string
@@ -166,7 +167,9 @@ function validateUserRow(user, index) {
     };
 
     user.type = cleanString(user.type);
-    if (!isValidType(user.type)) {
+    if (user.type == "delete") {
+        return user;
+    } else if (!isValidType(user.type)) {
         user.type = "student";
     }
 
@@ -238,6 +241,108 @@ function stringifyUser(user) {
 
 // Initiate Master Admin
 var masterAdmin = stringifyUser(new User('Master_Admin_' + (+new Date()).toString(), 'admin', 'en', getRandomColorString(), 'password'));
+
+// Delete a User
+function deleteUser(Users, i) {
+    return new Promise(function(resolve, reject) {
+        request({
+            headers: {
+                "content-type": "application/json",
+                "x-access-token": masterAdmin.token,
+                "x-key": masterAdmin.user._id
+            },
+            json: true,
+            method: 'delete',
+            uri: common.getAPIUrl() + 'api/v1/users/' + Users[i]._id
+        }, function(error, response, body) {
+            if (error) {
+                reject(error);
+            } else if (response.statusCode == 200 && body.user_id) {
+                Users[i].status = 2;
+                resolve(body);
+            } else {
+                body.error = "Unable to delete the User";
+                reject(body);
+            }
+        });
+    });
+}
+
+// Find a User
+function findUser(Users, i) {
+    return new Promise(function(resolve, reject) {
+        var query = {
+            sort: '+name',
+            q: Users[i].name,
+            limit: 100000
+        };
+        request({
+            headers: {
+                "content-type": "application/json",
+                "x-access-token": masterAdmin.token,
+                "x-key": masterAdmin.user._id
+            },
+            json: true,
+            method: 'GET',
+            qs: query,
+            uri: common.getAPIUrl() + 'api/v1/users'
+        }, function(error, response, body) {
+            if (error) {
+                reject(error);
+            } else if (body && body.users && body.users.length > 0) {
+                var results = body.users;
+                var lowerName = cleanString(Users[i].name);
+                var found = false;
+                for (var j=0; j<results.length; j++) {
+                    if (results[j].insensitive == lowerName) {
+                        found = true;
+                        Users[i]._id = results[j]._id;
+                        resolve(results[j]);
+                        break;
+                    }
+                }
+                if (!found) {
+                    body.error = "User not found";
+                    reject(body);
+                }
+            } else {
+                body.error = "User not found";
+                reject(body);
+            }
+        });
+    });
+}
+
+// Find and delete a user
+function findAndDeleteUser(Users, i) {
+    return new Promise(function(resolve, reject) {
+        findUser(Users, i).then(function(res) {
+            if (res && res._id) {
+                // Confirm Match
+                deleteUser(Users, i).then(function(res) {
+                    // Confirm Deletion
+                    resolve(res);
+                })
+                .catch(function(err) {
+                    Users[i].comment += (err.error + " "); // Error Deleting User
+                    err.user = Users[i];
+                    reject(err);
+                });
+            } else {
+                // user not found
+                Users[i].comment += "User does not exists. ";
+                res.error = "User does not exists.";
+                res.user = Users[i];
+                reject(res);
+            }
+        })
+        .catch(function(err) {
+            Users[i].comment += (err.error + " ");
+            err.user = Users[i];
+            reject(err);
+        });
+    });
+}
 
 // Insert User
 function insertUser(Users, i) {
@@ -438,7 +543,7 @@ function deleteMasterAdmin() {
 
 // Finish classroom assignment and generate CSV and delete Master Admin
 function returnResponse() {
-    var allUsers = [...new Set([...AdminsStudents, ...Teachers, ...InvalidUsers])];
+    var allUsers = [...new Set([...Deletables, ...AdminsStudents, ...Teachers, ...InvalidUsers])];
     var color, stroke, fill;
     for (var i=0; i<allUsers.length; i++) {
         stroke = ""; fill = ""; color = "";
@@ -553,6 +658,46 @@ function initTeacherAssignment() {
     }
 }
 
+// Initiate AdminsStudents insertion
+function initAdminsStudentsInsertion() {
+    if (AdminsStudents.length > 0) {
+        var usersProcessed = 0;
+        // Insert all Admins & Students
+        for (var i=0; i < AdminsStudents.length; i++) {
+            insertUser(AdminsStudents, i).then(function() {
+                usersProcessed++;
+                if (usersProcessed == AdminsStudents.length) initClassroomAssignment();
+            }).catch(function(err) {
+                if (err) console.log("Error inserting " + err.user.name + ": " + err.error);
+                usersProcessed++;
+                if (usersProcessed == AdminsStudents.length) initClassroomAssignment();
+            });
+        }
+    } else {
+        initClassroomAssignment();
+    }
+}
+
+// Initiate User Deletion
+function initUserDeletion() {
+    if (Deletables.length > 0) {
+        var usersProcessed = 0;
+        // Delete Deletables
+        for (var i=0; i < Deletables.length; i++) {
+            findAndDeleteUser(Deletables, i).then(function() {
+                usersProcessed++;
+                if (usersProcessed == Deletables.length) initAdminsStudentsInsertion();
+            }).catch(function(err) {
+                if (err) console.log("Error deleting " + err.user.name + ": " + err.error);
+                usersProcessed++;
+                if (usersProcessed == Deletables.length) initAdminsStudentsInsertion();
+            });
+        }
+    } else {
+        initAdminsStudentsInsertion();
+    }
+}
+
 // Initiate seeding to DB
 function initSeed() {
     // Create Master Admin
@@ -584,21 +729,8 @@ function initSeed() {
                     // Logged into Master Admin
                     masterAdmin = body;
 
-                    var usersProcessed = 0;
-                    // Insert all users
-                    for (var i=0; i < AdminsStudents.length; i++) {
-                        insertUser(AdminsStudents, i).then(function() {
-                            usersProcessed++;
-                            if (usersProcessed == AdminsStudents.length) initClassroomAssignment();
-                        }).catch(function(err) {
-                            if (err) console.log("Error inserting " + err.user.name + ": " + err.error);
-                            usersProcessed++;
-                            if (usersProcessed == AdminsStudents.length) initClassroomAssignment();
-                        });
-                    }
-                    if (AdminsStudents.length == 0) {
-                        initClassroomAssignment();
-                    }
+                    // Delete the users
+                    initUserDeletion();
                 } else {
                     console.log('Error logging into Master Admin');
                     process.exit(-1);
@@ -627,7 +759,9 @@ fs.createReadStream(filename)
         dataIndex++;
         var validRow = validateUserRow(row, dataIndex);
         if (validRow) {
-            if (validRow.type == "teacher") {
+            if (validRow.type == "delete") {
+                Deletables.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
+            } else if (validRow.type == "teacher") {
                 Teachers.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
             } else {
                 AdminsStudents.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
@@ -638,7 +772,7 @@ fs.createReadStream(filename)
     })
     .on('end', function() {
         // Finished processing CSV file
-        var AllUsers = [...new Set([...AdminsStudents, ...Teachers])];
+        var AllUsers = [...new Set([...Deletables, ...AdminsStudents, ...Teachers])];
         if (AllUsers.length == 0) {
             console.log('Error: No users to insert');
             process.exit(-1);
