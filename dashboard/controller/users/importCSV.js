@@ -16,12 +16,12 @@ class User {
 		this._id = "";
 		this.name = name;
 		this.type = type;
-		this.language = language;
-		this.color = color;
+		this.language = language ? language : "";
+		this.color = color ? color : "";
 		this.stroke = "";
 		this.fill = "";
-		this.password = password;
-		this.classroom = classroom;
+		this.password = password ? password : "";
+		this.classroom = classroom ? classroom : [];
 	}
 }
 
@@ -103,7 +103,9 @@ function validateUserRow(user) {
 	}
 
 	user.type = cleanString(user.type);
-	if (!isValidType(user.type)) {
+	if (user.type == "delete") {
+		return user;
+	} else if (!isValidType(user.type)) {
 		user.type = "student";
 	}
 
@@ -150,6 +152,8 @@ module.exports = function profile(req, res) {
 
 	// Define authorization level
 	var authLevel = 0;
+	var user_id = req.session.user.user._id;
+	console.log("user_id", user_id);
 	if (req.session && req.session.user && req.session.user.user) {
 		if (req.session.user.user.role == "admin") {
 			authLevel = 2;
@@ -161,6 +165,7 @@ module.exports = function profile(req, res) {
 	// Initialize the array that will contains all the users read from CSV
 	var AdminsStudents = [];
 	var Teachers = [];
+	var Deletables = [];
 	var InvalidUsers = [];
 
 	// Function to stringift user class object
@@ -188,6 +193,101 @@ module.exports = function profile(req, res) {
             '"language":"' + user.language + '", ' +
             '"options":{"sync":true, "stats":true}}';
 		}
+	}
+
+	// Delete a User
+	function deleteUser(Users, i) {
+		return new Promise(function(resolve, reject) {
+			request({
+				headers: common.getHeaders(req),
+				json: true,
+				method: 'delete',
+				uri: common.getAPIUrl() + 'api/v1/users/' + Users[i]._id
+			}, function(error, response, body) {
+				if (error) {
+					reject(error);
+				} else if (response.statusCode == 200 && body.user_id) {
+					Users[i].status = 2;
+					resolve(body);
+				} else {
+					body.error = "Unable to delete the User";
+					reject(body);
+				}
+			});
+		});
+	}
+
+	// Find a User
+	function findUser(Users, i) {
+		return new Promise(function(resolve, reject) {
+			var query = {
+				sort: '+name',
+				q: Users[i].name,
+				role: 'all',
+				limit: 100000
+			};
+			request({
+				headers: common.getHeaders(req),
+				json: true,
+				method: 'GET',
+				qs: query,
+				uri: common.getAPIUrl() + 'api/v1/users'
+			}, function(error, response, body) {
+				if (error) {
+					reject(error);
+				} else if (body && body.users && body.users.length > 0) {
+					var results = body.users;
+					var lowerName = cleanString(Users[i].name);
+					var found = false;
+					for (var j=0; j<results.length; j++) {
+						if (results[j].insensitive == lowerName) {
+							found = true;
+							Users[i]._id = results[j]._id;
+							resolve(results[j]);
+							break;
+						}
+					}
+					if (!found) {
+						body.error = "User not found";
+						reject(body);
+					}
+				} else {
+					body.error = "User not found";
+					reject(body);
+				}
+			});
+		});
+	}
+
+	// Find and delete a user
+	function findAndDeleteUser(Users, i) {
+		return new Promise(function(resolve, reject) {
+			findUser(Users, i).then(function(res) {
+				console.log("Users[i]", Users[i]);
+				if (res && res._id) {
+					// Confirm Match
+					if (res._id == user_id) {
+						Users[i].comment += "Can not delete self. ";
+						reject(res);
+						return;
+					} 
+					deleteUser(Users, i).then(function(res) {
+						// Confirm Deletion
+						resolve(res);
+					}).catch(function(err) {
+						Users[i].comment += (err.error + " ");
+						reject(err);
+					});
+				} else {
+					// user not found
+					Users[i].comment += "User does not exists. ";
+					reject(res);
+				}
+			}).catch(function(err) {
+				Users[i].comment += (err.error + " ");
+				reject(err);
+			});
+		});
 	}
 
 	// Insert User
@@ -442,6 +542,9 @@ module.exports = function profile(req, res) {
 					if (classroomProcessed == classes.length) revalidateUsers();
 				});
 		}
+		if (classes.length == 0) {
+			revalidateUsers();
+		}
 	}
 
 	// Seed users in DB
@@ -475,10 +578,30 @@ module.exports = function profile(req, res) {
 		}
 	}
 
+	// Initiate User Deletion
+	function initUserDeletion() {
+		if (Deletables.length > 0) {
+			var usersProcessed = 0;
+			// Delete Deletables
+			for (var i=0; i < Deletables.length; i++) {
+				findAndDeleteUser(Deletables, i).then(function() {
+					usersProcessed++;
+					if (usersProcessed == Deletables.length) initSeed();
+				}).catch(function() {
+					usersProcessed++;
+					if (usersProcessed == Deletables.length) initSeed();
+				});
+			}
+		} else {
+			initSeed();
+		}
+	}
+
 	// Return JSON Response
 	function returnResponse() {
-		var allUsers = [...new Set([...AdminsStudents, ...Teachers, ...InvalidUsers])];
+		var allUsers = [...new Set([...Deletables, ...AdminsStudents, ...Teachers, ...InvalidUsers])];
 		var importCount = 0;
+		var deleteCount = 0;
 		var color, stroke, fill;
 		var classrooms;
 		for (var i=0; i<allUsers.length; i++) {
@@ -487,6 +610,8 @@ module.exports = function profile(req, res) {
 			if (allUsers[i]) {
 				if (allUsers[i].status == 1) {
 					importCount++;
+				} else if (allUsers[i].status == 2) {
+					deleteCount++;
 				}
 
 				// Check if valid JSON for color
@@ -518,7 +643,13 @@ module.exports = function profile(req, res) {
 				allUsers[i].classroom = classrooms;
 			}
 		}
-		res.json({success: true, msg: common.l10n.get('ImportSuccess', {count: importCount}), data: allUsers});
+		if (importCount > 0 && deleteCount > 0) {
+			res.json({success: true, msg: common.l10n.get('ImportAndDeleteSuccess', {insert: importCount, delete: deleteCount}), data: allUsers});
+		} else if (deleteCount > 0) {
+			res.json({success: true, msg: common.l10n.get('DeleteSuccess', {count: deleteCount}), data: allUsers});
+		} else {
+			res.json({success: true, msg: common.l10n.get('ImportSuccess', {count: importCount}), data: allUsers});
+		}
 		return;
 	}
 
@@ -551,7 +682,9 @@ module.exports = function profile(req, res) {
 			.on('data', function(row) {
 				var validRow = validateUserRow(row);
 				if (validRow) {
-					if (validRow.type == "teacher") {
+					if (validRow.type == "delete") {
+						Deletables.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
+					} else if (validRow.type == "teacher") {
 						if (authLevel > 1) {
 							Teachers.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
 						} else {
@@ -576,13 +709,13 @@ module.exports = function profile(req, res) {
 			// Finished processing CSV file
 				fs.unlinkSync(req.file.path); // remove temp file
 
-				var AllUsers = [...new Set([...AdminsStudents, ...Teachers])];
+				var AllUsers = [...new Set([...Deletables, ...AdminsStudents, ...Teachers])];
 
 				if (AllUsers.length == 0) {
 					res.json({success: false, msg: common.l10n.get('NoUsers')});
 					return;
 				}
-				initSeed();
+				initUserDeletion();
 			});
 	} else {
 		res.json({success: false, msg: common.l10n.get('ErrorCode19')});
