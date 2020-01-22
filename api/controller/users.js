@@ -350,6 +350,12 @@ function addQuery(filter, params, query, default_val) {
 					return new mongo.ObjectID(id);
 				})
 			};
+		} else if (filter == 'role') {
+			if (params[filter] != 'all') {
+				query[filter] = {
+					$regex: new RegExp("^" + params[filter] + "$", "i")
+				};
+			} 
 		} else {
 			query[filter] = {
 				$regex: new RegExp("^" + params[filter] + "$", "i")
