@@ -274,6 +274,7 @@ function findUser(Users, i) {
         var query = {
             sort: '+name',
             q: Users[i].name,
+            role: 'all',
             limit: 100000
         };
         request({
