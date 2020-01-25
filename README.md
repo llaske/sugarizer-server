@@ -207,9 +207,9 @@ To generate docs, run the following command in `terminal`.
 	apidoc -i api/controller  -i dashboard/helper -o docs/www/
 
 
-## Import users from a CSV file
+## Import/Delete users using a CSV file
 
-Sugarizer Server comes with a script to import a set of students, administrators and classrooms from a CSV file.
+Sugarizer Server comes with a script to import/delete a set of students, teachers, administrators and classrooms from a CSV file.
 
 To launch it, run the command line:
 
@@ -217,7 +217,7 @@ To launch it, run the command line:
     export NODE_ENV=settings
     node scripts/seed_users.js filename.csv
 
-Where `settings` is the name of the .ini file to use for settings (default is `sugarizer`). `filename.csv` is the CSV who contains items to create. Here's an example of CSV file:
+Where `settings` is the name of the .ini file to use for settings (default is `sugarizer`). `filename.csv` is the CSV who contains items to create/delete. Here's an example of CSV file:
 
     name,type,language,stroke,fill,password,classroom
     Lionel,admin,fr,#BCCDFF,#FF8F00,aaaa,
@@ -228,7 +228,7 @@ Note that the header line is needed.
 The signification of each field is:
 
 * `name` is the name of the account to create.
-* `type` is the type of account. Should be `student` or `admin`.
+* `type` is the type of account. Should be `student`, `teacher`, `admin` or `delete`. If the type of set to `delete`, the user with that `name` will be deleted.
 * `language` is the language for the account. If missing, the default is `en`.
 * `stroke` is the stroke color for the account. If missing, it's generated randomly.
 * `fill` is the fill color for the account. If missing, it's generated randomly.
@@ -237,7 +237,7 @@ The signification of each field is:
 
 At the end of the script, a new CSV file named `output.csv` is generated. The output file has the same format than the input field with three more fields:
 
-* `status` is 1 if item created, 0 if an error happened.
+* `status` is 1 if item created, 2 if item deleted, 0 if an error happened.
 * `comment` is the detail of action done.
 * `_id` is the ObjectId of the created account.
 
