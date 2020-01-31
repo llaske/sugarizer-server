@@ -120,6 +120,20 @@ describe('Journal', function() {
 		});
 	});
 
+	describe('/GET/shared journal', () => {
+		it('it should get the shared journal id', (done) => {
+
+			chai.request(server)
+				.get('/api/v1/journal/shared')
+				.set('x-access-token', fakeUser.admin.token)
+				.set('x-key', fakeUser.admin.user._id)
+				.end((err, res) => {
+					res.should.have.status(200);
+					done();
+				});
+		});
+	});
+
 	describe('/POST/:id journal', function() {
 		it('it should do nothing on invalid journal', (done) => {
 

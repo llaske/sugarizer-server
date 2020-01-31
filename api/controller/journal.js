@@ -246,6 +246,18 @@ exports.addJournal = function(req, res) {
 	});
 };
 
+// Get shared journal id
+exports.getSharedJournalId = function(req, res) {
+	if (shared && shared._id) {
+		res.send(shared._id);
+	} else {
+		res.status(500).send({
+			'error': 'An error has occurred',
+			'code': 10
+		});
+	}
+};
+
 /**
  * @api {get} api/v1/journal/:jid Get journal entries
  * @apiName GetJournalContent

@@ -68,3 +68,21 @@ exports.getUser = function(req, res, callback) {
 		}
 	});
 };
+
+exports.getSharedJournalId = function(req, res, callback) {
+	request({
+		headers: common.getHeaders(req),
+		json: true,
+		method: 'GET',
+		uri: common.getAPIUrl(req) + 'api/v1/journal/shared'
+	}, function(error, response, body) {
+		if (response.statusCode == 200) {
+			callback(body);
+		} else {
+			req.flash('errors', {
+				msg: common.l10n.get('ErrorCode'+body.code)
+			});
+			return res.redirect('/dashboard/journal');
+		}
+	});
+};
