@@ -259,7 +259,7 @@
                                               <td data-l10n-id="<%= data.users[i].role %>">Student</td>
                                               <td><%= moment(data.users[i].timestamp).calendar() %></td>
                                               <td>
-                                                <% if(data.users[i].role == 'student') {%>
+                                                <% if(data.users[i].role == 'student' || data.users[i].role == 'teacher') {%>
                                                 <a data-l10n-id="seeJournalEntries" title="See Journal Entries" href="/dashboard/journal/<%= data.users[i].private_journal %>?uid=<%= data.users[i]._id %>&type=private"><span class="journal-icon2" id="seeJournalEntries"></span></a>
                                                 <% } %>
                                                 <a data-l10n-id="editUser" title="Edit User" href="/dashboard/users/edit/<%= data.users[i]._id %>"><i class="material-icons text-muted" id="editUser">edit</i></a>
