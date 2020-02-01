@@ -82,11 +82,24 @@ exports.login = function(req, res) {
 				}
 			});
 		});
-	} else {
+	} else if (user.role) {
 		var role = user.role || 'student';
 		query.role = {
 			$regex: new RegExp("^" + role + "$", "i")
 		};
+	} else {
+		query['$or'] = [
+			{
+				role: {
+					$regex: new RegExp("^student$", "i")
+				}
+			},
+			{
+				role: {
+					$regex: new RegExp("^teacher$", "i")
+				}
+			}
+		];
 	}
 
 	//find user by name & password

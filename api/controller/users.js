@@ -469,12 +469,8 @@ exports.addUser = function(req, res) {
 	}, {}, function(item) {
 		if (item.length == 0) {
 			//create user based on role
-			if (user.role == 'admin' || user.role == 'teacher') {
-				if (user.role != 'teacher') {
-					delete user.classrooms;
-				} else if (!user.classrooms) {
-					user.classrooms = [];
-				}
+			if (user.role == 'admin') {
+				delete user.classrooms;
 				db.collection(usersCollection, function(err, collection) {
 					collection.insertOne(user, {
 						safe: true
@@ -491,6 +487,11 @@ exports.addUser = function(req, res) {
 				});
 			} else {
 				//for student
+				if (user.role != 'teacher') {
+					delete user.classrooms;
+				} else if (!user.classrooms) {
+					user.classrooms = [];
+				}
 				db.collection(usersCollection, function(err, collection) {
 					// Create a new journal
 					journal.createJournal(function(err, result) {
