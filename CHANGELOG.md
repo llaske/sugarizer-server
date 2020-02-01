@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - Provide a way to remove multiple users at the same time #217
+- Allow teachers to connect to Sugarizer client #222
 
 ### Changed
 - Change edit classroom screen to handle large number of students
