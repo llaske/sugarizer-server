@@ -200,6 +200,7 @@ exports.findAll = function(req, res) {
 				})
 			};
 		}
+		query['_id']['$in'].push(new mongo.ObjectID(req.user._id));
 	} else {
 		query = addQuery('classid', req.query, query);
 	}
@@ -351,7 +352,20 @@ function addQuery(filter, params, query, default_val) {
 				})
 			};
 		} else if (filter == 'role') {
-			if (params[filter] != 'all') {
+			if (params[filter] == 'stuteach') {
+				query['$or'] = [
+					{
+						role: {
+							$regex: new RegExp("^student$", "i")
+						}
+					},
+					{
+						role: {
+							$regex: new RegExp("^teacher$", "i")
+						}
+					}
+				];
+			} else if (params[filter] != 'all') {
 				query[filter] = {
 					$regex: new RegExp("^" + params[filter] + "$", "i")
 				};

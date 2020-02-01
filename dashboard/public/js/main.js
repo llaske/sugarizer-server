@@ -475,7 +475,8 @@ $(document).ready(function() {
 							delay: 250,
 							data: function (params) {
 								return {
-									q: params.term
+									q: params.term,
+									role: 'stuteach'
 								};
 							},
 							processResults: function (data) {
