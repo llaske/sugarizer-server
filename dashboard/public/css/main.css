@@ -511,6 +511,16 @@
   margin-right: 15px;
 }
 
+.journal-check {
+  padding-left: 30px;
+  padding-top: 0px;
+}
+
+.journal-check input {
+  margin-top: 10px;
+  margin-right: 5px;
+}
+
 .icon-button {
 	border-radius: 22px;
 	margin-top: 5px;
@@ -735,6 +745,9 @@
     padding-left: 0px;
   }
   .display-check {
+    padding-left: 0px;
+  }
+  .journal-check {
     padding-left: 0px;
   }
 }

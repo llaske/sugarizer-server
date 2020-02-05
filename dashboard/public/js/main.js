@@ -502,13 +502,13 @@ $(document).ready(function() {
 						if (e.params && e.params.data && (e.params.data.private_journal || e.params.data.shared_journal)) {
 							document.pj_global = e.params.data.private_journal;
 							document.sj_global = e.params.data.shared_journal;
-							$('#journal-type-select2').trigger("change");
+							$('#getJournalEntries').attr('action', '/dashboard/journal/' + document.pj_global);
 						}
 					}).on("change", function(e) {
 						if ($("#users-select2 option:selected").data('private_journal') || $("#users-select2 option:selected").data('shared_journal')) {
 							document.pj_global = $("#users-select2 option:selected").data('private_journal');
 							document.sj_global = $("#users-select2 option:selected").data('shared_journal');
-							$('#journal-type-select2').trigger("change");
+							$('#getJournalEntries').attr('action', '/dashboard/journal/' + document.pj_global);
 						}
 					});
 					$("#users-select2").trigger("change");
@@ -522,16 +522,6 @@ $(document).ready(function() {
 			templateResult: formatColorField,
 			templateSelection: formatColorField,
 			matcher: matchColorField
-		});
-	}
-
-	if ($("#journal-type-select2").length > 0) {
-		$("#journal-type-select2").select2().on("change", function(e) {
-			if ($("#journal-type-select2 option:selected").val() == 'shared') {
-				$('#getJournalEntries').attr('action', '/dashboard/journal/' + document.sj_global);
-			} else {
-				$('#getJournalEntries').attr('action', '/dashboard/journal/' + document.pj_global);
-			}
 		});
 	}
 });
