@@ -69,7 +69,9 @@
                 "headers": "writable",
                 "icon": "readonly",
                 "Chart": "readonly",
-                "QRCode": "readonly"
+                "QRCode": "readonly",
+                "saveAs": "readonly",
+                "Uint8Array": "readonly"
             }
         },
         {
