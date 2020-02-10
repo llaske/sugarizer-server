@@ -78,7 +78,7 @@ module.exports = function launch(req, res) {
 				lsObj['sugar_settings'].view = 0;
 				lsObj['sugar_settings'].activities = [];
 
-				if (req.query.mode == 'download') {
+				if (req.query.mode == 'download' || body.entries[0].metadata.mimetype == "application/pdf") {
 					return res.json({
 						lsObj: lsObj,
 						version: ver,

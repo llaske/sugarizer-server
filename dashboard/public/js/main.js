@@ -122,6 +122,23 @@ html5indexedDB.removeValue = function(key, then) {
 	};
 };
 
+function base64toBlob(mimetype, base64) {
+	var contentType = mimetype;
+	var byteCharacters = atob(base64.substr(base64.indexOf(';base64,')+8));
+	var byteArrays = [];
+	for (var offset = 0; offset < byteCharacters.length; offset += 1024) {
+		var slice = byteCharacters.slice(offset, offset + 1024);
+		var byteNumbers = new Array(slice.length);
+		for (var i = 0; i < slice.length; i++) {
+			byteNumbers[i] = slice.charCodeAt(i);
+		}
+		var byteArray = new Uint8Array(byteNumbers);
+		byteArrays.push(byteArray);
+	}
+	var blob = new Blob(byteArrays, {type: contentType});
+	return blob;
+}
+
 function launch_activity(callurl) {
 	function loadDataDeprec(response, lsBackup) {
 		for (var index in response.lsObj) {
@@ -172,6 +189,25 @@ function launch_activity(callurl) {
 				type: 'danger'
 			});
 		}
+
+		var metadata = {};
+		if (response && response.lsObj) {
+			try {
+				metadata = JSON.parse(response.lsObj["sugar_datastore_" + response.objectId]);
+			} catch (e) {
+				metadata = response.lsObj["sugar_datastore_" + response.objectId];
+			}
+		}
+		if (metadata && metadata.metadata && metadata.metadata.mimetype == "application/pdf") {
+			// Convert blob object URL
+			var blob = base64toBlob(metadata.metadata.mimetype, response.lsObj["sugar_datastoretext_" + response.objectId]);
+			var blobUrl = URL.createObjectURL(blob);
+
+			// Open in a new browser tab
+			window.open(blobUrl, '_blank');
+			return;
+		}
+
 		// backup current storage and create a virtual context in local storage
 		var keyHistory = [];
 		var datastorePrefix = 'sugar_datastore';
