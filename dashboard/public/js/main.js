@@ -888,7 +888,6 @@ function writeFile(metadata, content, callback) {
 			extension = "mp4";
 		} else if (mimetype == "text/plain") {
 			extension = "txt";
-			text = JSON.parse(content);
 		} else if (mimetype == "application/pdf") {
 			extension = "pdf";
 		} else if (mimetype == "application/msword") {
