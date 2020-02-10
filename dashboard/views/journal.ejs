@@ -143,8 +143,8 @@
 																		<% if(format=="-") {%> <div style="display: inline"><%= format %></div> <%}%>
 																	</td>
 																	<td>
-																		<a id="journal-activity-download" href="javascript:download_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" data-l10n-id="download" title="Download"><i class="material-icons text-muted">cloud_download</i></a>
 																		<a id="journal-activity-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
+																		<a id="journal-activity-download" href="javascript:download_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" data-l10n-id="download" title="Download"><i class="material-icons text-muted">cloud_download</i></a>
 																		<a id="journal-activity-delete" data-l10n-id="deleteEntry" title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>&title=<%= entries.entries[i].metadata.title %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteEntry', {activity:`<%= entries.entries[i].metadata.title %>`}))"><i class="material-icons text-muted">delete_forever</i></a>
 																	</td>
 															</tr>
