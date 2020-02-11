@@ -78,7 +78,13 @@ module.exports = function launch(req, res) {
 				lsObj['sugar_settings'].view = 0;
 				lsObj['sugar_settings'].activities = [];
 
-				if (!body.entries[0].metadata.activity) {
+				if (req.query.mode == 'download' || body.entries[0].metadata.mimetype == "application/pdf") {
+					return res.json({
+						lsObj: lsObj,
+						version: ver,
+						objectId: body.entries[0].objectId
+					});
+				} else if (!body.entries[0].metadata.activity) {
 					return res.json({
 						error: common.l10n.get('NoLinkedActivityFound')
 					});

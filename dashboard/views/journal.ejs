@@ -105,7 +105,17 @@
 																		</div>
 																	</td>
 																	<script>
-																		new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
+																		<% if (entries.entries[i].metadata.mimetype == "text/plain") { %>
+																			new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-txt.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
+																		<% } else if (entries.entries[i].metadata.mimetype == "application/pdf") { %>
+																			new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-pdf.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
+																		<% } else if (entries.entries[i].metadata.mimetype == "application/msword") { %>
+																			new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-doc.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
+																		<% } else if (entries.entries[i].metadata.mimetype == "application/vnd.oasis.opendocument.text") { %>
+																			new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-odt.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
+																		<% } else {%>
+																			new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
+																		<% } %>
 																	</script>
 																	<td><%= entries.entries[i].metadata.title %></td>
 																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>
@@ -133,7 +143,8 @@
 																		<% if(format=="-") {%> <div style="display: inline"><%= format %></div> <%}%>
 																	</td>
 																	<td>
-																		<a id="journal-activity-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
+																		<a id="journal-activity-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>&mode=launch')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
+																		<a id="journal-activity-download" href="javascript:download_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>&mode=download')" data-l10n-id="download" title="Download"><i class="material-icons text-muted">cloud_download</i></a>
 																		<a id="journal-activity-delete" data-l10n-id="deleteEntry" title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>&title=<%= entries.entries[i].metadata.title %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteEntry', {activity:`<%= entries.entries[i].metadata.title %>`}))"><i class="material-icons text-muted">delete_forever</i></a>
 																	</td>
 															</tr>

@@ -122,6 +122,23 @@ html5indexedDB.removeValue = function(key, then) {
 	};
 };
 
+function base64toBlob(mimetype, base64) {
+	var contentType = mimetype;
+	var byteCharacters = atob(base64.substr(base64.indexOf(';base64,')+8));
+	var byteArrays = [];
+	for (var offset = 0; offset < byteCharacters.length; offset += 1024) {
+		var slice = byteCharacters.slice(offset, offset + 1024);
+		var byteNumbers = new Array(slice.length);
+		for (var i = 0; i < slice.length; i++) {
+			byteNumbers[i] = slice.charCodeAt(i);
+		}
+		var byteArray = new Uint8Array(byteNumbers);
+		byteArrays.push(byteArray);
+	}
+	var blob = new Blob(byteArrays, {type: contentType});
+	return blob;
+}
+
 function launch_activity(callurl) {
 	function loadDataDeprec(response, lsBackup) {
 		for (var index in response.lsObj) {
@@ -172,6 +189,25 @@ function launch_activity(callurl) {
 				type: 'danger'
 			});
 		}
+
+		var metadata = {};
+		if (response && response.lsObj) {
+			try {
+				metadata = JSON.parse(response.lsObj["sugar_datastore_" + response.objectId]);
+			} catch (e) {
+				metadata = response.lsObj["sugar_datastore_" + response.objectId];
+			}
+		}
+		if (metadata && metadata.metadata && metadata.metadata.mimetype == "application/pdf") {
+			// Convert blob object URL
+			var blob = base64toBlob(metadata.metadata.mimetype, response.lsObj["sugar_datastoretext_" + response.objectId]);
+			var blobUrl = URL.createObjectURL(blob);
+
+			// Open in a new browser tab
+			window.open(blobUrl, '_blank');
+			return;
+		}
+
 		// backup current storage and create a virtual context in local storage
 		var keyHistory = [];
 		var datastorePrefix = 'sugar_datastore';
@@ -829,4 +865,109 @@ function generateQRCode() {
 		$(this).find('.modal-dialog').css({width:'350px',height:'350px'});
 	});
 	$("#qrpopup").modal();
+}
+
+// Decoding functions taken from
+// https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding
+function b64ToUint6(nChr) {
+	return nChr > 64 && nChr < 91 ?
+		nChr - 65
+		: nChr > 96 && nChr < 123 ?
+			nChr - 71
+			: nChr > 47 && nChr < 58 ?
+				nChr + 4
+				: nChr === 43 ?
+					62
+					: nChr === 47 ?
+						63
+						:
+						0;
+}
+
+function base64DecToArr(sBase64, nBlocksSize) {
+	var
+		sB64Enc = sBase64.replace(/[^A-Za-z0-9+/]/g, ""), nInLen = sB64Enc.length,
+		nOutLen = nBlocksSize ? Math.ceil((nInLen * 3 + 1 >> 2) / nBlocksSize) * nBlocksSize : nInLen * 3 + 1 >> 2, taBytes = new Uint8Array(nOutLen);
+	for (var nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
+		nMod4 = nInIdx & 3;
+		nUint24 |= b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << 6 * (3 - nMod4);
+		if (nMod4 === 3 || nInLen - nInIdx === 1) {
+			for (nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
+				taBytes[nOutIdx] = nUint24 >>> (16 >>> nMod3 & 24) & 255;
+			}
+			nUint24 = 0;
+		}
+	}
+	return taBytes;
+}
+
+// Write a new file
+function writeFile(metadata, content, callback) {
+	var binary = null;
+	var text = null;
+	var extension = "json";
+	var title = metadata.title;
+	var mimetype = 'application/json';
+	if (metadata && metadata.mimetype) {
+		mimetype = metadata.mimetype;
+		if (mimetype == "image/jpeg") {
+			extension = "jpg";
+		} else if (mimetype == "image/png") {
+			extension = "png";
+		} else if (mimetype == "audio/wav") {
+			extension = "wav";
+		} else if (mimetype == "video/webm") {
+			extension = "webm";
+		} else if (mimetype == "audio/mp3"||mimetype == "audio/mpeg") {
+			extension = "mp3";
+		} else if (mimetype == "video/mp4") {
+			extension = "mp4";
+		} else if (mimetype == "text/plain") {
+			extension = "txt";
+			text = content;
+		} else if (mimetype == "application/pdf") {
+			extension = "pdf";
+		} else if (mimetype == "application/msword") {
+			extension = "doc";
+		} else if (mimetype == "application/vnd.oasis.opendocument.text") {
+			extension = "odt";
+		} else {
+			extension = "bin";
+		}
+		binary = base64DecToArr(content.substr(content.indexOf('base64,')+7)).buffer;
+	} else {
+		text = JSON.stringify({metadata: metadata, text: content});
+	}
+	var filename = title;
+	if (filename.indexOf("."+extension)==-1) {
+		filename += "."+extension;
+	}
+	var blob = new Blob((text?[text]:[binary]), {type:mimetype});
+	callback(blob, filename);
+}
+
+function download_activity(callurl) {
+	$.get((callurl), function(response) {
+		if (response.error) {
+			$.notify({
+				icon: "error",
+				message: response.error
+			},{
+				type: 'danger'
+			});
+		}
+
+		var metadata = {};
+		
+		if (response && response.lsObj) {
+			try {
+				metadata = JSON.parse(response.lsObj["sugar_datastore_" + response.objectId]);
+			} catch (e) {
+				metadata = response.lsObj["sugar_datastore_" + response.objectId];
+			}
+			writeFile(metadata.metadata, response.lsObj["sugar_datastoretext_" + response.objectId], function(blob, filename) {
+				saveAs(blob, filename);
+			});
+		}
+	});
 }
