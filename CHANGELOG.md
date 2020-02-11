@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Provide a way to remove multiple users at the same time #217
 - Allow teachers to connect to Sugarizer client #222
+- Add a download icon in Dashboard Journal view #220
+- Show the right icon in Dashboard for TXT/ODT/DOC/PDF #226
+- Allow opening PDF content in dashboard #227
 
 ### Changed
 - Change edit classroom screen to handle large number of students
