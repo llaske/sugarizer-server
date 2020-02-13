@@ -286,10 +286,21 @@ exports.getRecentActivities = function(req, res) {
 				// launch url
 				var url = '/dashboard/activities/launch/' + allEntries[i].journalId + '?oid=' + allEntries[i].objectId + '&uid=' + allEntries[i].metadata.user_id + '&aid=' + allEntries[i].metadata.activity;
 
+				var iconURL = hashList[allEntries[i].metadata.activity] || '/public/img/application-x-generic.svg';
+				if (allEntries[i].metadata.mimetype == "text/plain") {
+					iconURL = '/public/img/application-x-txt.svg';
+				} else if (allEntries[i].metadata.mimetype == "application/pdf") {
+					iconURL = '/public/img/application-x-pdf.svg';
+				} else if (allEntries[i].metadata.mimetype == "application/msword") {
+					iconURL = '/public/img/application-x-doc.svg';
+				} else if (allEntries[i].metadata.mimetype == "application/vnd.oasis.opendocument.text") {
+					iconURL = '/public/img/application-x-odt.svg';
+				}
+
 				data += '<tr onclick="javascript:launch_activity(\'' + url + '\')">\
 										<td>' + (i + 1) + '</td>\
 										<td><div class="color" id="' + allEntries[i].objectId + i.toString() + '"><div class="xo-icon"></div></div></td>\
-										<script>new icon().load("' +  (hashList[allEntries[i].metadata.activity] || '/public/img/application-x-generic.svg') + '", ' + JSON.stringify(allEntries[i].metadata.buddy_color) + ', "' + allEntries[i].objectId + i.toString() + '")</script>\
+										<script>new icon().load("' +  iconURL + '", ' + JSON.stringify(allEntries[i].metadata.buddy_color) + ', "' + allEntries[i].objectId + i.toString() + '")</script>\
 										<td title="' + allEntries[i].metadata.title + '">' + allEntries[i].metadata.title + '</td>\
 										<td title="' + allEntries[i].metadata.buddy_name + '">' + allEntries[i].metadata.buddy_name + '</td>\
 										<td class="text-muted">' + moment(allEntries[i].metadata.timestamp).calendar() + '</td>\
