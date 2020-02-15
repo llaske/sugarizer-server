@@ -655,6 +655,20 @@
   box-shadow: 0 5px 10px rgba(0,0,0,.2);
 }
 
+.upload-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.upload-btn-wrapper input[type=file] {
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
 @font-face {
 	font-family: "Noto Emoji";
 	src: url("../fonts/NotoEmoji.woff") format('woff');

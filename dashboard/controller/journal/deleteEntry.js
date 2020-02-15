@@ -15,6 +15,9 @@ module.exports = function deleteEntry(req, res) {
 		},
 		uri: common.getAPIUrl(req) + 'api/v1/journal/' + req.params.jid
 	}, function(error, response, body) {
+		if (req.query.uid == undefined) {
+			req.query.uid = "";
+		}
 		if (response.statusCode == 200) {
 			// return back
 			req.flash('success', {

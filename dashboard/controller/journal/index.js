@@ -34,6 +34,7 @@ exports.index = function(req, res) {
 			},
 			user: undefined,
 			shared: shared,
+			headers: common.getHeaders(req),
 			account: req.session.user,
 			server: ini.information
 		});

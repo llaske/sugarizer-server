@@ -43,7 +43,7 @@ module.exports = function getEntries(req, res) {
 			//get entries
 			getJournalEntries(req, res, query, function(entries) {
 				
-				if (req.query.uid) {
+				if (req.query.uid && req.query.uid != "undefined") {
 					//get user
 					getUser(req, res, function(user) {
 						//render template
@@ -55,6 +55,7 @@ module.exports = function getEntries(req, res) {
 							query: query,
 							user: user,
 							shared: shared,
+							headers: common.getHeaders(req),
 							account: req.session.user,
 							server: journal.ini().information
 						});
@@ -69,6 +70,7 @@ module.exports = function getEntries(req, res) {
 						query: query,
 						user: undefined,
 						shared: shared,
+						headers: common.getHeaders(req),
 						account: req.session.user,
 						server: journal.ini().information
 					});

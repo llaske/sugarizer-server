@@ -971,3 +971,134 @@ function download_activity(callurl) {
 		}
 	});
 }
+
+// Write file content to datastore
+function writeFileToStore(file, text, callback) {
+	if (file.type == 'application/json') {
+		// Handle JSON file
+		var data = null;
+		try {
+			data = JSON.parse(text);
+			if (!data.metadata) {
+				callback(file.name, -1);
+				return;
+			}
+		} catch(e) {
+			callback(file.name, -1);
+			return;
+		}
+		callback(file.name, 0, data.metadata, data.text);
+	} else {
+		var activity = "";
+		if (file.type != "text/plain" && file.type != "application/pdf" && file.type != "application/msword" && file.type != "application/vnd.oasis.opendocument.text") {
+			activity = "org.olpcfrance.MediaViewerActivity";
+		}
+		var metadata = {
+			title: file.name,
+			mimetype: file.type,
+			activity: activity
+		};
+		callback(file.name, 0, metadata, text);
+	}
+}
+
+// Create a uuid
+function createUUID() {
+	var s = [];
+	var hexDigits = "0123456789abcdef";
+	for (var i = 0; i < 36; i++) {
+		s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+	}
+	s[14] = "4";
+	s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);
+	s[8] = s[13] = s[18] = s[23] = "-";
+
+	var uuid = s.join("");
+	return uuid;
+}
+
+function upload_journal(files, journalId, name, user_id, color) {
+	var file = files[0];
+	var reader = new FileReader();
+	reader.onload = function() {
+		writeFileToStore(file, reader.result, function(filename, err, metadata, text) {
+			if (err) {
+				// console.log(l10n.get("ErrorLoadingFile",{file:filename}));
+				return;
+			}
+			metadata["timestamp"] = new Date().getTime();
+			metadata["creation_time"] = new Date().getTime();
+
+			if (text) {
+				metadata["textsize"] = text.length;
+			}
+			if (name) {
+				metadata["buddy_name"] = name;
+			}
+			if (color) {
+				metadata["buddy_color"] = color;
+			} else if (!metadata["buddy_color"]) {
+				metadata["buddy_color"] = {
+					"stroke": "#808080",
+					"fill": "#ffffff"
+				};
+			}
+			if (user_id) {
+				metadata["user_id"] = user_id;
+			}
+
+			var entry = JSON.stringify({
+				"objectId": createUUID(),
+				"text": text,
+				"metadata": metadata
+			});
+
+			$.post(('/api/v1/journal/' + journalId + '/?'+ decodeURIComponent($.param({
+				x_key: headers['x-key'],
+				access_token: headers['x-access-token']
+			}))), {
+				"journal": entry
+			}, function(res) {
+				var timer = 2000;
+				if (res && res.objectId) {
+					$.notify({
+						icon: "notifications",
+						message: document.webL10n.get('journalUploaded', {title: metadata.title})
+
+					},{
+						type: 'success',
+						timer: timer,
+						placement: {
+							from: 'top',
+							align: 'right'
+						}
+					});
+				} else {
+					$.notify({
+						icon: "error",
+						message: document.webL10n.get('journalUploadError')
+					},{
+						type: 'danger',
+						timer: timer,
+						placement: {
+							from: 'top',
+							align: 'right'
+						}
+					});
+				}
+				setTimeout(function () {
+					location.reload();
+				}, timer);
+			});
+		});
+		
+	};
+
+	if (file) {
+		if (file.type == 'application/json' || file.type == 'text/plain') {
+			reader.readAsText(file);
+		} else {
+			reader.readAsDataURL(file);
+		}
+	}
+}

@@ -68,12 +68,15 @@ module.exports = function launch(req, res) {
 			getUser(req, body.entries[0].metadata.user_id, function(user) {
 
 				//set fields
-				lsObj['sugar_settings'].name = user.name;
+				lsObj['sugar_settings'].name = user ? user.name : req.session.user.user.name;
 				lsObj['sugar_settings'].color = 128;
-				lsObj['sugar_settings'].colorvalue = user.color;
+				lsObj['sugar_settings'].colorvalue = user ? user.color : req.session.user.user.color ? req.session.user.user.color : {
+					"stroke": "#808080",
+					"fill": "#ffffff"
+				};
 				lsObj['sugar_settings'].connected = false;
-				lsObj['sugar_settings'].language = user.language;
-				lsObj['sugar_settings'].networkId = user._id;
+				lsObj['sugar_settings'].language = user ? user.language : req.query.lang ? req.query.lang : "en";
+				lsObj['sugar_settings'].networkId = body.entries[0].metadata.user_id;
 				lsObj['sugar_settings'].server = null;
 				lsObj['sugar_settings'].view = 0;
 				lsObj['sugar_settings'].activities = [];
