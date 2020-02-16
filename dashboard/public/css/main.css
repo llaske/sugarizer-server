@@ -661,12 +661,20 @@
   display: inline-block;
 }
 
+.upload-btn-wrapper a {
+  padding: 8px;
+}
+
+.upload-btn-wrapper a > i {
+  color: white;
+  font-size: 25px !important;
+}
 .upload-btn-wrapper input[type=file] {
-  font-size: 100px;
   position: absolute;
   left: 0;
   top: 0;
   opacity: 0;
+  display: none;
 }
 
 @font-face {
