@@ -70,7 +70,7 @@ module.exports = function launch(req, res) {
 				//set fields
 				lsObj['sugar_settings'].name = user ? user.name : req.session.user.user.name;
 				lsObj['sugar_settings'].color = 128;
-				lsObj['sugar_settings'].colorvalue = user ? user.color : req.session.user.user.color ? req.session.user.user.color : {
+				lsObj['sugar_settings'].colorvalue = (user && user.color) ? user.color : req.session.user.user.color ? req.session.user.user.color : {
 					"stroke": "#808080",
 					"fill": "#ffffff"
 				};
