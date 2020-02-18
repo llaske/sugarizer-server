@@ -28,6 +28,8 @@ exports.getUser = function(req, uid, callback) {
 		if (response.statusCode == 200) {
 			// callback
 			callback(body);
+		} else {
+			callback();
 		}
 	});
 };
