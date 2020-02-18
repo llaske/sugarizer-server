@@ -1039,8 +1039,8 @@ function upload_journal(files, journalId, name, user_id, color) {
 				metadata["buddy_color"] = color;
 			} else if (!metadata["buddy_color"]) {
 				metadata["buddy_color"] = {
-					"stroke": "#808080",
-					"fill": "#ffffff"
+					"stroke": "#005FE4",
+					"fill": "#FF2B34"
 				};
 			}
 			if (user_id) {

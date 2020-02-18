@@ -71,8 +71,8 @@ module.exports = function launch(req, res) {
 				lsObj['sugar_settings'].name = user ? user.name : req.session.user.user.name;
 				lsObj['sugar_settings'].color = 128;
 				lsObj['sugar_settings'].colorvalue = (user && user.color) ? user.color : req.session.user.user.color ? req.session.user.user.color : {
-					"stroke": "#808080",
-					"fill": "#ffffff"
+					"stroke": "#005FE4",
+					"fill": "#FF2B34"
 				};
 				lsObj['sugar_settings'].connected = false;
 				lsObj['sugar_settings'].language = user ? user.language : req.query.lang ? req.query.lang : "en";
