@@ -376,7 +376,6 @@ function updateChartOrder() {
 	$.each($('[name="hiddenCharts"]'), function(index, value) {
 		list.push($(this).parent().data('id'));
 	});
-	console.log(list);
 	var data = {
 		chart: JSON.stringify({
 			list: list
@@ -1023,7 +1022,6 @@ function upload_journal(files, journalId, name, user_id, color) {
 	reader.onload = function() {
 		writeFileToStore(file, reader.result, function(filename, err, metadata, text) {
 			if (err) {
-				// console.log(l10n.get("ErrorLoadingFile",{file:filename}));
 				return;
 			}
 			metadata["timestamp"] = new Date().getTime();
