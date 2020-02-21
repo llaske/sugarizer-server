@@ -153,7 +153,6 @@ module.exports = function profile(req, res) {
 	// Define authorization level
 	var authLevel = 0;
 	var user_id = req.session.user.user._id;
-	console.log("user_id", user_id);
 	if (req.session && req.session.user && req.session.user.user) {
 		if (req.session.user.user.role == "admin") {
 			authLevel = 2;
@@ -263,7 +262,6 @@ module.exports = function profile(req, res) {
 	function findAndDeleteUser(Users, i) {
 		return new Promise(function(resolve, reject) {
 			findUser(Users, i).then(function(res) {
-				console.log("Users[i]", Users[i]);
 				if (res && res._id) {
 					// Confirm Match
 					if (res._id == user_id) {
@@ -434,14 +432,11 @@ module.exports = function profile(req, res) {
 						classroomProcessed++;
 						if (res) {
 							Classrooms[res.q].data = res;
-						} else {
-							console.log("Error creating classroom");
 						}
 						if (classroomProcessed == classes.length) initTeacherAssignment();
 					})
-						.catch(function(err) {
+						.catch(function() {
 							classroomProcessed++;
-							console.log(err);
 							if (classroomProcessed == classes.length) initTeacherAssignment();
 						});
 				} else {
@@ -450,21 +445,17 @@ module.exports = function profile(req, res) {
 						classroomProcessed++;
 						if (res) {
 							Classrooms[res.q].data = res;
-						} else {
-							console.log("Error creating classroom");
 						}
 						if (classroomProcessed == classes.length) initTeacherAssignment();
 					})
-						.catch(function(err) {
+						.catch(function() {
 							classroomProcessed++;
-							console.log(err);
 							if (classroomProcessed == classes.length) initTeacherAssignment();
 						});
 				}
 			})
-				.catch(function(err) {
+				.catch(function() {
 					classroomProcessed++;
-					console.log(err);
 					if (classroomProcessed == classes.length) initTeacherAssignment();
 				});
 		}
@@ -536,9 +527,8 @@ module.exports = function profile(req, res) {
 				classroomProcessed++;
 				if (classroomProcessed == classes.length) revalidateUsers();
 			})
-				.catch(function(err) {
+				.catch(function() {
 					classroomProcessed++;
-					console.log(err);
 					if (classroomProcessed == classes.length) revalidateUsers();
 				});
 		}
