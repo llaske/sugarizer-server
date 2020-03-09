@@ -295,46 +295,15 @@ function initChartDragDrop() {
 
 	$("ol.simple_with_animation").sortable({
 		handle: '.draggable',
-		group: 'simple_with_animation',
-		pullPlaceholder: false,
-		placeholder: '<div class="placeholder"></div>',
-		// animation on drop
-		onDrop: function($item, container, _super) {
-			var $clonedItem = $('<li/>').css({
-				height: 0
-			});
-			$item.before($clonedItem);
-			$clonedItem.animate({
-				'height': $item.height()
-			});
-
-			$item.animate($clonedItem.position(), function() {
-				$clonedItem.detach();
-				_super($item, container);
-			});
-
-			// Update chart order
+		axis: 'y',
+  	containment: 'parent',
+		animation: 150,
+		scrollSensitivity: 50,
+		scrollSpeed: 15,
+		update: function(event, ui) {
+			//update chart order
 			updateChartOrder();
 		},
-
-		// set $item relative to cursor position
-		onDragStart: function($item, container, _super) {
-			var offset = $item.offset(),
-				pointer = container.rootGroup.pointer;
-
-			adjustment = {
-				left: pointer.left - offset.left,
-				top: pointer.top - offset.top
-			};
-
-			_super($item, container);
-		},
-		onDrag: function($item, position) {
-			$item.css({
-				left: position.left - adjustment.left,
-				top: position.top - adjustment.top
-			});
-		}
 	});
 }
 
