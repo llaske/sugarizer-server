@@ -93,6 +93,7 @@ function sugarizerTour(currentView, role) {
 			tour.addStep(getStep("home", "#sugarizer-sidebar", "right", 7));
 			tour.addStep(getStep("home", "#languageSelection", "bottom", 8));
 			tour.addStep(getStep("home", "#navbar-xo-icon", "left", 9));
+			tour.addStep(getStep("home", "#navbar-help", "left", 10));
 		} else if (currentView == "users") {
 			tour.addStep(getStep("users", "", "bottom", 1, true));
 			tour.addStep(getStep("users", "#user-serach-row", "bottom", 2));
@@ -127,7 +128,9 @@ function sugarizerTour(currentView, role) {
 			tour.addStep(getStep("journal", "#journal-cards-parent", "top", 3));
 			tour.addStep(getStep("journal", "#journal-entry-card", "bottom", 4));
 			tour.addStep(getStep("journal", "#journal-activity-launch", "left", 5));
-			tour.addStep(getStep("journal", "#journal-activity-delete", "left", 6));
+			tour.addStep(getStep("journal", "#journal-activity-download", "left", 6));
+			tour.addStep(getStep("journal", "#journal-activity-delete", "left", 7));
+			tour.addStep(getStep("journal", "#journal-uploadJournal", "left", 8));
 		} else if (currentView == "classroom") {
 			tour.addStep(getStep("classroom", "", "bottom", 1, true));
 			tour.addStep(getStep("classroom", "#classroom-serach-row", "bottom", 2));
