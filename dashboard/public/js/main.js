@@ -639,8 +639,7 @@ function onLocalized() {
 			if(searchQuery.length == 0) {
 				//query empty
 				searchQuery = '?lang=' + lang.value;
-			}
-			if(searchQuery.indexOf('lang=') != -1) {
+			} else if(searchQuery.indexOf('lang=') != -1) {
 				// query contains the 'lang=' parameter
 				searchQuery = searchQuery.replace(/lang=[a-z][a-z]/, 'lang=' + lang.value);
 			} else {
