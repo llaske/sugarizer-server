@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add a download icon in Dashboard Journal view #220
 - Show the right icon in Dashboard for TXT/ODT/DOC/PDF #226
 - Allow opening PDF content in dashboard #227
-- Add an upload button in Dashboard Journal view #221 
+- Add an upload button in Dashboard Journal view #221
 
 ### Changed
 - Change edit classroom screen to handle large number of students
@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Server crash when dashboard call with several thousand of entries #208
 - Classroom name could be null or could already exist
 - Shared journal content is incorrect in dashboard #219
+- Activity list doesn't scroll while reordering, causes multiple server calls. #235
 
 
 ## [1.2.0] - 2019-12-01
