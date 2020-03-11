@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Classroom name could be null or could already exist
 - Shared journal content is incorrect in dashboard #219
 - Activity list doesn't scroll while reordering, causes multiple server calls. #235
+- Overflow on opening any dropbox #238
 
 
 ## [1.2.0] - 2019-12-01
