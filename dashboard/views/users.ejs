@@ -52,9 +52,9 @@
                           </div>
                         </div>
 			<script>
-                window.addEventListener('localized', function() {  // HACK: Force localization of role combo
-                   var selection = document.getElementsByClassName("select2-selection__rendered");
-                    if (selection && selection[0] && typeof selection[0].innerHTML == "string" &&  document.getElementById("user-type-select2")) {
+			window.addEventListener('localized', function() {  // HACK: Force localization of role combo
+				var selection = document.getElementsByClassName("select2-selection__rendered");
+				if (selection && selection[0] && typeof selection[0].innerHTML == "string" &&  document.getElementById("user-type-select2")) {
                                 var user = document.getElementById("user-type-select2");
                                 var val = user.options[user.selectedIndex].value;
                                 selection[0].innerHTML = document.webL10n.get(val);
