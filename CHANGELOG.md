@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Activity list doesn't scroll while reordering, causes multiple server calls. #235
 - Overflow on opening any dropbox #238
 - Selected option's text isn't localized #240
+- Page navigation problem on language switching #142
 
 
 ## [1.2.0] - 2019-12-01
