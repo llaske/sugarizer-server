@@ -569,7 +569,18 @@ function onLocalized() {
 		}
 		lang.onchange = function() {
 			localStorage.setItem("languageSelection", this.value);
-			location.href = window.location.pathname + "?lang="+lang.value;
+			var searchQuery = location.search;
+			if(searchQuery.length == 0) {
+				//query empty
+				searchQuery = '?lang=' + lang.value;
+			} else if(searchQuery.indexOf('lang=') != -1) {
+				// query contains the 'lang=' parameter
+				searchQuery = searchQuery.replace(/lang=[a-z][a-z]/, 'lang=' + lang.value);
+			} else {
+				// query does not contain 'lang=' parameter
+				searchQuery += '&lang=' + lang.value;
+			}
+			location.href = window.location.pathname + searchQuery;
 		};
 	}
 }
