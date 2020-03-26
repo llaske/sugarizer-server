@@ -23,7 +23,7 @@
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="language"></label>
-                                    <select name="language" class="form-control">
+                                    <select id="language-select" name="language" class="form-control">
                                         <option value="en" data-l10n-id="english" <% if(typeof user == 'object' &&  user.language=='en'){ %> selected="selected" <% } %>>English</option>
                                         <option value="es" data-l10n-id="spanish" <% if(typeof user == 'object' &&  user.language=='es'){ %> selected="selected" <% } %>>Spanish</option>
                                         <option value="fr" data-l10n-id="french" <% if(typeof user == 'object' &&  user.language=='fr'){ %> selected="selected" <% } %>>French</option>
@@ -34,6 +34,7 @@
                                         <option value="pl" data-l10n-id="polish" <% if(typeof user == 'object' &&  user.language=='pl'){ %> selected="selected" <% } %>>Polish</option>
                                         <option value="ibo" data-l10n-id="igbo" <% if(typeof user == 'object' &&  user.language=='ibo'){ %> selected="selected" <% } %>>Igbo</option>
                                         <option value="yor" data-l10n-id="yoruba" <% if(typeof user == 'object' &&  user.language=='yor'){ %> selected="selected" <% } %>>Yoruba</option>
+                                        <option value="hi" data-l10n-id="hindi" <% if(typeof user == 'object' &&  user.language=='hi'){ %> selected="selected" <% } %>>Hindi</option>
                                     </select>
                                     <span class="material-input"></span>
                                 </div>
@@ -181,15 +182,62 @@
 <%- include includes/footer %>
 <script>
 function show_user_fields(val) {
+    var adminLang = ["en", "es", "fr", "hi"];
+    var studentLang = ["en", "es", "fr", "de", "pt", "ar", "ja", "pl", "ibo", "yor"];
+    var teachLang = ["en", "es", "fr", "de", "pt", "ar", "ja", "pl", "ibo", "yor", "hi"];
+    var selectedLang = document.getElementById("language-select").value;
+    var op = document.getElementById("language-select").options;
+
     if (val == 'admin') {
         $('.color_input').addClass('hide');
         $('.color_input input').attr('disabled', '');
+
+        for (var i = 0; i < op.length; i++) {
+            if (adminLang.includes(op[i].value)) {
+                op[i].disabled = false;
+                op[i].style.display = "block";    
+            } else {
+                op[i].disabled = true;
+                op[i].style.display = "none";
+            }
+        }
+        if (!adminLang.includes(selectedLang)) {
+            document.getElementById("language-select").value = "en";
+        }
     } else {
         $('.color_input').removeClass('hide');
         $('.color_input input').removeAttr('disabled');
     }
     if (val == 'teacher' || val == 'student' || !val) {
         $('#searchable-select-classrooms-row').removeClass('hide');
+
+        if (val == 'teacher') {
+            for (var i = 0; i < op.length; i++) {
+                if (teachLang.includes(op[i].value)) {
+                    op[i].disabled = false;
+                    op[i].style.display = "block";    
+                } else {
+                    op[i].disabled = true;
+                    op[i].style.display = "none";
+                }
+            }
+            if (!teachLang.includes(selectedLang)) {
+                document.getElementById("language-select").value = "en";
+            }
+        } else {
+            for (var i = 0; i < op.length; i++) {
+                if (studentLang.includes(op[i].value)) {
+                    op[i].disabled = false;
+                    op[i].style.display = "block";    
+                } else {
+                    op[i].disabled = true;
+                    op[i].style.display = "none";
+                }
+            }
+            if (!studentLang.includes(selectedLang)) {
+                document.getElementById("language-select").value = "en";
+            }
+        }
     } else {
         $('#searchable-select-classrooms-row').addClass('hide');
     }
