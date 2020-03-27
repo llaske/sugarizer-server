@@ -131,5 +131,10 @@
 
 <script>
     var currTour = sugarizerTour("editClassroom", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
-    if (!currTour.isFinished()) currTour.restart();
+    if((typeof window.localStorage["view"] == 'undefined') || (window.localStorage["view"] == window.location.pathname)) {
+        if (!currTour.isFinished()) currTour.start();
+    } else {
+        currTour.restart();
+    }
+    window.localStorage["view"] = window.location.pathname;
 </script>
