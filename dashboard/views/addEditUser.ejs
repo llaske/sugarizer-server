@@ -197,5 +197,5 @@ function show_user_fields(val) {
 show_user_fields('<% if(typeof user == "object"){ %><%= user.role %><% } %>')
 
 var currTour = sugarizerTour("editUser", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
-if (!currTour.isFinished()) currTour.start();
+if (!currTour.isFinished()) currTour.restart();
 </script>
