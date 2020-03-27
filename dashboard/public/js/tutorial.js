@@ -193,6 +193,12 @@ function sugarizerTour(currentView, role) {
 			tour.addStep(getStep("editClassroom", "#editClassroom-colors", "right", 4));
 			tour.addStep(getStep("editClassroom", "#editClassroom-created", "right", 5));
 			tour.addStep(getStep("editClassroom", "#editClassroom-lastupdated", "right", 6));
+		} else if (currentView == "editChart") {
+			tour.addStep(getStep("editChart", "", "bottom", 1, true));
+			tour.addStep(getStep("editChart", "#editChart-title", "right", 2));
+			tour.addStep(getStep("editChart", "#editChart-type", "right", 3));
+			tour.addStep(getStep("editChart", "#editChart-selectchart", "right", 4));
+			tour.addStep(getStep("editChart", "#editChart-display", "right", 5));
 		}
 		tour.init();
 	};

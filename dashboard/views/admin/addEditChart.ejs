@@ -10,7 +10,7 @@
                 <div class="card-content">
                     <%- include ../includes/flash-errors %>
                     <form id="classroom-add-edit-form" method="post" <% if(typeof chart == 'object'){ %> action="<%= chart._id %>" <% } %>>
-                        <div class="row">
+                        <div class="row" id="editChart-title">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="chartTitle"></label>
@@ -19,7 +19,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row color_input">
+                        <div class="row color_input" id="editChart-type">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="type"></label>
@@ -36,7 +36,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row color_input">
+                        <div class="row color_input" id="editChart-selectchart">
                             <div class="col-md-12">
                                 <div class="form-group form-black">
                                     <label class="control-label" data-l10n-id="selectChart"></label>
@@ -86,7 +86,7 @@
                                 });
                             <% } %>
                         </script>
-                        <div class="row color_input">
+                        <div class="row color_input" id="editChart-display">
                             <div class="col-md-12">
                                 <div class="form-group form-black">
                                     <label class="control-label" data-l10n-id="display"></label>
@@ -109,3 +109,9 @@
     </div>
   </div>
 <%- include ../includes/footer %>
+
+
+<script>
+    var currTour = sugarizerTour("editChart", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+    if (!currTour.isFinished()) currTour.start();
+</script>
