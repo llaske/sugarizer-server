@@ -186,6 +186,13 @@ function sugarizerTour(currentView, role) {
 			tour.addStep(getStep("editUser", "#searchable-select-classrooms-row", "right", 7));
 			tour.addStep(getStep("editUser", "#editUser-created", "right", 8));
 			tour.addStep(getStep("editUser", "#editUser-lastseen", "right", 9));
+		} else if (currentView == "editClassroom") {
+			tour.addStep(getStep("editClassroom", "", "bottom", 1, true));
+			tour.addStep(getStep("editClassroom", "#editClassroom-name", "right", 2));
+			tour.addStep(getStep("editClassroom", "#editClassroom-students", "right", 3));
+			tour.addStep(getStep("editClassroom", "#editClassroom-colors", "right", 4));
+			tour.addStep(getStep("editClassroom", "#editClassroom-created", "right", 5));
+			tour.addStep(getStep("editClassroom", "#editClassroom-lastupdated", "right", 6));
 		}
 		tour.init();
 	};
