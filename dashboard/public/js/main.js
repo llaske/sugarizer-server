@@ -1045,3 +1045,122 @@ function upload_journal(files, journalId, name, user_id, color) {
 		}
 	}
 }
+
+function checkAll() {
+	var state = document.getElementById("checkAll") ? document.getElementById("checkAll").checked : false;
+	var check = [];
+	if (document.getElementsByClassName("journal-checkbox").length > 0) {
+		check = document.getElementsByClassName("journal-checkbox");
+	}
+	for (var i=0; i<check.length; i++) {
+		check[i].checked = state;
+	}
+}
+
+function deleteMultipleEntries() {
+	function displayNotification(success, failed) {
+		var timer = 2000;
+		if (success > 0 && failed > 0) {
+			$.notify({
+				icon: "notifications",
+				message: "Deleted:" + success + ", Failed:" + failed
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else if (failed == 0) {
+			$.notify({
+				icon: "notifications",
+				message: "Deleted:" + success
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			$.notify({
+				icon: "error",
+				message: "Failed to delete journal entries"
+			},{
+				type: 'danger',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+		setTimeout(function () {
+			location.reload();
+		}, timer);
+	}
+	if (document.getElementsByClassName("journal-checkbox").length > 0) {
+		var check = document.getElementsByClassName("journal-checkbox");
+		var toBeDeleted = [];
+		var totalSelected = 0;
+		var totalDeleted = 0;
+		var totalFailed = 0;
+		for (var i=0; i<check.length; i++) {
+			if (check[i].checked) {
+				totalSelected++;
+				var el = {};
+				if (check[i].getAttribute("jid")) el["jid"] = check[i].getAttribute("jid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				if (check[i].getAttribute("oid")) el["oid"] = check[i].getAttribute("oid");
+				else {
+					totalFailed++;
+					continue;
+				}
+				toBeDeleted.push(el);
+			}
+		}
+
+		if (totalSelected == 0) {
+			alert("No entries selected to delete");
+		} else {
+			var confirmation = confirm("Are you sure you want to delete " + totalSelected + " entries?");
+			if (confirmation) {
+				if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+				for (var i=0; i<toBeDeleted.length; i++) {
+					$.ajax({
+						url: ('/api/v1/journal/' + toBeDeleted[i].jid + '?' + decodeURIComponent($.param({
+							x_key: headers['x-key'],
+							access_token: headers['x-access-token'],
+							oid: toBeDeleted[i].oid,
+							type: 'partial'
+						}))),
+						type: 'DELETE',
+						success: function(response) {
+							if (response && response.objectId) {
+								totalDeleted++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							} else {
+								totalFailed++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							}
+						},
+						fail: function(){
+							totalFailed++;
+							if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+						}
+					});
+				}
+			}
+		}
+	}
+}
+
+function downloadMultipleEntries() {
+	
+}
