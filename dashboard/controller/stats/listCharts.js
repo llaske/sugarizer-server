@@ -1,6 +1,7 @@
 // include libraries
 var request = require('request'),
-	common = require('../../helper/common');
+	common = require('../../helper/common'),
+	chartList = require('./util/chartList')();
 
 var stats = require('./index');
 
@@ -10,6 +11,11 @@ module.exports = function listCharts(req, res) {
 	// reinit l10n with locale
 	if (req.query && req.query.lang) {
 		common.l10n.setLanguage(req.query.lang);
+	}
+
+	var chartDic = {};
+	for (var i=0; i<chartList.length; i++) {
+		chartDic[chartList[i].key] = chartList[i];
 	}
 
 	// call
@@ -25,6 +31,7 @@ module.exports = function listCharts(req, res) {
 				module: 'stats',
 				charts: body.charts,
 				headers: common.getHeaders(req),
+				chartList: chartDic,
 				account: req.session.user,
 				url: common.getAPIUrl(req),
 				server: stats.ini().information
