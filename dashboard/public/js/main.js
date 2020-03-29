@@ -1162,5 +1162,109 @@ function deleteMultipleEntries() {
 }
 
 function downloadMultipleEntries() {
-	
+	function displayNotification(success, failed) {
+		if (success > 0 && failed > 0) {
+			$.notify({
+				icon: "notifications",
+				message: "Downloaded:" + success + ", Failed:" + failed
+			},{
+				type: 'success',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else if (failed == 0) {
+			$.notify({
+				icon: "notifications",
+				message: "Downloaded:" + success
+			},{
+				type: 'success',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			$.notify({
+				icon: "error",
+				message: "Failed to download journal entries"
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+	}
+	if (document.getElementsByClassName("journal-checkbox").length > 0) {
+		var check = document.getElementsByClassName("journal-checkbox");
+		var toBeDownloaded = [];
+		var totalSelected = 0;
+		var totalDownloaded = 0;
+		var totalFailed = 0;
+		for (var i=0; i<check.length; i++) {
+			if (check[i].checked) {
+				totalSelected++;
+				var el = {};
+				if (check[i].getAttribute("jid")) el["jid"] = check[i].getAttribute("jid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				if (check[i].getAttribute("oid")) el["oid"] = check[i].getAttribute("oid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				if (check[i].getAttribute("uid")) el["uid"] = check[i].getAttribute("uid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				if (check[i].getAttribute("aid")) el["aid"] = check[i].getAttribute("aid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				var callurl = "/dashboard/activities/launch/" + el.jid + "?oid=" + el.oid + "&source=journal&uid=" + el.uid + "&aid=" + el.aid + "&mode=download";
+				toBeDownloaded.push(callurl);
+			}
+		}
+		if (totalSelected == 0) {
+			alert("No entries selected to download");
+		} else {
+			var confirmation = confirm("Are you sure you want to download " + totalSelected + " entries?");
+			if (confirmation) {
+				if (totalDownloaded + totalFailed == totalSelected) displayNotification(totalDownloaded, totalFailed);
+				for (var i=0; i<toBeDownloaded.length; i++) {
+					$.get((toBeDownloaded[i]), function(response) {
+						if (response.error) {
+							totalFailed++;
+						}
+
+						var metadata = {};
+
+						if (response && response.lsObj) {
+							try {
+								metadata = JSON.parse(response.lsObj["sugar_datastore_" + response.objectId]);
+							} catch (e) {
+								metadata = response.lsObj["sugar_datastore_" + response.objectId];
+							}
+							writeFile(metadata.metadata, response.lsObj["sugar_datastoretext_" + response.objectId], function(blob, filename) {
+								saveAs(blob, filename);
+								totalDownloaded++;
+								if (totalDownloaded + totalFailed == totalSelected) displayNotification(totalDownloaded, totalFailed);
+							});
+						}
+					});
+				}
+			}
+		}
+	}
 }
