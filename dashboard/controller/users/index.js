@@ -80,6 +80,7 @@ exports.index = function(req, res) {
 					classrooms: classrooms,
 					classroom_id: classroom_id,
 					data: body,
+					headers: common.getHeaders(req),
 					account: req.session.user,
 					server: ini.information
 				});

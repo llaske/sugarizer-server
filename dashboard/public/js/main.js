@@ -1051,6 +1051,8 @@ function checkAll() {
 	var check = [];
 	if (document.getElementsByClassName("journal-checkbox").length > 0) {
 		check = document.getElementsByClassName("journal-checkbox");
+	} else if (document.getElementsByClassName("users-checkbox").length > 0) {
+		check = document.getElementsByClassName("users-checkbox");
 	}
 	for (var i=0; i<check.length; i++) {
 		check[i].checked = state;
@@ -1063,7 +1065,7 @@ function deleteMultipleEntries() {
 		if (success > 0 && failed > 0) {
 			$.notify({
 				icon: "notifications",
-				message: document.webL10n.get('deleteSuccessFail', {success:success, failed:failed})
+				message: document.webL10n.get('deleteSuccessFailEntry', {success:success, failed:failed})
 			},{
 				type: 'success',
 				timer: timer,
@@ -1075,7 +1077,7 @@ function deleteMultipleEntries() {
 		} else if (failed == 0) {
 			$.notify({
 				icon: "notifications",
-				message: document.webL10n.get('deleteSuccess', {success:success})
+				message: document.webL10n.get('deleteEntrySuccess', {success:success})
 			},{
 				type: 'success',
 				timer: timer,
@@ -1087,7 +1089,7 @@ function deleteMultipleEntries() {
 		} else {
 			$.notify({
 				icon: "error",
-				message: document.webL10n.get('deleteFailed')
+				message: document.webL10n.get('deleteEntryFailed')
 			},{
 				type: 'danger',
 				timer: timer,
@@ -1261,6 +1263,100 @@ function downloadMultipleEntries() {
 								totalDownloaded++;
 								if (totalDownloaded + totalFailed == totalSelected) displayNotification(totalDownloaded, totalFailed);
 							});
+						}
+					});
+				}
+			}
+		}
+	}
+}
+
+function deleteMultipleUsers() {
+	function displayNotification(success, failed) {
+		var timer = 2000;
+		if (success > 0 && failed > 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('deleteSuccessFailUser', {success:success, failed:failed})
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else if (failed == 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('DeleteSuccess', {count:success})
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('deleteUserFailed')
+			},{
+				type: 'danger',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+		setTimeout(function () {
+			location.reload();
+		}, timer);
+	}
+	if (document.getElementsByClassName("users-checkbox").length > 0) {
+		var check = document.getElementsByClassName("users-checkbox");
+		var toBeDeleted = [];
+		var totalSelected = 0;
+		var totalDeleted = 0;
+		var totalFailed = 0;
+		for (var i=0; i<check.length; i++) {
+			if (check[i].checked) {
+				totalSelected++;
+				if (check[i].getAttribute("uid")) toBeDeleted.push(check[i].getAttribute("uid"));
+				else {
+					totalFailed++;
+					continue;
+				}
+			}
+		}
+
+		if (totalSelected == 0) {
+			alert(document.webL10n.get('noUsersSelectedDelete'));
+		} else {
+			var confirmation = confirm(document.webL10n.get('deleteUserConfirmation', {selected:totalSelected}));
+			if (confirmation) {
+				if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+				for (var i=0; i<toBeDeleted.length; i++) {
+					$.ajax({
+						url: ('/api/v1/users/' + toBeDeleted[i] + '?' + decodeURIComponent($.param({
+							x_key: headers['x-key'],
+							access_token: headers['x-access-token']
+						}))),
+						type: 'DELETE',
+						success: function(response) {
+							if (response && response.user_id) {
+								totalDeleted++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							} else {
+								totalFailed++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							}
+						},
+						fail: function(){
+							totalFailed++;
+							if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
 						}
 					});
 				}

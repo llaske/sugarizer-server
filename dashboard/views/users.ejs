@@ -80,6 +80,9 @@
                             });
                             </script>
                         <div class="col-md-6">
+                            <div class="upload-btn-wrapper pull-right" id="journal-deleteMultiple">
+                                <a href="#" onclick="deleteMultipleUsers(); return false;" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
+                            </div>
                             <div class="btn pull-right btn-round" onclick="downloadUsers()" data-l10n-id="ExportUsers" id="users-exportusers">Export Users</div>
                             <script>
                                 function downloadUsers(event) {
@@ -225,6 +228,7 @@
                                 <table class="table">
                                     <thead class="text-muted">
                                         <tr>
+                                            <th class="text-muted"><input type="checkbox" id="checkAll" onclick="checkAll()"></th>
                                             <th>#</th>
                                                                                   <% if(query.role != 'admin'){ %><th data-l10n-id="buddy">Buddy</th><% } %>
                                             <th><button id="name-column" data-l10n-id="username" onclick="sortBy('name')"></button></th>
@@ -237,6 +241,7 @@
                                     <tbody>
                                         <% for(var i=0; i < data.users.length; i++) { %>
                                           <tr>
+                                              <td><input type="checkbox" class="users-checkbox" uid="<%= data.users[i]._id %>"></td>
                                               <td><%= data.offset + i + 1 %></td>
                                                                                       <% if(query.role != 'admin'){ %>
                                                                                           <td>
@@ -284,6 +289,9 @@
 </div>
 <%- include includes/footer %>
 <script>
+    //set headers
+	var headers = <%- JSON.stringify(headers) %>;
+
 function show_class_fields() {
     if($('#user-form [name="role"]').length && $('#user-form [name="role"]').select2('data')[0].id != 'student'){
         $('.classroom_input').addClass('hide');
