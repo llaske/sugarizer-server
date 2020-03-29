@@ -1063,7 +1063,7 @@ function deleteMultipleEntries() {
 		if (success > 0 && failed > 0) {
 			$.notify({
 				icon: "notifications",
-				message: "Deleted:" + success + ", Failed:" + failed
+				message: document.webL10n.get('deleteSuccessFail', {success:success, failed:failed})
 			},{
 				type: 'success',
 				timer: timer,
@@ -1075,7 +1075,7 @@ function deleteMultipleEntries() {
 		} else if (failed == 0) {
 			$.notify({
 				icon: "notifications",
-				message: "Deleted:" + success
+				message: document.webL10n.get('deleteSuccess', {success:success})
 			},{
 				type: 'success',
 				timer: timer,
@@ -1087,7 +1087,7 @@ function deleteMultipleEntries() {
 		} else {
 			$.notify({
 				icon: "error",
-				message: "Failed to delete journal entries"
+				message: document.webL10n.get('deleteFailed')
 			},{
 				type: 'danger',
 				timer: timer,
@@ -1127,9 +1127,9 @@ function deleteMultipleEntries() {
 		}
 
 		if (totalSelected == 0) {
-			alert("No entries selected to delete");
+			alert(document.webL10n.get('noEntriesSelectedDelete'));
 		} else {
-			var confirmation = confirm("Are you sure you want to delete " + totalSelected + " entries?");
+			var confirmation = confirm(document.webL10n.get('deleteEntryConfirmation', {selected:totalSelected}));
 			if (confirmation) {
 				if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
 				for (var i=0; i<toBeDeleted.length; i++) {
@@ -1166,7 +1166,7 @@ function downloadMultipleEntries() {
 		if (success > 0 && failed > 0) {
 			$.notify({
 				icon: "notifications",
-				message: "Downloaded:" + success + ", Failed:" + failed
+				message: document.webL10n.get('downloadSuccessFail', {success:success, failed:failed})
 			},{
 				type: 'success',
 				placement: {
@@ -1177,7 +1177,7 @@ function downloadMultipleEntries() {
 		} else if (failed == 0) {
 			$.notify({
 				icon: "notifications",
-				message: "Downloaded:" + success
+				message: document.webL10n.get('downloadSuccess', {success:success})
 			},{
 				type: 'success',
 				placement: {
@@ -1188,7 +1188,7 @@ function downloadMultipleEntries() {
 		} else {
 			$.notify({
 				icon: "error",
-				message: "Failed to download journal entries"
+				message: document.webL10n.get('downloadFailed')
 			},{
 				type: 'danger',
 				placement: {
@@ -1237,9 +1237,9 @@ function downloadMultipleEntries() {
 			}
 		}
 		if (totalSelected == 0) {
-			alert("No entries selected to download");
+			alert(document.webL10n.get('noEntriesSelectedDownload'));
 		} else {
-			var confirmation = confirm("Are you sure you want to download " + totalSelected + " entries?");
+			var confirmation = confirm(document.webL10n.get('downloadEntryConfirmation', {selected:totalSelected}));
 			if (confirmation) {
 				if (totalDownloaded + totalFailed == totalSelected) displayNotification(totalDownloaded, totalFailed);
 				for (var i=0; i<toBeDownloaded.length; i++) {

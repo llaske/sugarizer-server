@@ -53,10 +53,10 @@
 								<div class="col-md-4 text-right">
 									<% if (query && query.journal) { %>
 										<div class="upload-btn-wrapper pull-right" id="journal-deleteMultiple">
-											<a href="#" onclick="deleteMultipleEntries()" class="btn btn-round" data-l10n-id="deleteEntry" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
+											<a href="#" onclick="deleteMultipleEntries()" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
 										</div>
 										<div class="upload-btn-wrapper pull-right" id="journal-downloadMultiple">
-											<a href="#" onclick="downloadMultipleEntries()" class="btn btn-round" data-l10n-id="download" title="Download Multiple"><i class="material-icons text-muted">cloud_download</i></a>
+											<a href="#" onclick="downloadMultipleEntries()" class="btn btn-round" data-l10n-id="multidownload" title="Download Multiple"><i class="material-icons text-muted">cloud_download</i></a>
 										</div>
 										<div class="upload-btn-wrapper pull-right" id="journal-uploadJournal">
 											<input id="uploadJournal" type="file" <% if(user && user._id) { %>onchange='upload_journal(this.files, <%- JSON.stringify(query.journal) %>, <%- JSON.stringify(user.name) %>, <%- JSON.stringify(user._id) %>, <%- JSON.stringify(user.color) %>)' /><% } else if (account.user) { %>onchange='upload_journal(this.files, <%- JSON.stringify(query.journal) %>, <%- JSON.stringify(account.user.name) %>, <%- JSON.stringify(account.user._id) %><% if (account.user.color) { %>, <%- JSON.stringify(account.user.color) %><% } %>)' /><% } %>
