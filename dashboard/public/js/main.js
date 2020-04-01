@@ -1129,7 +1129,16 @@ function deleteMultipleEntries() {
 		}
 
 		if (totalSelected == 0) {
-			alert(document.webL10n.get('noEntriesSelectedDelete'));
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('noEntriesSelectedDelete')
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
 		} else {
 			var confirmation = confirm(document.webL10n.get('deleteEntryConfirmation', {selected:totalSelected}));
 			if (confirmation) {
@@ -1239,7 +1248,16 @@ function downloadMultipleEntries() {
 			}
 		}
 		if (totalSelected == 0) {
-			alert(document.webL10n.get('noEntriesSelectedDownload'));
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('noEntriesSelectedDownload')
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
 		} else {
 			var confirmation = confirm(document.webL10n.get('downloadEntryConfirmation', {selected:totalSelected}));
 			if (confirmation) {
@@ -1333,7 +1351,16 @@ function deleteMultipleUsers() {
 		}
 
 		if (totalSelected == 0) {
-			alert(document.webL10n.get('noUsersSelectedDelete'));
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('noUsersSelectedDelete')
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
 		} else {
 			var confirmation = confirm(document.webL10n.get('deleteUserConfirmation', {selected:totalSelected}));
 			if (confirmation) {
