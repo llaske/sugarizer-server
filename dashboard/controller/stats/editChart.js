@@ -16,7 +16,11 @@ module.exports = function editChart(req, res) {
 
 			// validate
 			req.body.title = req.body.title.trim();
-			req.assert('title', common.l10n.get('TitleInvalid')).matches(/^[a-z0-9 ]+$/i);
+			if (req.body.title) {
+				req.assert('title', common.l10n.get('TitleInvalid')).matches(/^[a-z0-9 ]+$/i);
+			} else {
+				req.body.title = "";
+			}
 			if (req.body.hidden) req.body.hidden = true;
 			var isValidChart = false;
 			for (var i=0; i<chartList.length; i++) {
