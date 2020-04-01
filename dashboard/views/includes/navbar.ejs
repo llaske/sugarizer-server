@@ -33,7 +33,7 @@
             </ul>
             <div class="navbar-form navbar-right">
                 <select class="form-control lang-combo" id="languageSelection">
-                  <option data-l10n-id="english-nav" <% if(account.user.language == 'en'){ %>selected="selected"<% } %> value="en"></option>
+                  <option data-l10n-id="english-nav" <% if(account.user.language == 'en' || (account.user.language != 'es' && account.user.language != 'fr' && account.user.language != 'hi')){ %>selected="selected"<% } %> value="en"></option>
                   <option data-l10n-id="spanish-nav" <% if(account.user.language == 'es'){ %>selected="selected"<% } %> value="es"></option>
                   <option data-l10n-id="french-nav" <% if(account.user.language == 'fr'){ %>selected="selected"<% } %> value="fr"></option>
                   <option data-l10n-id="hindi-nav" <% if(account.user.language == 'hi'){ %>selected="selected"<% } %> value="hi"></option>
