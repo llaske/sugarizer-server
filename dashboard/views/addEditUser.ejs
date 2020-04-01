@@ -10,7 +10,7 @@
                 <div class="card-content">
                     <%- include includes/flash-errors %>
                     <form id="user-add-edit-form" method="post" <% if(typeof user == 'object' && module =="profile"){ %> action="/dashboard/profile" <% } else if (typeof user == 'object') { %> action="<%= user._id %>" <% } %>>
-                        <div class="row">
+                        <div class="row" id="editUser-name">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="name"></label>
@@ -19,7 +19,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="editUser-language">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="language"></label>
@@ -40,7 +40,7 @@
                             </div>
                         </div>
                         <% if (module != "profile") { %>
-                        <div class="row">
+                        <div class="row" id="editUser-role">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="role"></label>
@@ -55,7 +55,7 @@
                             </div>
                         </div>
                         <% } %>
-                        <div class="row color_input">
+                        <div class="row color_input" id="editUser-colors">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="color"></label>
@@ -72,7 +72,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="editUser-password">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="password"></label>
@@ -85,7 +85,7 @@
                         <% if(typeof classrooms == 'object' && module != "profile") { %>
                         <div class="row" id='searchable-select-classrooms-row'>
                             <div class="col-md-12">
-                                <div class="form-group form-black" style="margin-top: -15px;">
+                                <div class="form-group form-black" style="margin-top: -15px;" >
                                     <label class="control-label" data-l10n-id="classrooms"></label>
                                     <select id='searchable-select-classrooms' multiple='multiple' name="classrooms" class="form-control">
                                         <% for(var i=0; i < classrooms.length; i++) { %>
@@ -148,7 +148,7 @@
                         </div>
                         <% } %>
                         <% if (typeof user == 'object' && user.created_time) { %>
-                        <div class="row">
+                        <div class="row" id="editUser-created">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="createdTime"></label>
@@ -158,7 +158,7 @@
                         </div>
                         <% } %>
                         <% if (typeof user == 'object' && user.timestamp) { %>
-                        <div class="row">
+                        <div class="row" id="editUser-lastseen">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="lastSeen"></label>
@@ -195,4 +195,12 @@ function show_user_fields(val) {
     }
 }
 show_user_fields('<% if(typeof user == "object"){ %><%= user.role %><% } %>')
+
+var currTour = sugarizerTour("editUser", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+if((typeof window.localStorage["view"] == 'undefined') || (window.localStorage["view"] == window.location.pathname)) {
+    if (!currTour.isFinished()) currTour.start();
+} else {
+    currTour.restart();
+}
+window.localStorage["view"] = window.location.pathname;
 </script>

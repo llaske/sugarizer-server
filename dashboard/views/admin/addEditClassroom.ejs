@@ -10,7 +10,7 @@
                 <div class="card-content">
                     <%- include ../includes/flash-errors %>
                     <form id="classroom-add-edit-form" method="post" <% if(typeof classroom == 'object'){ %> action="<%= classroom._id %>" <% } %>>
-                        <div class="row">
+                        <div class="row" id="editClassroom-name">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="name"></label>
@@ -19,7 +19,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="editClassroom-students">
                             <div class="col-md-12">
                                 <div class="form-group form-black" style="margin-top: -15px;">
                                     <label class="control-label" data-l10n-id="students"></label>
@@ -79,7 +79,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row color_input">
+                        <div class="row color_input" id="editClassroom-colors">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="color"></label>
@@ -97,7 +97,7 @@
                             </div>
                         </div>
                         <% if(typeof classroom == 'object' && classroom.created_time) { %>
-                        <div class="row">
+                        <div class="row" id="editClassroom-created">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="createdTime"></label>
@@ -107,7 +107,7 @@
                         </div>
                         <% } %>
                         <% if(typeof classroom == 'object' && classroom.timestamp) { %>
-                        <div class="row">
+                        <div class="row" id="editClassroom-lastupdated">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="lastUpdated"></label>
@@ -128,3 +128,13 @@
     </div>
   </div>
 <%- include ../includes/footer %>
+
+<script>
+    var currTour = sugarizerTour("editClassroom", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+    if((typeof window.localStorage["view"] == 'undefined') || (window.localStorage["view"] == window.location.pathname)) {
+        if (!currTour.isFinished()) currTour.start();
+    } else {
+        currTour.restart();
+    }
+    window.localStorage["view"] = window.location.pathname;
+</script>
