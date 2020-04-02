@@ -795,6 +795,10 @@ function sortBy(params) {
 
 function launchTutorial() {
 	if (window.currTour && typeof window.currTour.restart == "function") {
+		if (window.location.pathname.substr(0,19) == "/dashboard/journal/") {
+			localStorage.removeItem('journal1_end');
+			localStorage.removeItem('journal1_current_step');
+		}
 		window.currTour.restart();
 	}
 }
