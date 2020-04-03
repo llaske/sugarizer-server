@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Show the right icon in Dashboard for TXT/ODT/DOC/PDF #226
 - Allow opening PDF content in dashboard #227
 - Add an upload button in Dashboard Journal view #221
+- Add multiple actions to Journal and Users view #245
 
 ### Changed
 - Change edit classroom screen to handle large number of students
