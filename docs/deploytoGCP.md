@@ -26,7 +26,19 @@ Enable billing for the VM. Create Instance and allow HTTP and HTTPS. You can cho
 ![](images/7.png)
 ![](images/8.png)
 
-*Step 5 :* SSH into the VM and past these command into the opened ssh window.
+*Step 5 :* SSH into the VM and paste these command into the opened ssh window.
+
+	sudo apt update
+	sudo apt install -y git
+	git clone https://github.com/llaske/sugarizer
+	git clone https://github.com/llaske/sugarizer-server
+	curl -fsSL https://get.docker.com/ | sh
+	curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" > ~/docker-compose
+	chmod +x ~/docker-compose
+	sudo mv ~/docker-compose /usr/local/bin/docker-compose
+	cd sugarizer-server
+	sh generate-docker-compose.sh
+	sudo docker-compose up -d
 
 ![](images/9.png)
 
