@@ -1045,3 +1045,349 @@ function upload_journal(files, journalId, name, user_id, color) {
 		}
 	}
 }
+
+function checkAll() {
+	var state = document.getElementById("checkAll") ? document.getElementById("checkAll").checked : false;
+	var check = [];
+	if (document.getElementsByClassName("journal-checkbox").length > 0) {
+		check = document.getElementsByClassName("journal-checkbox");
+	} else if (document.getElementsByClassName("users-checkbox").length > 0) {
+		check = document.getElementsByClassName("users-checkbox");
+	}
+	for (var i=0; i<check.length; i++) {
+		check[i].checked = state;
+	}
+}
+
+function deleteMultipleEntries() {
+	function displayNotification(success, failed) {
+		var timer = 2000;
+		if (success > 0 && failed > 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('deleteSuccessFailEntry', {success:success, failed:failed})
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else if (failed == 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('deleteEntrySuccess', {success:success})
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('deleteEntryFailed')
+			},{
+				type: 'danger',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+		setTimeout(function () {
+			location.reload();
+		}, timer);
+	}
+	if (document.getElementsByClassName("journal-checkbox").length > 0) {
+		var check = document.getElementsByClassName("journal-checkbox");
+		var toBeDeleted = [];
+		var totalSelected = 0;
+		var totalDeleted = 0;
+		var totalFailed = 0;
+		for (var i=0; i<check.length; i++) {
+			if (check[i].checked) {
+				totalSelected++;
+				var el = {};
+				if (check[i].getAttribute("jid")) el["jid"] = check[i].getAttribute("jid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				if (check[i].getAttribute("oid")) el["oid"] = check[i].getAttribute("oid");
+				else {
+					totalFailed++;
+					continue;
+				}
+				toBeDeleted.push(el);
+			}
+		}
+
+		if (totalSelected == 0) {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('noEntriesSelectedDelete')
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			var confirmation = confirm(document.webL10n.get('deleteEntryConfirmation', {selected:totalSelected}));
+			if (confirmation) {
+				if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+				for (var i=0; i<toBeDeleted.length; i++) {
+					$.ajax({
+						url: ('/api/v1/journal/' + toBeDeleted[i].jid + '?' + decodeURIComponent($.param({
+							x_key: headers['x-key'],
+							access_token: headers['x-access-token'],
+							oid: toBeDeleted[i].oid,
+							type: 'partial'
+						}))),
+						type: 'DELETE',
+						success: function(response) {
+							if (response && response.objectId) {
+								totalDeleted++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							} else {
+								totalFailed++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							}
+						},
+						fail: function(){
+							totalFailed++;
+							if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+						}
+					});
+				}
+			}
+		}
+	}
+}
+
+function downloadMultipleEntries() {
+	function displayNotification(success, failed) {
+		if (success > 0 && failed > 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('downloadSuccessFail', {success:success, failed:failed})
+			},{
+				type: 'success',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else if (failed == 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('downloadSuccess', {success:success})
+			},{
+				type: 'success',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('downloadFailed')
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+	}
+	if (document.getElementsByClassName("journal-checkbox").length > 0) {
+		var check = document.getElementsByClassName("journal-checkbox");
+		var toBeDownloaded = [];
+		var totalSelected = 0;
+		var totalDownloaded = 0;
+		var totalFailed = 0;
+		for (var i=0; i<check.length; i++) {
+			if (check[i].checked) {
+				totalSelected++;
+				var el = {};
+				if (check[i].getAttribute("jid")) el["jid"] = check[i].getAttribute("jid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				if (check[i].getAttribute("oid")) el["oid"] = check[i].getAttribute("oid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				if (check[i].getAttribute("uid")) el["uid"] = check[i].getAttribute("uid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				if (check[i].getAttribute("aid")) el["aid"] = check[i].getAttribute("aid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				var callurl = "/dashboard/activities/launch/" + el.jid + "?oid=" + el.oid + "&source=journal&uid=" + el.uid + "&aid=" + el.aid + "&mode=download";
+				toBeDownloaded.push(callurl);
+			}
+		}
+		if (totalSelected == 0) {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('noEntriesSelectedDownload')
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			var confirmation = confirm(document.webL10n.get('downloadEntryConfirmation', {selected:totalSelected}));
+			if (confirmation) {
+				if (totalDownloaded + totalFailed == totalSelected) displayNotification(totalDownloaded, totalFailed);
+				for (var i=0; i<toBeDownloaded.length; i++) {
+					$.get((toBeDownloaded[i]), function(response) {
+						if (response.error) {
+							totalFailed++;
+						}
+
+						var metadata = {};
+
+						if (response && response.lsObj) {
+							try {
+								metadata = JSON.parse(response.lsObj["sugar_datastore_" + response.objectId]);
+							} catch (e) {
+								metadata = response.lsObj["sugar_datastore_" + response.objectId];
+							}
+							writeFile(metadata.metadata, response.lsObj["sugar_datastoretext_" + response.objectId], function(blob, filename) {
+								saveAs(blob, filename);
+								totalDownloaded++;
+								if (totalDownloaded + totalFailed == totalSelected) displayNotification(totalDownloaded, totalFailed);
+							});
+						}
+					});
+				}
+			}
+		}
+	}
+}
+
+function deleteMultipleUsers() {
+	function displayNotification(success, failed) {
+		var timer = 2000;
+		if (success > 0 && failed > 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('deleteSuccessFailUser', {success:success, failed:failed})
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else if (failed == 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('DeleteSuccess', {count:success})
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('deleteUserFailed')
+			},{
+				type: 'danger',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+		setTimeout(function () {
+			location.reload();
+		}, timer);
+	}
+	if (document.getElementsByClassName("users-checkbox").length > 0) {
+		var check = document.getElementsByClassName("users-checkbox");
+		var toBeDeleted = [];
+		var totalSelected = 0;
+		var totalDeleted = 0;
+		var totalFailed = 0;
+		for (var i=0; i<check.length; i++) {
+			if (check[i].checked) {
+				totalSelected++;
+				if (check[i].getAttribute("uid")) toBeDeleted.push(check[i].getAttribute("uid"));
+				else {
+					totalFailed++;
+					continue;
+				}
+			}
+		}
+
+		if (totalSelected == 0) {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('noUsersSelectedDelete')
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			var confirmation = confirm(document.webL10n.get('deleteUserConfirmation', {selected:totalSelected}));
+			if (confirmation) {
+				if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+				for (var i=0; i<toBeDeleted.length; i++) {
+					$.ajax({
+						url: ('/api/v1/users/' + toBeDeleted[i] + '?' + decodeURIComponent($.param({
+							x_key: headers['x-key'],
+							access_token: headers['x-access-token']
+						}))),
+						type: 'DELETE',
+						success: function(response) {
+							if (response && response.user_id) {
+								totalDeleted++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							} else {
+								totalFailed++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							}
+						},
+						fail: function(){
+							totalFailed++;
+							if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+						}
+					});
+				}
+			}
+		}
+	}
+}
