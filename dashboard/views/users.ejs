@@ -33,6 +33,7 @@
                           <div class="form-group form-black label-floating is-empty classroom_input">
                                 <select class="form-control" id="classroom_select" name="classid">
                                     <option data-l10n-id="selectclassroom" value="" selected="selected" disabled></option>
+                                    <option id="allClassrooms" data-l10n-id="allClassrooms" value="" <% if(classroom_id == "allClassrooms") { %>selected="selected"<% } %>></option>
                                     <% for(var i=0; i < classrooms.length; i++) { %>
                                         <% if(Array.isArray(classrooms[i].students) && classrooms[i].students && classrooms[i].students.length > 0) { %>
                                             <option id="<%- classrooms[i]._id %>" value="<%- classrooms[i].students.join(',') %>" <% if(classroom_id == classrooms[i]._id) { %>selected="selected"<% } %> ><%= classrooms[i].name %></option>
@@ -40,45 +41,31 @@
                                     <% } %>
                                 </select>
                                 <script>
-                                    $('#user-form [name="classid"]').select2().on("select2:select", function(e) {
-                                        var inputField = $('#user-form [name="classroom_id"]');
-                                        var value = "";
-                                        if (inputField && e && e.params && e.params.data && e.params.data.element && e.params.data.element.id) {
-                                            value = e.params.data.element.id;
-                                        }
-                                        inputField.val(value);
-                                    });
+                                    $('#user-form [name="classid"]').select2().on("select2:select", e => assignClassroomID(e));
                                 </script>
                           </div>
                         </div>
-			<script>
-			window.addEventListener('localized', function() {  // HACK: Force localization of role combo
-				var selection = document.getElementsByClassName("select2-selection__rendered");
-				if (selection && selection[0] && typeof selection[0].innerHTML == "string" &&  document.getElementById("user-type-select2")) {
-                                var user = document.getElementById("user-type-select2");
-                                var val = user.options[user.selectedIndex].value;
-                                selection[0].innerHTML = document.webL10n.get(val);
-                            }
-                    // Fix for selected option not being localized
-                    $('#user-form [name="role"]').select2("destroy").select2().on("change", () => show_class_fields());
-                });
-			</script>
-						<script>
-						window.addEventListener('localized', function() {  // HACK: Force localization of student combo
-							var selection = document.getElementsByClassName("select2-selection__rendered");
-							if (selection && selection[0] && selection[0].title == "Student") selection[0].innerHTML = document.webL10n.get("student");						});
-                        </script>
                         <script>
-                            window.addEventListener('localized', function() {  // HACK: Force localization of selected field
+                            window.addEventListener('localized', function() {  // HACK: Force localization of select2 combo
                                 var selection = document.getElementsByClassName("select2-selection__rendered");
-                                if (selection && selection[1] && typeof selection[1].innerHTML == "string") {
+                                if (selection && selection[0] && typeof selection[0].innerHTML == "string" &&  document.getElementById("user-type-select2")) {
+                                    var user = document.getElementById("user-type-select2");
+                                    var val = user.options[user.selectedIndex].value;
+                                    selection[0].innerHTML = document.webL10n.get(val);
+                                }
+                                $('#user-form [name="role"]').select2("destroy").select2(); // Fix for selected option not being localized
+
+                                if (selection && selection[1] && typeof selection[1].innerHTML == "string" && document.getElementById("classroom_select")) {
                                     var classroom_select = document.getElementById("classroom_select");
                                     if(classroom_select.selectedIndex == 0){
                                         selection[1].innerHTML = document.webL10n.get("selectclassroom");
+                                    } else if(classroom_select.selectedIndex == 1){
+                                        selection[1].innerHTML = document.webL10n.get("allClassrooms");
                                     }
                                 }
+                                $('#user-form [name="classid"]').select2("destroy").select2(); // Fix for selected option not being localized
                             });
-                            </script>
+                        </script>
                         <div class="col-md-6">
                             <div class="upload-btn-wrapper pull-right" id="journal-deleteMultiple">
                                 <a href="#" onclick="deleteMultipleUsers(); return false;" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
@@ -292,16 +279,26 @@
     //set headers
 	var headers = <%- JSON.stringify(headers) %>;
 
-function show_class_fields() {
-    if($('#user-form [name="role"]').length && $('#user-form [name="role"]').select2('data')[0].id != 'student'){
-        $('.classroom_input').addClass('hide');
-        $('#user-form [name="classid"]').val('').trigger('change');
+    function show_class_fields() {
+        if($('#user-form [name="role"]').length && $('#user-form [name="role"]').select2('data')[0].id != 'student'){
+            $('.classroom_input').addClass('hide');
+            $('#user-form [name="classid"]').val('').trigger('change');
 
-    }else{
-        $('.classroom_input').removeClass('hide');
+        }else{
+            $('.classroom_input').removeClass('hide');
+        }
     }
-}
-show_class_fields('<% if(typeof query == "object"){ %><%= query.role || "student" %><% } %>')
+    show_class_fields('<% if(typeof query == "object"){ %><%= query.role || "student" %><% } %>')
+
+    function assignClassroomID(e) {
+        var inputField = $('#user-form [name="classroom_id"]');
+        var value = "";
+        if (inputField && e && e.params && e.params.data && e.params.data.element && e.params.data.element.id) {
+            value = e.params.data.element.id;
+            
+        }
+        inputField.val(value);
+    }
 </script>
 <script>
     handleSort();
