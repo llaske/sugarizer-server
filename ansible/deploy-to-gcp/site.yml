@@ -1,0 +1,4 @@
+# master playbook
+
+- import_playbook: create-gcp-firewall.yml
+- import_playbook: create-gce-instance.yml

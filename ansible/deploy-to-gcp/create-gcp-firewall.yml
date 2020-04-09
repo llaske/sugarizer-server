@@ -1,0 +1,7 @@
+# creates the firewall rule
+
+- name: create a firewall
+  hosts: localhost
+  roles:
+  - install-dependencies
+  - create-firewall

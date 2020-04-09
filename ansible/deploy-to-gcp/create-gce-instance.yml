@@ -1,0 +1,20 @@
+# creates the vm instance
+
+- hosts: localhost
+  tasks:
+    - name: Creating GCP VM instance
+      gce:
+        instance_names: "{{ instance_names }}"
+        zone: "{{ zone }}"
+        machine_type: "{{ machine_type }}"
+        image: "{{ image }}"
+        state: present
+        service_account_email: "{{ service_account_email }}"
+        credentials_file: "{{ credentials_file }}"
+        project_id: "{{ project_id }}"
+        metadata : '{ "startup-script" : "sudo curl {{ get_start_script }}  -o - | sh" }'
+      register: gce
+
+    - name: Getting External IPs of hosts
+      debug:
+        msg: "ExternalIP = {{ gce.instance_data[0].public_ip }}"

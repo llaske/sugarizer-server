@@ -1,0 +1,19 @@
+# Enter Serice account email
+service_account_email:
+
+# Enter name of service account key file
+credentials_file: 
+
+# Enter Project id
+project_id: 
+
+# Modify project zone
+zone: "us-central1-a"
+
+# Modify name of the instance
+instance_names: "sugarizer-server"
+
+
+machine_type: "n1-standard-1"
+image: "debian-9"
+get_start_script: "https://raw.githubusercontent.com/ksraj123/sugarizer-server/patch-1/ansible/deploy-to-gcp/gcp-start-script.sh"
