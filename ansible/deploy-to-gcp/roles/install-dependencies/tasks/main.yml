@@ -1,2 +1,0 @@
-- name: installing dependencies
-  shell: pip install requests google-auth

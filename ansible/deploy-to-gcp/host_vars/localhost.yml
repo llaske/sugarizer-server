@@ -1,11 +1,11 @@
 # Enter Serice account email
-service_account_email:
+service_account_email: ansibleacc@auth-testing-272315.iam.gserviceaccount.com
 
 # Enter name of service account key file
-credentials_file: 
+credentials_file: auth-testing-272315-cabb0e983eb1.json
 
 # Enter Project id
-project_id: 
+project_id: auth-testing-272315
 
 # Modify project zone
 zone: "us-central1-a"
