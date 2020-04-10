@@ -18,10 +18,13 @@
                         </div>
                         <div class="col-md-3"></div>
                         <div class="col-md-6">
+                            <div class="upload-btn-wrapper pull-right" id="classroom-deleteMultiple">
+                                <a href="#" onclick="deleteMultipleClassrooms(); return false;" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
+                            </div>
                             <% if (account.user && account.user.role=="admin") { %>
-                                <a class="btn btn-round pull-right " href="/dashboard/classrooms/add" data-l10n-id="addClassroom" id="classroom-addclassroom"><div class="ripple-container"></div></a>
+                                <a class="btn btn-round pull-right" href="/dashboard/classrooms/add" data-l10n-id="addClassroom" id="classroom-addclassroom"><div class="ripple-container"></div></a>
                             <% } %>
-                           <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+                           <button class="btn btn-round pull-right" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>
                       </form>
                   </div>
@@ -51,6 +54,7 @@
                             <table class="table">
                                 <thead class="text-muted">
                                     <tr>
+                                        <th class="text-muted"><input type="checkbox" id="checkAll" onclick="checkAll()"></th>
                                         <th>#</th>
                                         <th data-l10n-id="icon">Icon</th>
                                         <th><button data-l10n-id="name" id="name-column" onclick="sortBy('name')"></button></th>
@@ -62,6 +66,7 @@
                                 <tbody>
                                     <% for(var i=0; i < data.classrooms.length; i++) { %>
                                       <tr id="classroom-card">
+                                          <td><input type="checkbox" class="classrooms-checkbox" cid="<%= data.classrooms[i]._id %>"></td>
                                           <td><%= data.offset + i + 1 %></td>
                                           <td>
                                               <div class="color" id="<%= data.classrooms[i]._id %>">
@@ -100,6 +105,9 @@
 </div>
 <%- include includes/footer %>
 <script>
+    //set headers
+    var headers = <%- JSON.stringify(headers) %>;
+
     handleSort();
     var currTour = sugarizerTour("classroom", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
 	if (!currTour.isFinished()) currTour.start();

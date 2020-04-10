@@ -58,6 +58,7 @@ exports.index = function(req, res) {
 				moment: moment,
 				query: query,
 				data: body,
+				headers: common.getHeaders(req),
 				account: req.session.user,
 				server: ini.information
 			});
