@@ -8,9 +8,6 @@ Sugarizer server can be deloyed easily on Google Cloud Platform(GCP) with ansibl
 
 **Step 3 -** edit deploy-to-gcp/host-var/localhost.yml
 
-    # Enter Serice account email
-    service_account_email:
-
     # Enter name of service account key file
     credentials_file: 
 
@@ -38,5 +35,5 @@ Go the IAM & Admin and then into service account and click on create a new servi
 Enter service account name and click on create, select Owner as role in next page, do not make modifications to third page and click on done.
 ![](images/2.png)
 
-Copy the **Email** of the service account you have just created and generate a key for it, select json as key type when prompted and download the json key keyfile
+Generate a key for the service account you have just created, select json as key type when prompted and download the json key file
 ![](images/3.png)

@@ -1,11 +1,8 @@
-# Enter Serice account email
-service_account_email: ansibleacc@auth-testing-272315.iam.gserviceaccount.com
-
 # Enter name of service account key file
-credentials_file: auth-testing-272315-cabb0e983eb1.json
+credentials_file: 
 
 # Enter Project id
-project_id: auth-testing-272315
+project_id: 
 
 # Modify project zone
 zone: "us-central1-a"
@@ -15,5 +12,6 @@ instance_names: "sugarizer-server"
 
 
 machine_type: "n1-standard-1"
-image: "debian-9"
+disk_size_gb: 20
+image: "projects/debian-cloud/global/images/family/debian-9"
 get_start_script: "https://raw.githubusercontent.com/ksraj123/sugarizer-server/patch-1/ansible/deploy-to-gcp/gcp-start-script.sh"

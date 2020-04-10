@@ -2,19 +2,40 @@
 
 - hosts: localhost
   tasks:
+    - name: Creating Disk for VM instance
+      gcp_compute_disk:
+        name: sugarizer-disk
+        size_gb: "{{ disk_size_gb }}"
+        source_image: "{{ image }}"
+        zone: "{{ zone }}"
+        project: "{{ project_id }}"
+        auth_kind: serviceaccount
+        service_account_file: "{{ credentials_file }}"
+        state: present
+      register: disk
+
     - name: Creating GCP VM instance
-      gce:
-        instance_names: "{{ instance_names }}"
+      gcp_compute_instance:
+        name: "{{ instance_names }}"
         zone: "{{ zone }}"
         machine_type: "{{ machine_type }}"
-        image: "{{ image }}"
+        disks:
+        - auto_delete: 'true'
+          boot: 'true'
+          source: "{{ disk }}"
+        network_interfaces:
+        - network: null
+          access_configs:
+          - name: External NAT
+            type: ONE_TO_ONE_NAT
         state: present
-        service_account_email: "{{ service_account_email }}"
-        credentials_file: "{{ credentials_file }}"
-        project_id: "{{ project_id }}"
-        metadata : '{ "startup-script" : "sudo curl {{ get_start_script }}  -o - | sh" }'
+        metadata:
+          startup-script-url: "{{ get_start_script }}"
+        auth_kind: serviceaccount
+        service_account_file: "{{ credentials_file }}"
+        project: "{{ project_id }}"
       register: gce
 
     - name: Getting External IPs of hosts
       debug:
-        msg: "ExternalIP = {{ gce.instance_data[0].public_ip }}"
+        msg: "ExternalIP = {{ gce.networkInterfaces[0].accessConfigs[0].natIP }}"
