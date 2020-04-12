@@ -7,10 +7,41 @@
         repo: https://github.com/llaske/sugarizer
         dest: ../../../sugarizer
         version: "HEAD"
+    
     - name: Generating Docker Compose File
       shell: sh generate-docker-compose.sh
       args:
         chdir: ../..
+
+    - name: Destroying existing services
+      docker_compose:
+        project_src: ../../
+        state: absent
+
+    - name: Check port 8080
+      wait_for:
+        port: 8080
+        delay: 5
+        timeout: 10
+      register: port_8080_check
+      ignore_errors: yes
+
+    - name: kill service on 8080
+      shell: fuser -k 8080/tcp
+      when: port_8080_check.failed == false
+    
+    - name: Check port 8039
+      wait_for:
+        port: 8039
+        delay: 5
+        timeout: 10
+      register: port_8039_check
+      ignore_errors: yes
+
+    - name: kill service on 8039
+      shell: fuser -k 8039/tcp
+      when: port_8080_check.failed == false
+
     - name: Start Sugarizer Sever
       docker_compose:
         project_src: ../../
