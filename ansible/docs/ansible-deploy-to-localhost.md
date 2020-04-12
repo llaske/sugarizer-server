@@ -6,3 +6,5 @@
 
 **Step 3** - Execute the playbook, provide the password of your user account, omit `-e` flag if there is no password
     ansible-playbook ansible/deploy-to-localhost/install.yml -e "ansible_become_pass=<Password here>"
+
+Sugarizer server will be accessible at localhost:8080 or 127.0.0.1:8080
