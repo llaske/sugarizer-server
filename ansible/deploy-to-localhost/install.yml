@@ -1,0 +1,19 @@
+- name: create directory
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Cloning Sguarizer Client repository from github
+      git: 
+        repo: https://github.com/llaske/sugarizer
+        dest: ../../../sugarizer
+        version: "HEAD"
+    - name: Generating Docker Compose File
+      shell: sh generate-docker-compose.sh
+      args:
+        chdir: ../..
+    - name: Start Sugarizer Sever
+      docker_compose:
+        project_src: ../../
+      register: output
+    - debug:
+        var: output
