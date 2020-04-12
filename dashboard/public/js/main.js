@@ -1057,6 +1057,8 @@ function checkAll() {
 		check = document.getElementsByClassName("journal-checkbox");
 	} else if (document.getElementsByClassName("users-checkbox").length > 0) {
 		check = document.getElementsByClassName("users-checkbox");
+	} else if (document.getElementsByClassName("classrooms-checkbox").length > 0) {
+		check = document.getElementsByClassName("classrooms-checkbox");
 	}
 	for (var i=0; i<check.length; i++) {
 		check[i].checked = state;
@@ -1378,6 +1380,109 @@ function deleteMultipleUsers() {
 						type: 'DELETE',
 						success: function(response) {
 							if (response && response.user_id) {
+								totalDeleted++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							} else {
+								totalFailed++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							}
+						},
+						fail: function(){
+							totalFailed++;
+							if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+						}
+					});
+				}
+			}
+		}
+	}
+}
+
+function deleteMultipleClassrooms() {
+	function displayNotification(success, failed) {
+		var timer = 2000;
+		if (success > 0 && failed > 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('deleteSuccessFailClassroom', {success:success, failed:failed})
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else if (failed == 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('deleteClassroomSuccess', {success:success})
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('deleteClassroomFailed')
+			},{
+				type: 'danger',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+		setTimeout(function () {
+			location.reload();
+		}, timer);
+	}
+	if (document.getElementsByClassName("classrooms-checkbox").length > 0) {
+		var check = document.getElementsByClassName("classrooms-checkbox");
+		var toBeDeleted = [];
+		var totalSelected = 0;
+		var totalDeleted = 0;
+		var totalFailed = 0;
+		for (var i=0; i<check.length; i++) {
+			if (check[i].checked) {
+				totalSelected++;
+				if (check[i].getAttribute("cid")) toBeDeleted.push(check[i].getAttribute("cid"));
+				else {
+					totalFailed++;
+					continue;
+				}
+			}
+		}
+
+		if (totalSelected == 0) {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('noClassroomSelectedDelete')
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			var confirmation = confirm(document.webL10n.get('deleteClassroomConfirmation', {selected:totalSelected}));
+			if (confirmation) {
+				if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+				for (var i=0; i<toBeDeleted.length; i++) {
+					$.ajax({
+						url: ('/api/v1/classrooms/' + toBeDeleted[i] + '?' + decodeURIComponent($.param({
+							x_key: headers['x-key'],
+							access_token: headers['x-access-token']
+						}))),
+						type: 'DELETE',
+						success: function(response) {
+							if (response && response.id) {
 								totalDeleted++;
 								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
 							} else {
