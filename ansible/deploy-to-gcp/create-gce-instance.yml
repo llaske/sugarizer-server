@@ -13,6 +13,9 @@
         service_account_file: "{{ credentials_file }}"
         state: present
       register: disk
+    
+    - include_vars:
+        file: gcp-start-script.yml
 
     - name: Creating GCP VM instance
       gcp_compute_instance:
@@ -30,7 +33,7 @@
             type: ONE_TO_ONE_NAT
         state: present
         metadata:
-          startup-script-url: "{{ get_start_script }}"
+          startup-script: "{{ script }}"
         auth_kind: serviceaccount
         service_account_file: "{{ credentials_file }}"
         project: "{{ project_id }}"
