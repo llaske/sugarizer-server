@@ -30,10 +30,10 @@ On the terminal in the execution log `"ExternalIP = xx.xx.xx.xx"` can be seen if
 
 Go to your project dashboard and note down the **project id**
 Go the IAM & Admin and then into service account and click on create a new service account
-![](images/1.png)
+![](images/gcp/1.png)
 
 Enter service account name and click on create, select Owner as role in next page, do not make modifications to third page and click on done.
-![](images/2.png)
+![](images/gcp/2.png)
 
 Generate a key for the service account you have just created, select json as key type when prompted and download the json key file
-![](images/3.png)
+![](images/gcp/3.png)
