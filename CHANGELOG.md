@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added tutorial for User Edit and Profile view
 - Added title to charts in statistics view
 - Add multiple actions to Journal and Users view #245
+- Added All Classrooms option in Users View
+- Added multi-delete in classroom view
 
 ### Changed
 - Change edit classroom screen to handle large number of students
