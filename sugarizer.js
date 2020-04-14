@@ -28,7 +28,7 @@ wait4db.waitConnection(ini, function(db) {
 	common.init(ini);
 
 	//configure app setting
-	require('./config/main')(app, ini);
+	require('./config/main')(app, ini, db);
 
 	// include api routes
 	require('./api/route')(app, ini, db);

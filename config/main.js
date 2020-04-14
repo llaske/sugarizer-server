@@ -5,11 +5,12 @@ var express = require('express'),
 	logger = require('morgan'),
 	flash = require('express-flash'),
 	expressValidator = require('express-validator'),
-	cors = require('cors');
+	cors = require('cors'),
+	mongoStore = require('connect-mongo')(expressSession);
 var artificialDelay = 0;
 
 // configure app settings
-module.exports = function(app, ini) {
+module.exports = function(app, ini, db) {
 
 	// add an artificial delay for debug
 	if (artificialDelay) {
@@ -26,7 +27,10 @@ module.exports = function(app, ini) {
 			maxAge: parseInt(ini.security.max_age)
 		},
 		resave: true,
-		saveUninitialized: true
+		saveUninitialized: true,
+		store: new mongoStore({
+			db: db
+		})
 	}));
 
 	//include body parser
