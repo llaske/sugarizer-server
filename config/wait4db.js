@@ -16,8 +16,7 @@ exports.waitConnection = function(settings, callback) {
 			client.connect(function(err, client) {
 				if (!err) {
 					clearInterval(timer);
-					var db = client.db(settings.database.name);
-					callback(db);
+					callback(client);
 				} else {
 					console.log("Waiting for DB... ("+err.name+")");
 				}
@@ -29,8 +28,7 @@ exports.waitConnection = function(settings, callback) {
 		// Open the db
 		client.connect(function(err, client) {
 			if (!err) {
-				var db = client.db(settings.database.name);
-				callback(db);
+				callback(client);
 			} else {
 				callback();
 			}
@@ -40,6 +38,6 @@ exports.waitConnection = function(settings, callback) {
 
 function createConnection(settings) {
 	return new mongo.MongoClient(
-		'mongodb://'+settings.database.server+':'+settings.database.port+'/'+settings.database.name,
+		(process.env.MONGO_URL || 'mongodb://'+settings.database.server+':'+settings.database.port)+'/'+settings.database.name,
 		{auto_reconnect: false, w:1, useNewUrlParser: true, useUnifiedTopology: true });
 }

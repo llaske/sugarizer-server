@@ -10,7 +10,7 @@ var express = require('express'),
 var artificialDelay = 0;
 
 // configure app settings
-module.exports = function(app, ini, db) {
+module.exports = function(app, ini, client) {
 
 	// add an artificial delay for debug
 	if (artificialDelay) {
@@ -29,7 +29,7 @@ module.exports = function(app, ini, db) {
 		resave: true,
 		saveUninitialized: true,
 		store: new mongoStore({
-			db: db
+			client: client
 		})
 	}));
 
