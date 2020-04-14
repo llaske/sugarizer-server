@@ -1,5 +1,5 @@
 // include libraries
-var request = require('request'),
+var superagent = require('superagent'),
 	common = require('../../helper/common');
 
 /**
@@ -42,29 +42,26 @@ module.exports = function postLogin(req, res) {
 	//call
 	if (!errors) {
 		// call
-		request({
-			headers: {
+		superagent
+			.post(common.getAPIUrl(req) + 'auth/login')
+			.set({
 				"content-type": "application/json",
-			},
-			json: true,
-			method: 'POST',
-			uri: common.getAPIUrl(req) + 'auth/login',
-			body: form
-		}, function(error, response, body) {
-
-			if (response.statusCode == 200) {
-				//store user and key in session
-				req.session.user = response.body;
-
-				// redirect to dashboard
-				return res.redirect('/dashboard'+(req.body && req.body.lang ? "?lang="+req.body.lang : ""));
-			} else {
-				req.flash('errors', {
-					msg: common.l10n.get('ErrorCode'+body.code)
-				});
-				return res.redirect('/dashboard/login');
-			}
-		});
+			})
+			.send(form)
+			.end(function (error, response) {
+				if (response.statusCode == 200) {
+					//store user and key in session
+					req.session.user = response.body;
+	
+					// redirect to dashboard
+					return res.redirect('/dashboard'+(req.body && req.body.lang ? "?lang="+req.body.lang : ""));
+				} else {
+					req.flash('errors', {
+						msg: common.l10n.get('ErrorCode'+response.body.code)
+					});
+					return res.redirect('/dashboard/login');
+				}
+			});
 	} else {
 		req.flash('errors', errors);
 		return res.redirect('/dashboard/login');
