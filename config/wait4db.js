@@ -40,6 +40,6 @@ exports.waitConnection = function(settings, callback) {
 
 function createConnection(settings) {
 	return new mongo.MongoClient(
-		'mongodb://'+settings.database.server+':'+settings.database.port+'/'+settings.database.name,
+		(process.env.MONGO_URL || 'mongodb://'+settings.database.server+':'+settings.database.port)+'/'+settings.database.name,
 		{auto_reconnect: false, w:1, useNewUrlParser: true, useUnifiedTopology: true });
 }
