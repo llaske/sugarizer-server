@@ -22,8 +22,8 @@ var fs = require('fs');
 // Import ini module to parse '.ini' files
 var ini = require('ini');
 
-// Import request library to make requests over the network
-var request = require('request');
+// Import superagent library to make requests over the network
+var superagent = require('superagent');
 
 // Import common helper
 var common = require('../dashboard/helper/common');
@@ -245,26 +245,24 @@ var masterAdmin = stringifyUser(new User('Master_Admin_' + (+new Date()).toStrin
 // Delete a User
 function deleteUser(Users, i) {
     return new Promise(function(resolve, reject) {
-        request({
-            headers: {
+        superagent
+			.delete(common.getAPIUrl() + 'api/v1/users/' + Users[i]._id)
+			.set({
                 "content-type": "application/json",
                 "x-access-token": masterAdmin.token,
                 "x-key": masterAdmin.user._id
-            },
-            json: true,
-            method: 'delete',
-            uri: common.getAPIUrl() + 'api/v1/users/' + Users[i]._id
-        }, function(error, response, body) {
-            if (error) {
-                reject(error);
-            } else if (response.statusCode == 200 && body.user_id) {
-                Users[i].status = 2;
-                resolve(body);
-            } else {
-                body.error = "Unable to delete the User";
-                reject(body);
-            }
-        });
+            })
+			.end(function (error, response) {
+                if (error) {
+                    reject(error);
+                } else if (response.statusCode == 200 && response.body.user_id) {
+                    Users[i].status = 2;
+                    resolve(response.body);
+                } else {
+                    response.body.error = "Unable to delete the User";
+                    reject(response.body);
+                }
+            });
     });
 }
 
@@ -277,40 +275,38 @@ function findUser(Users, i) {
             role: 'all',
             limit: 100000
         };
-        request({
-            headers: {
+        superagent
+            .get(common.getAPIUrl() + 'api/v1/users')
+            .set({
                 "content-type": "application/json",
                 "x-access-token": masterAdmin.token,
                 "x-key": masterAdmin.user._id
-            },
-            json: true,
-            method: 'GET',
-            qs: query,
-            uri: common.getAPIUrl() + 'api/v1/users'
-        }, function(error, response, body) {
-            if (error) {
-                reject(error);
-            } else if (body && body.users && body.users.length > 0) {
-                var results = body.users;
-                var lowerName = cleanString(Users[i].name);
-                var found = false;
-                for (var j=0; j<results.length; j++) {
-                    if (results[j].insensitive == lowerName) {
-                        found = true;
-                        Users[i]._id = results[j]._id;
-                        resolve(results[j]);
-                        break;
+            })
+            .query(query)
+            .end(function (error, response) {
+                if (error) {
+                    reject(error);
+                } else if (response.body && response.body.users && response.body.users.length > 0) {
+                    var results = response.body.users;
+                    var lowerName = cleanString(Users[i].name);
+                    var found = false;
+                    for (var j=0; j<results.length; j++) {
+                        if (results[j].insensitive == lowerName) {
+                            found = true;
+                            Users[i]._id = results[j]._id;
+                            resolve(results[j]);
+                            break;
+                        }
                     }
+                    if (!found) {
+                        response.body.error = "User not found";
+                        reject(response.body);
+                    }
+                } else {
+                    response.body.error = "User not found";
+                    reject(response.body);
                 }
-                if (!found) {
-                    body.error = "User not found";
-                    reject(body);
-                }
-            } else {
-                body.error = "User not found";
-                reject(body);
-            }
-        });
+            });
     });
 }
 
@@ -348,29 +344,27 @@ function findAndDeleteUser(Users, i) {
 // Insert User
 function insertUser(Users, i) {
     return new Promise(function(resolve, reject) {
-        request({
-            headers: {
+        superagent
+            .post(common.getAPIUrl() + 'api/v1/users')
+            .set({
                 "content-type": "application/json",
                 "x-access-token": masterAdmin.token,
                 "x-key": masterAdmin.user._id
-            },
-            json: true,
-            method: 'post',
-            uri: common.getAPIUrl() + 'api/v1/users',
-            body: {
+            })
+            .send({
                 user: stringifyUser(Users[i])
-            }
-        }, function(error, response, body) {
-            if (response.statusCode == 200) {
-                Users[i].status = 1;
-                Users[i]._id = body._id;
-                resolve(body);
-            } else {
-                Users[i].comment += body.error;
-                body.user = Users[i];
-                reject(body);
-            }
-        });
+            })
+            .end(function (error, response) {
+                if (response.statusCode == 200) {
+                    Users[i].status = 1;
+                    Users[i]._id = response.body._id;
+                    resolve(response.body);
+                } else {
+                    Users[i].comment += response.body.error;
+                    response.body.user = Users[i];
+                    reject(response.body);
+                }
+            });
     });
 }
 
@@ -401,52 +395,48 @@ function stringifyNewClassroom(name) {
 // Update classroom by ID
 function updateClassroom(name) {
     return new Promise(function(resolve, reject) {
-        request({
-            headers: {
+        superagent
+            .put(common.getAPIUrl() + 'api/v1/classrooms/' + Classrooms[name].data._id)
+            .set({
                 "content-type": "application/json",
                 "x-access-token": masterAdmin.token,
                 "x-key": masterAdmin.user._id
-            },
-            json: true,
-            method: 'put',
-            uri: common.getAPIUrl() + 'api/v1/classrooms/' + Classrooms[name].data._id,
-            body: {
+            })
+            .send({
                 classroom: stringifyExistingClassroom(name)
-            }
-        }, function(error, response, body) {
-            body.q = name;
-            if (response.statusCode == 200) {
-                resolve(body);
-            } else {
-                reject(body);
-            }
-        });
+            })
+            .end(function (error, response) {
+                response.body.q = name;
+                if (response.statusCode == 200) {
+                    resolve(response.body);
+                } else {
+                    reject(response.body);
+                }
+            });
     });
 }
 
 // Insert Classroom
 function insertClassroom(name) {
     return new Promise(function(resolve, reject) {
-        request({
-            headers: {
+        superagent
+            .post(common.getAPIUrl() + 'api/v1/classrooms')
+            .set({
                 "content-type": "application/json",
                 "x-access-token": masterAdmin.token,
                 "x-key": masterAdmin.user._id
-            },
-            json: true,
-            method: 'post',
-            uri: common.getAPIUrl() + 'api/v1/classrooms',
-            body: {
+            })
+            .send({
                 classroom: stringifyNewClassroom(name)
-            }
-        }, function(error, response, body) {
-            body.q = name;
-            if (response.statusCode == 200) {
-                resolve(body);
-            } else {
-                reject(body);
-            }
-        });
+            })
+            .end(function (error, response) {
+                response.body.q = name;
+                if (response.statusCode == 200) {
+                    resolve(response.body);
+                } else {
+                    reject(response.body);
+                }
+            });
     });
 }
 
@@ -457,24 +447,22 @@ function findClassroom(name) {
             sort: '+name',
             q: name
         };
-        request({
-            headers: {
+        superagent
+            .get(common.getAPIUrl() + 'api/v1/classrooms')
+            .set({
                 "content-type": "application/json",
                 "x-access-token": masterAdmin.token,
                 "x-key": masterAdmin.user._id
-            },
-            json: true,
-            method: 'GET',
-            qs: query,
-            uri: common.getAPIUrl() + 'api/v1/classrooms'
-        }, function(error, response, body) {
-            body.q = name;
-            if (response.statusCode == 200) {
-                resolve(body);
-            } else {
-                reject(body);
-            }
-        });
+            })
+            .query(query)
+            .end(function (error, response) {
+                response.body.q = name;
+                if (response.statusCode == 200) {
+                    resolve(response.body);
+                } else {
+                    reject(response.body);
+                }
+            });
     });
 }
 
@@ -523,22 +511,20 @@ function generateCSV(Users) {
 // Function to delete Master Admin
 function deleteMasterAdmin() {
     return new Promise(function(resolve, reject) {
-        request({
-            headers: {
+        superagent
+			.delete(common.getAPIUrl() + 'api/v1/users/' + masterAdmin.user._id)
+			.set({
                 "content-type": "application/json",
                 "x-access-token": masterAdmin.token,
                 "x-key": masterAdmin.user._id
-            },
-            json: true,
-            method: 'delete',
-            uri: common.getAPIUrl() + 'api/v1/users/' + masterAdmin.user._id,
-        }, function(error, response, body) {
-            if (response.statusCode == 200) {
-                resolve(body);
-            } else {
-                reject(body);
-            }
-        });
+            })
+			.end(function (error, response) {
+                if (response.statusCode == 200) {
+                    resolve(response.body);
+                } else {
+                    reject(response.body);
+                }
+            });
     });
 }
 
@@ -702,49 +688,45 @@ function initUserDeletion() {
 // Initiate seeding to DB
 function initSeed() {
     // Create Master Admin
-    request({
-        headers: {
+    superagent
+        .post(common.getAPIUrl() + 'auth/signup')
+        .set({
             "content-type": "application/json",
-        },
-        json: true,
-        method: 'POST',
-        uri: common.getAPIUrl() + 'auth/signup',
-        body: {
+        })
+        .send({
             "user" : masterAdmin
-        }
-    }, function(error, response) {
-        if (response && response.statusCode == 200) {
-            // Master Admin created
-            request({
-                headers: {
-                    "content-type": "application/json",
-                },
-                json: true,
-                method: 'POST',
-                uri: common.getAPIUrl() + 'auth/login',
-                body: {
-                    "user" : masterAdmin
-                }
-            }, function(error, response, body) {
-                if (response.statusCode == 200) {
-                    // Logged into Master Admin
-                    masterAdmin = body;
+        })
+        .end(function (error, response) {
+            if (response && response.statusCode == 200) {
+                // Master Admin created
+                superagent
+                    .post(common.getAPIUrl() + 'auth/login')
+                    .set({
+                        "content-type": "application/json",
+                    })
+                    .send({
+                        "user" : masterAdmin
+                    })
+                    .end(function (error, response) {
+                        if (response.statusCode == 200) {
+                            // Logged into Master Admin
+                            masterAdmin = response.body;
 
-                    // Delete the users
-                    initUserDeletion();
-                } else {
-                    console.log('Error logging into Master Admin');
-                    process.exit(-1);
-                }
-            });
-        } else if (!response) {
-            console.log('Error: Cannot access sugarizer-server');
-            process.exit(-1);
-        } else {
-            console.log('Error creating Master Admin');
-            process.exit(-1);
-        }
-    });
+                            // Delete the users
+                            initUserDeletion();
+                        } else {
+                            console.log('Error logging into Master Admin');
+                            process.exit(-1);
+                        }
+                    });
+            } else if (!response) {
+                console.log('Error: Cannot access sugarizer-server');
+                process.exit(-1);
+            } else {
+                console.log('Error creating Master Admin');
+                process.exit(-1);
+            }
+        });
 }
 
 // Reading and validating file
