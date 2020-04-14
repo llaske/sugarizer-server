@@ -47,7 +47,7 @@ exports.index = function(req, res) {
 		.set(common.getHeaders(req))
 		.query(query)
 		.end(function (error, response) {
-			if (response.status == 200) {
+			if (response.statusCode == 200) {
 
 				// send to activities page
 				res.render('classrooms', {

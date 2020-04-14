@@ -1,5 +1,5 @@
 // include libraries
-var request = require('request'),
+var superagent = require('superagent'),
 	moment = require('moment'),
 	common = require('../../helper/common'),
 	xocolors = require('../../helper/xocolors')(),
@@ -30,59 +30,55 @@ module.exports = function editClassroom(req, res) {
 			var errors = req.validationErrors();
 
 			if (!errors) {
-				request({
-					headers: common.getHeaders(req),
-					json: true,
-					method: 'put',
-					body: {
+				superagent
+					.put(common.getAPIUrl(req) + 'api/v1/classrooms/' + req.params.classid)
+					.set(common.getHeaders(req))
+					.send({
 						classroom: JSON.stringify(req.body)
-					},
-					uri: common.getAPIUrl(req) + 'api/v1/classrooms/' + req.params.classid
-				}, function(error, response, body) {
-					if (response.statusCode == 200) {
+					})
+					.end(function (error, response) {
+						if (response.statusCode == 200) {
 
-						// send back
-						req.flash('success', {
-							msg: common.l10n.get('ClassroomUpdated', {name: req.body.name})
-						});
-						return res.redirect('/dashboard/classrooms/');
-					} else {
-						req.flash('errors', {
-							msg: common.l10n.get('ErrorCode'+body.code)
-						});
-						return res.redirect('/dashboard/classrooms/edit/' + req.params.classid);
-					}
-				});
+							// send back
+							req.flash('success', {
+								msg: common.l10n.get('ClassroomUpdated', {name: req.body.name})
+							});
+							return res.redirect('/dashboard/classrooms/');
+						} else {
+							req.flash('errors', {
+								msg: common.l10n.get('ErrorCode'+response.body.code)
+							});
+							return res.redirect('/dashboard/classrooms/edit/' + req.params.classid);
+						}
+					});
 			} else {
 				req.flash('errors', errors);
 				return res.redirect('/dashboard/classrooms/edit/' + req.params.classid);
 			}
 		} else {
-			request({
-				headers: common.getHeaders(req),
-				json: true,
-				method: 'get',
-				uri: common.getAPIUrl(req) + 'api/v1/classrooms/' + req.params.classid
-			}, function(error, response, body) {
-				if (response.statusCode == 200) {
+			superagent
+				.get(common.getAPIUrl(req) + 'api/v1/classrooms/' + req.params.classid)
+				.set(common.getHeaders(req))
+				.end(function (error, response) {
+					if (response.statusCode == 200) {
 
-					// send to classrooms page
-					res.render('admin/addEditClassroom', {
-						module: 'classrooms',
-						classroom: body,
-						moment: moment,
-						emoji: emoji,
-						xocolors: xocolors,
-						account: req.session.user,
-						server: classroom.ini().information
-					});
-				} else {
-					req.flash('errors', {
-						msg: common.l10n.get('ErrorCode'+body.code)
-					});
-					return res.redirect('/dashboard/classrooms');
-				}
-			});
+						// send to classrooms page
+						res.render('admin/addEditClassroom', {
+							module: 'classrooms',
+							classroom: response.body,
+							moment: moment,
+							emoji: emoji,
+							xocolors: xocolors,
+							account: req.session.user,
+							server: classroom.ini().information
+						});
+					} else {
+						req.flash('errors', {
+							msg: common.l10n.get('ErrorCode'+response.body.code)
+						});
+						return res.redirect('/dashboard/classrooms');
+					}
+				});
 		}
 	} else {
 		req.flash('errors', {

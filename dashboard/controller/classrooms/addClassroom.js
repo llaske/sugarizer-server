@@ -1,5 +1,5 @@
 // include libraries
-var request = require('request'),
+var superagent = require('superagent'),
 	moment = require('moment'),
 	common = require('../../helper/common'),
 	xocolors = require('../../helper/xocolors')(),
@@ -29,29 +29,27 @@ module.exports = function addClassroom(req, res) {
 
 		// call
 		if (!errors) {
-			request({
-				headers: common.getHeaders(req),
-				json: true,
-				method: 'post',
-				body: {
+			superagent
+				.post(common.getAPIUrl(req) + 'api/v1/classrooms')
+				.set(common.getHeaders(req))
+				.send({
 					classroom: JSON.stringify(req.body)
-				},
-				uri: common.getAPIUrl(req) + 'api/v1/classrooms'
-			}, function(error, response, body) {
-				if (response.statusCode == 200) {
+				})
+				.end(function (error, response) {
+					if (response.statusCode == 200) {
 
-					// send to classrooms page
-					req.flash('success', {
-						msg: common.l10n.get('ClassroomCreated', {name: req.body.name})
-					});
-					return res.redirect('/dashboard/classrooms/');
-				} else {
-					req.flash('errors', {
-						msg: common.l10n.get('ErrorCode'+body.code)
-					});
-					return res.redirect('/dashboard/classrooms/add');
-				}
-			});
+						// send to classrooms page
+						req.flash('success', {
+							msg: common.l10n.get('ClassroomCreated', {name: req.body.name})
+						});
+						return res.redirect('/dashboard/classrooms/');
+					} else {
+						req.flash('errors', {
+							msg: common.l10n.get('ErrorCode'+response.body.code)
+						});
+						return res.redirect('/dashboard/classrooms/add');
+					}
+				});
 		} else {
 			req.flash('errors', errors);
 			return res.redirect('/dashboard/classrooms/add');
