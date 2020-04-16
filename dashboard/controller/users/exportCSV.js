@@ -1,5 +1,5 @@
 // include libraries
-var request = require('request'),
+var superagent = require('superagent'),
 	async = require('async'),
 	common = require('../../helper/common');
 
@@ -64,121 +64,113 @@ module.exports = function exportCSV(req, res) {
     
 	async.series([
 		function(callback) {
-			request({
-				headers: common.getHeaders(req),
-				json: true,
-				method: 'GET',
-				qs: {
+			superagent
+				.get(common.getAPIUrl(req) + 'api/v1/classrooms')
+				.set(common.getHeaders(req))
+				.query({
 					limit: 100000000
-				},
-				uri: common.getAPIUrl(req) + 'api/v1/classrooms'
-			}, function(error, response, body) {
-				if (response.statusCode == 200) {
-					if (body && typeof body.classrooms == "object" && body.classrooms.length > 0) {
-						for (var i=0; i<body.classrooms.length; i++) {
-							Classrooms[body.classrooms[i]._id] = {
-								name: body.classrooms[i].name,
-								students: body.classrooms[i].students
-							};
-							if (i == body.classrooms.length - 1) callback(null);
+				})
+				.end(function (error, response) {
+					if (response.statusCode == 200) {
+						if (response.body && typeof response.body.classrooms == "object" && response.body.classrooms.length > 0) {
+							for (var i=0; i<response.body.classrooms.length; i++) {
+								Classrooms[response.body.classrooms[i]._id] = {
+									name: response.body.classrooms[i].name,
+									students: response.body.classrooms[i].students
+								};
+								if (i == response.body.classrooms.length - 1) callback(null);
+							}
+						} else {
+							callback(null);
 						}
 					} else {
 						callback(null);
 					}
-				} else {
-					callback(null);
-				}
-			});
+				});
 		},
 		function(callback) {
-			request({
-				headers: common.getHeaders(req),
-				json: true,
-				method: 'GET',
-				qs: {
+			superagent
+				.get(common.getAPIUrl(req) + 'api/v1/users')
+				.set(common.getHeaders(req))
+				.query({
 					sort: '-timestamp',
 					role: 'admin',
 					limit: 100000000
-				},
-				uri: common.getAPIUrl(req) + 'api/v1/users'
-			}, function(error, response, body) {
-				if (response.statusCode == 200) {
-					if (body.users && body.users.length) {
-						var admins = [];
-						for (var i=0; i < body.users.length; i++) {
-							admins.push(validateUser(body.users[i]));
-							if ( i == body.users.length - 1) {
-								users = users.concat(admins);
-								callback(null);
+				})
+				.end(function (error, response) {
+					if (response.statusCode == 200) {
+						if (response.body.users && response.body.users.length) {
+							var admins = [];
+							for (var i=0; i < response.body.users.length; i++) {
+								admins.push(validateUser(response.body.users[i]));
+								if (i == response.body.users.length - 1) {
+									users = users.concat(admins);
+									callback(null);
+								}
 							}
+						} else {
+							callback(null);
 						}
 					} else {
 						callback(null);
 					}
-				} else {
-					callback(null);
-				}
-			});
+				});
 		},
 		function(callback) {
-			request({
-				headers: common.getHeaders(req),
-				json: true,
-				method: 'GET',
-				qs: {
+			superagent
+				.get(common.getAPIUrl(req) + 'api/v1/users')
+				.set(common.getHeaders(req))
+				.query({
 					sort: '-timestamp',
 					role: 'student',
 					limit: 100000000
-				},
-				uri: common.getAPIUrl(req) + 'api/v1/users'
-			}, function(error, response, body) {
-				if (response.statusCode == 200) {
-					if (body.users  && body.users.length) {
-						var students = [];
-						for (var i=0; i < body.users.length; i++) {
-							students.push(validateUser(body.users[i]));
-							if ( i == body.users.length - 1) {
-								users = users.concat(students);
-								callback(null);
+				})
+				.end(function (error, response) {
+					if (response.statusCode == 200) {
+						if (response.body.users  && response.body.users.length) {
+							var students = [];
+							for (var i=0; i < response.body.users.length; i++) {
+								students.push(validateUser(response.body.users[i]));
+								if (i == response.body.users.length - 1) {
+									users = users.concat(students);
+									callback(null);
+								}
 							}
+						} else {
+							callback(null);
 						}
 					} else {
 						callback(null);
 					}
-				} else {
-					callback(null);
-				}
-			});
+				});
 		},
 		function(callback) {
-			request({
-				headers: common.getHeaders(req),
-				json: true,
-				method: 'GET',
-				qs: {
+			superagent
+				.get(common.getAPIUrl(req) + 'api/v1/users')
+				.set(common.getHeaders(req))
+				.query({
 					sort: '-timestamp',
 					role: 'teacher',
 					limit: 100000000
-				},
-				uri: common.getAPIUrl(req) + 'api/v1/users'
-			}, function(error, response, body) {
-				if (response.statusCode == 200) {
-					if (body.users && body.users.length) {
-						var teachers = [];
-						for (var i=0; i < body.users.length; i++) {
-							teachers.push(validateUser(body.users[i]));
-							if ( i == body.users.length - 1) {
-								users = users.concat(teachers);
-								callback(null);
+				})
+				.end(function (error, response) {
+					if (response.statusCode == 200) {
+						if (response.body.users && response.body.users.length) {
+							var teachers = [];
+							for (var i=0; i < response.body.users.length; i++) {
+								teachers.push(validateUser(response.body.users[i]));
+								if (i == response.body.users.length - 1) {
+									users = users.concat(teachers);
+									callback(null);
+								}
 							}
+						} else {
+							callback(null);
 						}
 					} else {
 						callback(null);
 					}
-				} else {
-					callback(null);
-				}
-			});
+				});
 		}
 	], function() {
 		if (users.length == 0) {

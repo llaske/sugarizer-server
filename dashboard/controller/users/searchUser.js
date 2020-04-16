@@ -1,5 +1,5 @@
 // include libraries
-var request = require('request'),
+var superagent = require('superagent'),
 	common = require('../../helper/common');
 
 module.exports = function searchUser(req, res) {
@@ -35,21 +35,19 @@ module.exports = function searchUser(req, res) {
 	}
 
 	// call
-	request({
-		headers: common.getHeaders(req),
-		json: true,
-		method: 'GET',
-		qs: query,
-		uri: common.getAPIUrl(req) + 'api/v1/users'
-	}, function(error, response, body) {
-		if (response.statusCode == 200) {
-			return res.json({
-				success: true,
-				data: body,
-				query: query
-			});
-		} else {
-			res.json({success: false, msg: common.l10n.get('ErrorCode'+body.code)});
-		}
-	});
+	superagent
+		.get(common.getAPIUrl(req) + 'api/v1/users')
+		.set(common.getHeaders(req))
+		.query(query)
+		.end(function (error, response) {
+			if (response.statusCode == 200) {
+				return res.json({
+					success: true,
+					data: response.body,
+					query: query
+				});
+			} else {
+				res.json({success: false, msg: common.l10n.get('ErrorCode'+response.body.code)});
+			}
+		});
 };

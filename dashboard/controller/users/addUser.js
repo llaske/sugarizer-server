@@ -1,5 +1,5 @@
 // include libraries
-var request = require('request'),
+var superagent = require('superagent'),
 	moment = require('moment'),
 	common = require('../../helper/common'),
 	xocolors = require('../../helper/xocolors')(),
@@ -48,79 +48,75 @@ module.exports = function addUser(req, res) {
 
 		// call
 		if (!errors) {
-			request({
-				headers: common.getHeaders(req),
-				json: true,
-				method: 'post',
-				body: {
+			superagent
+				.post(common.getAPIUrl(req) + 'api/v1/users')
+				.set(common.getHeaders(req))
+				.send({
 					user: JSON.stringify(req.body)
-				},
-				uri: common.getAPIUrl(req) + 'api/v1/users'
-			}, function(error, response, body) {
-				if (response.statusCode == 200) {
-					if (req.body.role=="student" && req.body.classrooms && typeof(req.body.classrooms) == "object" && req.body.classrooms.length > 0) {
-						dashboard_utils.getAllClassrooms(req, res, function(classrooms) {
-							if (classrooms && classrooms.classrooms && classrooms.classrooms.length > 0) {
-								var classroomCounter = 0;
-								for (var i=0; i<classrooms.classrooms.length; i++) {
-									if (req.body.classrooms.includes(classrooms.classrooms[i]._id)) {
-										if (typeof classrooms.classrooms[i].students == "object" && classrooms.classrooms[i].students.length > 0) {
-											if (!classrooms.classrooms[i].students.includes(body._id)) {
-												classrooms.classrooms[i].students.push(body._id);
+				})
+				.end(function (error, response) {
+					if (response.statusCode == 200) {
+						if (req.body.role=="student" && req.body.classrooms && typeof(req.body.classrooms) == "object" && req.body.classrooms.length > 0) {
+							dashboard_utils.getAllClassrooms(req, res, function(classrooms) {
+								if (classrooms && classrooms.classrooms && classrooms.classrooms.length > 0) {
+									var classroomCounter = 0;
+									for (var i=0; i<classrooms.classrooms.length; i++) {
+										if (req.body.classrooms.includes(classrooms.classrooms[i]._id)) {
+											if (typeof classrooms.classrooms[i].students == "object" && classrooms.classrooms[i].students.length > 0) {
+												if (!classrooms.classrooms[i].students.includes(response.body._id)) {
+													classrooms.classrooms[i].students.push(response.body._id);
+												}
+											} else {
+												classrooms.classrooms[i].students = [response.body._id];
 											}
-										} else {
-											classrooms.classrooms[i].students = [body._id];
-										}
-										request({
-											headers: common.getHeaders(req),
-											json: true,
-											method: 'put',
-											body: {
-												classroom: JSON.stringify({
-													students: classrooms.classrooms[i].students
+											superagent
+												.put(common.getAPIUrl(req) + 'api/v1/classrooms/' + classrooms.classrooms[i]._id)
+												.set(common.getHeaders(req))
+												.send({
+													classroom: JSON.stringify({
+														students: classrooms.classrooms[i].students
+													})
 												})
-											},
-											uri: common.getAPIUrl(req) + 'api/v1/classrooms/' + classrooms.classrooms[i]._id
-										}, function() {
-											classroomCounter++;
-											if (classroomCounter == req.body.classrooms.length) {
-												req.flash('success', {
-													msg: common.l10n.get('UserCreated', {name: req.body.name})
+												.end(function () {
+													classroomCounter++;
+													if (classroomCounter == req.body.classrooms.length) {
+														req.flash('success', {
+															msg: common.l10n.get('UserCreated', {name: req.body.name})
+														});
+														return res.redirect('/dashboard/users/');
+													}
 												});
-												return res.redirect('/dashboard/users/');
-											}
-										});
+										}
 									}
+								} else {
+									req.flash('success', {
+										msg: common.l10n.get('UserCreated', {name: req.body.name})
+									});
+									return res.redirect('/dashboard/users/');
 								}
+							});
+						} else {
+							req.flash('success', {
+								msg: common.l10n.get('UserCreated', {name: req.body.name})
+							});
+							if (response.body.role == "admin") {
+								// send to admin page
+								return res.redirect('/dashboard/users/?role=admin');
+							} else if (response.body.role == "teacher") {
+								// send to teacher page
+								return res.redirect('/dashboard/users/?role=teacher');
 							} else {
-								req.flash('success', {
-									msg: common.l10n.get('UserCreated', {name: req.body.name})
-								});
+								// send to users page
 								return res.redirect('/dashboard/users/');
 							}
-						});
-					} else {
-						req.flash('success', {
-							msg: common.l10n.get('UserCreated', {name: req.body.name})
-						});
-						if (body.role == "admin") {
-							// send to admin page
-							return res.redirect('/dashboard/users/?role=admin');
-						} else if (body.role == "teacher") {
-							// send to teacher page
-							return res.redirect('/dashboard/users/?role=teacher');
-						} else {
-							// send to users page
-							return res.redirect('/dashboard/users/');
 						}
+					} else {
+						req.flash('errors', {
+							msg: common.l10n.get('ErrorCode'+response.body.code)
+						});
+						return res.redirect('/dashboard/users/add');
 					}
-				} else {
-					req.flash('errors', {
-						msg: common.l10n.get('ErrorCode'+body.code)
-					});
-					return res.redirect('/dashboard/users/add');
-				}
-			});
+				});
 		} else {
 			dashboard_utils.getAllClassrooms(req, res, function(classrooms) {
 				if (req.body.classrooms && typeof(req.body.classrooms) == "object" && req.body.classrooms.length > 0 && classrooms && classrooms.classrooms && classrooms.classrooms.length > 0) {
