@@ -232,6 +232,7 @@ function sugarizerTour(currentView, role, mode) {
 
 	tutorial.restart = function() {
 		localStorage.setItem(tutorialName + "_current_step", 0);
+		localStorage.removeItem(tutorialName + "_end");
 		tutorial.start();
 	};
 
