@@ -59,6 +59,7 @@ module.exports = function addClassroom(req, res) {
 		// send to classroom page
 		res.render('admin/addEditClassroom', {
 			module: 'classrooms',
+			mode: "add",
 			xocolors: xocolors,
 			moment: moment,
 			emoji: emoji,
