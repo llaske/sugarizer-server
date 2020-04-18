@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Overflow on opening any dropbox #238
 - Selected option's text isn't localized #240
 - Page navigation problem on language switching #142
+- Popup is not displayed when Add/Edit/Delete a Chart
 
 
 ## [1.2.0] - 2019-12-01
