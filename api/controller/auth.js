@@ -176,8 +176,34 @@ exports.login = function(req, res) {
  **/
 exports.signup = function(req, res) {
 
-	//insert the user using the same logic but without auth
-	users.addUser(req, res);
+	var user = JSON.parse(req.body.user);
+	if(user.beforeSignup) {
+		validateUsername(user.name, function(unique) {
+			if(unique) {
+				res.send(true);
+			} else {
+				res.status(401).send({
+					'error': 'User with same name already exist',
+					'code': 22
+				});
+			}
+		});
+	} else {
+		//insert the user using the same logic but without auth
+		users.addUser(req, res);
+	}
+};
+
+function validateUsername(name, callback) {
+	users.getAllUsers({
+		'name': name
+	}, {}, function(users) {
+		if (users.length > 0) {
+			callback(false);
+		} else {
+			callback(true);
+		}
+	});
 };
 
 exports.validateUser = function(uid, callback) {
