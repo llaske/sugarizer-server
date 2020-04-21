@@ -196,7 +196,9 @@ exports.signup = function(req, res) {
 
 function validateUsername(name, callback) {
 	users.getAllUsers({
-		'name': name
+		'name': { 
+			$regex: new RegExp("^" + name + "$", "i") 
+		}
 	}, {}, function(users) {
 		if (users.length > 0) {
 			callback(false);
