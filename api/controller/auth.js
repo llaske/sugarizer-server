@@ -178,11 +178,14 @@ exports.signup = function(req, res) {
 
 	var user = JSON.parse(req.body.user);
 	if(user.beforeSignup) {
-		validateUsername(user.name, function(unique) {
-			if(unique) {
-				res.send(true);
+		validateUsername(user.name, function(user) {
+			if(user == false) {
+				res.send({
+					'exists': false
+				});
 			} else {
 				res.status(401).send({
+					'exists': true,
 					'error': 'User with same name already exist',
 					'code': 22
 				});
@@ -201,9 +204,9 @@ function validateUsername(name, callback) {
 		}
 	}, {}, function(users) {
 		if (users.length > 0) {
-			callback(false);
+			callback(users[0]);
 		} else {
-			callback(true);
+			callback(false);
 		}
 	});
 };
