@@ -128,6 +128,8 @@ function sugarizerTour(currentView, role) {
 			tour.addStep(getStep("users", "#seeJournalEntries", "left", 10));
 			tour.addStep(getStep("users", "#editUser", "left", 11));
 			tour.addStep(getStep("users", "#deleteUser", "left", 12));
+			tour.addStep(getStep("users", "#checkAll", "right", 13));
+			tour.addStep(getStep("users", "#users-deleteMultiple", "left", 14));
 		} else if (currentView == "activities") {
 			tour.addStep(getStep("activities", "", "bottom", 1, true));
 			tour.addStep(getStep("activities", "#activities-list-parent", "left", 2));
@@ -152,6 +154,9 @@ function sugarizerTour(currentView, role) {
 			tour.addStep(getStep("journal", "#journal-activity-download", "left", 6));
 			tour.addStep(getStep("journal", "#journal-activity-delete", "left", 7));
 			tour.addStep(getStep("journal", "#journal-uploadJournal", "left", 8));
+			tour.addStep(getStep("journal", "#checkAll", "right", 9));
+			tour.addStep(getStep("journal", "#journal-downloadMultiple", "left", 10));
+			tour.addStep(getStep("journal", "#journal-deleteMultiple", "left", 11));
 		} else if (currentView == "classroom") {
 			tour.addStep(getStep("classroom", "", "bottom", 1, true));
 			tour.addStep(getStep("classroom", "#classroom-serach-row", "bottom", 2));
@@ -161,6 +166,8 @@ function sugarizerTour(currentView, role) {
 			tour.addStep(getStep("classroom", "#classroom-view-students", "left", 6));
 			tour.addStep(getStep("classroom", "#classroom-edit-class", "left", 7));
 			tour.addStep(getStep("classroom", "#classroom-delete-class", "left", 8));
+			tour.addStep(getStep("classroom", "#checkAll", "right", 9));
+			tour.addStep(getStep("classroom", "#classroom-deleteMultiple", "left", 10));
 		} else if (currentView == "stats") {
 			tour.addStep(getStep("stats", "", "bottom", 1, true));
 			tour.addStep(getStep("stats", "#stats-addChart", "left", 2));
