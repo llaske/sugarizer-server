@@ -244,11 +244,6 @@ function show_user_fields(val) {
 }
 show_user_fields('<% if(typeof user == "object"){ %><%= user.role %><% } %>')
 
-var currTour = sugarizerTour("editUser", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
-if((typeof window.localStorage["view"] == 'undefined') || (window.localStorage["view"] == window.location.pathname)) {
-    if (!currTour.isFinished()) currTour.start();
-} else {
-    currTour.restart();
-}
-window.localStorage["view"] = window.location.pathname;
+var currTour = sugarizerTour("editUser", <% if (account.user && account.user.role=="admin") { %> "admin" <% } else { %> "teacher" <% } %>, "<%= mode %>");
+if (!currTour.isFinished()) currTour.start();
 </script>

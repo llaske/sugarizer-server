@@ -69,6 +69,7 @@ module.exports = function addChart(req, res) {
 		// send to stats page
 		res.render('admin/addEditChart', {
 			module: 'stats',
+			mode: "add",
 			moment: moment,
 			charts: chartList,
 			account: req.session.user,

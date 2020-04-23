@@ -1,9 +1,14 @@
 // Tutorial handling
 
-function sugarizerTour(currentView, role) {
+function sugarizerTour(currentView, role, mode) {
 	var tutorial = {};
 	var tour;
 	var launched = false;
+
+	var tutorialName = currentView;
+	if (mode) {
+		tutorialName = currentView + "_" + mode;
+	}
 
 	// Init tutorial
 	tutorial.init = function() {
@@ -11,7 +16,7 @@ function sugarizerTour(currentView, role) {
 		var nextString = document.webL10n.get("TutoNext");
 		var endString = document.webL10n.get("TutoEnd");
 		tour = new window.Tour({
-			name: currentView,
+			name: tutorialName,
 			template: "\
 			<div class='popover tour popover-tour'>\
 				<div class='arrow'></div>\
@@ -221,12 +226,13 @@ function sugarizerTour(currentView, role) {
 
 	// Check if already finished
 	tutorial.isFinished = function() {
-		if (window.localStorage[currentView + "_end"] == "yes") return true;
+		if (window.localStorage[tutorialName + "_end"] == "yes") return true;
 		return false;
 	};
 
 	tutorial.restart = function() {
-		localStorage.setItem(currentView + "_current_step", 0);
+		localStorage.setItem(tutorialName + "_current_step", 0);
+		localStorage.removeItem(tutorialName + "_end");
 		tutorial.start();
 	};
 

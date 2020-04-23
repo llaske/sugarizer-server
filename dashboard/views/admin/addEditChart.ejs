@@ -112,11 +112,6 @@
 
 
 <script>
-    var currTour = sugarizerTour("editChart", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
-    if((typeof window.localStorage["view"] == 'undefined') || (window.localStorage["view"] == window.location.pathname)) {
-        if (!currTour.isFinished()) currTour.start();
-    } else {
-        currTour.restart();
-    }
-    window.localStorage["view"] = window.location.pathname;
+    var currTour = sugarizerTour("editChart", <% if (account.user && account.user.role=="admin") { %> "admin" <% } else { %> "teacher" <% } %>, "<%= mode %>");
+    if (!currTour.isFinished()) currTour.start();
 </script>
