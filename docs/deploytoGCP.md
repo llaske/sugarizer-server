@@ -4,7 +4,7 @@
 
 Google Cloud platform is an optimal choice right now because it provides 300$ free credits for an year , which could be beneficial in case of scaling up an app as the user increases.
 
-Sugarizer can be deployed to GCP manually by creating a vm instance and firewall or using the ansible package which simplifies the process and automatically does most of the steps for you.
+Sugarizer can be deployed to GCP manually by creating a vm instance and firewall or using the [ansible](https://ansible.com) package which simplifies the process and automatically does most of the steps for you.
 
 This file describes the manual method. Deployment method using ansible can be found [here](ansible-deployToGcp.md)
 
