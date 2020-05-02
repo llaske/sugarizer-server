@@ -330,7 +330,7 @@
     "url": "auth/signup/",
     "title": "Signup User",
     "name": "Signup_User",
-    "description": "<p>Add a new user (Admin or Student). Return the user created.</p> <p>For security reason, call to signup for an Admin is only allowed from the server address.</p>",
+    "description": "<p>Add a new user (Admin or Student). Return the user created. Additionally, before signing up, check if the new name does not already exist.</p> <p>For security reason, call to signup for an Admin is only allowed from the server address.</p>",
     "group": "Auth",
     "version": "1.0.0",
     "success": {
@@ -419,6 +419,13 @@
             "optional": false,
             "field": "timestamp",
             "description": "<p>when the user was created on the server</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": true,
+            "field": "beforeSignup",
+            "description": "<p>Flag to check for name validity</p>"
           }
         ]
       },
@@ -426,6 +433,11 @@
         {
           "title": "Success-Response(Student):",
           "content": " HTTP/1.1 200 OK\n {\n   \"name\": \"Tarun\",\n   \"role\": \"student\",\n   \"color\": {\n     \"stroke\": \"#00A0FF\",\n     \"fill\": \"#00B20D\"\n   },\n   \"favorites\": [],\n   \"language\": \"en\",\n   \"password\": \"xxx\",\n   \"private_journal\": \"5569f4b019e0b4c9525b3c96\",\n   \"shared_journal\": \"536d30874326e55f2a22816f\",\n   \"timestamp\": 1423341000747,\n   \"_id\": \"5569f4b019e0b4c9525b3c97\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success-Response(Before signup):",
+          "content": " HTTP/1.1 200 OK\n {\n   \"exists\": false\n}",
           "type": "json"
         },
         {
