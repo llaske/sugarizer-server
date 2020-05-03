@@ -126,7 +126,7 @@ exports.login = function(req, res) {
 /**
  * @api {post} auth/signup/ Signup User
  * @apiName Signup User
- * @apiDescription Add a new user (Admin or Student). Return the user created.
+ * @apiDescription Add a new user (Admin or Student). Return the user created. Additionally, before signing up, check if the new name does not already exist.
  *
  * For security reason, call to signup for an Admin is only allowed from the server address.
  * @apiGroup Auth
@@ -144,6 +144,7 @@ exports.login = function(req, res) {
  * @apiSuccess {String} private_journal Id of the private journal on the server
  * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
  * @apiSuccess {Number} timestamp when the user was created on the server
+ * @apiSuccess {Boolean} beforeSignup Flag to check for name validity
  *
  * @apiSuccessExample Success-Response(Student):
  *     HTTP/1.1 200 OK
@@ -161,6 +162,12 @@ exports.login = function(req, res) {
  *       "shared_journal": "536d30874326e55f2a22816f",
  *       "timestamp": 1423341000747,
  *       "_id": "5569f4b019e0b4c9525b3c97"
+ *    }
+ *
+ * @apiSuccessExample Success-Response(Before signup):
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "exists": false
  *    }
  *
  * @apiSuccessExample Success-Response(Admin):
