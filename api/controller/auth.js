@@ -144,7 +144,7 @@ exports.login = function(req, res) {
  * @apiSuccess {String} private_journal Id of the private journal on the server
  * @apiSuccess {String} shared_journal Id of the shared journal on the server (the same for all users)
  * @apiSuccess {Number} timestamp when the user was created on the server
- * @apiSuccess {Boolean} beforeSignup Flag to check for name validity
+ * @apiSuccess {Boolean} [beforeSignup] Flag to check for name validity
  *
  * @apiSuccessExample Success-Response(Student):
  *     HTTP/1.1 200 OK
@@ -206,8 +206,8 @@ exports.signup = function(req, res) {
 
 function validateUsername(name, callback) {
 	users.getAllUsers({
-		'name': { 
-			$regex: new RegExp("^" + name + "$", "i") 
+		'name': {
+			$regex: new RegExp("^" + name + "$", "i")
 		}
 	}, {}, function(users) {
 		if (users.length > 0) {
