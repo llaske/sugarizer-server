@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add multiple actions to Journal and Users view #245
 - Added All Classrooms option in Users View
 - Added multi-delete in classroom view
-- Documentation to deploy on GCP with ansible
+- Documentation to deploy on GCP with ansible #256
 - Allow signup function to validate if name exist
 
 ### Changed
