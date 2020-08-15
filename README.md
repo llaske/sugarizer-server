@@ -59,6 +59,7 @@ Following is the typical content of Sugarizer Server settings file:
 	port = 27018
 	name = sugarizer
 	waitdb = 1
+        replicaset = false
 
 	[collections]
 	users = users
@@ -90,7 +91,7 @@ The **[client]** indicate the place where is located Sugarizer Client. Sugarizer
 
 The **[presence]** section describes the settings of the presence server. By default, a web socket is created on port 8039. You need to change this value if you want to use another port.
 
-The **[database]** and **[collections]** sections are for MongoDB settings. You could update the server name (by default MongoDB run locally) and the server port. Names of the database and collections had no reason to be changed. The `waitdb` parameter allow you to force server to wait for the database.
+The **[database]** and **[collections]** sections are for MongoDB settings. You could update the server name (by default MongoDB run locally) and the server port. Names of the database and collections had no reason to be changed. The `waitdb` parameter allow you to force server to wait for the database. Optionally, the `replicaset` parameter can be set to `true` to enable MongoDB Replicaset support, in this case the server name becomes the replicaset connection string.
 
 The **[statistics]** section indicate if the server will log client usage.
 
