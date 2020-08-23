@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Change edit classroom screen to handle large number of students
-- Replace deprecated node library request by superagent
+- Replace deprecated node library request by superagent #254
 
 ### Fixed
 - Package vulnerability fix
