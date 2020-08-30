@@ -59,7 +59,7 @@ Following is the typical content of Sugarizer Server settings file:
 	port = 27018
 	name = sugarizer
 	waitdb = 1
-        replicaset = false
+	replicaset = false
 
 	[collections]
 	users = users

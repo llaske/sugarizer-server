@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added multi-delete in classroom view
 - Documentation to deploy on GCP with ansible #256
 - Allow signup function to validate if name exist
+- Replicaset parameter for MongoDB
 
 ### Changed
 - Change edit classroom screen to handle large number of students
