@@ -11,9 +11,9 @@ module.exports = function(grunt) {
       '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>;' +
       ' Licensed <%= pkg.license %> */\n',
 		// Task configuration.
-		uglify: {
+		terser: {
 			options: {
-				banner: '<%= banner %>'
+				keep_fnames: true
 			},
 			dynamic_mappings: {
 				expand: true,
@@ -47,11 +47,11 @@ module.exports = function(grunt) {
 	});
 
 	// These plugins provide necessary tasks.
-	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-terser');
 	grunt.loadNpmTasks('grunt-contrib-imagemin');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 	// Default task.
-	grunt.registerTask('default', ['uglify', 'imagemin', 'cssmin']);
+	grunt.registerTask('default', ['terser', 'imagemin', 'cssmin']);
 
 };
