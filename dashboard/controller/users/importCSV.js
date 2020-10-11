@@ -1,5 +1,5 @@
 // include libraries
-var request = require('request'),
+var superagent = require('superagent'),
 	csv = require('csv-parser'),
 	fs = require('fs'),
 	common = require('../../helper/common'),
@@ -16,12 +16,12 @@ class User {
 		this._id = "";
 		this.name = name;
 		this.type = type;
-		this.language = language;
-		this.color = color;
+		this.language = language ? language : "";
+		this.color = color ? color : "";
 		this.stroke = "";
 		this.fill = "";
-		this.password = password;
-		this.classroom = classroom;
+		this.password = password ? password : "";
+		this.classroom = classroom ? classroom : [];
 	}
 }
 
@@ -103,7 +103,9 @@ function validateUserRow(user) {
 	}
 
 	user.type = cleanString(user.type);
-	if (!isValidType(user.type)) {
+	if (user.type == "delete") {
+		return user;
+	} else if (!isValidType(user.type)) {
 		user.type = "student";
 	}
 
@@ -150,6 +152,7 @@ module.exports = function profile(req, res) {
 
 	// Define authorization level
 	var authLevel = 0;
+	var user_id = req.session.user.user._id;
 	if (req.session && req.session.user && req.session.user.user) {
 		if (req.session.user.user.role == "admin") {
 			authLevel = 2;
@@ -161,6 +164,7 @@ module.exports = function profile(req, res) {
 	// Initialize the array that will contains all the users read from CSV
 	var AdminsStudents = [];
 	var Teachers = [];
+	var Deletables = [];
 	var InvalidUsers = [];
 
 	// Function to stringift user class object
@@ -190,28 +194,116 @@ module.exports = function profile(req, res) {
 		}
 	}
 
+	// Delete a User
+	function deleteUser(Users, i) {
+		return new Promise(function(resolve, reject) {
+			superagent
+				.delete(common.getAPIUrl() + 'api/v1/users/' + Users[i]._id)
+				.set(common.getHeaders(req))
+				.end(function (error, response) {
+					if (error) {
+						reject(error);
+					} else if (response.statusCode == 200 && response.body.user_id) {
+						Users[i].status = 2;
+						resolve(response.body);
+					} else {
+						response.body.error = "Unable to delete the User";
+						reject(response.body);
+					}
+				});
+		});
+	}
+
+	// Find a User
+	function findUser(Users, i) {
+		return new Promise(function(resolve, reject) {
+			var query = {
+				sort: '+name',
+				q: Users[i].name,
+				role: 'all',
+				limit: 100000
+			};
+			superagent
+				.get(common.getAPIUrl(req) + 'api/v1/users')
+				.set(common.getHeaders(req))
+				.query(query)
+				.end(function (error, response) {
+					if (error) {
+						reject(error);
+					} else if (response.body && response.body.users && response.body.users.length > 0) {
+						var results = response.body.users;
+						var lowerName = cleanString(Users[i].name);
+						var found = false;
+						for (var j=0; j<results.length; j++) {
+							if (results[j].insensitive == lowerName) {
+								found = true;
+								Users[i]._id = results[j]._id;
+								resolve(results[j]);
+								break;
+							}
+						}
+						if (!found) {
+							response.body.error = "User not found";
+							reject(response.body);
+						}
+					} else {
+						response.body.error = "User not found";
+						reject(response.body);
+					}
+				});
+		});
+	}
+
+	// Find and delete a user
+	function findAndDeleteUser(Users, i) {
+		return new Promise(function(resolve, reject) {
+			findUser(Users, i).then(function(res) {
+				if (res && res._id) {
+					// Confirm Match
+					if (res._id == user_id) {
+						Users[i].comment += "Can not delete self. ";
+						reject(res);
+						return;
+					} 
+					deleteUser(Users, i).then(function(res) {
+						// Confirm Deletion
+						resolve(res);
+					}).catch(function(err) {
+						Users[i].comment += (err.error + " ");
+						reject(err);
+					});
+				} else {
+					// user not found
+					Users[i].comment += "User does not exists. ";
+					reject(res);
+				}
+			}).catch(function(err) {
+				Users[i].comment += (err.error + " ");
+				reject(err);
+			});
+		});
+	}
+
 	// Insert User
 	function insertUser(Users, i) {
 		return new Promise(function(resolve, reject) {
-			request({
-				headers: common.getHeaders(req),
-				json: true,
-				method: 'post',
-				uri: common.getAPIUrl() + 'api/v1/users',
-				body: {
+			superagent
+				.post(common.getAPIUrl(req) + 'api/v1/users')
+				.set(common.getHeaders(req))
+				.send({
 					user: stringifyUser(Users[i])
-				}
-			}, function(error, response, body) {
-				if (response.statusCode == 200) {
-					Users[i].status = 1;
-					Users[i]._id = body._id;
-					resolve(body);
-				} else {
-					Users[i].comment += body.error;
-					body.user = Users[i];
-					reject(body);
-				}
-			});
+				})
+				.end(function (error, response) {
+					if (response.statusCode == 200) {
+						Users[i].status = 1;
+						Users[i]._id = response.body._id;
+						resolve(response.body);
+					} else {
+						Users[i].comment += response.body.error;
+						response.body.user = Users[i];
+						reject(response.body);
+					}
+				});
 		});
 	}
 
@@ -242,44 +334,40 @@ module.exports = function profile(req, res) {
 	// Update classroom by ID
 	function updateClassroom(name) {
 		return new Promise(function(resolve, reject) {
-			request({
-				headers: common.getHeaders(req),
-				json: true,
-				method: 'put',
-				uri: common.getAPIUrl() + 'api/v1/classrooms/' + Classrooms[name].data._id,
-				body: {
+			superagent
+				.put(common.getAPIUrl() + 'api/v1/classrooms/' + Classrooms[name].data._id)
+				.set(common.getHeaders(req))
+				.send({
 					classroom: stringifyExistingClassroom(name)
-				}
-			}, function(error, response, body) {
-				body.q = name;
-				if (response.statusCode == 200) {
-					resolve(body);
-				} else {
-					reject(body);
-				}
-			});
+				})
+				.end(function (error, response) {
+					response.body.q = name;
+					if (response.statusCode == 200) {
+						resolve(response.body);
+					} else {
+						reject(response.body);
+					}
+				});
 		});
 	}
 
 	// Insert Classroom
 	function insertClassroom(name) {
 		return new Promise(function(resolve, reject) {
-			request({
-				headers: common.getHeaders(req),
-				json: true,
-				method: 'post',
-				uri: common.getAPIUrl() + 'api/v1/classrooms',
-				body: {
+			superagent
+				.post(common.getAPIUrl() + 'api/v1/classrooms')
+				.set(common.getHeaders(req))
+				.send({
 					classroom: stringifyNewClassroom(name)
-				}
-			}, function(error, response, body) {
-				body.q = name;
-				if (response.statusCode == 200) {
-					resolve(body);
-				} else {
-					reject(body);
-				}
-			});
+				})
+				.end(function (error, response) {
+					response.body.q = name;
+					if (response.statusCode == 200) {
+						resolve(response.body);
+					} else {
+						reject(response.body);
+					}
+				});
 		});
 	}
 
@@ -290,20 +378,18 @@ module.exports = function profile(req, res) {
 				sort: '+name',
 				q: name
 			};
-			request({
-				headers: common.getHeaders(req),
-				json: true,
-				method: 'GET',
-				qs: query,
-				uri: common.getAPIUrl() + 'api/v1/classrooms'
-			}, function(error, response, body) {
-				body.q = name;
-				if (response.statusCode == 200) {
-					resolve(body);
-				} else {
-					reject(body);
-				}
-			});
+			superagent
+				.get(common.getAPIUrl() + 'api/v1/classrooms')
+				.set(common.getHeaders(req))
+				.query(query)
+				.end(function (error, response) {
+					response.body.q = name;
+					if (response.statusCode == 200) {
+						resolve(response.body);
+					} else {
+						reject(response.body);
+					}
+				});
 		});
 	}
 
@@ -334,14 +420,11 @@ module.exports = function profile(req, res) {
 						classroomProcessed++;
 						if (res) {
 							Classrooms[res.q].data = res;
-						} else {
-							console.log("Error creating classroom");
 						}
 						if (classroomProcessed == classes.length) initTeacherAssignment();
 					})
-						.catch(function(err) {
+						.catch(function() {
 							classroomProcessed++;
-							console.log(err);
 							if (classroomProcessed == classes.length) initTeacherAssignment();
 						});
 				} else {
@@ -350,21 +433,17 @@ module.exports = function profile(req, res) {
 						classroomProcessed++;
 						if (res) {
 							Classrooms[res.q].data = res;
-						} else {
-							console.log("Error creating classroom");
 						}
 						if (classroomProcessed == classes.length) initTeacherAssignment();
 					})
-						.catch(function(err) {
+						.catch(function() {
 							classroomProcessed++;
-							console.log(err);
 							if (classroomProcessed == classes.length) initTeacherAssignment();
 						});
 				}
 			})
-				.catch(function(err) {
+				.catch(function() {
 					classroomProcessed++;
-					console.log(err);
 					if (classroomProcessed == classes.length) initTeacherAssignment();
 				});
 		}
@@ -436,11 +515,13 @@ module.exports = function profile(req, res) {
 				classroomProcessed++;
 				if (classroomProcessed == classes.length) revalidateUsers();
 			})
-				.catch(function(err) {
+				.catch(function() {
 					classroomProcessed++;
-					console.log(err);
 					if (classroomProcessed == classes.length) revalidateUsers();
 				});
+		}
+		if (classes.length == 0) {
+			revalidateUsers();
 		}
 	}
 
@@ -475,10 +556,30 @@ module.exports = function profile(req, res) {
 		}
 	}
 
+	// Initiate User Deletion
+	function initUserDeletion() {
+		if (Deletables.length > 0) {
+			var usersProcessed = 0;
+			// Delete Deletables
+			for (var i=0; i < Deletables.length; i++) {
+				findAndDeleteUser(Deletables, i).then(function() {
+					usersProcessed++;
+					if (usersProcessed == Deletables.length) initSeed();
+				}).catch(function() {
+					usersProcessed++;
+					if (usersProcessed == Deletables.length) initSeed();
+				});
+			}
+		} else {
+			initSeed();
+		}
+	}
+
 	// Return JSON Response
 	function returnResponse() {
-		var allUsers = [...new Set([...AdminsStudents, ...Teachers, ...InvalidUsers])];
+		var allUsers = [...new Set([...Deletables, ...AdminsStudents, ...Teachers, ...InvalidUsers])];
 		var importCount = 0;
+		var deleteCount = 0;
 		var color, stroke, fill;
 		var classrooms;
 		for (var i=0; i<allUsers.length; i++) {
@@ -487,6 +588,8 @@ module.exports = function profile(req, res) {
 			if (allUsers[i]) {
 				if (allUsers[i].status == 1) {
 					importCount++;
+				} else if (allUsers[i].status == 2) {
+					deleteCount++;
 				}
 
 				// Check if valid JSON for color
@@ -518,7 +621,13 @@ module.exports = function profile(req, res) {
 				allUsers[i].classroom = classrooms;
 			}
 		}
-		res.json({success: true, msg: common.l10n.get('ImportSuccess', {count: importCount}), data: allUsers});
+		if (importCount > 0 && deleteCount > 0) {
+			res.json({success: true, msg: common.l10n.get('ImportAndDeleteSuccess', {insert: importCount, delete: deleteCount}), data: allUsers});
+		} else if (deleteCount > 0) {
+			res.json({success: true, msg: common.l10n.get('DeleteSuccess', {count: deleteCount}), data: allUsers});
+		} else {
+			res.json({success: true, msg: common.l10n.get('ImportSuccess', {count: importCount}), data: allUsers});
+		}
 		return;
 	}
 
@@ -551,7 +660,9 @@ module.exports = function profile(req, res) {
 			.on('data', function(row) {
 				var validRow = validateUserRow(row);
 				if (validRow) {
-					if (validRow.type == "teacher") {
+					if (validRow.type == "delete") {
+						Deletables.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
+					} else if (validRow.type == "teacher") {
 						if (authLevel > 1) {
 							Teachers.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
 						} else {
@@ -576,13 +687,13 @@ module.exports = function profile(req, res) {
 			// Finished processing CSV file
 				fs.unlinkSync(req.file.path); // remove temp file
 
-				var AllUsers = [...new Set([...AdminsStudents, ...Teachers])];
+				var AllUsers = [...new Set([...Deletables, ...AdminsStudents, ...Teachers])];
 
 				if (AllUsers.length == 0) {
 					res.json({success: false, msg: common.l10n.get('NoUsers')});
 					return;
 				}
-				initSeed();
+				initUserDeletion();
 			});
 	} else {
 		res.json({success: false, msg: common.l10n.get('ErrorCode19')});

@@ -4,7 +4,7 @@
 
 [Sugarizer](https://github.com/llaske/sugarizer) is the open source learning platform based on Sugar that began in the famous One Laptop Per Child project.
 
-Sugarizer Server allow deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 6+ and MongoDB 2.6+.
+Sugarizer Server allows the deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 6+ and MongoDB 2.6+.
 
 
 ## Running Sugarizer Server
@@ -59,6 +59,7 @@ Following is the typical content of Sugarizer Server settings file:
 	port = 27018
 	name = sugarizer
 	waitdb = 1
+	replicaset = false
 
 	[collections]
 	users = users
@@ -81,27 +82,27 @@ Following is the typical content of Sugarizer Server settings file:
 
 The **[information]** section is for describing your server. It could be useful for clients connected to the server.
 
-The **[web]** section describe the settings of the node.js process. By default, the web server is on the port 8080.
+The **[web]** section describes the settings of the node.js process. By default, the web server is on the port 8080.
 
 The **[security]** section regroup security settings. `min_password_size` is the minimum number of characters for the password. `max_age` is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours). Parameters `https`, `certificate_file`, `key_file` and `strict_ssl` are explain above.
 It `no_signup_mode` is true, account creation is allowed only by an administrator or a teacher (no direct sign-up allowed by a student).
 
 The **[client]** indicate the place where is located Sugarizer Client. Sugarizer Client is need by the server.
 
-The **[presence]** section describe the settings of the presence server. By default, a web socket is created on port 8039. You need to change this value if you want to use another port.
+The **[presence]** section describes the settings of the presence server. By default, a web socket is created on port 8039. You need to change this value if you want to use another port.
 
-The **[database]** and **[collections]** sections are for MongoDB settings. You could update the server name (by default MongoDB run locally) and the server port. Names of the database and collections had no reason to be changed. The `waitdb` parameter allow you to force server to wait for the database.
+The **[database]** and **[collections]** sections are for MongoDB settings. You could update the server name (by default MongoDB run locally) and the server port. Names of the database and collections had no reason to be changed. The `waitdb` parameter allow you to force server to wait for the database. Optionally, the `replicaset` parameter can be set to `true` to enable MongoDB Replicaset support, in this case the server name becomes the replicaset connection string.
 
 The **[statistics]** section indicate if the server will log client usage.
 
 The **[log]** section indicate how the server log access. If `level` value is greater than 0 or is not present, Sugarizer Server will log all access to the server on the command line.
 
-The **[activities]** section describe information on where to find embedded activities. The favorites value list ids of activities that Web Application users will find by default on the home page. All values are self explained and had no reason to be changed.
+The **[activities]** section describes information on where to find embedded activities. The favorites value list ids of activities that Web Application users will find by default on the home page. All values are self explained and had no reason to be changed.
 
 
 ## Dashboard
 
-Sugarizer Server Dashboard is an admin tool for teachers and deployment administrator. This dashboard can be used to control and manage the work of learners and manage and analyze all activities on a Sugarizer Server. The Dashboard have following features:
+Sugarizer Server Dashboard is an admin tool for teachers and deployment administrator. This dashboard can be used to control and manage the work of learners and manage and analyze all activities on a Sugarizer Server. The Dashboard has following features:
 
 * Users: how many users have been registered on the server, recent users, top users on the server, create/edit/remove a user.
 * Journal: how many Journals and how many entries in Journal on the server, last Journal, and last entries, edit a journal (see/update/remove) entries.
@@ -113,7 +114,7 @@ To login to the Dashboard the first time, you will have to create an admin accou
 
 	sh add-admin.sh admin password http://127.0.0.1:8080/auth/signup
 
-Note: For security reason, the script should be launched from the local machine. On Docker, attach a new shell to the container and launch the script from this shell - in that case the port to use should be 80, not 8080.
+Note: For security reasons, the script should be launched from the local machine. On Docker, attach a new shell to the container and launch the script from this shell - in that case the port to use should be 80, not 8080.
 
 Where **admin** is the login for the new admin account and **password** is the password.
 
@@ -121,7 +122,7 @@ Once the admin account is created, you could access Sugarizer Dashboard on http:
 
 ## Server API
 
-To implement the above functionalities, the sugarizer backend expose an API. The API routes look as follows:
+To implement the above functionalities, the sugarizer backend exposes an API. The API routes look as follows:
 
 
 #### INFORMATION ROUTE
@@ -207,9 +208,9 @@ To generate docs, run the following command in `terminal`.
 	apidoc -i api/controller  -i dashboard/helper -o docs/www/
 
 
-## Import users from a CSV file
+## Import/Delete users using a CSV file
 
-Sugarizer Server comes with a script to import a set of students, administrators and classrooms from a CSV file.
+Sugarizer Server comes with a script to import/delete a set of students, teachers, administrators and classrooms from a CSV file.
 
 To launch it, run the command line:
 
@@ -217,33 +218,35 @@ To launch it, run the command line:
     export NODE_ENV=settings
     node scripts/seed_users.js filename.csv
 
-Where `settings` is the name of the .ini file to use for settings (default is `sugarizer`). `filename.csv` is the CSV who contains items to create. Here's an example of CSV file:
+Where `settings` is the name of the .ini file to use for settings (default is `sugarizer`). `filename.csv` is the CSV who contains items to create/delete. Here's an example of CSV file:
 
-    name,type,language,color,password,classroom
-    Lionel,admin,fr,"{""stroke"":""#F8E800"",""fill"":""#FF8F00""}",aaaa,
-    Nikhil,student,,,,CM2
+    name,type,language,stroke,fill,password,classroom
+    Lionel,admin,fr,#BCCDFF,#FF8F00,aaaa,
+    Nikhil,student,,,,,CM2
 
 Note that the header line is needed.
 
 The signification of each field is:
 
 * `name` is the name of the account to create.
-* `type` is the type of account. Should be `student` or `admin`.
+* `type` is the type of account. Should be `student`, `teacher`, `admin` or `delete`. If the type of set to `delete`, the user with that `name` will be deleted.
 * `language` is the language for the account. If missing, the default is `en`.
-* `color` is the color for the account. If missing, it's generated randomly.
+* `stroke` is the stroke color for the account. If missing, it's generated randomly.
+* `fill` is the fill color for the account. If missing, it's generated randomly.
 * `password` is the password for the account. If missing, it's generated randomly.
-* `classroom` is the classroom for the student. If a classroom with this name exist, the student is add to the classroom. If a classroom don't exist, the classroom is created first. If missing, the student is let without classroom.
+* `classroom` is the classroom for the student. If a classroom with this name exists, the student is added to the classroom. If a classroom doesn't exist, the classroom is created first. If missing, the student is let without classroom.
 
-At the end of the script a new CSV file named `output.csv` is generated. The output file has the same format than the input field with two more fields:
+At the end of the script, a new CSV file named `output.csv` is generated. The output file has the same format than the input field with three more fields:
 
-* `status` is 1 if item created, 0 if an error happened.
+* `status` is 1 if item created, 2 if item deleted, 0 if an error happened.
 * `comment` is the detail of action done.
+* `_id` is the ObjectId of the created account.
 
 Here's an example of output file:
 
-    name,type,language,color,password,classroom,status,comment
-    Lionel,admin,fr,"{""stroke"":""#F8E800"",""fill"":""#FF8F00""}",aaaa,,1,
-    Nikhil,student,en,"{""stroke"":""#807500"",""fill"":""#FF8F00""}",l0dU,CM2,1,Given password was invalid (Generated random password).
+    status,comment,_id,name,type,language,stroke,fill,password,classroom
+    1,,5d30162ced7ee117b842ad4a,Lionel,admin,fr,#BCCDFF,#FF8F00,aaaa,
+    1,Given password was invalid (Generated random password).,5d30162ced7ee117b842ad57,Nikhil,student,en,#D1A3FF,#AC32FF,l0dU,CM2
 
 Note: For security reason, the script should be launched from the local machine. On Docker, attach a new shell to the container and launch the script from this shell - in that case the port to use should be 80, not 8080.
 
@@ -255,7 +258,7 @@ Few parameters in the **[security]** section of the setting file are dedicated t
 
 * To run the server securely set `https` parameter to `true`.
 * `certificate_file` and `key_file` are path to certificate and key file to sign requests.
-* `strict_ssl` should be set to `false` if your certificate is a self signed certificate or is a certificate not signed by a trusted authority.
+* `strict_ssl` should be set to `false` if your certificate is a self-signed certificate or is a certificate not signed by a trusted authority.
 
 
 ## Unit testing
@@ -271,15 +274,15 @@ Note that settings for unit testing are defined in [env/test.ini](env/test.ini).
 
 # Optimize performance
 
-If you want to optimize JavaScript performance, you could generate an optimized version of Sugarizer and Sugarizer-Server with [Grunt](http://gruntjs.com). This optimized version will minimize and reduce size of the public resources.
+If you want to optimize JavaScript performance, you could generate an optimized version of Sugarizer and Sugarizer-Server with [Grunt](http://gruntjs.com). This optimized version will minimize and reduce the size of the public resources.
 
-First ensure than Node.js and npm is installed on your machine. See [here](http://nodejs.org/) for more information.
+First, ensure that Node.js and npm are installed on your machine. See [here](http://nodejs.org/) for more information.
 
-The Gruntfile.js contains tasks settings to build an optimized version of Sugarizer and Sugarizer-Server. To do that, ensure first that Grunt is installed:
+The Gruntfile.js contains task settings to build an optimized version of Sugarizer and Sugarizer-Server. To do that, ensure first that Grunt is installed:
 
 	npm install -g grunt-cli
 
-Then navigate to Sugarizer directory install specific component for Sugarizer by running:
+Then navigate to Sugarizer directory install the specific component for Sugarizer by running:
 
 	npm install
 
@@ -287,11 +290,11 @@ Then launch Grunt task to minify Sugarizer JavaScript files:
 
 	grunt -v
 
-After minification, the `build` directory will contain the optimized version of each file in a same directory that the initial one, so you could just copy files:
+After minification, the `build` directory will contain the optimized version of each file in the same directory as the initial one, so you could just copy files:
 
 	cp -r build/* .
 
-Then navigate to Sugarizer-Server directory install specific component for Sugarizer-Server by running:
+Then navigate to Sugarizer-Server directory install the specific component for Sugarizer-Server by running:
 
 	npm install
 

@@ -10,7 +10,7 @@
                 <div class="card-content">
                     <%- include ../includes/flash-errors %>
                     <form id="classroom-add-edit-form" method="post" <% if(typeof classroom == 'object'){ %> action="<%= classroom._id %>" <% } %>>
-                        <div class="row">
+                        <div class="row" id="editClassroom-name">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="name"></label>
@@ -19,63 +19,66 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="editClassroom-students">
                             <div class="col-md-12">
                                 <div class="form-group form-black" style="margin-top: -15px;">
                                     <label class="control-label" data-l10n-id="students"></label>
-                                    <select id='searchable-select-students' multiple='multiple' name="students" class="form-control">
+                                    <select id="select-students-select2" multiple="multiple" name="students" class="form-control">
                                         <% if(typeof classroom == 'object') { %>
                                             <% for(var i=0; i < classroom.students.length; i++) { %>
-                                                <option <% if(classroom.students[i].is_member) { %> selected <% } %> value='<%= classroom.students[i]._id %>'><%= classroom.students[i].name %></option>
-                                            <% } %>
-                                        <% } else { %>
-                                            <% for(var i=0; i < students.length; i++) { %>
-                                                <option value='<%= students[i]._id %>'><%= students[i].name %></option>
+                                                <option selected value='<%= classroom.students[i]._id %>'><%= classroom.students[i].name %></option>
                                             <% } %>
                                         <% } %>
                                     </select>
-                                    <script type="text/javascript">
-                                        // run multiSelect
-                                        $('#searchable-select-students').multiSelect({
-                                            selectableHeader: "<input type='text' class='form-control' data-l10n-id='john' autocomplete='off' placeholder='search students'>",
-                                            selectionHeader: "<input type='text' class='form-control' data-l10n-id='john' autocomplete='off' placeholder='search students'>",
-                                            afterInit: function(ms){
-                                                var that = this,
-                                                    $selectableSearch = that.$selectableUl.prev(),
-                                                    $selectionSearch = that.$selectionUl.prev(),
-                                                    selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
-                                                    selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+                                    <script>
+                                        $(document).ready(function() {
+                                            document.webL10n.ready(function() {
+                                                var refreshIntervalId = setInterval(function() {
+                                                    if (document.webL10n.getReadyState() == "complete") {
+                                                        clearInterval(refreshIntervalId);
 
-                                                that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-                                                    .on('keydown', function(e){
-                                                    if (e.which === 40){
-                                                        that.$selectableUl.focus();
-                                                        return false;
+                                                        if ($("#select-students-select2").length > 0) {
+                                                            $("#select-students-select2").select2({
+                                                                ajax: {
+                                                                    url: "/dashboard/users/search",
+                                                                    dataType: 'json',
+                                                                    delay: 250,
+                                                                    data: function (params) {
+                                                                        return {
+                                                                            q: params.term
+                                                                        };
+                                                                    },
+                                                                    processResults: function (data) {
+                                                                        if (data && data.data && data.data.users && data.data.users.length > 0) {
+                                                                            for (var i=0; i<data.data.users.length; i++) {
+                                                                                data.data.users[i].id = data.data.users[i]._id;
+                                                                                data.data.users[i].text = data.data.users[i].name;
+                                                                            }
+                                                                            return {
+                                                                                results: data.data.users
+                                                                            };
+                                                                        } else {
+                                                                            return {
+                                                                                results: []
+                                                                            };
+                                                                        }
+                                                                    },
+                                                                    cache: true
+                                                                },
+                                                                multiple: true,
+                                                                templateResult: formatUserField,
+                                                                placeholder: document.webL10n.get("searchUser")
+                                                            });
+                                                        }
                                                     }
-                                                });
-
-                                                that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-                                                    .on('keydown', function(e){
-                                                    if (e.which == 40){
-                                                        that.$selectionUl.focus();
-                                                        return false;
-                                                    }
-                                                });
-                                            },
-                                            afterSelect: function(){
-                                                this.qs1.cache();
-                                                this.qs2.cache();
-                                            },
-                                            afterDeselect: function(){
-                                                this.qs1.cache();
-                                                this.qs2.cache();
-                                            }
+                                                }, 100);
+                                            });
                                         });
                                     </script>
                                 </div>
                             </div>
                         </div>
-                        <div class="row color_input">
+                        <div class="row color_input" id="editClassroom-colors">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="color"></label>
@@ -93,7 +96,7 @@
                             </div>
                         </div>
                         <% if(typeof classroom == 'object' && classroom.created_time) { %>
-                        <div class="row">
+                        <div class="row" id="editClassroom-created">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="createdTime"></label>
@@ -103,7 +106,7 @@
                         </div>
                         <% } %>
                         <% if(typeof classroom == 'object' && classroom.timestamp) { %>
-                        <div class="row">
+                        <div class="row" id="editClassroom-lastupdated">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="lastUpdated"></label>
@@ -124,3 +127,8 @@
     </div>
   </div>
 <%- include ../includes/footer %>
+
+<script>
+    var currTour = sugarizerTour("editClassroom", <% if (account.user && account.user.role=="admin") { %> "admin" <% } else { %> "teacher" <% } %>, "<%= mode %>");
+    if (!currTour.isFinished()) currTour.start();
+</script>

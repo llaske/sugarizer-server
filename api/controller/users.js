@@ -200,6 +200,7 @@ exports.findAll = function(req, res) {
 				})
 			};
 		}
+		query['_id']['$in'].push(new mongo.ObjectID(req.user._id));
 	} else {
 		query = addQuery('classid', req.query, query);
 	}
@@ -244,7 +245,7 @@ function formPaginatedUrl(route, params, offset, limit) {
 	params.limit = limit;
 	var str = [];
 	for (var p in params)
-		if (params.hasOwnProperty(p)) {
+		if (p && Object.prototype.hasOwnProperty.call(params, p)) {
 			str.push((p) + "=" + (params[p]));
 		}
 	return '?' + str.join("&");
@@ -350,6 +351,25 @@ function addQuery(filter, params, query, default_val) {
 					return new mongo.ObjectID(id);
 				})
 			};
+		} else if (filter == 'role') {
+			if (params[filter] == 'stuteach') {
+				query['$or'] = [
+					{
+						role: {
+							$regex: new RegExp("^student$", "i")
+						}
+					},
+					{
+						role: {
+							$regex: new RegExp("^teacher$", "i")
+						}
+					}
+				];
+			} else if (params[filter] != 'all') {
+				query[filter] = {
+					$regex: new RegExp("^" + params[filter] + "$", "i")
+				};
+			} 
 		} else {
 			query[filter] = {
 				$regex: new RegExp("^" + params[filter] + "$", "i")
@@ -463,12 +483,8 @@ exports.addUser = function(req, res) {
 	}, {}, function(item) {
 		if (item.length == 0) {
 			//create user based on role
-			if (user.role == 'admin' || user.role == 'teacher') {
-				if (user.role != 'teacher') {
-					delete user.classrooms;
-				} else if (!user.classrooms) {
-					user.classrooms = [];
-				}
+			if (user.role == 'admin') {
+				delete user.classrooms;
 				db.collection(usersCollection, function(err, collection) {
 					collection.insertOne(user, {
 						safe: true
@@ -485,6 +501,11 @@ exports.addUser = function(req, res) {
 				});
 			} else {
 				//for student
+				if (user.role != 'teacher') {
+					delete user.classrooms;
+				} else if (!user.classrooms) {
+					user.classrooms = [];
+				}
 				db.collection(usersCollection, function(err, collection) {
 					// Create a new journal
 					journal.createJournal(function(err, result) {

@@ -1,49 +1,16 @@
 function initDragDrop() {
 
-	var adjustment;
-
 	$("ol.simple_with_animation").sortable({
 		handle: '.draggable',
-		group: 'simple_with_animation',
-		pullPlaceholder: false,
-		placeholder: '<div class="placeholder"></div>',
-		// animation on drop
-		onDrop: function($item, container, _super) {
-			var $clonedItem = $('<li/>').css({
-				height: 0
-			});
-			$item.before($clonedItem);
-			$clonedItem.animate({
-				'height': $item.height()
-			});
-
-			$item.animate($clonedItem.position(), function() {
-				$clonedItem.detach();
-				_super($item, container);
-			});
-
+		axis: 'y',
+		containment: 'parent',
+		animation: 150,
+		scrollSensitivity: 50,
+		scrollSpeed: 15,
+		update: function (event, ui) {
 			//update activities
 			updateActivities();
 		},
-
-		// set $item relative to cursor position
-		onDragStart: function($item, container, _super) {
-			var offset = $item.offset(),
-				pointer = container.rootGroup.pointer;
-
-			adjustment = {
-				left: pointer.left - offset.left,
-				top: pointer.top - offset.top
-			};
-
-			_super($item, container);
-		},
-		onDrag: function($item, position) {
-			$item.css({
-				left: position.left - adjustment.left,
-				top: position.top - adjustment.top
-			});
-		}
 	});
 }
 
@@ -122,6 +89,23 @@ html5indexedDB.removeValue = function(key, then) {
 	};
 };
 
+function base64toBlob(mimetype, base64) {
+	var contentType = mimetype;
+	var byteCharacters = atob(base64.substr(base64.indexOf(';base64,')+8));
+	var byteArrays = [];
+	for (var offset = 0; offset < byteCharacters.length; offset += 1024) {
+		var slice = byteCharacters.slice(offset, offset + 1024);
+		var byteNumbers = new Array(slice.length);
+		for (var i = 0; i < slice.length; i++) {
+			byteNumbers[i] = slice.charCodeAt(i);
+		}
+		var byteArray = new Uint8Array(byteNumbers);
+		byteArrays.push(byteArray);
+	}
+	var blob = new Blob(byteArrays, {type: contentType});
+	return blob;
+}
+
 function launch_activity(callurl) {
 	function loadDataDeprec(response, lsBackup) {
 		for (var index in response.lsObj) {
@@ -172,6 +156,25 @@ function launch_activity(callurl) {
 				type: 'danger'
 			});
 		}
+
+		var metadata = {};
+		if (response && response.lsObj) {
+			try {
+				metadata = JSON.parse(response.lsObj["sugar_datastore_" + response.objectId]);
+			} catch (e) {
+				metadata = response.lsObj["sugar_datastore_" + response.objectId];
+			}
+		}
+		if (metadata && metadata.metadata && metadata.metadata.mimetype == "application/pdf") {
+			// Convert blob object URL
+			var blob = base64toBlob(metadata.metadata.mimetype, response.lsObj["sugar_datastoretext_" + response.objectId]);
+			var blobUrl = URL.createObjectURL(blob);
+
+			// Open in a new browser tab
+			window.open(blobUrl, '_blank');
+			return;
+		}
+
 		// backup current storage and create a virtual context in local storage
 		var keyHistory = [];
 		var datastorePrefix = 'sugar_datastore';
@@ -288,50 +291,17 @@ function updateActivities() {
 }
 
 function initChartDragDrop() {
-	var adjustment;
-
 	$("ol.simple_with_animation").sortable({
 		handle: '.draggable',
-		group: 'simple_with_animation',
-		pullPlaceholder: false,
-		placeholder: '<div class="placeholder"></div>',
-		// animation on drop
-		onDrop: function($item, container, _super) {
-			var $clonedItem = $('<li/>').css({
-				height: 0
-			});
-			$item.before($clonedItem);
-			$clonedItem.animate({
-				'height': $item.height()
-			});
-
-			$item.animate($clonedItem.position(), function() {
-				$clonedItem.detach();
-				_super($item, container);
-			});
-
-			// Update chart order
+		axis: 'y',
+		containment: 'parent',
+		animation: 150,
+		scrollSensitivity: 50,
+		scrollSpeed: 15,
+		update: function (event, ui) {
+			//update chart order
 			updateChartOrder();
 		},
-
-		// set $item relative to cursor position
-		onDragStart: function($item, container, _super) {
-			var offset = $item.offset(),
-				pointer = container.rootGroup.pointer;
-
-			adjustment = {
-				left: pointer.left - offset.left,
-				top: pointer.top - offset.top
-			};
-
-			_super($item, container);
-		},
-		onDrag: function($item, position) {
-			$item.css({
-				left: position.left - adjustment.left,
-				top: position.top - adjustment.top
-			});
-		}
 	});
 }
 
@@ -340,7 +310,6 @@ function updateChartOrder() {
 	$.each($('[name="hiddenCharts"]'), function(index, value) {
 		list.push($(this).parent().data('id'));
 	});
-	console.log(list);
 	var data = {
 		chart: JSON.stringify({
 			list: list
@@ -406,17 +375,20 @@ function updateChart(chartid) {
 }
 
 function formatUserField(state) {
-	if (!state.id) {
+	if (!state._id) {
 		return state.text;
 	}
+	var d = new Date(state.timestamp);
 	var $state = $(
-		'<div class="student" id="' + $(state.element).data('id') + '">\
+		'<div class="student" id="' + state._id + '">\
 			<div class="xo-icon"></div>\
-			<div class="name">' + state.text + '</div>\
-			<div class="timestamp">' + $(state.element).data('timestamp') + '</div>\
-		</div>'
+			<div class="name">' + state.name + '</div>\
+			<div class="timestamp">' + d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear() + '</div>\
+		</div>\
+		<script>\
+			new icon().load("/public/img/owner-icon.svg", ' + JSON.stringify(state.color) + ', "' + state._id + '");\
+		</script>'
 	);
-	new icon().load("/public/img/owner-icon.svg", $(state.element).data('color'), $(state.element).data('id'));
 	return $state;
 }
 
@@ -460,39 +432,65 @@ function matchColorField(params, data) {
 }
 
 $(document).ready(function() {
-	if ($("#users-select2").length > 0) {
-		$("#users-select2").select2({
-			templateResult: formatUserField
-		}).on("change", function(e) {
-			var pj = $("#users-select2 option:selected").data('private_journal');
-			var sj = $("#users-select2 option:selected").data('shared_journal');
-			$('#journal-type-select2').trigger("change");
-			if ($("#journal-type-select2 option:selected").val() == 'shared') {
-				$('#getJournalEntries').attr('action', '/dashboard/journal/' + sj);
-			} else {
-				$('#getJournalEntries').attr('action', '/dashboard/journal/' + pj);
+	document.webL10n.ready(function() {
+		var refreshIntervalId = setInterval(function() {
+			if (document.webL10n.getReadyState() == "complete") {
+				clearInterval(refreshIntervalId);
+				if ($("#users-select2").length > 0) {
+					$("#users-select2").select2({
+						ajax: {
+							url: "/dashboard/users/search",
+							dataType: 'json',
+							delay: 250,
+							data: function (params) {
+								return {
+									q: params.term,
+									role: 'stuteach'
+								};
+							},
+							processResults: function (data) {
+								if (data && data.data && data.data.users && data.data.users.length > 0) {
+									for (var i=0; i<data.data.users.length; i++) {
+										data.data.users[i].id = data.data.users[i]._id;
+										data.data.users[i].text = data.data.users[i].name;
+									}
+									return {
+										results: data.data.users
+									};
+								} else {
+									return {
+										results: []
+									};
+								}
+							},
+							cache: true
+						},
+						templateResult: formatUserField,
+						placeholder: document.webL10n.get("searchUser")
+					}).on("select2:select", function (e) {
+						if (e.params && e.params.data && (e.params.data.private_journal || e.params.data.shared_journal)) {
+							document.pj_global = e.params.data.private_journal;
+							document.sj_global = e.params.data.shared_journal;
+							$('#getJournalEntries').attr('action', '/dashboard/journal/' + document.pj_global);
+						}
+					}).on("change", function(e) {
+						if ($("#users-select2 option:selected").data('private_journal') || $("#users-select2 option:selected").data('shared_journal')) {
+							document.pj_global = $("#users-select2 option:selected").data('private_journal');
+							document.sj_global = $("#users-select2 option:selected").data('shared_journal');
+							$('#getJournalEntries').attr('action', '/dashboard/journal/' + document.pj_global);
+						}
+					});
+					$("#users-select2").trigger("change");
+				}
 			}
-		});
-		$("#users-select2").trigger("change");
-	}
+		}, 100);
+	});
 
 	if ($("#color-select2").length > 0) {
 		$("#color-select2").select2({
 			templateResult: formatColorField,
 			templateSelection: formatColorField,
 			matcher: matchColorField
-		});
-	}
-
-	if ($("#journal-type-select2").length > 0) {
-		$("#journal-type-select2").select2().on("change", function(e) {
-			var pj = $("#users-select2 option:selected").data('private_journal');
-			var sj = $("#users-select2 option:selected").data('shared_journal');
-			if ($("#journal-type-select2 option:selected").val() == 'shared') {
-				$('#getJournalEntries').attr('action', '/dashboard/journal/' + sj);
-			} else {
-				$('#getJournalEntries').attr('action', '/dashboard/journal/' + pj);
-			}
 		});
 	}
 });
@@ -571,7 +569,18 @@ function onLocalized() {
 		}
 		lang.onchange = function() {
 			localStorage.setItem("languageSelection", this.value);
-			location.href = window.location.pathname + "?lang="+lang.value;
+			var searchQuery = location.search;
+			if(searchQuery.length == 0) {
+				//query empty
+				searchQuery = '?lang=' + lang.value;
+			} else if(searchQuery.indexOf('lang=') != -1) {
+				// query contains the 'lang=' parameter
+				searchQuery = searchQuery.replace(/lang=[a-z][a-z]/, 'lang=' + lang.value);
+			} else {
+				// query does not contain 'lang=' parameter
+				searchQuery += '&lang=' + lang.value;
+			}
+			location.href = window.location.pathname + searchQuery;
 		};
 	}
 }
@@ -776,7 +785,7 @@ function sortBy(params) {
 
 	var url = location.origin + location.pathname + '?';
 	for (var key in query) {
-		if (key && query.hasOwnProperty(key)) {
+		if (key && Object.prototype.hasOwnProperty.call(query, key)) {
 			var val = query[key];
 			url += key + '=' + val + '&';
 		}
@@ -786,6 +795,10 @@ function sortBy(params) {
 
 function launchTutorial() {
 	if (window.currTour && typeof window.currTour.restart == "function") {
+		if (window.location.pathname.substr(0,19) == "/dashboard/journal/") {
+			localStorage.removeItem('journal1_end');
+			localStorage.removeItem('journal1_current_step');
+		}
 		window.currTour.restart();
 	}
 }
@@ -800,4 +813,690 @@ function generateQRCode() {
 		$(this).find('.modal-dialog').css({width:'350px',height:'350px'});
 	});
 	$("#qrpopup").modal();
+}
+
+// Decoding functions taken from
+// https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding
+function b64ToUint6(nChr) {
+	return nChr > 64 && nChr < 91 ?
+		nChr - 65
+		: nChr > 96 && nChr < 123 ?
+			nChr - 71
+			: nChr > 47 && nChr < 58 ?
+				nChr + 4
+				: nChr === 43 ?
+					62
+					: nChr === 47 ?
+						63
+						:
+						0;
+}
+
+function base64DecToArr(sBase64, nBlocksSize) {
+	var
+		sB64Enc = sBase64.replace(/[^A-Za-z0-9+/]/g, ""), nInLen = sB64Enc.length,
+		nOutLen = nBlocksSize ? Math.ceil((nInLen * 3 + 1 >> 2) / nBlocksSize) * nBlocksSize : nInLen * 3 + 1 >> 2, taBytes = new Uint8Array(nOutLen);
+	for (var nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
+		nMod4 = nInIdx & 3;
+		nUint24 |= b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << 6 * (3 - nMod4);
+		if (nMod4 === 3 || nInLen - nInIdx === 1) {
+			for (nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
+				taBytes[nOutIdx] = nUint24 >>> (16 >>> nMod3 & 24) & 255;
+			}
+			nUint24 = 0;
+		}
+	}
+	return taBytes;
+}
+
+// Write a new file
+function writeFile(metadata, content, callback) {
+	var binary = null;
+	var text = null;
+	var extension = "json";
+	var title = metadata.title;
+	var mimetype = 'application/json';
+	if (metadata && metadata.mimetype) {
+		mimetype = metadata.mimetype;
+		if (mimetype == "image/jpeg") {
+			extension = "jpg";
+		} else if (mimetype == "image/png") {
+			extension = "png";
+		} else if (mimetype == "audio/wav") {
+			extension = "wav";
+		} else if (mimetype == "video/webm") {
+			extension = "webm";
+		} else if (mimetype == "audio/mp3"||mimetype == "audio/mpeg") {
+			extension = "mp3";
+		} else if (mimetype == "video/mp4") {
+			extension = "mp4";
+		} else if (mimetype == "text/plain") {
+			extension = "txt";
+			text = content;
+		} else if (mimetype == "application/pdf") {
+			extension = "pdf";
+		} else if (mimetype == "application/msword") {
+			extension = "doc";
+		} else if (mimetype == "application/vnd.oasis.opendocument.text") {
+			extension = "odt";
+		} else {
+			extension = "bin";
+		}
+		binary = base64DecToArr(content.substr(content.indexOf('base64,')+7)).buffer;
+	} else {
+		text = JSON.stringify({metadata: metadata, text: content});
+	}
+	var filename = title;
+	if (filename.indexOf("."+extension)==-1) {
+		filename += "."+extension;
+	}
+	var blob = new Blob((text?[text]:[binary]), {type:mimetype});
+	callback(blob, filename);
+}
+
+function download_activity(callurl) {
+	$.get((callurl), function(response) {
+		if (response.error) {
+			$.notify({
+				icon: "error",
+				message: response.error
+			},{
+				type: 'danger'
+			});
+		}
+
+		var metadata = {};
+		
+		if (response && response.lsObj) {
+			try {
+				metadata = JSON.parse(response.lsObj["sugar_datastore_" + response.objectId]);
+			} catch (e) {
+				metadata = response.lsObj["sugar_datastore_" + response.objectId];
+			}
+			writeFile(metadata.metadata, response.lsObj["sugar_datastoretext_" + response.objectId], function(blob, filename) {
+				saveAs(blob, filename);
+			});
+		}
+	});
+}
+
+// Write file content to datastore
+function writeFileToStore(file, text, callback) {
+	if (file.type == 'application/json') {
+		// Handle JSON file
+		var data = null;
+		try {
+			data = JSON.parse(text);
+			if (!data.metadata) {
+				callback(file.name, -1);
+				return;
+			}
+		} catch(e) {
+			callback(file.name, -1);
+			return;
+		}
+		callback(file.name, 0, data.metadata, data.text);
+	} else {
+		var activity = "";
+		if (file.type != "text/plain" && file.type != "application/pdf" && file.type != "application/msword" && file.type != "application/vnd.oasis.opendocument.text") {
+			activity = "org.olpcfrance.MediaViewerActivity";
+		}
+		var metadata = {
+			title: file.name,
+			mimetype: file.type,
+			activity: activity
+		};
+		callback(file.name, 0, metadata, text);
+	}
+}
+
+// Create a uuid
+function createUUID() {
+	var s = [];
+	var hexDigits = "0123456789abcdef";
+	for (var i = 0; i < 36; i++) {
+		s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+	}
+	s[14] = "4";
+	s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);
+	s[8] = s[13] = s[18] = s[23] = "-";
+
+	var uuid = s.join("");
+	return uuid;
+}
+
+function upload_journal(files, journalId, name, user_id, color) {
+	var file = files[0];
+	var reader = new FileReader();
+	reader.onload = function() {
+		writeFileToStore(file, reader.result, function(filename, err, metadata, text) {
+			if (err) {
+				return;
+			}
+			metadata["timestamp"] = new Date().getTime();
+			metadata["creation_time"] = new Date().getTime();
+
+			if (text) {
+				metadata["textsize"] = text.length;
+			}
+			if (name) {
+				metadata["buddy_name"] = name;
+			}
+			if (color) {
+				metadata["buddy_color"] = color;
+			} else if (!metadata["buddy_color"]) {
+				metadata["buddy_color"] = {
+					"stroke": "#005FE4",
+					"fill": "#FF2B34"
+				};
+			}
+			if (user_id) {
+				metadata["user_id"] = user_id;
+			}
+
+			var entry = JSON.stringify({
+				"objectId": createUUID(),
+				"text": text,
+				"metadata": metadata
+			});
+
+			$.post(('/api/v1/journal/' + journalId + '/?'+ decodeURIComponent($.param({
+				x_key: headers['x-key'],
+				access_token: headers['x-access-token']
+			}))), {
+				"journal": entry
+			}, function(res) {
+				var timer = 2000;
+				if (res && res.objectId) {
+					$.notify({
+						icon: "notifications",
+						message: document.webL10n.get('journalUploaded', {title: metadata.title})
+
+					},{
+						type: 'success',
+						timer: timer,
+						placement: {
+							from: 'top',
+							align: 'right'
+						}
+					});
+				} else {
+					$.notify({
+						icon: "error",
+						message: document.webL10n.get('journalUploadError')
+					},{
+						type: 'danger',
+						timer: timer,
+						placement: {
+							from: 'top',
+							align: 'right'
+						}
+					});
+				}
+				setTimeout(function () {
+					location.reload();
+				}, timer);
+			});
+		});
+		
+	};
+
+	if (file) {
+		if (file.type == 'application/json' || file.type == 'text/plain') {
+			reader.readAsText(file);
+		} else {
+			reader.readAsDataURL(file);
+		}
+	}
+}
+
+function checkAll() {
+	var state = document.getElementById("checkAll") ? document.getElementById("checkAll").checked : false;
+	var check = [];
+	if (document.getElementsByClassName("journal-checkbox").length > 0) {
+		check = document.getElementsByClassName("journal-checkbox");
+	} else if (document.getElementsByClassName("users-checkbox").length > 0) {
+		check = document.getElementsByClassName("users-checkbox");
+	} else if (document.getElementsByClassName("classrooms-checkbox").length > 0) {
+		check = document.getElementsByClassName("classrooms-checkbox");
+	}
+	for (var i=0; i<check.length; i++) {
+		check[i].checked = state;
+	}
+}
+
+function deleteMultipleEntries() {
+	function displayNotification(success, failed) {
+		var timer = 2000;
+		if (success > 0 && failed > 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('deleteSuccessFailEntry', {success:success, failed:failed})
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else if (failed == 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('deleteEntrySuccess', {success:success})
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('deleteEntryFailed')
+			},{
+				type: 'danger',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+		setTimeout(function () {
+			location.reload();
+		}, timer);
+	}
+	if (document.getElementsByClassName("journal-checkbox").length > 0) {
+		var check = document.getElementsByClassName("journal-checkbox");
+		var toBeDeleted = [];
+		var totalSelected = 0;
+		var totalDeleted = 0;
+		var totalFailed = 0;
+		for (var i=0; i<check.length; i++) {
+			if (check[i].checked) {
+				totalSelected++;
+				var el = {};
+				if (check[i].getAttribute("jid")) el["jid"] = check[i].getAttribute("jid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				if (check[i].getAttribute("oid")) el["oid"] = check[i].getAttribute("oid");
+				else {
+					totalFailed++;
+					continue;
+				}
+				toBeDeleted.push(el);
+			}
+		}
+
+		if (totalSelected == 0) {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('noEntriesSelectedDelete')
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			var confirmation = confirm(document.webL10n.get('deleteEntryConfirmation', {selected:totalSelected}));
+			if (confirmation) {
+				if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+				for (var i=0; i<toBeDeleted.length; i++) {
+					$.ajax({
+						url: ('/api/v1/journal/' + toBeDeleted[i].jid + '?' + decodeURIComponent($.param({
+							x_key: headers['x-key'],
+							access_token: headers['x-access-token'],
+							oid: toBeDeleted[i].oid,
+							type: 'partial'
+						}))),
+						type: 'DELETE',
+						success: function(response) {
+							if (response && response.objectId) {
+								totalDeleted++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							} else {
+								totalFailed++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							}
+						},
+						fail: function(){
+							totalFailed++;
+							if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+						}
+					});
+				}
+			}
+		}
+	}
+}
+
+function downloadMultipleEntries() {
+	function displayNotification(success, failed) {
+		if (success > 0 && failed > 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('downloadSuccessFail', {success:success, failed:failed})
+			},{
+				type: 'success',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else if (failed == 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('downloadSuccess', {success:success})
+			},{
+				type: 'success',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('downloadFailed')
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+	}
+	if (document.getElementsByClassName("journal-checkbox").length > 0) {
+		var check = document.getElementsByClassName("journal-checkbox");
+		var toBeDownloaded = [];
+		var totalSelected = 0;
+		var totalDownloaded = 0;
+		var totalFailed = 0;
+		for (var i=0; i<check.length; i++) {
+			if (check[i].checked) {
+				totalSelected++;
+				var el = {};
+				if (check[i].getAttribute("jid")) el["jid"] = check[i].getAttribute("jid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				if (check[i].getAttribute("oid")) el["oid"] = check[i].getAttribute("oid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				if (check[i].getAttribute("uid")) el["uid"] = check[i].getAttribute("uid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				if (check[i].getAttribute("aid")) el["aid"] = check[i].getAttribute("aid");
+				else {
+					totalFailed++;
+					continue;
+				}
+
+				var callurl = "/dashboard/activities/launch/" + el.jid + "?oid=" + el.oid + "&source=journal&uid=" + el.uid + "&aid=" + el.aid + "&mode=download";
+				toBeDownloaded.push(callurl);
+			}
+		}
+		if (totalSelected == 0) {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('noEntriesSelectedDownload')
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			var confirmation = confirm(document.webL10n.get('downloadEntryConfirmation', {selected:totalSelected}));
+			if (confirmation) {
+				if (totalDownloaded + totalFailed == totalSelected) displayNotification(totalDownloaded, totalFailed);
+				for (var i=0; i<toBeDownloaded.length; i++) {
+					$.get((toBeDownloaded[i]), function(response) {
+						if (response.error) {
+							totalFailed++;
+						}
+
+						var metadata = {};
+
+						if (response && response.lsObj) {
+							try {
+								metadata = JSON.parse(response.lsObj["sugar_datastore_" + response.objectId]);
+							} catch (e) {
+								metadata = response.lsObj["sugar_datastore_" + response.objectId];
+							}
+							writeFile(metadata.metadata, response.lsObj["sugar_datastoretext_" + response.objectId], function(blob, filename) {
+								saveAs(blob, filename);
+								totalDownloaded++;
+								if (totalDownloaded + totalFailed == totalSelected) displayNotification(totalDownloaded, totalFailed);
+							});
+						}
+					});
+				}
+			}
+		}
+	}
+}
+
+function deleteMultipleUsers() {
+	function displayNotification(success, failed) {
+		var timer = 2000;
+		if (success > 0 && failed > 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('deleteSuccessFailUser', {success:success, failed:failed})
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else if (failed == 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('DeleteSuccess', {count:success})
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('deleteUserFailed')
+			},{
+				type: 'danger',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+		setTimeout(function () {
+			location.reload();
+		}, timer);
+	}
+	if (document.getElementsByClassName("users-checkbox").length > 0) {
+		var check = document.getElementsByClassName("users-checkbox");
+		var toBeDeleted = [];
+		var totalSelected = 0;
+		var totalDeleted = 0;
+		var totalFailed = 0;
+		for (var i=0; i<check.length; i++) {
+			if (check[i].checked) {
+				totalSelected++;
+				if (check[i].getAttribute("uid")) toBeDeleted.push(check[i].getAttribute("uid"));
+				else {
+					totalFailed++;
+					continue;
+				}
+			}
+		}
+
+		if (totalSelected == 0) {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('noUsersSelectedDelete')
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			var confirmation = confirm(document.webL10n.get('deleteUserConfirmation', {selected:totalSelected}));
+			if (confirmation) {
+				if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+				for (var i=0; i<toBeDeleted.length; i++) {
+					$.ajax({
+						url: ('/api/v1/users/' + toBeDeleted[i] + '?' + decodeURIComponent($.param({
+							x_key: headers['x-key'],
+							access_token: headers['x-access-token']
+						}))),
+						type: 'DELETE',
+						success: function(response) {
+							if (response && response.user_id) {
+								totalDeleted++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							} else {
+								totalFailed++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							}
+						},
+						fail: function(){
+							totalFailed++;
+							if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+						}
+					});
+				}
+			}
+		}
+	}
+}
+
+function deleteMultipleClassrooms() {
+	function displayNotification(success, failed) {
+		var timer = 2000;
+		if (success > 0 && failed > 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('deleteSuccessFailClassroom', {success:success, failed:failed})
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else if (failed == 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('deleteClassroomSuccess', {success:success})
+			},{
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('deleteClassroomFailed')
+			},{
+				type: 'danger',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+		setTimeout(function () {
+			location.reload();
+		}, timer);
+	}
+	if (document.getElementsByClassName("classrooms-checkbox").length > 0) {
+		var check = document.getElementsByClassName("classrooms-checkbox");
+		var toBeDeleted = [];
+		var totalSelected = 0;
+		var totalDeleted = 0;
+		var totalFailed = 0;
+		for (var i=0; i<check.length; i++) {
+			if (check[i].checked) {
+				totalSelected++;
+				if (check[i].getAttribute("cid")) toBeDeleted.push(check[i].getAttribute("cid"));
+				else {
+					totalFailed++;
+					continue;
+				}
+			}
+		}
+
+		if (totalSelected == 0) {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('noClassroomSelectedDelete')
+			},{
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			var confirmation = confirm(document.webL10n.get('deleteClassroomConfirmation', {selected:totalSelected}));
+			if (confirmation) {
+				if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+				for (var i=0; i<toBeDeleted.length; i++) {
+					$.ajax({
+						url: ('/api/v1/classrooms/' + toBeDeleted[i] + '?' + decodeURIComponent($.param({
+							x_key: headers['x-key'],
+							access_token: headers['x-access-token']
+						}))),
+						type: 'DELETE',
+						success: function(response) {
+							if (response && response.id) {
+								totalDeleted++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							} else {
+								totalFailed++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							}
+						},
+						fail: function(){
+							totalFailed++;
+							if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+						}
+					});
+				}
+			}
+		}
+	}
 }

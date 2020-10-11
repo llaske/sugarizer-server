@@ -10,7 +10,7 @@
                 <div class="card-content">
                     <%- include includes/flash-errors %>
                     <form id="user-add-edit-form" method="post" <% if(typeof user == 'object' && module =="profile"){ %> action="/dashboard/profile" <% } else if (typeof user == 'object') { %> action="<%= user._id %>" <% } %>>
-                        <div class="row">
+                        <div class="row" id="editUser-name">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="name"></label>
@@ -19,11 +19,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="editUser-language">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="language"></label>
-                                    <select name="language" class="form-control">
+                                    <select id="language-select" name="language" class="form-control">
                                         <option value="en" data-l10n-id="english" <% if(typeof user == 'object' &&  user.language=='en'){ %> selected="selected" <% } %>>English</option>
                                         <option value="es" data-l10n-id="spanish" <% if(typeof user == 'object' &&  user.language=='es'){ %> selected="selected" <% } %>>Spanish</option>
                                         <option value="fr" data-l10n-id="french" <% if(typeof user == 'object' &&  user.language=='fr'){ %> selected="selected" <% } %>>French</option>
@@ -34,13 +34,14 @@
                                         <option value="pl" data-l10n-id="polish" <% if(typeof user == 'object' &&  user.language=='pl'){ %> selected="selected" <% } %>>Polish</option>
                                         <option value="ibo" data-l10n-id="igbo" <% if(typeof user == 'object' &&  user.language=='ibo'){ %> selected="selected" <% } %>>Igbo</option>
                                         <option value="yor" data-l10n-id="yoruba" <% if(typeof user == 'object' &&  user.language=='yor'){ %> selected="selected" <% } %>>Yoruba</option>
+                                        <option value="hi" data-l10n-id="hindi" <% if(typeof user == 'object' &&  user.language=='hi'){ %> selected="selected" <% } %>>Hindi</option>
                                     </select>
                                     <span class="material-input"></span>
                                 </div>
                             </div>
                         </div>
                         <% if (module != "profile") { %>
-                        <div class="row">
+                        <div class="row" id="editUser-role">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="role"></label>
@@ -55,7 +56,7 @@
                             </div>
                         </div>
                         <% } %>
-                        <div class="row color_input">
+                        <div class="row color_input" id="editUser-colors">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="color"></label>
@@ -72,7 +73,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="editUser-password">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="password"></label>
@@ -85,7 +86,7 @@
                         <% if(typeof classrooms == 'object' && module != "profile") { %>
                         <div class="row" id='searchable-select-classrooms-row'>
                             <div class="col-md-12">
-                                <div class="form-group form-black" style="margin-top: -15px;">
+                                <div class="form-group form-black" style="margin-top: -15px;" >
                                     <label class="control-label" data-l10n-id="classrooms"></label>
                                     <select id='searchable-select-classrooms' multiple='multiple' name="classrooms" class="form-control">
                                         <% for(var i=0; i < classrooms.length; i++) { %>
@@ -148,7 +149,7 @@
                         </div>
                         <% } %>
                         <% if (typeof user == 'object' && user.created_time) { %>
-                        <div class="row">
+                        <div class="row" id="editUser-created">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="createdTime"></label>
@@ -158,7 +159,7 @@
                         </div>
                         <% } %>
                         <% if (typeof user == 'object' && user.timestamp) { %>
-                        <div class="row">
+                        <div class="row" id="editUser-lastseen">
                             <div class="col-md-12">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="lastSeen"></label>
@@ -181,18 +182,68 @@
 <%- include includes/footer %>
 <script>
 function show_user_fields(val) {
+    var adminLang = ["en", "es", "fr", "hi"];
+    var studentLang = ["en", "es", "fr", "de", "pt", "ar", "ja", "pl", "ibo", "yor"];
+    var teachLang = ["en", "es", "fr", "de", "pt", "ar", "ja", "pl", "ibo", "yor", "hi"];
+    var selectedLang = document.getElementById("language-select").value;
+    var op = document.getElementById("language-select").options;
+
     if (val == 'admin') {
         $('.color_input').addClass('hide');
         $('.color_input input').attr('disabled', '');
+
+        for (var i = 0; i < op.length; i++) {
+            if (adminLang.includes(op[i].value)) {
+                op[i].disabled = false;
+                op[i].style.display = "block";    
+            } else {
+                op[i].disabled = true;
+                op[i].style.display = "none";
+            }
+        }
+        if (!adminLang.includes(selectedLang)) {
+            document.getElementById("language-select").value = "en";
+        }
     } else {
         $('.color_input').removeClass('hide');
         $('.color_input input').removeAttr('disabled');
     }
     if (val == 'teacher' || val == 'student' || !val) {
         $('#searchable-select-classrooms-row').removeClass('hide');
+
+        if (val == 'teacher') {
+            for (var i = 0; i < op.length; i++) {
+                if (teachLang.includes(op[i].value)) {
+                    op[i].disabled = false;
+                    op[i].style.display = "block";    
+                } else {
+                    op[i].disabled = true;
+                    op[i].style.display = "none";
+                }
+            }
+            if (!teachLang.includes(selectedLang)) {
+                document.getElementById("language-select").value = "en";
+            }
+        } else {
+            for (var i = 0; i < op.length; i++) {
+                if (studentLang.includes(op[i].value)) {
+                    op[i].disabled = false;
+                    op[i].style.display = "block";    
+                } else {
+                    op[i].disabled = true;
+                    op[i].style.display = "none";
+                }
+            }
+            if (!studentLang.includes(selectedLang)) {
+                document.getElementById("language-select").value = "en";
+            }
+        }
     } else {
         $('#searchable-select-classrooms-row').addClass('hide');
     }
 }
 show_user_fields('<% if(typeof user == "object"){ %><%= user.role %><% } %>')
+
+var currTour = sugarizerTour("editUser", <% if (account.user && account.user.role=="admin") { %> "admin" <% } else { %> "teacher" <% } %>, "<%= mode %>");
+if (!currTour.isFinished()) currTour.start();
 </script>

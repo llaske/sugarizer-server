@@ -12,41 +12,59 @@
 								<div class="col-md-4">
 									<div class="form-group form-black label-floating is-empty">
 											<select class="form-control" id="users-select2" name="uid">
-												 <% for(var i=0; i< users.length; i++) { %>
-												 <option data-id="<%= users[i]._id %>"
-													 data-private_journal="<%= users[i].private_journal %>"
-													 data-shared_journal="<%= users[i].shared_journal %>"
-													 <% if(users[i]._id == query.uid){%> selected="selected" <% } %>
-													 data-color='<%- JSON.stringify(users[i].color) %>'
-													 data-timestamp="<%= moment(users[i].timestamp).calendar() %>"
-													 value="<%= users[i]._id %>">
-													 <%- (users[i].name.replace(/[&<>]/g, "")) %>
+												<% if(user && user._id){%>
+												 <option data-id="<%= user._id %>"
+													 data-private_journal="<%= user.private_journal %>"
+													 data-shared_journal="<%= user.shared_journal %>"
+													 selected="selected"
+													 data-color='<%- JSON.stringify(user.color) %>'
+													 data-timestamp="<%= moment(user.timestamp).calendar() %>"
+													 value="<%= user._id %>">
+													 <%- (user.name.replace(/[&<>]/g, "")) %>
 												 </option>
-												 <% } %>
+												<% } %>
 											</select>
 									</div>
 								</div>
 								<div class="col-md-4">
-									<div class="form-group form-black label-floating is-empty">
-											<select class="form-control" id="journal-type-select2" name="type">
-												 <option data-l10n-id="private" <% if('private' == query.type){%> selected="selected" <% } %> value="private">Private</option>
-	 											 <option data-l10n-id="shared" <% if('shared' == query.type){%> selected="selected" <% } %> value="shared">Shared</option>
-											</select>
+									<div class="form-group form-black journal-check">
+										<input type="checkbox" id="journal-type" onclick="changeJournalType()">
+										<label for="journal-type" data-l10n-id="sharedJournals"></label>
+										<script>
+											function changeJournalType() {
+												var checkBox = document.getElementById("journal-type");
+												if (checkBox.checked == true) {
+													$('#users-select2').val(null).trigger('change');
+													$('#users-select2').prop('disabled', 'disabled');
+													$('#getJournalEntries').attr('action', '/dashboard/journal/<%= shared %>');
+												} else {
+													$('#users-select2').prop('disabled', false);
+													$('#getJournalEntries').attr('action', '/dashboard/journal/' + document.pj_global);
+												}
+											}
+											if (window.location.pathname.substring(19) == '<%= shared %>') {
+												var checkBox = document.getElementById("journal-type");
+												checkBox.setAttribute("checked", "true");
+												changeJournalType();
+											}
+										</script>
 									</div>
 								</div>
 								<div class="col-md-4 text-right">
-									<button class="btn btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+									<% if (query && query.journal) { %>
+										<div class="upload-btn-wrapper pull-right" id="journal-deleteMultiple">
+											<a href="#" onclick="deleteMultipleEntries()" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
+										</div>
+										<div class="upload-btn-wrapper pull-right" id="journal-downloadMultiple">
+											<a href="#" onclick="downloadMultipleEntries()" class="btn btn-round" data-l10n-id="multidownload" title="Download Multiple"><i class="material-icons text-muted">cloud_download</i></a>
+										</div>
+										<div class="upload-btn-wrapper pull-right" id="journal-uploadJournal">
+											<input id="uploadJournal" type="file" <% if(user && user._id) { %>onchange='upload_journal(this.files, <%- JSON.stringify(query.journal) %>, <%- JSON.stringify(user.name) %>, <%- JSON.stringify(user._id) %>, <%- JSON.stringify(user.color) %>)' /><% } else if (account.user) { %>onchange='upload_journal(this.files, <%- JSON.stringify(query.journal) %>, <%- JSON.stringify(account.user.name) %>, <%- JSON.stringify(account.user._id) %><% if (account.user.color) { %>, <%- JSON.stringify(account.user.color) %><% } %>)' /><% } %>
+											<a href="#" onclick="$('#uploadJournal').trigger('click'); return false;" class="btn btn-round" data-l10n-id="uploadJournal" title="Upload Journal"><i class="material-icons text-muted">cloud_upload</i></a>
+										</div>
+									<% } %>
+									<button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
 								</div>
-								<script>
-								window.addEventListener('localized', function() {  // HACK: Force localization of selected field
-									var selection = document.getElementsByClassName("select2-selection__rendered");
-									if (selection && selection[1] && typeof selection[1].innerHTML == "string") {
-										var journal_select_type = document.getElementById("journal-type-select2");
-										var val = journal_select_type.options[journal_select_type.selectedIndex].value;
-										selection[1].innerHTML = document.webL10n.get(val);
-									}
-								});
-								</script>
 							</form>
 					</div>
 				</div>
@@ -81,6 +99,7 @@
 										<table class="table">
 												<thead class="text-danger">
 														<tr>
+																<th class="text-muted"><input type="checkbox" id="checkAll" onclick="checkAll()"></th>
 																<th class="text-muted">#</th>
 																<th data-l10n-id="icon" class="text-muted"></th>
 																<th class="text-muted"><button data-l10n-id="title" id="journal-title" onclick="sortBy('title')"></button></th>
@@ -92,6 +111,7 @@
 												<tbody>
 														<% for(var i=0; i < entries.entries.length; i++) { %>
 															<tr id="journal-entry-card">
+																	<td><input type="checkbox" class="journal-checkbox" jid="<%= query.journal %>" oid="<%= entries.entries[i].objectId %>" uid="<%= entries.entries[i].metadata.user_id %>" aid="<%= entries.entries[i].metadata.activity %>" currPage="<%= entries.links.curr_page %>" title="<%= entries.entries[i].metadata.title %>"></td>
 																	<td><%= entries.offset + i + 1 %></td>
 																	<td>
 																		<div class="color" id="<%= entries.entries[i].objectId %>">
@@ -99,7 +119,17 @@
 																		</div>
 																	</td>
 																	<script>
-																		new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
+																		<% if (entries.entries[i].metadata.mimetype == "text/plain") { %>
+																			new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-txt.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
+																		<% } else if (entries.entries[i].metadata.mimetype == "application/pdf") { %>
+																			new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-pdf.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
+																		<% } else if (entries.entries[i].metadata.mimetype == "application/msword") { %>
+																			new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-doc.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
+																		<% } else if (entries.entries[i].metadata.mimetype == "application/vnd.oasis.opendocument.text") { %>
+																			new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-odt.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
+																		<% } else {%>
+																			new icon().load("<%= iconList[entries.entries[i].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(entries.entries[i].metadata.buddy_color?entries.entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries.entries[i].objectId %>");
+																		<% } %>
 																	</script>
 																	<td><%= entries.entries[i].metadata.title %></td>
 																	<td><%= moment(entries.entries[i].metadata.timestamp).calendar() %></td>
@@ -127,7 +157,8 @@
 																		<% if(format=="-") {%> <div style="display: inline"><%= format %></div> <%}%>
 																	</td>
 																	<td>
-																		<a id="journal-activity-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
+																		<a id="journal-activity-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>&mode=launch')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
+																		<a id="journal-activity-download" href="javascript:download_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= entries.entries[i].objectId %>&source=journal&uid=<%= entries.entries[i].metadata.user_id %>&aid=<%= entries.entries[i].metadata.activity %>&mode=download')" data-l10n-id="download" title="Download"><i class="material-icons text-muted">cloud_download</i></a>
 																		<a id="journal-activity-delete" data-l10n-id="deleteEntry" title="Delete Entry" href="/dashboard/journal/<%= query.journal %>/delete/<%= entries.entries[i].objectId %><%= entries.links.curr_page %>&title=<%= entries.entries[i].metadata.title %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteEntry', {activity:`<%= entries.entries[i].metadata.title %>`}))"><i class="material-icons text-muted">delete_forever</i></a>
 																	</td>
 															</tr>
@@ -145,6 +176,9 @@
 </div>
 <%- include includes/footer %>
 <script>
+	//set headers
+	var headers = <%- JSON.stringify(headers) %>;
+
 	handleSort();
 	var journalList = document.getElementById("journal-cards-parent");
 	if (!journalList) {

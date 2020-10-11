@@ -33,6 +33,7 @@
                           <div class="form-group form-black label-floating is-empty classroom_input">
                                 <select class="form-control" id="classroom_select" name="classid">
                                     <option data-l10n-id="selectclassroom" value="" selected="selected" disabled></option>
+                                    <option id="allClassrooms" data-l10n-id="allClassrooms" value="" <% if(classroom_id == "allClassrooms") { %>selected="selected"<% } %>></option>
                                     <% for(var i=0; i < classrooms.length; i++) { %>
                                         <% if(Array.isArray(classrooms[i].students) && classrooms[i].students && classrooms[i].students.length > 0) { %>
                                             <option id="<%- classrooms[i]._id %>" value="<%- classrooms[i].students.join(',') %>" <% if(classroom_id == classrooms[i]._id) { %>selected="selected"<% } %> ><%= classrooms[i].name %></option>
@@ -40,44 +41,35 @@
                                     <% } %>
                                 </select>
                                 <script>
-                                    $('#user-form [name="classid"]').select2().on("select2:select", function(e) {
-                                        var inputField = $('#user-form [name="classroom_id"]');
-                                        var value = "";
-                                        if (inputField && e && e.params && e.params.data && e.params.data.element && e.params.data.element.id) {
-                                            value = e.params.data.element.id;
-                                        }
-                                        inputField.val(value);
-                                    });
+                                    $('#user-form [name="classid"]').select2().on("select2:select", e => assignClassroomID(e));
                                 </script>
                           </div>
                         </div>
-			<script>
-			window.addEventListener('localized', function() {  // HACK: Force localization of role combo
-				var selection = document.getElementsByClassName("select2-selection__rendered");
-				if (selection && selection[0] && typeof selection[0].innerHTML == "string" &&  document.getElementById("user-type-select2")) {
-                                var user = document.getElementById("user-type-select2");
-                                var val = user.options[user.selectedIndex].value;
-                                selection[0].innerHTML = document.webL10n.get(val);
-                            }});
-			</script>
-						<script>
-						window.addEventListener('localized', function() {  // HACK: Force localization of student combo
-							var selection = document.getElementsByClassName("select2-selection__rendered");
-							if (selection && selection[0] && selection[0].title == "Student") selection[0].innerHTML = document.webL10n.get("student");						});
-                        </script>
                         <script>
-                            window.addEventListener('localized', function() {  // HACK: Force localization of selected field
+                            window.addEventListener('localized', function() {  // HACK: Force localization of select2 combo
                                 var selection = document.getElementsByClassName("select2-selection__rendered");
-                                if (selection && selection[1] && typeof selection[1].innerHTML == "string") {
+                                if (selection && selection[0] && typeof selection[0].innerHTML == "string" &&  document.getElementById("user-type-select2")) {
+                                    var user = document.getElementById("user-type-select2");
+                                    var val = user.options[user.selectedIndex].value;
+                                    selection[0].innerHTML = document.webL10n.get(val);
+                                }
+                                $('#user-form [name="role"]').select2("destroy").select2(); // Fix for selected option not being localized
+
+                                if (selection && selection[1] && typeof selection[1].innerHTML == "string" && document.getElementById("classroom_select")) {
                                     var classroom_select = document.getElementById("classroom_select");
                                     if(classroom_select.selectedIndex == 0){
                                         selection[1].innerHTML = document.webL10n.get("selectclassroom");
+                                    } else if(classroom_select.selectedIndex == 1){
+                                        selection[1].innerHTML = document.webL10n.get("allClassrooms");
                                     }
                                 }
+                                $('#user-form [name="classid"]').select2("destroy").select2(); // Fix for selected option not being localized
                             });
-                            </script>
-							<button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults" id="show-result"><div class="ripple-container"></div></button>
+                        </script>
                         <div class="col-md-6">
+                            <div class="upload-btn-wrapper pull-right" id="users-deleteMultiple">
+                                <a href="#" onclick="deleteMultipleUsers(); return false;" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
+                            </div>
                             <div class="btn pull-right btn-round" onclick="downloadUsers()" data-l10n-id="ExportUsers" id="users-exportusers">Export Users</div>
                             <script>
                                 function downloadUsers(event) {
@@ -128,7 +120,6 @@
                             </script>
                             <div>
                                 <label for="csv-upload" class="btn pull-right btn-round" data-l10n-id="ImportUsers" id="users-addfromcsv">Add From CSV<div class="ripple-container"></div></label>
-								<a class="btn btn-round pull-right " href="/dashboard/users/add" data-l10n-id="addUser" id="users-adduser"><div class="ripple-container"></div></a>
                                 <input id="csv-upload" style="visibility:hidden; display:none;" type="file" name="csv-file" accept="text/csv">
                                 <script>
                                     $("#csv-upload").change(function() {
@@ -192,6 +183,8 @@
                                     });
                                 </script>
                             </div>
+                            <a class="btn btn-round pull-right " href="/dashboard/users/add" data-l10n-id="addUser" id="users-adduser"><div class="ripple-container"></div></a>
+                            <button class="btn pull-right btn-round" type="submit" data-l10n-id="showResults" id="show-result"><div class="ripple-container"></div></button>
                         </div>
                       </form>
                   </div>
@@ -222,6 +215,7 @@
                                 <table class="table">
                                     <thead class="text-muted">
                                         <tr>
+                                            <th class="text-muted"><input type="checkbox" id="checkAll" onclick="checkAll()"></th>
                                             <th>#</th>
                                                                                   <% if(query.role != 'admin'){ %><th data-l10n-id="buddy">Buddy</th><% } %>
                                             <th><button id="name-column" data-l10n-id="username" onclick="sortBy('name')"></button></th>
@@ -234,6 +228,7 @@
                                     <tbody>
                                         <% for(var i=0; i < data.users.length; i++) { %>
                                           <tr>
+                                              <td><input type="checkbox" class="users-checkbox" uid="<%= data.users[i]._id %>"></td>
                                               <td><%= data.offset + i + 1 %></td>
                                                                                       <% if(query.role != 'admin'){ %>
                                                                                           <td>
@@ -256,10 +251,11 @@
                                               <% if(data.users[i].language =='pl') {%> <td data-l10n-id="polish"></td> <%} %>
                                               <% if(data.users[i].language =='ibo') {%> <td data-l10n-id="igbo"></td> <%} %>
                                               <% if(data.users[i].language =='yor') {%> <td data-l10n-id="yoruba"></td> <%} %>
+                                              <% if(data.users[i].language =='hi') {%> <td data-l10n-id="hindi"></td> <%} %>
                                               <td data-l10n-id="<%= data.users[i].role %>">Student</td>
                                               <td><%= moment(data.users[i].timestamp).calendar() %></td>
                                               <td>
-                                                <% if(data.users[i].role == 'student') {%>
+                                                <% if(data.users[i].role == 'student' || data.users[i].role == 'teacher') {%>
                                                 <a data-l10n-id="seeJournalEntries" title="See Journal Entries" href="/dashboard/journal/<%= data.users[i].private_journal %>?uid=<%= data.users[i]._id %>&type=private"><span class="journal-icon2" id="seeJournalEntries"></span></a>
                                                 <% } %>
                                                 <a data-l10n-id="editUser" title="Edit User" href="/dashboard/users/edit/<%= data.users[i]._id %>"><i class="material-icons text-muted" id="editUser">edit</i></a>
@@ -280,16 +276,29 @@
 </div>
 <%- include includes/footer %>
 <script>
-function show_class_fields() {
-    if($('#user-form [name="role"]').length && $('#user-form [name="role"]').select2('data')[0].id != 'student'){
-        $('.classroom_input').addClass('hide');
-        $('#user-form [name="classid"]').val('').trigger('change');
+    //set headers
+	var headers = <%- JSON.stringify(headers) %>;
 
-    }else{
-        $('.classroom_input').removeClass('hide');
+    function show_class_fields() {
+        if($('#user-form [name="role"]').length && $('#user-form [name="role"]').select2('data')[0].id != 'student'){
+            $('.classroom_input').addClass('hide');
+            $('#user-form [name="classid"]').val('').trigger('change');
+
+        }else{
+            $('.classroom_input').removeClass('hide');
+        }
     }
-}
-show_class_fields('<% if(typeof query == "object"){ %><%= query.role || "student" %><% } %>')
+    show_class_fields('<% if(typeof query == "object"){ %><%= query.role || "student" %><% } %>')
+
+    function assignClassroomID(e) {
+        var inputField = $('#user-form [name="classroom_id"]');
+        var value = "";
+        if (inputField && e && e.params && e.params.data && e.params.data.element && e.params.data.element.id) {
+            value = e.params.data.element.id;
+            
+        }
+        inputField.val(value);
+    }
 </script>
 <script>
     handleSort();

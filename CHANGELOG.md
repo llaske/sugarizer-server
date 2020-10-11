@@ -4,6 +4,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2020-10-11
+### Added
+- Provide a way to remove multiple users at the same time #217
+- Allow teachers to connect to Sugarizer client #222
+- Add a download icon in Dashboard Journal view #220
+- Show the right icon in Dashboard for TXT/ODT/DOC/PDF #226
+- Allow opening PDF content in dashboard #227
+- Add an upload button in Dashboard Journal view #221
+- Added tutorial for User Edit and Profile view
+- Added title to charts in statistics view
+- Add multiple actions to Journal and Users view #245
+- Added All Classrooms option in Users View
+- Added multi-delete in classroom view
+- Documentation to deploy on GCP with ansible #256
+- Allow signup function to validate if name exist
+- Replicaset parameter for MongoDB
+
+### Changed
+- Change edit classroom screen to handle large number of students
+- Replace deprecated node library request by superagent #254
+
+### Fixed
+- Package vulnerability fix
+- Fixed button position in Users View
+- Server crash when dashboard call with several thousand of entries #208
+- Classroom name could be null or could already exist
+- Shared journal content is incorrect in dashboard #219
+- Activity list doesn't scroll while reordering, causes multiple server calls. #235
+- Overflow on opening any dropbox #238
+- Selected option's text isn't localized #240
+- Page navigation problem on language switching #142
+- Popup is not displayed when Add/Edit/Delete a Chart
+- Fix tutorial restart on views
+
+
 ## [1.2.0] - 2019-12-01
 ### Added
 - Teacher profile

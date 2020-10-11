@@ -1,9 +1,14 @@
 // Tutorial handling
 
-function sugarizerTour(currentView, role) {
+function sugarizerTour(currentView, role, mode) {
 	var tutorial = {};
 	var tour;
 	var launched = false;
+
+	var tutorialName = currentView;
+	if (mode) {
+		tutorialName = currentView + "_" + mode;
+	}
 
 	// Init tutorial
 	tutorial.init = function() {
@@ -11,7 +16,7 @@ function sugarizerTour(currentView, role) {
 		var nextString = document.webL10n.get("TutoNext");
 		var endString = document.webL10n.get("TutoEnd");
 		tour = new window.Tour({
-			name: currentView,
+			name: tutorialName,
 			template: "\
 			<div class='popover tour popover-tour'>\
 				<div class='arrow'></div>\
@@ -60,6 +65,17 @@ function sugarizerTour(currentView, role) {
 							scrollTop: 0
 						}, 500);
 					}
+				} else if (currentView == "editUser") {
+					if (tour._current == "5") {
+						$('.main-panel').animate({
+							scrollTop: (document.getElementsByClassName('main-panel')[0].scrollHeight)
+						}, 500);
+					}
+					if (tour._current == "8") {
+						$('.main-panel').animate({
+							scrollTop: 0
+						}, 500);
+					}
 				}
 			},
 			onPrev: function(tour) {
@@ -74,11 +90,21 @@ function sugarizerTour(currentView, role) {
 							scrollTop: (document.getElementsByClassName('main-panel')[0].scrollHeight)
 						}, 500);
 					}
+				} else if (currentView == "editUser") {
+					if (tour._current == "6") {
+						$('.main-panel').animate({
+							scrollTop: 0
+						}, 500);
+					}
 				}
 			},
 			onEnd: function() {
 				if (currentView == "home") {
 					unlockScroll();
+				} else if (currentView == "editUser") {
+					$('.main-panel').animate({
+						scrollTop: 0
+					}, 500);
 				}
 			}
 		});
@@ -93,6 +119,7 @@ function sugarizerTour(currentView, role) {
 			tour.addStep(getStep("home", "#sugarizer-sidebar", "right", 7));
 			tour.addStep(getStep("home", "#languageSelection", "bottom", 8));
 			tour.addStep(getStep("home", "#navbar-xo-icon", "left", 9));
+			tour.addStep(getStep("home", "#navbar-help", "left", 10));
 		} else if (currentView == "users") {
 			tour.addStep(getStep("users", "", "bottom", 1, true));
 			tour.addStep(getStep("users", "#user-serach-row", "bottom", 2));
@@ -106,6 +133,8 @@ function sugarizerTour(currentView, role) {
 			tour.addStep(getStep("users", "#seeJournalEntries", "left", 10));
 			tour.addStep(getStep("users", "#editUser", "left", 11));
 			tour.addStep(getStep("users", "#deleteUser", "left", 12));
+			tour.addStep(getStep("users", "#checkAll", "right", 13));
+			tour.addStep(getStep("users", "#users-deleteMultiple", "left", 14));
 		} else if (currentView == "activities") {
 			tour.addStep(getStep("activities", "", "bottom", 1, true));
 			tour.addStep(getStep("activities", "#activities-list-parent", "left", 2));
@@ -127,7 +156,12 @@ function sugarizerTour(currentView, role) {
 			tour.addStep(getStep("journal", "#journal-cards-parent", "top", 3));
 			tour.addStep(getStep("journal", "#journal-entry-card", "bottom", 4));
 			tour.addStep(getStep("journal", "#journal-activity-launch", "left", 5));
-			tour.addStep(getStep("journal", "#journal-activity-delete", "left", 6));
+			tour.addStep(getStep("journal", "#journal-activity-download", "left", 6));
+			tour.addStep(getStep("journal", "#journal-activity-delete", "left", 7));
+			tour.addStep(getStep("journal", "#journal-uploadJournal", "left", 8));
+			tour.addStep(getStep("journal", "#checkAll", "right", 9));
+			tour.addStep(getStep("journal", "#journal-downloadMultiple", "left", 10));
+			tour.addStep(getStep("journal", "#journal-deleteMultiple", "left", 11));
 		} else if (currentView == "classroom") {
 			tour.addStep(getStep("classroom", "", "bottom", 1, true));
 			tour.addStep(getStep("classroom", "#classroom-serach-row", "bottom", 2));
@@ -137,6 +171,8 @@ function sugarizerTour(currentView, role) {
 			tour.addStep(getStep("classroom", "#classroom-view-students", "left", 6));
 			tour.addStep(getStep("classroom", "#classroom-edit-class", "left", 7));
 			tour.addStep(getStep("classroom", "#classroom-delete-class", "left", 8));
+			tour.addStep(getStep("classroom", "#checkAll", "right", 9));
+			tour.addStep(getStep("classroom", "#classroom-deleteMultiple", "left", 10));
 		} else if (currentView == "stats") {
 			tour.addStep(getStep("stats", "", "bottom", 1, true));
 			tour.addStep(getStep("stats", "#stats-addChart", "left", 2));
@@ -152,6 +188,29 @@ function sugarizerTour(currentView, role) {
 			tour.addStep(getStep("listCharts", "#listCharts-toggleBox", "left", 8));
 			tour.addStep(getStep("listCharts", "#listCharts-editChart", "left", 9));
 			tour.addStep(getStep("listCharts", "#listCharts-deleteChart", "left", 10));
+		} else if (currentView == "editUser") {
+			tour.addStep(getStep("editUser", "", "bottom", 1, true));
+			tour.addStep(getStep("editUser", "#editUser-name", "right", 2));
+			tour.addStep(getStep("editUser", "#editUser-language", "right", 3));
+			tour.addStep(getStep("editUser", "#editUser-role", "right", 4));
+			tour.addStep(getStep("editUser", "#editUser-colors", "right", 5));
+			tour.addStep(getStep("editUser", "#editUser-password", "right", 6));
+			tour.addStep(getStep("editUser", "#searchable-select-classrooms-row", "right", 7));
+			tour.addStep(getStep("editUser", "#editUser-created", "right", 8));
+			tour.addStep(getStep("editUser", "#editUser-lastseen", "right", 9));
+		} else if (currentView == "editClassroom") {
+			tour.addStep(getStep("editClassroom", "", "bottom", 1, true));
+			tour.addStep(getStep("editClassroom", "#editClassroom-name", "right", 2));
+			tour.addStep(getStep("editClassroom", "#editClassroom-students", "right", 3));
+			tour.addStep(getStep("editClassroom", "#editClassroom-colors", "right", 4));
+			tour.addStep(getStep("editClassroom", "#editClassroom-created", "right", 5));
+			tour.addStep(getStep("editClassroom", "#editClassroom-lastupdated", "right", 6));
+		} else if (currentView == "editChart") {
+			tour.addStep(getStep("editChart", "", "bottom", 1, true));
+			tour.addStep(getStep("editChart", "#editChart-title", "right", 2));
+			tour.addStep(getStep("editChart", "#editChart-type", "right", 3));
+			tour.addStep(getStep("editChart", "#editChart-selectchart", "right", 4));
+			tour.addStep(getStep("editChart", "#editChart-display", "right", 5));
 		}
 		tour.init();
 	};
@@ -174,12 +233,13 @@ function sugarizerTour(currentView, role) {
 
 	// Check if already finished
 	tutorial.isFinished = function() {
-		if (window.localStorage[currentView + "_end"] == "yes") return true;
+		if (window.localStorage[tutorialName + "_end"] == "yes") return true;
 		return false;
 	};
 
 	tutorial.restart = function() {
-		localStorage.setItem(currentView + "_current_step", 0);
+		localStorage.setItem(tutorialName + "_current_step", 0);
+		localStorage.removeItem(tutorialName + "_end");
 		tutorial.start();
 	};
 

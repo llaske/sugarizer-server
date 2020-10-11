@@ -1,4 +1,4 @@
-var request = require('request'),
+var superagent = require('superagent'),
 	dashboard_utils = require('../../dashboard/util'),
 	moment = require('moment'),
 	common = require('../../../helper/common');
@@ -286,10 +286,21 @@ exports.getRecentActivities = function(req, res) {
 				// launch url
 				var url = '/dashboard/activities/launch/' + allEntries[i].journalId + '?oid=' + allEntries[i].objectId + '&uid=' + allEntries[i].metadata.user_id + '&aid=' + allEntries[i].metadata.activity;
 
+				var iconURL = hashList[allEntries[i].metadata.activity] || '/public/img/application-x-generic.svg';
+				if (allEntries[i].metadata.mimetype == "text/plain") {
+					iconURL = '/public/img/application-x-txt.svg';
+				} else if (allEntries[i].metadata.mimetype == "application/pdf") {
+					iconURL = '/public/img/application-x-pdf.svg';
+				} else if (allEntries[i].metadata.mimetype == "application/msword") {
+					iconURL = '/public/img/application-x-doc.svg';
+				} else if (allEntries[i].metadata.mimetype == "application/vnd.oasis.opendocument.text") {
+					iconURL = '/public/img/application-x-odt.svg';
+				}
+
 				data += '<tr onclick="javascript:launch_activity(\'' + url + '\')">\
 										<td>' + (i + 1) + '</td>\
 										<td><div class="color" id="' + allEntries[i].objectId + i.toString() + '"><div class="xo-icon"></div></div></td>\
-										<script>new icon().load("' +  (hashList[allEntries[i].metadata.activity] || '/public/img/application-x-generic.svg') + '", ' + JSON.stringify(allEntries[i].metadata.buddy_color) + ', "' + allEntries[i].objectId + i.toString() + '")</script>\
+										<script>new icon().load("' +  iconURL + '", ' + JSON.stringify(allEntries[i].metadata.buddy_color) + ', "' + allEntries[i].objectId + i.toString() + '")</script>\
 										<td title="' + allEntries[i].metadata.title + '">' + allEntries[i].metadata.title + '</td>\
 										<td title="' + allEntries[i].metadata.buddy_name + '">' + allEntries[i].metadata.buddy_name + '</td>\
 										<td class="text-muted">' + moment(allEntries[i].metadata.timestamp).calendar() + '</td>\
@@ -311,44 +322,40 @@ function getAllEntriesList(req, res, callback) {
 	var allEntries = [];
 
 	// call
-	request({
-		headers: common.getHeaders(req),
-		json: true,
-		method: 'GET',
-		uri: common.getAPIUrl(req) + 'api/v1/journal/aggregate/'
-	}, function(error, response, body) {
-		//merge data
-		if (body) {
-			for (var i=0; i<body.length; i++) {
-				if (body[i] && typeof body[i].content == "object" && body[i].content.length > 0) {
-					for (var j=0; j<body[i].content.length; j++) {
-						body[i].content[j].journalId = body[i]._id;
-						body[i].content[j].shared = body[i].shared;
-						allEntries.push(body[i].content[j]);
+	superagent
+		.get(common.getAPIUrl(req) + 'api/v1/journal/aggregate/')
+		.set(common.getHeaders(req))
+		.end(function (error, response) {
+			//merge data
+			if (response.body) {
+				for (var i=0; i<response.body.length; i++) {
+					if (response.body[i] && typeof response.body[i].content == "object" && response.body[i].content.length > 0) {
+						for (var j=0; j<response.body[i].content.length; j++) {
+							response.body[i].content[j].journalId = response.body[i]._id;
+							response.body[i].content[j].shared = response.body[i].shared;
+							allEntries.push(response.body[i].content[j]);
+						}
 					}
 				}
 			}
-		}
-		callback(allEntries);
-	});
+			callback(allEntries);
+		});
 }
 
 function getActivities(req, res, callback) {
 	// call
-	request({
-		headers: common.getHeaders(req),
-		json: true,
-		method: 'GET',
-		uri: common.getAPIUrl(req) + 'api/v1/activities/'
-	}, function(error, response, body) {
-		if (response.statusCode == 200) {
-			//store
-			callback(body);
-		} else {
-			req.flash('errors', {
-				msg: body.error
-			});
-			return res.redirect('/dashboard/journal');
-		}
-	});
+	superagent
+		.get(common.getAPIUrl(req) + 'api/v1/activities/')
+		.set(common.getHeaders(req))
+		.end(function (error, response) {
+			if (response.statusCode == 200) {
+				//store
+				callback(response.body);
+			} else {
+				req.flash('errors', {
+					msg: response.body.error
+				});
+				return res.redirect('/dashboard/journal');
+			}
+		});
 }

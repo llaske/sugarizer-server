@@ -1,0 +1,16 @@
+# Enter name of service account key file
+credentials_file: 
+
+# Enter Project id
+project_id: 
+
+# Modify project zone
+zone: "us-central1-a"
+
+# Modify name of the instance
+instance_names: "sugarizer-server"
+
+
+machine_type: "n1-standard-1"
+disk_size_gb: 20
+image: "projects/debian-cloud/global/images/family/debian-9"

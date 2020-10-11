@@ -1,5 +1,5 @@
 // include libraries
-var request = require('request'),
+var superagent = require('superagent'),
 	common = require('../../helper/common'),
 	getGraph = require('./getGraph'),
 	addChart = require('./addChart'),
@@ -29,31 +29,29 @@ exports.index = function(req, res) {
 		chartDic[chartList[i].key] = chartList[i];
 	}
 
-	request({
-		headers: common.getHeaders(req),
-		json: true,
-		method: 'GET',
-		qs: {
+	superagent
+		.get(common.getAPIUrl(req) + 'api/v1/charts')
+		.set(common.getHeaders(req))
+		.query({
 			hidden: false,
-		},
-		uri: common.getAPIUrl(req) + 'api/v1/charts'
-	}, function(error, response, body) {
-		if (response.statusCode == 200) {
-			res.render('admin/stats', {
-				title: 'stats',
-				module: 'stats',
-				charts: body.charts,
-				chartList: chartDic,
-				account: req.session.user,
-				server: ini.information
-			});
-		} else {
-			req.flash('errors', {
-				msg: common.l10n.get('ErrorCode'+body.code)
-			});
-			return res.redirect('/dashboard');
-		}
-	});
+		})
+		.end(function (error, response) {
+			if (response.statusCode == 200) {
+				res.render('admin/stats', {
+					title: 'stats',
+					module: 'stats',
+					charts: response.body.charts,
+					chartList: chartDic,
+					account: req.session.user,
+					server: ini.information
+				});
+			} else {
+				req.flash('errors', {
+					msg: common.l10n.get('ErrorCode'+response.body.code)
+				});
+				return res.redirect('/dashboard');
+			}
+		});
 };
 
 exports.getGraph = getGraph;

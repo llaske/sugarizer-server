@@ -65,24 +65,40 @@ exports.addClassroom = function(req, res) {
 	classroom.created_time = +new Date();
 	classroom.timestamp = +new Date();
 
-	// store
+	//check if classroom already exist
 	db.collection(classroomsCollection, function(err, collection) {
-		collection.insertOne(
-			classroom,
-			{
-				safe: true
-			},
-			function(err, result) {
-				if (err) {
-					res.status(500).send({
-						error: "An error has occurred",
-						code: 10
-					});
-				} else {
-					res.send(result.ops[0]);
-				}
+
+		//count data
+		collection.countDocuments({
+			'name': new RegExp("^" + classroom.name + "$", "i")
+		}, function(err, count) {
+			if (count == 0) {
+				// store
+				db.collection(classroomsCollection, function(err, collection) {
+					collection.insertOne(
+						classroom,
+						{
+							safe: true
+						},
+						function(err, result) {
+							if (err) {
+								res.status(500).send({
+									error: "An error has occurred",
+									code: 10
+								});
+							} else {
+								res.send(result.ops[0]);
+							}
+						}
+					);
+				});
+			} else {
+				res.status(401).send({
+					'error': 'Classroom with same name already exists',
+					'code': 30
+				});
 			}
-		);
+		});
 	});
 };
 
@@ -346,22 +362,21 @@ exports.findById = function(req, res) {
 					return;
 				}
 
-				// get student mappings
-				users.getAllUsers({
-					role: 'student'
-				}, {}, function(users) {
-					// append all students with selected flag
-					var studentList = classroom.students;
-					classroom.students = users.map(function(student){
-						student.is_member = false;
-						if(studentList.indexOf(student._id.toString()) > -1){
-							student.is_member = true;
-						}
-						return student;
-					});
-					// return
-					res.send(classroom);
-				}
+				users.getAllUsers(
+					{
+						_id: {
+							$in: classroom.students.map(function(id) {
+								return new mongo.ObjectID(id);
+							})
+						},
+						role: 'student'
+					},
+					{},
+					function(users) {
+						// append students
+						classroom.students = users;
+						res.send(classroom);
+					}
 				);
 			}
 		);
@@ -454,60 +469,79 @@ exports.updateClassroom = function(req, res) {
 	//add timestamp & language
 	classroom.timestamp = +new Date();
 
-	//update the classroom
+	//check for unique classroom name validation
 	db.collection(classroomsCollection, function(err, collection) {
-		collection.updateOne(
-			{
-				_id: new mongo.ObjectID(classid)
-			},
-			{
-				$set: classroom
-			},
-			{
-				safe: true
-			},
-			function(err, result) {
-				if (err) {
-					res.status(500).send({
-						error: "An error has occurred",
-						code: 10
-					});
-				} else {
-					if (result && result.result && result.result.n == 1) {
-						collection.findOne(
-							{
-								_id: new mongo.ObjectID(classid)
-							},
-							function(err, classroomResponse) {
-								// get student mappings
-								users.getAllUsers(
-									{
-										_id: {
-											$in: classroomResponse.students.map(function(id) {
-												return new mongo.ObjectID(id);
-											})
-										}
-									},
-									{},
-									function(users) {
-										// append students
-										classroomResponse.students = users;
 
-										// return
-										res.send(classroomResponse);
-									}
-								);
+		//count data
+		collection.countDocuments({
+			'_id': {
+				$ne: new mongo.ObjectID(classid)
+			},
+			'name': new RegExp("^" + classroom.name + "$", "i")
+		}, function(err, count) {
+			if (count == 0) {
+				//update the classroom
+				db.collection(classroomsCollection, function(err, collection) {
+					collection.updateOne(
+						{
+							_id: new mongo.ObjectID(classid)
+						},
+						{
+							$set: classroom
+						},
+						{
+							safe: true
+						},
+						function(err, result) {
+							if (err) {
+								res.status(500).send({
+									error: "An error has occurred",
+									code: 10
+								});
+							} else {
+								if (result && result.result && result.result.n == 1) {
+									collection.findOne(
+										{
+											_id: new mongo.ObjectID(classid)
+										},
+										function(err, classroomResponse) {
+											// get student mappings
+											users.getAllUsers(
+												{
+													_id: {
+														$in: classroomResponse.students.map(function(id) {
+															return new mongo.ObjectID(id);
+														})
+													}
+												},
+												{},
+												function(users) {
+													// append students
+													classroomResponse.students = users;
+	
+													// return
+													res.send(classroomResponse);
+												}
+											);
+										}
+									);
+								} else {
+									res.status(401).send({
+										error: "Inexisting classroom id",
+										code: 23
+									});
+								}
 							}
-						);
-					} else {
-						res.status(401).send({
-							error: "Inexisting classroom id",
-							code: 23
-						});
-					}
-				}
+						}
+					);
+				});
+			} else {
+				res.status(401).send({
+					'error': 'Classroom with same name already exists',
+					'code': 30
+				});
 			}
-		);
+		});
 	});
 };
 
@@ -567,7 +601,7 @@ function formPaginatedUrl(route, params, offset, limit) {
 	params.limit = limit;
 	var str = [];
 	for (var p in params)
-		if (params.hasOwnProperty(p)) {
+		if (p && Object.prototype.hasOwnProperty.call(params, p)) {
 			str.push(p + "=" + params[p]);
 		}
 	return "?" + str.join("&");

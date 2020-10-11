@@ -5,6 +5,7 @@
 		<%- include ../includes/navbar %>
 		<div class="content ">
 			<div class="container-fluid">
+                <%- include ../includes/flash-errors %>
 				<div class="row">
                     <div class="col-md-12">
 						<div class="card">
@@ -51,7 +52,11 @@
                                 <div class="card" id="listCharts-card">
                                     <div class="card-content">
                                         <div class="col-lg-1 col-md-1 col-sm-1 hide-mob-el"><img <% if(account.user && account.user.role=="admin") { %> class="draggable pointer" id="listCharts-draggable" <% } %> src="../../public/img/font-awesome-ellipsis-v.png" alt="drag" style="width:40px;height:40px;" data-l10n-id="reorder" title="Drag to Reorder" ></div>
-                                        <div class="text-center col-lg-4 col-md-4 col-sm-4 col-xs-5 search_textbox" style="line-height: 40px;"><%= charts[i].title %></div>
+                                        <% if (charts[i].title) { %>
+                                            <div class="text-center col-lg-4 col-md-4 col-sm-4 col-xs-5 search_textbox" style="line-height: 40px;"><%= charts[i].title %></div>
+                                        <% } else { %>
+                                            <div class="text-center col-lg-4 col-md-4 col-sm-4 col-xs-5 search_textbox" style="line-height: 40px;"><span data-l10n-id=<%= chartList[charts[i].key].description %>></span> (<span data-l10n-id="default">default</span>)</div>
+                                        <% } %>
                                         <div class="text-center col-lg-2 col-md-2 col-sm-2 hide-mob-el" style="line-height: 40px;" data-l10n-id="<%= charts[i].type %>" ><%= charts[i].type %></div>
                                         <div class="text-center col-lg-3 col-md-3 col-sm-3 hide-mob-el" style="line-height: 40px;"><%= charts[i].key %></div>
                                         <div class="text-center col-lg-2 col-md-2 col-sm-2 col-xs-7" style="line-height: 40px; display:inline-flex; justify-content:center;">

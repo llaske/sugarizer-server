@@ -5,12 +5,13 @@
 	<%- include ../includes/navbar %>
 		<div class="content">
 			<div class="container-fluid">
+				<%- include ../includes/flash-errors %>
 				<div class="row">
 					<div class="col-md-12">
 						<div class="card">
 							<form method="get" id="user-form">
 								<div class="col-md-12 col-sm-12 col-xs-12">
-									<a id="stats-addChart" class="btn btn-round pull-right " href="/dashboard/stats/add" data-l10n-id="addChart"><div class="ripple-container"></div></a>
+									<a id="stats-addChart" class="btn btn-round pull-right" href="/dashboard/stats/add" data-l10n-id="addChart"><div class="ripple-container"></div></a>
 									<a id="stats-listCharts" class="btn btn-round pull-right" href="/dashboard/stats/list" data-l10n-id="listCharts"><div class="ripple-container"></div></a>
 								</div>
 							</form>
@@ -22,7 +23,12 @@
 							<% if (charts[i].type=="table" && !charts[i].hidden) { %>
 								<div class="card" style="margin-top:0px;">
 									<div class="card-content table-responsive">
-										<p class="title text-muted dashboard-table-title" data-l10n-id="<%= chartList[charts[i].key].description %>"></p>
+										<% if (charts[i].title) { %>
+											<p class="title text-muted"><%= charts[i].title %></p>
+										<% } else { %>
+											<p class="title text-muted" data-l10n-id="<%= chartList[charts[i].key].description %>"></p>
+										<% } %>
+										<hr>
 										<table class="table table-hover dashboard-table"  id="<%= charts[i]._id %>">
 											<% if (typeof chartList[charts[i].key].headers == "object" && chartList[charts[i].key].headers.length > 0) { %>
 											<thead class="text-muted">
@@ -41,7 +47,12 @@
 							<% } else if (!charts[i].hidden) { %>
 								<div class="card" style="margin-top:0px;">
 									<div class="card-content">
-										<p class="title text-muted" data-l10n-id="<%= chartList[charts[i].key].description %>"></p><hr>
+										<% if (charts[i].title) { %>
+											<p class="title text-muted"><%= charts[i].title %></p>
+										<% } else { %>
+											<p class="title text-muted" data-l10n-id="<%= chartList[charts[i].key].description %>"></p>
+										<% } %>
+										<hr>
 										<canvas id="<%= charts[i]._id %>" width="400" height="250"></canvas>
 									</div>
 								</div>
@@ -53,7 +64,12 @@
 							<% if (charts[i].type=="table" && !charts[i].hidden) { %>
 								<div class="card" style="margin-top:0px;">
 									<div class="card-content table-responsive">
-										<p class="title text-muted dashboard-table-title" data-l10n-id="<%= chartList[charts[i].key].description %>"></p>
+										<% if (charts[i].title) { %>
+											<p class="title text-muted"><%= charts[i].title %></p>
+										<% } else { %>
+											<p class="title text-muted" data-l10n-id="<%= chartList[charts[i].key].description %>"></p>
+										<% } %>
+										<hr>
 										<table class="table table-hover dashboard-table"  id="<%= charts[i]._id %>">
 											<% if (typeof chartList[charts[i].key].headers == "object" && chartList[charts[i].key].headers.length > 0) { %>
 											<thead class="text-muted">
@@ -72,7 +88,12 @@
 							<% } else if (!charts[i].hidden) { %>
 								<div class="card" style="margin-top:0px;">
 									<div class="card-content">
-										<p class="title text-muted" data-l10n-id="<%= chartList[charts[i].key].description %>"></p><hr>
+										<% if (charts[i].title) { %>
+											<p class="title text-muted"><%= charts[i].title %></p>
+										<% } else { %>
+											<p class="title text-muted" data-l10n-id="<%= chartList[charts[i].key].description %>"></p>
+										<% } %>
+										<hr>
 										<canvas id="<%= charts[i]._id %>" width="400" height="250"></canvas>
 									</div>
 								</div>

@@ -1,0 +1,15 @@
+# creates the firewall rule
+
+- name: create a firewall
+  hosts: localhost
+  tasks:
+  - gcp_compute_firewall:
+      name: firewall-role
+      allowed:
+      - ip_protocol: tcp
+      project: "{{ project_id }}"
+      priority: "65534"
+      direction: "INGRESS"
+      auth_kind: serviceaccount
+      service_account_file: "{{ credentials_file }}"
+      state: present

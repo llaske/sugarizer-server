@@ -396,7 +396,7 @@ exports.findJournalContent = function(req, res) {
 												try {
 													var textObject = JSON.parse(items[ind].text);
 													items[ind].text = textObject.text;
- 												} catch (e) {
+												} catch (e) {
 													return res.status(500).send({'error': 'Invalid text value', 'code': 12});
 												}
 												return returnResponse();
@@ -455,7 +455,7 @@ function formPaginatedUrl(route, params, offset, limit) {
 	params.limit = limit;
 	var str = [];
 	for (var p in params)
-		if (params.hasOwnProperty(p)) {
+		if (p && Object.prototype.hasOwnProperty.call(params, p)) {
 			str.push(encodeURIComponent(p) + "=" + encodeURIComponent(params[p]));
 		}
 	return '?' + str.join("&");
@@ -1138,6 +1138,7 @@ exports.findAllEntries = function(req, res) {
 							var content = [];
 							for (var j=0; j<items[i].content.length; j++) {
 								if (items[i].content[j] && items[i].content[j].metadata && items[i].content[j].metadata.user_id && req.user.students.includes(items[i].content[j].metadata.user_id)) {
+									delete items[i].content[j].text;
 									content.push(items[i].content[j]);
 								}
 							}
@@ -1159,6 +1160,18 @@ exports.findAllEntries = function(req, res) {
 						'code': 5
 					});
 				}
+
+				// Delete the text field from the data
+				for (var i=0; i<items.length; i++) {
+					if (typeof items[i].content == "object") {
+						for (var j=0; j<items[i].content.length; j++) {
+							if (items[i].content[j] && items[i].content[j].text) {
+								delete items[i].content[j].text;
+							}
+						}
+					}
+				}
+
 				// Return
 				return res.send(items);
 			});

@@ -22,8 +22,8 @@ var fs = require('fs');
 // Import ini module to parse '.ini' files
 var ini = require('ini');
 
-// Import request library to make requests over the network
-var request = require('request');
+// Import superagent library to make requests over the network
+var superagent = require('superagent');
 
 // Import common helper
 var common = require('../dashboard/helper/common');
@@ -60,10 +60,10 @@ class User {
     constructor(name, type, language, color, password, classroom, comment) {
         this.name = name;
         this.type = type;
-        this.language = language;
-        this.color = color;
-        this.password = password;
-        this.classroom = classroom;
+        this.language = language ? language : "";
+        this.color = color ? color : "";
+        this.password = password ? password : "";
+        this.classroom = classroom ? classroom : [];
         this.comment = comment ? comment : "";
         this.status = 0;
         this._id = "";
@@ -73,6 +73,7 @@ class User {
 // Initialize the array that will contains all the users read from CSV
 var AdminsStudents = [];
 var Teachers = [];
+var Deletables = [];
 var InvalidUsers = [];
 
 // Trim and lowercase string
@@ -166,7 +167,9 @@ function validateUserRow(user, index) {
     };
 
     user.type = cleanString(user.type);
-    if (!isValidType(user.type)) {
+    if (user.type == "delete") {
+        return user;
+    } else if (!isValidType(user.type)) {
         user.type = "student";
     }
 
@@ -239,32 +242,129 @@ function stringifyUser(user) {
 // Initiate Master Admin
 var masterAdmin = stringifyUser(new User('Master_Admin_' + (+new Date()).toString(), 'admin', 'en', getRandomColorString(), 'password'));
 
-// Insert User
-function insertUser(Users, i) {
+// Delete a User
+function deleteUser(Users, i) {
     return new Promise(function(resolve, reject) {
-        request({
-            headers: {
+        superagent
+			.delete(common.getAPIUrl() + 'api/v1/users/' + Users[i]._id)
+			.set({
                 "content-type": "application/json",
                 "x-access-token": masterAdmin.token,
                 "x-key": masterAdmin.user._id
-            },
-            json: true,
-            method: 'post',
-            uri: common.getAPIUrl() + 'api/v1/users',
-            body: {
-                user: stringifyUser(Users[i])
-            }
-        }, function(error, response, body) {
-            if (response.statusCode == 200) {
-                Users[i].status = 1;
-                Users[i]._id = body._id;
-                resolve(body);
+            })
+			.end(function (error, response) {
+                if (error) {
+                    reject(error);
+                } else if (response.statusCode == 200 && response.body.user_id) {
+                    Users[i].status = 2;
+                    resolve(response.body);
+                } else {
+                    response.body.error = "Unable to delete the User";
+                    reject(response.body);
+                }
+            });
+    });
+}
+
+// Find a User
+function findUser(Users, i) {
+    return new Promise(function(resolve, reject) {
+        var query = {
+            sort: '+name',
+            q: Users[i].name,
+            role: 'all',
+            limit: 100000
+        };
+        superagent
+            .get(common.getAPIUrl() + 'api/v1/users')
+            .set({
+                "content-type": "application/json",
+                "x-access-token": masterAdmin.token,
+                "x-key": masterAdmin.user._id
+            })
+            .query(query)
+            .end(function (error, response) {
+                if (error) {
+                    reject(error);
+                } else if (response.body && response.body.users && response.body.users.length > 0) {
+                    var results = response.body.users;
+                    var lowerName = cleanString(Users[i].name);
+                    var found = false;
+                    for (var j=0; j<results.length; j++) {
+                        if (results[j].insensitive == lowerName) {
+                            found = true;
+                            Users[i]._id = results[j]._id;
+                            resolve(results[j]);
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        response.body.error = "User not found";
+                        reject(response.body);
+                    }
+                } else {
+                    response.body.error = "User not found";
+                    reject(response.body);
+                }
+            });
+    });
+}
+
+// Find and delete a user
+function findAndDeleteUser(Users, i) {
+    return new Promise(function(resolve, reject) {
+        findUser(Users, i).then(function(res) {
+            if (res && res._id) {
+                // Confirm Match
+                deleteUser(Users, i).then(function(res) {
+                    // Confirm Deletion
+                    resolve(res);
+                })
+                .catch(function(err) {
+                    Users[i].comment += (err.error + " "); // Error Deleting User
+                    err.user = Users[i];
+                    reject(err);
+                });
             } else {
-                Users[i].comment += body.error;
-                body.user = Users[i];
-                reject(body);
+                // user not found
+                Users[i].comment += "User does not exists. ";
+                res.error = "User does not exists.";
+                res.user = Users[i];
+                reject(res);
             }
+        })
+        .catch(function(err) {
+            Users[i].comment += (err.error + " ");
+            err.user = Users[i];
+            reject(err);
         });
+    });
+}
+
+// Insert User
+function insertUser(Users, i) {
+    return new Promise(function(resolve, reject) {
+        superagent
+            .post(common.getAPIUrl() + 'api/v1/users')
+            .set({
+                "content-type": "application/json",
+                "x-access-token": masterAdmin.token,
+                "x-key": masterAdmin.user._id
+            })
+            .send({
+                user: stringifyUser(Users[i])
+            })
+            .end(function (error, response) {
+                if (response.statusCode == 200) {
+                    Users[i].status = 1;
+                    Users[i]._id = response.body._id;
+                    resolve(response.body);
+                } else {
+                    Users[i].comment += response.body.error;
+                    response.body.user = Users[i];
+                    reject(response.body);
+                }
+            });
     });
 }
 
@@ -295,52 +395,48 @@ function stringifyNewClassroom(name) {
 // Update classroom by ID
 function updateClassroom(name) {
     return new Promise(function(resolve, reject) {
-        request({
-            headers: {
+        superagent
+            .put(common.getAPIUrl() + 'api/v1/classrooms/' + Classrooms[name].data._id)
+            .set({
                 "content-type": "application/json",
                 "x-access-token": masterAdmin.token,
                 "x-key": masterAdmin.user._id
-            },
-            json: true,
-            method: 'put',
-            uri: common.getAPIUrl() + 'api/v1/classrooms/' + Classrooms[name].data._id,
-            body: {
+            })
+            .send({
                 classroom: stringifyExistingClassroom(name)
-            }
-        }, function(error, response, body) {
-            body.q = name;
-            if (response.statusCode == 200) {
-                resolve(body);
-            } else {
-                reject(body);
-            }
-        });
+            })
+            .end(function (error, response) {
+                response.body.q = name;
+                if (response.statusCode == 200) {
+                    resolve(response.body);
+                } else {
+                    reject(response.body);
+                }
+            });
     });
 }
 
 // Insert Classroom
 function insertClassroom(name) {
     return new Promise(function(resolve, reject) {
-        request({
-            headers: {
+        superagent
+            .post(common.getAPIUrl() + 'api/v1/classrooms')
+            .set({
                 "content-type": "application/json",
                 "x-access-token": masterAdmin.token,
                 "x-key": masterAdmin.user._id
-            },
-            json: true,
-            method: 'post',
-            uri: common.getAPIUrl() + 'api/v1/classrooms',
-            body: {
+            })
+            .send({
                 classroom: stringifyNewClassroom(name)
-            }
-        }, function(error, response, body) {
-            body.q = name;
-            if (response.statusCode == 200) {
-                resolve(body);
-            } else {
-                reject(body);
-            }
-        });
+            })
+            .end(function (error, response) {
+                response.body.q = name;
+                if (response.statusCode == 200) {
+                    resolve(response.body);
+                } else {
+                    reject(response.body);
+                }
+            });
     });
 }
 
@@ -351,24 +447,22 @@ function findClassroom(name) {
             sort: '+name',
             q: name
         };
-        request({
-            headers: {
+        superagent
+            .get(common.getAPIUrl() + 'api/v1/classrooms')
+            .set({
                 "content-type": "application/json",
                 "x-access-token": masterAdmin.token,
                 "x-key": masterAdmin.user._id
-            },
-            json: true,
-            method: 'GET',
-            qs: query,
-            uri: common.getAPIUrl() + 'api/v1/classrooms'
-        }, function(error, response, body) {
-            body.q = name;
-            if (response.statusCode == 200) {
-                resolve(body);
-            } else {
-                reject(body);
-            }
-        });
+            })
+            .query(query)
+            .end(function (error, response) {
+                response.body.q = name;
+                if (response.statusCode == 200) {
+                    resolve(response.body);
+                } else {
+                    reject(response.body);
+                }
+            });
     });
 }
 
@@ -417,28 +511,26 @@ function generateCSV(Users) {
 // Function to delete Master Admin
 function deleteMasterAdmin() {
     return new Promise(function(resolve, reject) {
-        request({
-            headers: {
+        superagent
+			.delete(common.getAPIUrl() + 'api/v1/users/' + masterAdmin.user._id)
+			.set({
                 "content-type": "application/json",
                 "x-access-token": masterAdmin.token,
                 "x-key": masterAdmin.user._id
-            },
-            json: true,
-            method: 'delete',
-            uri: common.getAPIUrl() + 'api/v1/users/' + masterAdmin.user._id,
-        }, function(error, response, body) {
-            if (response.statusCode == 200) {
-                resolve(body);
-            } else {
-                reject(body);
-            }
-        });
+            })
+			.end(function (error, response) {
+                if (response.statusCode == 200) {
+                    resolve(response.body);
+                } else {
+                    reject(response.body);
+                }
+            });
     });
 }
 
 // Finish classroom assignment and generate CSV and delete Master Admin
 function returnResponse() {
-    var allUsers = [...new Set([...AdminsStudents, ...Teachers, ...InvalidUsers])];
+    var allUsers = [...new Set([...Deletables, ...AdminsStudents, ...Teachers, ...InvalidUsers])];
     var color, stroke, fill;
     for (var i=0; i<allUsers.length; i++) {
         stroke = ""; fill = ""; color = "";
@@ -553,65 +645,88 @@ function initTeacherAssignment() {
     }
 }
 
+// Initiate AdminsStudents insertion
+function initAdminsStudentsInsertion() {
+    if (AdminsStudents.length > 0) {
+        var usersProcessed = 0;
+        // Insert all Admins & Students
+        for (var i=0; i < AdminsStudents.length; i++) {
+            insertUser(AdminsStudents, i).then(function() {
+                usersProcessed++;
+                if (usersProcessed == AdminsStudents.length) initClassroomAssignment();
+            }).catch(function(err) {
+                if (err) console.log("Error inserting " + err.user.name + ": " + err.error);
+                usersProcessed++;
+                if (usersProcessed == AdminsStudents.length) initClassroomAssignment();
+            });
+        }
+    } else {
+        initClassroomAssignment();
+    }
+}
+
+// Initiate User Deletion
+function initUserDeletion() {
+    if (Deletables.length > 0) {
+        var usersProcessed = 0;
+        // Delete Deletables
+        for (var i=0; i < Deletables.length; i++) {
+            findAndDeleteUser(Deletables, i).then(function() {
+                usersProcessed++;
+                if (usersProcessed == Deletables.length) initAdminsStudentsInsertion();
+            }).catch(function(err) {
+                if (err) console.log("Error deleting " + err.user.name + ": " + err.error);
+                usersProcessed++;
+                if (usersProcessed == Deletables.length) initAdminsStudentsInsertion();
+            });
+        }
+    } else {
+        initAdminsStudentsInsertion();
+    }
+}
+
 // Initiate seeding to DB
 function initSeed() {
     // Create Master Admin
-    request({
-        headers: {
+    superagent
+        .post(common.getAPIUrl() + 'auth/signup')
+        .set({
             "content-type": "application/json",
-        },
-        json: true,
-        method: 'POST',
-        uri: common.getAPIUrl() + 'auth/signup',
-        body: {
+        })
+        .send({
             "user" : masterAdmin
-        }
-    }, function(error, response) {
-        if (response && response.statusCode == 200) {
-            // Master Admin created
-            request({
-                headers: {
-                    "content-type": "application/json",
-                },
-                json: true,
-                method: 'POST',
-                uri: common.getAPIUrl() + 'auth/login',
-                body: {
-                    "user" : masterAdmin
-                }
-            }, function(error, response, body) {
-                if (response.statusCode == 200) {
-                    // Logged into Master Admin
-                    masterAdmin = body;
+        })
+        .end(function (error, response) {
+            if (response && response.statusCode == 200) {
+                // Master Admin created
+                superagent
+                    .post(common.getAPIUrl() + 'auth/login')
+                    .set({
+                        "content-type": "application/json",
+                    })
+                    .send({
+                        "user" : masterAdmin
+                    })
+                    .end(function (error, response) {
+                        if (response.statusCode == 200) {
+                            // Logged into Master Admin
+                            masterAdmin = response.body;
 
-                    var usersProcessed = 0;
-                    // Insert all users
-                    for (var i=0; i < AdminsStudents.length; i++) {
-                        insertUser(AdminsStudents, i).then(function() {
-                            usersProcessed++;
-                            if (usersProcessed == AdminsStudents.length) initClassroomAssignment();
-                        }).catch(function(err) {
-                            if (err) console.log("Error inserting " + err.user.name + ": " + err.error);
-                            usersProcessed++;
-                            if (usersProcessed == AdminsStudents.length) initClassroomAssignment();
-                        });
-                    }
-                    if (AdminsStudents.length == 0) {
-                        initClassroomAssignment();
-                    }
-                } else {
-                    console.log('Error logging into Master Admin');
-                    process.exit(-1);
-                }
-            });
-        } else if (!response) {
-            console.log('Error: Cannot access sugarizer-server');
-            process.exit(-1);
-        } else {
-            console.log('Error creating Master Admin');
-            process.exit(-1);
-        }
-    });
+                            // Delete the users
+                            initUserDeletion();
+                        } else {
+                            console.log('Error logging into Master Admin');
+                            process.exit(-1);
+                        }
+                    });
+            } else if (!response) {
+                console.log('Error: Cannot access sugarizer-server');
+                process.exit(-1);
+            } else {
+                console.log('Error creating Master Admin');
+                process.exit(-1);
+            }
+        });
 }
 
 // Reading and validating file
@@ -627,7 +742,9 @@ fs.createReadStream(filename)
         dataIndex++;
         var validRow = validateUserRow(row, dataIndex);
         if (validRow) {
-            if (validRow.type == "teacher") {
+            if (validRow.type == "delete") {
+                Deletables.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
+            } else if (validRow.type == "teacher") {
                 Teachers.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
             } else {
                 AdminsStudents.push(new User(validRow.name, validRow.type, validRow.language, validRow.color, validRow.password, validRow.classroom, validRow.comment));
@@ -638,7 +755,7 @@ fs.createReadStream(filename)
     })
     .on('end', function() {
         // Finished processing CSV file
-        var AllUsers = [...new Set([...AdminsStudents, ...Teachers])];
+        var AllUsers = [...new Set([...Deletables, ...AdminsStudents, ...Teachers])];
         if (AllUsers.length == 0) {
             console.log('Error: No users to insert');
             process.exit(-1);

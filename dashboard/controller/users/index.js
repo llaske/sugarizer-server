@@ -1,7 +1,8 @@
 // include libraries
-var request = require('request'),
+var superagent = require('superagent'),
 	moment = require('moment'),
 	common = require('../../helper/common'),
+	searchUser = require('./searchUser'),
 	addUser = require('./addUser'),
 	editUser = require('./editUser'),
 	deleteUser = require('./deleteUser'),
@@ -59,37 +60,38 @@ exports.index = function(req, res) {
 	}
 
 	// call
-	request({
-		headers: common.getHeaders(req),
-		json: true,
-		method: 'GET',
-		qs: query,
-		uri: common.getAPIUrl(req) + 'api/v1/users'
-	}, function(error, response, body) {
-		if (response.statusCode == 200) {
+	superagent
+		.get(common.getAPIUrl(req) + 'api/v1/users')
+		.set(common.getHeaders(req))
+		.query(query)
+		.end(function (error, response) {
+			if (response.statusCode == 200) {
 
-			// get classrooms list
-			getClassrooms(req, function(classrooms){
-
-				// send to activities page
-				res.render('users', {
-					module: 'users',
-					moment: moment,
-					query: query,
-					classrooms: classrooms,
-					classroom_id: classroom_id,
-					data: body,
-					account: req.session.user,
-					server: ini.information
+				// get classrooms list
+				getClassrooms(req, function(classrooms){
+	
+					// send to activities page
+					res.render('users', {
+						module: 'users',
+						moment: moment,
+						query: query,
+						classrooms: classrooms,
+						classroom_id: classroom_id,
+						data: response.body,
+						headers: common.getHeaders(req),
+						account: req.session.user,
+						server: ini.information
+					});
 				});
-			});
-		} else {
-			req.flash('errors', {
-				msg: common.l10n.get('ErrorCode'+body.code)
-			});
-		}
-	});
+			} else {
+				req.flash('errors', {
+					msg: common.l10n.get('ErrorCode'+response.body.code)
+				});
+			}
+		});
 };
+
+exports.searchUser = searchUser;
 
 exports.addUser = addUser;
 

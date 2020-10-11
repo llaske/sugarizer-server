@@ -4,6 +4,10 @@
 
 Google Cloud platform is an optimal choice right now because it provides 300$ free credits for an year , which could be beneficial in case of scaling up an app as the user increases.
 
+Sugarizer can be deployed to GCP manually by creating a vm instance and firewall or using the [ansible](https://ansible.com) package which simplifies the process and automatically does most of the steps for you.
+
+This file describes the manual method. Deployment method using ansible can be found [here](ansible-deployToGcp.md)
+
 ## Steps to Deploy Sugarizer :
 
 *Step 1:* Create a google account if you not have one and login into GCP.
@@ -26,7 +30,18 @@ Enable billing for the VM. Create Instance and allow HTTP and HTTPS. You can cho
 ![](images/7.png)
 ![](images/8.png)
 
-*Step 5 :* SSH into the VM and past these command into the opened ssh window.
+*Step 5 :* SSH into the VM and paste these command into the opened ssh window.
+
+	sudo apt update
+	sudo apt install -y git
+	git clone https://github.com/llaske/sugarizer
+	git clone https://github.com/llaske/sugarizer-server
+	curl -fsSL https://get.docker.com/ | sh
+	sudo curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+	chmod +x /usr/local/bin/docker-compose
+	cd sugarizer-server
+	sh generate-docker-compose.sh
+	sudo docker-compose up -d
 
 ![](images/9.png)
 

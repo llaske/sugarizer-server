@@ -1,5 +1,5 @@
 // include libraries
-var request = require('request'),
+var superagent = require('superagent'),
 	moment = require('moment'),
 	common = require('../../helper/common'),
 	addClassroom = require('./addClassroom'),
@@ -42,32 +42,30 @@ exports.index = function(req, res) {
 		query['sort'] = req.query.sort;
 	}
 
-	// call
-	request({
-		headers: common.getHeaders(req),
-		json: true,
-		method: 'GET',
-		qs: query,
-		uri: common.getAPIUrl(req) + 'api/v1/classrooms'
-	}, function(error, response, body) {
-		if (response.statusCode == 200) {
+	superagent
+		.get(common.getAPIUrl(req) + 'api/v1/classrooms')
+		.set(common.getHeaders(req))
+		.query(query)
+		.end(function (error, response) {
+			if (response.statusCode == 200) {
 
-			// send to activities page
-			res.render('classrooms', {
-				module: 'classrooms',
-				moment: moment,
-				query: query,
-				data: body,
-				account: req.session.user,
-				server: ini.information
-			});
-
-		} else {
-			req.flash('errors', {
-				msg: common.l10n.get('ErrorCode'+body.code)
-			});
-		}
-	});
+				// send to activities page
+				res.render('classrooms', {
+					module: 'classrooms',
+					moment: moment,
+					query: query,
+					data: response.body,
+					headers: common.getHeaders(req),
+					account: req.session.user,
+					server: ini.information
+				});
+	
+			} else {
+				req.flash('errors', {
+					msg: common.l10n.get('ErrorCode'+response.body.code)
+				});
+			}	
+		});
 };
 
 exports.addClassroom = addClassroom;

@@ -5,7 +5,7 @@ var moment = require('moment'),
 	getEntries = require('./getEntries');
 
 var _util = require('./util'),
-	getUsers = _util.getUsers;
+	getSharedJournalId = _util.getSharedJournalId;
 
 // init settings
 var ini = null;
@@ -22,8 +22,8 @@ exports.index = function(req, res) {
 
 	// reinit l10n and momemt with locale
 	common.reinitLocale(req);
-
-	getUsers(req, res, function(users) {
+	
+	getSharedJournalId(req, res, function(shared) {
 		res.render('journal', {
 			module: 'journals',
 			moment: moment,
@@ -32,7 +32,9 @@ exports.index = function(req, res) {
 				uid: -1,
 				type: 'private'
 			},
-			users: users,
+			user: undefined,
+			shared: shared,
+			headers: common.getHeaders(req),
 			account: req.session.user,
 			server: ini.information
 		});

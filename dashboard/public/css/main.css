@@ -143,6 +143,7 @@
   width: 30px;
   height: 30px;
   margin-top: 8px;
+  cursor: pointer; 
 }
 
 .qr-icon {
@@ -155,6 +156,7 @@
   margin-top: 15px;
   margin-left: auto;
   margin-right: auto;
+  cursor: pointer;
 }
 
 .custom-icon.invert {
@@ -227,7 +229,7 @@
   height: 50px !important;
 }
 
-.select2-container {
+.select2 {
   width: 100% !important;
 }
 
@@ -509,6 +511,16 @@
   margin-right: 15px;
 }
 
+.journal-check {
+  padding-left: 30px;
+  padding-top: 0px;
+}
+
+.journal-check input {
+  margin-top: 10px;
+  margin-right: 5px;
+}
+
 .icon-button {
 	border-radius: 22px;
 	margin-top: 5px;
@@ -643,6 +655,28 @@
   box-shadow: 0 5px 10px rgba(0,0,0,.2);
 }
 
+.upload-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.upload-btn-wrapper a {
+  padding: 8px;
+}
+
+.upload-btn-wrapper a > i {
+  color: white;
+  font-size: 25px !important;
+}
+.upload-btn-wrapper input[type=file] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  display: none;
+}
+
 @font-face {
 	font-family: "Noto Emoji";
 	src: url("../fonts/NotoEmoji.woff") format('woff');
@@ -733,6 +767,9 @@
     padding-left: 0px;
   }
   .display-check {
+    padding-left: 0px;
+  }
+  .journal-check {
     padding-left: 0px;
   }
 }
