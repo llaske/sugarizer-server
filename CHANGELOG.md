@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Fixed
+- Unit tests are broken for activities #273
+- Warning: Accessing non-existent property with node.js #272
+
+
 ## [1.3.0] - 2020-10-11
 ### Added
 - Provide a way to remove multiple users at the same time #217
