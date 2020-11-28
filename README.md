@@ -89,7 +89,7 @@ It `no_signup_mode` is true, account creation is allowed only by an administrato
 
 The **[client]** indicate the place where is located Sugarizer Client. Sugarizer Client is need by the server.
 
-The **[presence]** section describes the settings of the presence server. By default, a web socket is created on port 8039. You need to change this value if you want to use another port.
+The **[presence]** section describes the settings of the presence server. By default, a web socket is created on port 8039. You need to change this value if you want to use another port. You could use the same value than the one in the `web` port.
 
 The **[database]** and **[collections]** sections are for MongoDB settings. You could update the server name (by default MongoDB run locally) and the server port. Names of the database and collections had no reason to be changed. The `waitdb` parameter allow you to force server to wait for the database. Optionally, the `replicaset` parameter can be set to `true` to enable MongoDB Replicaset support, in this case the server name becomes the replicaset connection string.
 

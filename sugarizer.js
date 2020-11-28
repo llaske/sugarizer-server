@@ -7,6 +7,7 @@ var express = require('express'),
 	settings = require('./config/settings'),
 	wait4db = require('./config/wait4db'),
 	common = require('./dashboard/helper/common'),
+	presence = require('./api/middleware/presence'),
 	ini = settings.load(),
 	app = express(),
 	server = null;
@@ -68,6 +69,7 @@ wait4db.waitConnection(ini, function(db) {
 	console.log(info.description+" v"+info.version);
 	console.log("node v"+process.versions.node);
 	console.log("Settings file './env/"+(process.env.NODE_ENV ? process.env.NODE_ENV : 'sugarizer')+".ini'");
+	presence.init(ini, server, app);
 	server.listen(ini.web.port, function() {
 		console.log("API is listening on"+(ini.security.https ? " secure":"")+" port " + ini.web.port + "...");
 	}).on('error', function(err) {

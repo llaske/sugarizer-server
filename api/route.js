@@ -7,7 +7,6 @@ var activities = require('./controller/activities'),
 	auth = require('./controller/auth'),
 	stats = require('./controller/stats'),
 	validate = require('./middleware/validateRequest'),
-	presence = require('./middleware/presence'),
 	common = require('../dashboard/helper/common');
 
 // Define roles
@@ -23,7 +22,6 @@ module.exports = function(app, ini, db) {
 	activities.load(ini);
 	journal.init(ini, db);
 	users.init(ini, db);
-	presence.init(ini, db);
 	stats.init(ini, db);
 	classrooms.init(ini, db);
 	charts.init(ini, db);
