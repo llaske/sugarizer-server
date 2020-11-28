@@ -1,15 +1,18 @@
 // websocket and http servers
-var webSocketServer = require('websocket').server;
+var webSocket = require('ws');
 var http = require('http');
 var https = require('https');
 var common = require('../../dashboard/helper/common');
 
-exports.init = function(settings) {
+exports.init = function(settings, httpserver, app) {
 	/**
 	 * Global variables
 	 */
 	// List of currently connected clients (users)
 	var clients = [];
+
+	// Http server
+	var server = httpserver;
 
 	// List of shared activities
 	var sharedActivities = [];
@@ -34,23 +37,28 @@ exports.init = function(settings) {
 	/**
 	 * HTTP server
 	 */
-	var server = null;
-	if (settings.security.https) {
-		var credentials = common.loadCredentials(settings);
-		if (!credentials) {
-			console.log("Error reading HTTPS credentials");
-			process.exit(-1);
+	if (settings.presence.port != settings.web.port) {
+		// Not on the same port: create a new one
+		if (settings.security.https) {
+			var credentials = common.loadCredentials(settings);
+			if (!credentials) {
+				console.log("Error reading HTTPS credentials");
+				process.exit(-1);
+			}
+			server = https.createServer(credentials);
+		} else {
+			server = http.createServer();
 		}
-		server = https.createServer(credentials);
+		server.listen(settings.presence.port, function() {
+			console.log("Presence is listening on"+(settings.security.https ? " secure":"")+" port " + settings.presence.port + "...");
+		}).on('error', function(err) {
+			console.log("Ooops! cannot launch presence on port "+ settings.presence.port + ", error code "+err.code);
+			process.exit(-1);
+		});
 	} else {
-		server = http.createServer();
-	}
-	server.listen(settings.presence.port, function() {
+		// Use the existing HTTP server
 		console.log("Presence is listening on"+(settings.security.https ? " secure":"")+" port " + settings.presence.port + "...");
-	}).on('error', function(err) {
-		console.log("Ooops! cannot launch presence on port "+ settings.presence.port + ", error code "+err.code);
-		process.exit(-1);
-	});
+	}
 
 	// Log message
 	var level = settings.log?settings.log.level:1;
@@ -63,180 +71,173 @@ exports.init = function(settings) {
 	/**
 	 * WebSocket server
 	 */
-	var wsServer = new webSocketServer({
-		httpServer: server,
-		maxReceivedFrameSize: 44040192,
-		maxReceivedMessageSize: 44040192
+	const wsServer = new webSocket.Server({
+		server: server,
+		maxPayload: 44040192
 	});
 
 	// Callback function called every time someone connect to the WebSocket server
-	wsServer.on('request', function(request) {
-		// Accept connection from your website
-		var connection = request.accept(null, request.origin);
-
+	wsServer.on('connection', function(connection) {
 		// Add client to array, wait for userId
 		var userIndex;
 		var userId = false;
 
 		// An user sent some message
 		connection.on('message', function(message) {
-			// Accept only text
-			if (message.type === 'utf8') {
-				// First message sent is user settings
-				if (userId === false) {
-					// Get user settings
-					var rjson = JSON.parse(message.utf8Data);
+			// First message sent is user settings
+			if (userId === false) {
+				// Get user settings
+				var rjson = JSON.parse(message);
 
-					// Forbid user arlready connected on another device
-					if ((userIndex = findClient(rjson.networkId)) != -1) {
-						// Disconnect user on other device
-						clients[userIndex].connection.close(closedBecauseDuplicate);
+				// Forbid user arlready connected on another device
+				if ((userIndex = findClient(rjson.networkId)) != -1) {
+					// Disconnect user on other device
+					clients[userIndex].connection.close(closedBecauseDuplicate);
 
-						// Reset user
-						clients[userIndex].settings = rjson;
-						clients[userIndex].connection = connection;
-						userId = rjson.networkId;
-						logmessage('User ' + userId + ' already connected, closed previous connection and reconnect it');
-					} else {
-						// Add client
-						userIndex = addClient(connection);
-						clients[userIndex].settings = rjson;
-
-						// Get user name
-						userId = rjson.networkId;
-						logmessage('User ' + userId + ' join the network');
-					}
+					// Reset user
+					clients[userIndex].settings = rjson;
+					clients[userIndex].connection = connection;
+					userId = rjson.networkId;
+					logmessage('User ' + userId + ' already connected, closed previous connection and reconnect it');
 				} else {
-					// Get message content
-					var rjson = JSON.parse(message.utf8Data);
+					// Add client
+					userIndex = addClient(connection);
+					clients[userIndex].settings = rjson;
 
-					// Process message depending of this type
-					switch (rjson.type) {
-					// MESSAGE: listUsers
-					case msgListUsers:
-					{
-						// Compute connected user list
-						var connectedUsers = [];
-						for (var i = 0; i < clients.length; i++) {
-							if (clients[i] != null) {
-								connectedUsers.push(clients[i].settings);
-							}
+					// Get user name
+					userId = rjson.networkId;
+					logmessage('User ' + userId + ' join the network');
+				}
+			} else {
+				// Get message content
+				var rjson = JSON.parse(message);
+
+				// Process message depending of this type
+				switch (rjson.type) {
+				// MESSAGE: listUsers
+				case msgListUsers:
+				{
+					// Compute connected user list
+					var connectedUsers = [];
+					for (var i = 0; i < clients.length; i++) {
+						if (clients[i] != null) {
+							connectedUsers.push(clients[i].settings);
 						}
-
-						// Send the list
-						connection.sendUTF(JSON.stringify({
-							type: msgListUsers,
-							data: connectedUsers
-						}));
-						break;
 					}
 
-					// MESSAGE: createSharedActivity
-					case msgCreateSharedActivity:
-					{
-						// Create shared activities
-						var activityId = rjson.activityId;
-						var groupId = createSharedActivity(activityId, userId);
-						logmessage('Shared group ' + groupId + " (" + activityId + ") created");
+					// Send the list
+					connection.send(JSON.stringify({
+						type: msgListUsers,
+						data: connectedUsers
+					}));
+					break;
+				}
 
-						// Add user into group
-						addUserIntoGroup(groupId, userId);
+				// MESSAGE: createSharedActivity
+				case msgCreateSharedActivity:
+				{
+					// Create shared activities
+					var activityId = rjson.activityId;
+					var groupId = createSharedActivity(activityId, userId);
+					logmessage('Shared group ' + groupId + " (" + activityId + ") created");
 
-						// Send the group id
-						connection.sendUTF(JSON.stringify({
-							type: msgCreateSharedActivity,
-							data: groupId
-						}));
-						break;
-					}
+					// Add user into group
+					addUserIntoGroup(groupId, userId);
 
-					// MESSAGE: listSharedActivities
-					case msgListSharedActivities:
-					{
-						// Compute shared activities list
-						var listShared = [];
-						for (var i = 0; i < sharedActivities.length; i++) {
-							if (sharedActivities[i] != null) {
-								listShared.push(sharedActivities[i]);
-							}
+					// Send the group id
+					connection.send(JSON.stringify({
+						type: msgCreateSharedActivity,
+						data: groupId
+					}));
+					break;
+				}
+
+				// MESSAGE: listSharedActivities
+				case msgListSharedActivities:
+				{
+					// Compute shared activities list
+					var listShared = [];
+					for (var i = 0; i < sharedActivities.length; i++) {
+						if (sharedActivities[i] != null) {
+							listShared.push(sharedActivities[i]);
 						}
-
-						// Send the list
-						connection.sendUTF(JSON.stringify({
-							type: msgListSharedActivities,
-							data: listShared
-						}));
-						break;
 					}
 
-					// MESSAGE: joinSharedActivity
-					case msgJoinSharedActivity:
-					{
-						// Update group
-						var groupId = rjson.group;
-						var groupProperties = addUserIntoGroup(groupId, userId);
+					// Send the list
+					connection.send(JSON.stringify({
+						type: msgListSharedActivities,
+						data: listShared
+					}));
+					break;
+				}
 
-						// Send the group properties
-						connection.sendUTF(JSON.stringify({
-							type: msgJoinSharedActivity,
-							data: groupProperties
-						}));
-						break;
-					}
+				// MESSAGE: joinSharedActivity
+				case msgJoinSharedActivity:
+				{
+					// Update group
+					var groupId = rjson.group;
+					var groupProperties = addUserIntoGroup(groupId, userId);
 
-					// MESSAGE: leaveSharedActivity
-					case msgLeaveSharedActivity:
-					{
-						// Update group
-						var groupId = rjson.group;
-						removeUserFromGroup(groupId, userId);
-						break;
-					}
+					// Send the group properties
+					connection.send(JSON.stringify({
+						type: msgJoinSharedActivity,
+						data: groupProperties
+					}));
+					break;
+				}
 
-					// MESSAGE: listSharedActivityUsers
-					case msgListSharedActivityUsers:
-					{
-						// Get group
-						var groupId = rjson.group;
+				// MESSAGE: leaveSharedActivity
+				case msgLeaveSharedActivity:
+				{
+					// Update group
+					var groupId = rjson.group;
+					removeUserFromGroup(groupId, userId);
+					break;
+				}
 
-						// Compute connected user list
-						var connectedUsers = listUsersFromGroup(groupId);
-						var usersList = [];
-						for (var i = 0; i < connectedUsers.length; i++) {
-							var j = findClient(connectedUsers[i]);
-							if (j != -1) {
-								usersList.push(clients[j].settings);
-							}
+				// MESSAGE: listSharedActivityUsers
+				case msgListSharedActivityUsers:
+				{
+					// Get group
+					var groupId = rjson.group;
+
+					// Compute connected user list
+					var connectedUsers = listUsersFromGroup(groupId);
+					var usersList = [];
+					for (var i = 0; i < connectedUsers.length; i++) {
+						var j = findClient(connectedUsers[i]);
+						if (j != -1) {
+							usersList.push(clients[j].settings);
 						}
-
-						// Send the list
-						connection.sendUTF(JSON.stringify({
-							type: msgListSharedActivityUsers,
-							data: usersList
-						}));
-						break;
 					}
 
-					// MESSAGE: sendMessage
-					case msgSendMessage:
-					{
-						// Get arguments
-						var groupId = rjson.group;
-						var data = rjson.data;
+					// Send the list
+					connection.send(JSON.stringify({
+						type: msgListSharedActivityUsers,
+						data: usersList
+					}));
+					break;
+				}
 
-						// Send the group properties
-						var message = {
-							type: msgSendMessage,
-							data: data
-						};
-						broadcastToGroup(groupId, message);
-						break;
-					}
+				// MESSAGE: sendMessage
+				case msgSendMessage:
+				{
+					// Get arguments
+					var groupId = rjson.group;
+					var data = rjson.data;
 
-					default:
-						console.log("Unrecognized received json type");
-						break;
-					}
+					// Send the group properties
+					var message = {
+						type: msgSendMessage,
+						data: data
+					};
+					broadcastToGroup(groupId, message);
+					break;
+				}
+
+				default:
+					console.log("Unrecognized received json type");
+					break;
 				}
 			}
 		});
@@ -454,7 +455,7 @@ exports.init = function(settings) {
 
 			// Send message
 			var connection = clients[clientIndex].connection;
-			connection.sendUTF(JSON.stringify(json));
+			connection.send(JSON.stringify(json));
 		}
 	}
 
