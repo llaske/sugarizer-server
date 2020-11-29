@@ -51,8 +51,8 @@ wait4db.waitConnection(ini, function(db) {
 
 	// Check node version
 	var nodev = (process.versions.node).split(".");
-	if (parseInt(nodev[0]) < 6) {
-		console.log("Ooops! Sugarizer require node v6+, current version is v"+process.versions.node);
+	if (parseInt(nodev[0]) < 10) {
+		console.log("Ooops! Sugarizer require node v10+, current version is v"+process.versions.node);
 		process.exit(-1);
 	}
 

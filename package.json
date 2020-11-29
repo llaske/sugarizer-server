@@ -5,6 +5,9 @@
 	"repository": "https://github.com/llaske/sugarizer-server",
 	"author": "Lionel Laské <lionel@sugarizer.org>",
 	"license": "Apache-2.0",
+	"engines": {
+		"node": ">=10.0.0"
+	},
 	"dependencies": {
 		"async": "2.6.1",
 		"cookie-parser": "1.4.3",
