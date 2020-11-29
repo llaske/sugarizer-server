@@ -290,11 +290,7 @@ Then launch Grunt task to minify Sugarizer JavaScript files:
 
 	grunt -v
 
-After minification, the `build` directory will contain the optimized version of each file in the same directory as the initial one, so you could just copy files:
-
-	cp -r build/* .
-
-Then navigate to Sugarizer-Server directory install the specific component for Sugarizer-Server by running:
+Now navigate to Sugarizer-Server directory install the specific component for Sugarizer-Server by running:
 
 	npm install
 
