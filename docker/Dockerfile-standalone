@@ -3,10 +3,14 @@ FROM node:latest
 WORKDIR /opt
 RUN git clone https://github.com/llaske/sugarizer
 RUN git clone https://github.com/llaske/sugarizer-server
-
+RUN npm install -g grunt-cli
+WORKDIR /opt/sugarizer
+RUN npm install --only=dev
+RUN grunt -v --force
 WORKDIR /opt/sugarizer-server
-
 RUN npm install --no-optional
+RUN grunt -v --force
+RUN cp -r build/* .
 
 EXPOSE 8080
 EXPOSE 8039
