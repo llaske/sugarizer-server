@@ -4,7 +4,7 @@
 
 [Sugarizer](https://github.com/llaske/sugarizer) is the open source learning platform based on Sugar that began in the famous One Laptop Per Child project.
 
-Sugarizer Server allows the deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 6+ and MongoDB 2.6+.
+Sugarizer Server allows the deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 10+ and MongoDB 2.6+.
 
 
 ## Running Sugarizer Server
@@ -89,7 +89,7 @@ It `no_signup_mode` is true, account creation is allowed only by an administrato
 
 The **[client]** indicate the place where is located Sugarizer Client. Sugarizer Client is need by the server.
 
-The **[presence]** section describes the settings of the presence server. By default, a web socket is created on port 8039. You need to change this value if you want to use another port.
+The **[presence]** section describes the settings of the presence server. By default, a web socket is created on port 8039. You need to change this value if you want to use another port. You could use the same value than the one in the `web` port.
 
 The **[database]** and **[collections]** sections are for MongoDB settings. You could update the server name (by default MongoDB run locally) and the server port. Names of the database and collections had no reason to be changed. The `waitdb` parameter allow you to force server to wait for the database. Optionally, the `replicaset` parameter can be set to `true` to enable MongoDB Replicaset support, in this case the server name becomes the replicaset connection string.
 
@@ -290,11 +290,7 @@ Then launch Grunt task to minify Sugarizer JavaScript files:
 
 	grunt -v
 
-After minification, the `build` directory will contain the optimized version of each file in the same directory as the initial one, so you could just copy files:
-
-	cp -r build/* .
-
-Then navigate to Sugarizer-Server directory install the specific component for Sugarizer-Server by running:
+Now navigate to Sugarizer-Server directory install the specific component for Sugarizer-Server by running:
 
 	npm install
 

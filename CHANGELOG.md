@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- Expose presence and server on the same port #232
+
+### Changed
+- node.js minimal version is now 10+
+
+### Fixed
+- Unit tests are broken for activities #273
+- Warning: Accessing non-existent property with node.js #272
+
+
+## [1.3.0] - 2020-10-11
+### Added
 - Provide a way to remove multiple users at the same time #217
 - Allow teachers to connect to Sugarizer client #222
 - Add a download icon in Dashboard Journal view #220
