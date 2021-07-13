@@ -48,6 +48,10 @@ Following is the typical content of Sugarizer Server settings file:
 	strict_ssl = false
 	no_signup_mode = false
 
+    [privacy]
+    consent_need = false
+    policy = https://sugarizer.org/policy.html
+
 	[client]
 	path = ../sugarizer/
 
@@ -86,6 +90,8 @@ The **[web]** section describes the settings of the node.js process. By default,
 
 The **[security]** section regroup security settings. `min_password_size` is the minimum number of characters for the password. `max_age` is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours). Parameters `https`, `certificate_file`, `key_file` and `strict_ssl` are explain above.
 It `no_signup_mode` is true, account creation is allowed only by an administrator or a teacher (no direct sign-up allowed by a student).
+
+The **[privacy]** section describe privacy settings. When `consent_need` is set to true, the Sugarizer client will ask a consent to user before they will be allowed to do their first connection to the server. `policy` is the URL that Sugarizer client shown in consent popup displayed to user.
 
 The **[client]** indicate the place where is located Sugarizer Client. Sugarizer Client is need by the server.
 
