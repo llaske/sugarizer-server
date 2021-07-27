@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - Expose presence and server on the same port #232
+- Add privacy settings
 
 ### Changed
 - node.js minimal version is now 10+
