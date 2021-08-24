@@ -1,11 +1,13 @@
 // User handling
 
 var mongo = require('mongodb'),
-	journal = require('./journal');
+	journal = require('./journal'),
+	otplib = require('otplib');
 
 var db;
 
 var usersCollection;
+var serviceName;
 var classroomsCollection;
 var journalCollection;
 var chartsCollection;
@@ -19,6 +21,7 @@ exports.init = function(settings, database) {
 	classroomsCollection = settings.collections.classrooms;
 	journalCollection = settings.collections.journal;
 	chartsCollection = settings.collections.charts;
+	serviceName = settings.security.service_name;
 	db = database;
 
 	var bucket = 'textBucket';
@@ -100,6 +103,70 @@ exports.findById = function(req, res) {
 		});
 	});
 };
+
+// function to generate OTP Token for QR code.
+function generateOTPToken(username, serviceName, secret) {
+	return otplib.authenticator.keyuri(
+		encodeURIComponent(username),
+		serviceName,
+		secret
+	);
+}
+
+function generateUniqueSecret() {
+	return otplib.authenticator.generateSecret();
+}
+
+function verifyOTPToken(uid, token, secret, res) {
+
+	var isValid = otplib.authenticator.verify({ token, secret });
+
+	if (isValid === true) {
+		db.collection(usersCollection, function (err, collection) {
+			collection.findOneAndUpdate({
+				'_id': new mongo.ObjectID(uid)
+			}, {
+				$set:
+				{
+					tfa: isValid
+				}
+			}, {
+				safe: true,
+				returnOriginal: false
+			}, function (err, result) {
+				if (err) {
+					res.status(500).send({
+						'error': 'An error has occurred',
+						'code': 7
+					});
+				} else {
+					if (result && result.ok && result.value) {
+						var user = result.value;
+						delete user.password;
+						res.send(result.value);
+					} else {
+						res.status(401).send({
+							'error': 'Inexisting user id',
+							'code': 8
+						});
+					}
+				}
+			});
+		});
+	} else if (isValid === false) {
+		res.status(401).send({
+			'error': 'Wrong TOTP!!',
+			'code': 33
+		});
+		return;
+	} else {
+		res.status(401).send({
+			'error': 'Could not verify OTP error in otplib',
+			'code': 32
+		});
+	}
+}
+
 
 /**
  * @api {get} api/v1/users/ Get all users
