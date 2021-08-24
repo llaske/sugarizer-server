@@ -245,6 +245,47 @@ exports.enable2FA = function (req, res) {
 
 };
 
+exports.updateTOTP = function (req, res) {
+	//validate
+	if (!mongo.ObjectID.isValid(req.params.uid)) {
+		res.status(401).send({
+			'error': 'Invalid user id',
+			'code': 8
+		});
+		return;
+	}
+
+	if (!req.body.userToken) {
+		res.status(401).send({
+			'error': 'User Token not defined',
+			'code': 31
+		});
+		return;
+	}
+
+	var uid = req.params.uid;
+	var uniqueToken = req.body.userToken;
+
+	db.collection(usersCollection, function (err, collection) {
+		collection.findOne({
+			_id: new mongo.ObjectID(req.params.uid),
+			uniqueSecret: {
+				$ne: null
+			}
+		}, function (err, user) {
+			if (!err) {
+				var uniqueSecret = user.uniqueSecret;
+				verifyOTPToken(uid, uniqueToken, uniqueSecret, res);
+			} else {
+				res.status(500).send({
+					'error': 'An error has occurred',
+					'code': 7
+				});
+			}
+		});
+	});
+
+};
 /**
  * @api {get} api/v1/users/ Get all users
  * @apiName GetAllUsers
