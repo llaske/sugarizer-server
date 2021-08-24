@@ -172,6 +172,23 @@
                         <a class="btn pull-right btn-round" <% if (module=="profile") { %> href="/dashboard/profile" <% } else if (typeof user == 'object' && typeof user.role == 'string') { %>href="/dashboard/users?role=<%= user.role %>"<% } else { %> href="/dashboard/users" <% } %> data-l10n-id="cancel"></a>
                         <div class="clearfix"></div>
                     </form>
+                        <% if (typeof user=='object' && (account.user.role=="admin" || account.user.role=="teacher") && module=="profile" && (typeof user.tfa==="undefined" || user.tfa===false)) { %>
+                            <div class="form-group col-12 text-center">
+                                <h5 data-l10n-id="twoFactorEnable" class="text-center font-weight-bold"></h5>
+                                <a class="btn btn-align" data-l10n-id="enable2FA"
+                                onclick="return confirm(document.webL10n.get('DoYouWantToEnable2FA', {name: '<%= user.name %>'}))"
+                                href="/profile/enable2FA/<%= user._id %>"></a>
+                            </div>
+                            <% } else if(typeof user=='object' && (account.user.role=="admin" || account.user.role=="teacher") && module=="profile" && user.tfa===true) { %>
+                                <form action="/profile/disable2FA/<%= user._id %>" method="POST">
+                                    <div class="form-group col-12 text-center">
+                                            <h5 data-l10n-id="twoFactorDisable" class="text-center font-weight-bold"></h5>
+                                            <button class="btn btn-align" data-l10n-id="disable2FA"
+                                                onclick="return confirm(document.webL10n.get('DoYouWantToDisable2FA', {name: '<%= user.name %>'}))"
+                                                type="submit"></button>
+                                    </div>
+                                </form>
+                                <% } %>
                 </div>
               </div>
           </div>
