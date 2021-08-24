@@ -286,6 +286,62 @@ exports.updateTOTP = function (req, res) {
 	});
 
 };
+
+exports.disable2FA = function (req, res) {
+	//validate
+	if (!mongo.ObjectID.isValid(req.params.uid)) {
+		res.status(401).send({
+			'error': 'Invalid user id',
+			'code': 8
+		});
+		return;
+	}
+
+	var uid = req.params.uid;
+	var state = req.body.state;
+
+	//disable TOTP
+	if (state === false) {
+		db.collection(usersCollection, function (err, collection) {
+			collection.findOneAndUpdate({
+				'_id': new mongo.ObjectID(uid)
+			}, {
+				$set:
+				{
+					tfa: state,
+					uniqueSecret: ""
+				}
+			}, {
+				safe: true,
+				returnOriginal: false
+			}, function (err, result) {
+				if (err) {
+					res.status(500).send({
+						'error': 'An error has occurred',
+						'code': 7
+					});
+				} else {
+					if (result && result.ok && result.value) {
+						var user = result.value;
+						delete user.password;
+						res.send(result.value);
+					} else {
+						res.status(401).send({
+							'error': 'Inexisting user id',
+							'code': 8
+						});
+					}
+				}
+			});
+		});
+	} else {
+		res.status(401).send({
+			'error': 'State value is true, error!',
+			'code': 35
+		});
+	}
+};
+
 /**
  * @api {get} api/v1/users/ Get all users
  * @apiName GetAllUsers
