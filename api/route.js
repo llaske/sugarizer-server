@@ -44,6 +44,11 @@ module.exports = function(app, ini, db) {
 	app.put("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.updateUser);
 	app.delete("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.removeUser);
 
+	//Register 2Factor API
+	app.get("/api/v1/dashboard/profile/enable2FA", auth.allowedRoles([Admin, Teacher]), users.updateSecret);
+	app.put("/api/v1/dashboard/profile/enable2FA", auth.allowedRoles([Admin, Teacher]), users.verifyTOTP);
+	app.put("/api/v1/dashboard/profile/disable2FA", auth.allowedRoles([Admin, Teacher]), users.disable2FA);
+
 	// Register stats API
 	app.get("/api/v1/stats", auth.allowedRoles([Admin, Student, Teacher]), stats.findAll);
 	app.post("/api/v1/stats", auth.allowedRoles([Admin, Student, Teacher]), stats.addStats);
