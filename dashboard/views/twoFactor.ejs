@@ -1,0 +1,40 @@
+<%- include('includes/header') %>
+<div class="wrapper ">
+    <%- include('includes/sidebar') %>
+    <div class="main-panel">
+        <%- include('includes/navbar') %>
+        <div class="content">
+            <div class="container-fluid">
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                        <h4 class="card-title" data-l10n-id="2FA"></h4>
+                    </div>
+                    <div class="card-body">
+                        <% if (module=="twoFactor" && user.name && (typeof user.tfa === "undefined" || user.tfa === false) && mode=="enabletotp") { %>
+                            <h1>Hi, <%= user.name %></h1>
+                            <div class="tfa-box">
+                                <h4>Set up for Google authenticator (or other TOTP APP) </h4>
+                                <hr>
+                                <h4 class="text-danger text-center">If you lose access to your 2FA app for any reason, you won't be able to get back into your account.</h3>
+                                  <h4 class="font-weight-bold text-center">To enable 2 Factor Authentication, scan the QR code above into your favourite authenticator app such as <b>Google Authenticator</b> or <b>Authy</b>. <br> Once done, enter the access token you get from the app into the text box below, it looks like <b>123456</b> .</h4>
+                                  <form action="/dashboard/profile/enable2FA" method="POST">
+                                        <p class="text-white bg-dark font-weight-bold text-center">Manual key entry: <b><%= uniqueSecret %></b></p>
+                                            <div style="text-align: center; max-width: 250px; max-height: 250px; display: block; margin-left: auto; margin-right: auto;"><%- twoFactorqr %></div>
+                                        <div class="form-group row">   
+                                            <label for="tokenentry">Enter TOTP from authenticator app to enable 2 Factor Authentication</label>
+                                            <input class = "form-control" type="text" name="tokenentry" id="token" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code"/>
+                                        </div>
+                                        <button class="btn pull-right" data-l10n-id="enable2FA" type="submit"></button>
+                                            <a class="btn pull-left" data-l10n-id="cancel" href="/dashboard/profile"></a>
+                                  </form>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('includes/footer') %>
+
+<!-- style="height: 250px; width: 250px" -->
