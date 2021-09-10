@@ -57,6 +57,11 @@ module.exports = function(app, ini) {
 	app.get('/dashboard/profile', authController.validateSession, usersController.profile);
 	app.post('/dashboard/profile', authController.validateSession, usersController.profile);
 
+	//two-factor routes
+	app.get('/dashboard/profile/enable2FA', authController.validateSession, usersController.enable2FA);
+	app.post('/dashboard/profile/enable2FA', authController.validateSession, usersController.enable2FA);
+	app.post('/dashboard/profile/disable2FA', authController.validateSession, usersController.disable2FA);
+
 	// classrooms routes
 	app.get('/dashboard/classrooms', authController.validateSession, classroomsController.index);
 	app.get('/dashboard/classrooms/add', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
