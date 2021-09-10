@@ -105,70 +105,16 @@ exports.findById = function(req, res) {
 };
 
 // function to generate OTP Token for QR code.
-function generateOTPToken(username, serviceName, secret) {
+function generateOTPToken (username, serviceName, secret){
 	return otplib.authenticator.keyuri(
-		encodeURIComponent(username),
+		username,
 		serviceName,
 		secret
 	);
 }
 
-function generateUniqueSecret() {
-	return otplib.authenticator.generateSecret();
-}
-
-function verifyOTPToken(uid, token, secret, res) {
-
-	var isValid = otplib.authenticator.verify({ token, secret });
-
-	if (isValid === true) {
-		db.collection(usersCollection, function (err, collection) {
-			collection.findOneAndUpdate({
-				'_id': new mongo.ObjectID(uid)
-			}, {
-				$set:
-				{
-					tfa: isValid
-				}
-			}, {
-				safe: true,
-				returnOriginal: false
-			}, function (err, result) {
-				if (err) {
-					res.status(500).send({
-						'error': 'An error has occurred',
-						'code': 7
-					});
-				} else {
-					if (result && result.ok && result.value) {
-						var user = result.value;
-						delete user.password;
-						res.send(result.value);
-					} else {
-						res.status(401).send({
-							'error': 'Inexisting user id',
-							'code': 8
-						});
-					}
-				}
-			});
-		});
-	} else if (isValid === false) {
-		res.status(401).send({
-			'error': 'Wrong TOTP!!',
-			'code': 33
-		});
-		return;
-	} else {
-		res.status(401).send({
-			'error': 'Could not verify OTP error in otplib',
-			'code': 32
-		});
-	}
-}
-
-exports.enable2FA = function (req, res) {
-	if (!mongo.ObjectID.isValid(req.params.uid)) {
+exports.updateSecret = function(req, res){
+	if (!mongo.ObjectID.isValid(req.user._id)) {
 		res.status(401).send({
 			'error': 'Invalid user id',
 			'code': 8
@@ -176,17 +122,17 @@ exports.enable2FA = function (req, res) {
 		return;
 	}
 
-	var uid = req.params.uid;
+	var uid = req.user._id;
 
 	// Save unique secret in database.
-	db.collection(usersCollection, function (err, collection) {
+	db.collection(usersCollection, function(err, collection) {
 		collection.findOne({
 			_id: new mongo.ObjectID(uid),
-		}, function (err, user) {
+		}, function(err, user) {
 			// only update database with unique secret if tfa is false or not defined -- for existing users in databse.
 			if (user.tfa === false || typeof user.tfa === "undefined") {
-				var uniqueSecret = generateUniqueSecret();
-				db.collection(usersCollection, function (err, collection) {
+				var uniqueSecret = otplib.authenticator.generateSecret();
+				db.collection(usersCollection, function(err, collection) {
 					collection.findOneAndUpdate({
 						'_id': new mongo.ObjectID(uid)
 					}, {
@@ -194,14 +140,28 @@ exports.enable2FA = function (req, res) {
 						{
 							uniqueSecret: uniqueSecret
 						}
-					}, function (err, result) {
+					}, {
+						safe: true,
+						returnOriginal: false
+					}, function(err, result) {
 						if (err) {
 							res.status(500).send({
 								'error': 'An error has occurred',
 								'code': 7
 							});
 						} else if (result) {
-							console.log("Unique Secret updated and stored in database for: " + result.value.name);
+							var updatedUser = result.value;
+							var name = updatedUser.name;
+							var manualKey = updatedUser.uniqueSecret;
+							var otpAuth = generateOTPToken(name, serviceName, manualKey);
+
+							delete updatedUser.password;
+							//send user, manualKey and otpAuth for QRCode async function.
+							res.send({
+								user: user,
+								uniqueSecret: manualKey,
+								otpAuth: otpAuth
+							});
 						} else {
 							res.status(401).send({
 								'error': 'Inexisting user id',
@@ -210,34 +170,10 @@ exports.enable2FA = function (req, res) {
 						}
 					});
 				});
-
-				//fetch updated user from database to send to enable2FA page (QRCode)
-				db.collection(usersCollection, function (err, collection) {
-					collection.findOne({
-						_id: new mongo.ObjectID(uid),
-						verified: {
-							$ne: false
-						}
-					}, function (err, user) {
-						var name = decodeURI(user.name);
-						var manualKey = user.uniqueSecret;
-						var otpAuth = generateOTPToken(name, serviceName, manualKey);
-						//send user, manualKey and otpAuth for QRCode async function.
-						res.send({
-							user: user,
-							uniqueSecret: manualKey,
-							otpAuth: otpAuth
-						});
-					});
-				});
 			} else if (user.tfa === true) {
-				var name = decodeURI(user.name);
-				var manualKey = user.uniqueSecret;
-				var otpAuth = generateOTPToken(name, serviceName, manualKey);
-				//send user and otpAuth for QRCode async function.
-				res.send({
-					user: user,
-					otpAuth: otpAuth
+				res.status(500).send({
+					'error': 'An error has occurred',
+					'code': 7
 				});
 			}
 		});
@@ -245,15 +181,17 @@ exports.enable2FA = function (req, res) {
 
 };
 
-exports.updateTOTP = function (req, res) {
+exports.verifyTOTP = function(req, res) {
 	//validate
-	if (!mongo.ObjectID.isValid(req.params.uid)) {
+	if (!mongo.ObjectID.isValid(req.user._id)) {
 		res.status(401).send({
 			'error': 'Invalid user id',
 			'code': 8
 		});
 		return;
 	}
+
+	var uid = req.user._id;
 
 	if (!req.body.userToken) {
 		res.status(401).send({
@@ -263,19 +201,63 @@ exports.updateTOTP = function (req, res) {
 		return;
 	}
 
-	var uid = req.params.uid;
 	var uniqueToken = req.body.userToken;
 
-	db.collection(usersCollection, function (err, collection) {
+	db.collection(usersCollection, function(err, collection) {
 		collection.findOne({
-			_id: new mongo.ObjectID(req.params.uid),
-			uniqueSecret: {
-				$ne: null
-			}
-		}, function (err, user) {
+			_id: new mongo.ObjectID(uid),
+		}, function(err, user) {
+			var uniqueSecret = user.uniqueSecret;
 			if (!err) {
-				var uniqueSecret = user.uniqueSecret;
-				verifyOTPToken(uid, uniqueToken, uniqueSecret, res);
+				try {
+					var isValid = otplib.authenticator.check(uniqueToken, uniqueSecret);
+				} catch (err) {
+					console.log(err.message);
+					res.status(401).send({
+						'error': 'Could not verify OTP error in otplib',
+						'code': 32
+					});
+				}
+				if(isValid === true) {
+					db.collection(usersCollection, function(err, collection) {
+						collection.findOneAndUpdate({
+							'_id': new mongo.ObjectID(uid)
+						}, {
+							$set:
+							{
+								tfa: isValid
+							}
+						}, {
+							safe: true,
+							returnOriginal: false
+						}, function(err, result) {
+							if (err) {
+								res.status(500).send({
+									'error': 'An error has occurred',
+									'code': 7
+								});
+							} else {
+								if (result && result.ok && result.value) {
+									var user = result.value;
+									delete user.password;
+									delete user.uniqueSecret;
+									res.send(user);
+								} else {
+									res.status(401).send({
+										'error': 'Inexisting user id',
+										'code': 8
+									});
+								}
+							}
+						});
+					});
+				} else {
+					res.status(401).send({
+						'error': 'Wrong TOTP!!',
+						'code': 33
+					});
+					return;
+				}
 			} else {
 				res.status(500).send({
 					'error': 'An error has occurred',
@@ -287,9 +269,9 @@ exports.updateTOTP = function (req, res) {
 
 };
 
-exports.disable2FA = function (req, res) {
+exports.disable2FA = function(req, res) {
 	//validate
-	if (!mongo.ObjectID.isValid(req.params.uid)) {
+	if (!mongo.ObjectID.isValid(req.user._id)) {
 		res.status(401).send({
 			'error': 'Invalid user id',
 			'code': 8
@@ -297,49 +279,42 @@ exports.disable2FA = function (req, res) {
 		return;
 	}
 
-	var uid = req.params.uid;
-	var state = req.body.state;
+	var uid = req.user._id;
 
 	//disable TOTP
-	if (state === false) {
-		db.collection(usersCollection, function (err, collection) {
-			collection.findOneAndUpdate({
-				'_id': new mongo.ObjectID(uid)
-			}, {
-				$set:
+	db.collection(usersCollection, function(err, collection) {
+		collection.findOneAndUpdate({
+			'_id': new mongo.ObjectID(uid)
+		}, {
+			$set:
 				{
-					tfa: state,
-					uniqueSecret: ""
+					tfa: false,
+					uniqueSecret: null
 				}
-			}, {
-				safe: true,
-				returnOriginal: false
-			}, function (err, result) {
-				if (err) {
-					res.status(500).send({
-						'error': 'An error has occurred',
-						'code': 7
-					});
+		}, {
+			safe: true,
+			returnOriginal: false
+		}, function(err, result) {
+			if (err) {
+				res.status(500).send({
+					'error': 'An error has occurred',
+					'code': 7
+				});
+			} else {
+				if (result && result.ok && result.value) {
+					var user = result.value;
+					delete user.password;
+					delete user.uniqueSecret;
+					res.send(result.value);
 				} else {
-					if (result && result.ok && result.value) {
-						var user = result.value;
-						delete user.password;
-						res.send(result.value);
-					} else {
-						res.status(401).send({
-							'error': 'Inexisting user id',
-							'code': 8
-						});
-					}
+					res.status(401).send({
+						'error': 'Inexisting user id',
+						'code': 8
+					});
 				}
-			});
+			}
 		});
-	} else {
-		res.status(401).send({
-			'error': 'State value is true, error!',
-			'code': 35
-		});
-	}
+	});
 };
 
 /**
@@ -700,6 +675,7 @@ exports.addUser = function(req, res) {
 	user.created_time = +new Date();
 	user.timestamp = +new Date();
 	user.role = (user.role ? user.role.toLowerCase() : 'student');
+	// user.tfa = false;
 
 	if ((req.user && req.user.role=="teacher") && (user.role=="admin" || user.role=="teacher")) {
 		res.status(401).send({
