@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Unit tests are broken for activities #273
 - Warning: Accessing non-existent property with node.js #272
+- Error retrieving content when stored in UTF-16 #286
 
 
 ## [1.3.0] - 2020-10-11
