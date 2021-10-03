@@ -561,12 +561,6 @@ msgctxt "ErrorCode29"
 msgid "Error while updating charts"
 msgstr "Error while updating charts"
 
-
-#: ErrorCode33
-msgctxt "ErrorCode33"
-msgid "Wrong TOTP!!"
-msgstr "Wrong TOTP!!"
-
 #: LanguageSettings
 msgctxt "LanguageSettings"
 msgid "Language"
