@@ -56,7 +56,6 @@ module.exports = function enable2FA(req, res) {
 					req.flash('errors', {
 						msg: common.l10n.get('ThereIsError')
 					});
-					console.log(error);
 					return res.redirect('/dashboard/profile');
 				} else if (response.statusCode == 200) {
 					//get user, otpAUth and UniqueSecret Response from api.

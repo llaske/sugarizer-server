@@ -212,7 +212,6 @@ exports.verifyTOTP = function(req, res) {
 				try {
 					var isValid = otplib.authenticator.check(uniqueToken, uniqueSecret);
 				} catch (err) {
-					console.log(err.message);
 					res.status(401).send({
 						'error': 'Could not verify OTP error in otplib',
 						'code': 32
