@@ -16,7 +16,7 @@ var Admin="admin", Teacher="teacher", Student="student";
 module.exports = function(app, ini, db) {
 
 	//Only the requests that start with /api/v1/* will be checked for the token.
-	app.all('/api/v1/*', [validate]);
+	app.all('/api/v1/*', [validate(false)]);
 
 	// Init modules
 	activities.load(ini);
@@ -29,6 +29,7 @@ module.exports = function(app, ini, db) {
 
 	// Routes that can be accessed by any one
 	app.get('/api', common.getAPIInfo);
+	app.post('/auth/verify2FA',[validate(true)], auth.verify2FA);
 	app.post('/auth/login', auth.login);
 	app.post('/auth/signup', auth.checkAdminOrLocal, auth.signup);
 
