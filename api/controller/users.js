@@ -485,6 +485,7 @@ exports.getAllUsers = function(query, options, callback) {
 					options: 1,
 					created_time: 1,
 					timestamp: 1,
+					tfa: 1,
 					private_journal: 1,
 					shared_journal: 1,
 					favorites: 1,
@@ -499,6 +500,10 @@ exports.getAllUsers = function(query, options, callback) {
 				}
 			}
 		];
+
+		if (options.enableSecret == true) {
+			conf[1]["$project"]["uniqueSecret"] = 1;
+		}
 
 		if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >=2) {
 			conf[1]["$project"]["insensitive"] = { "$toLower": "$" + options.sort[0][0] };
@@ -674,7 +679,10 @@ exports.addUser = function(req, res) {
 	user.created_time = +new Date();
 	user.timestamp = +new Date();
 	user.role = (user.role ? user.role.toLowerCase() : 'student');
-	// user.tfa = false;
+	// api test condition
+	if (!user.tfa) {
+		user.tfa = false;
+	}
 
 	if ((req.user && req.user.role=="teacher") && (user.role=="admin" || user.role=="teacher")) {
 		res.status(401).send({
