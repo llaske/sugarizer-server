@@ -9,28 +9,32 @@
                     <div class="card-header card-header-primary">
                         <h4 class="card-title" data-l10n-id="2FA"></h4>
                     </div>
-                    <div class="card-body">
-                        <% if (module=="twoFactor" && user.name && (typeof user.tfa === "undefined" || user.tfa === false) && mode=="enabletotp") { %>
-                            <div class="tfa-box">
-                                <h4 data-l10n-id="setupMessage"></h4>
-                                <hr>
-                                <h4 class="text-danger text-center" data-l10n-id="setupWarning"></h3>
-                                  <h4 class="font-weight-bold text-center" data-l10n-id="twoFactor-instruction"></h4>
-                                  <form action="/dashboard/profile/enable2FA" method="POST">
-                                    <div class="text-white bg-dark font-weight-bold text-center">
-                                        <p style="display: inline;" data-l10n-id="ManualKeyEntry"></p>
-                                        <p style="display: inline;"><%= uniqueSecret %></p>
-                                    </div>
-                                            <div style="text-align: center; max-width: 250px; max-height: 250px; display: block; margin-left: auto; margin-right: auto;"><%- twoFactorqr %></div>
-                                        <div class="form-group row">   
-                                            <label for="tokenentry" data-l10n-id="saveTotp"></label>
-                                            <input class = "form-control" type="text" name="tokenentry" id="token" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code"/>
+                    <div class="card-content">
+                        <div class="row">
+                            <% if (module=="twoFactor" && user.name && (typeof user.tfa === "undefined" || user.tfa === false) && mode=="enabletotp") { %>
+                                <div class="col-md-12">
+                                <div class="tfa-box">
+                                    <h4 data-l10n-id="setupMessage"></h4>
+                                    <hr>
+                                    <h4 class="text-danger text-center" data-l10n-id="setupWarning"></h3>
+                                      <h4 class="font-weight-bold text-center" data-l10n-id="twoFactor-instruction"></h4>
+                                      <form action="/dashboard/profile/enable2FA" method="POST">
+                                        <div class="text-center">
+                                            <p class="font-weight-bold" style="display: inline;" data-l10n-id="ManualKeyEntry"></p>
+                                            <p class="font-weight-bold" style="display: inline;"><%= uniqueSecret %></p>
                                         </div>
-                                        <button class="btn pull-right btn-round" data-l10n-id="save" type="submit"></button>
-                                            <a class="btn pull-left btn-round" data-l10n-id="cancel" href="/dashboard/profile"></a>
-                                  </form>
+                                                <div style="text-align: center; max-width: 250px; max-height: 250px; display: block; margin-left: auto; margin-right: auto;"><%- twoFactorqr %></div>
+                                            <div class="form-group row">   
+                                                <label for="tokenentry" data-l10n-id="saveTotp"></label>
+                                                <input class = "form-control" type="text" name="tokenentry" id="token" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code"/>
+                                            </div>
+                                            <button class="btn pull-right btn-round" data-l10n-id="save" type="submit"></button>
+                                                <a class="btn pull-left btn-round" data-l10n-id="cancel" href="/dashboard/profile"></a>
+                                      </form>
+                                </div>
                             </div>
-                        <% } %>
+                            <% } %>
+                        </div>
                     </div>
                 </div>
             </div>
