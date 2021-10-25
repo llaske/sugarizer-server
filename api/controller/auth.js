@@ -114,17 +114,21 @@ exports.login = function(req, res) {
 			var maxAge = req.iniconfig.security.max_age;
 			var maxAgeTfa = req.iniconfig.security.max_age_TFA;
 			// If authentication is success, we will generate a token and dispatch it to the client
-			if (user.tfa === false || typeof user.tfa === "undefined") {
-				res.send({
-					token: genToken(user, maxAge, false),
-					fullAuth: true,
-				});
+			if (user.role ==='student') {
+				res.send(genToken(user, maxAge, false));
 			} else {
-				delete user.deployments;
-				res.send({
-					token: genToken(user, maxAgeTfa, true), //give users a buffer of 30 mins to verify.
-					fullAuth: false
-				});
+				if (user.tfa === false || typeof user.tfa === "undefined") {
+					res.send({
+						token: genToken(user, maxAge, false),
+						fullAuth: true,
+					});
+				} else {
+					delete user.deployments;
+					res.send({
+						token: genToken(user, maxAgeTfa, true), //give users a buffer of 30 mins to verify.
+						fullAuth: false
+					});
+				}
 			}
 		} else {
 			res.status(401).send({
