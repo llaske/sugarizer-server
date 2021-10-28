@@ -51,8 +51,8 @@ module.exports = function postLogin(req, res) {
 			.end(function (error, response) {
 				if (response.statusCode == 200) {
 					//store user and key in session
-					req.session.user = response.body.token;
-					if (response.body.fullAuth) { //fullAuth is true - user fully authenticated.
+					req.session.user = response.body;
+					if (req.session.user.partial === false) { // - user fully authenticated.
 						/**
 						 The user has either 2FA disabed or has not set it up yet, and is fully authenticated
 						 so we redirect the user to dashboard

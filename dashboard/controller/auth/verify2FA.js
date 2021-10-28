@@ -22,10 +22,10 @@ module.exports = function verify2FA(req, res) {
 				})
 				.end(function (error, response) {
                         
-					req.session.user = response.body.token;
+					req.session.user = response.body;
 					if (response.statusCode == 200) {
     
-						if (response.body.fullAuth) { //verifiedUser is true - user fully authenticated.
+						if (req.session.user.partial === false) { //verifiedUser is true - user fully authenticated.
 							/**
                                  The user is fully authenticated
                                  so we redirect the user to dashboard
