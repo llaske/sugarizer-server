@@ -9,8 +9,6 @@ module.exports = function (partialAccess) {
 
 		var token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'];
 		var key = (req.body && req.body.x_key) || (req.query && req.query.x_key) || req.headers['x-key']; //key is unique _id of the user
-		// console.log(token);
-		// console.log(key);
 		
 		if (token && key) {
 		
