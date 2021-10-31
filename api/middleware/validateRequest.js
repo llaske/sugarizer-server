@@ -1,7 +1,8 @@
 var jwt = require('jwt-simple');
 var auth = require('../controller/auth');
 var classrooms = require('../controller/classrooms');
-var config = require('../../config/secret.js')();
+var settings = require('../../config/settings').load();
+var config = settings.security.secret;
 
 module.exports = function (partialAccess) {
 

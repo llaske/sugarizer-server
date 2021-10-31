@@ -5,10 +5,12 @@ var jwt = require('jwt-simple'),
 	common = require('../../dashboard/helper/common');
 
 var security;
+var secret;
 
 // Init settings
 exports.init = function(settings) {
 	security = settings.security;
+	secret = settings.security.secret;
 };
 
 /**
@@ -377,7 +379,7 @@ function genToken(user, age, partial) {
 	var token = jwt.encode({
 		partial: partial,
 		exp: expires
-	}, require('../../config/secret')());
+	}, secret);
 
 	return {
 		token: token,
