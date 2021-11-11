@@ -28,7 +28,12 @@
                                                 <label for="tokenentry" data-l10n-id="saveTotp"></label>
                                                 <input class = "form-control" type="text" name="tokenentry" id="token" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code"/>
                                             </div>
+                                            <% if (module=="twoFactor" && user.role=='teacher') { %>
+                                                <button class="btn pull-right btn-round" data-l10n-id="save" type="submit"
+                                                onclick="return confirm(document.webL10n.get('Teacher2FAConfirmationMessage'))"></button>
+                                            <% } else {%>
                                             <button class="btn pull-right btn-round" data-l10n-id="save" type="submit"></button>
+                                            <% } %> 
                                                 <a class="btn pull-left btn-round" data-l10n-id="cancel" href="/dashboard/profile"></a>
                                       </form>
                                 </div>
