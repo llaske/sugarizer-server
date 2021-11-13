@@ -6,6 +6,7 @@ var server = require('../../sugarizer.js');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var timestamp = +new Date();
+var otplib = require('otplib');
 
 //fake user for testing auth
 var fakeUser = {
@@ -15,7 +16,8 @@ var fakeUser = {
 	'teacher2': '{"name":"SugarizerTeach_2' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"teacher","password":"bulbasaur","language":"fr"}',
 	'admin1': '{"name":"TarunFake_1' + (timestamp.toString()) + '","password":"pokemon","language":"en","role":"admin"}',
 	'admin2': '{"name":"TarunFake_2' + (timestamp.toString()) + '","password":"pokemon","language":"en","role":"admin"}',
-	'classroom': '{"name":"group_a_' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"students":[]}'
+	'classroom': '{"name":"group_a_' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"students":[]}',
+	'tfa_user': '{"name":"tfa user ' + (timestamp.toString()) + '","password":"sugarizer","language":"hi","role":"admin", "uniqueSecret":"AAAAAAAAAAAAAAA"}'
 };
 
 //init server
@@ -60,12 +62,27 @@ describe('Users', function() {
 										})
 										.end((err, res) => {
 											fakeUser.teacher2 = res.body;
-											done();
+											chai.request(server)
+												.post('/auth/signup')
+												.send({
+													"user": fakeUser.tfa_user
+												})
+												.end(() => {
+													chai.request(server)
+														.post('/auth/login')
+														.send({
+															"user": fakeUser.tfa_user
+														})
+														.end((err, res) => {
+															fakeUser.tfa_user = res.body;
+															done();
+														});
+												});
 										});
 								});
 						});
 				});
-		}, 300);
+		}, 400);
 	});
 
 	describe('/POST users', () => {
@@ -86,6 +103,7 @@ describe('Users', function() {
 					res.body.should.have.property('name').eql("Sugarizer_1" + (timestamp.toString()));
 					res.body.should.have.property('role').eql('student');
 					res.body.should.have.property('password').eql("pass");
+					res.body.should.have.property('tfa').eql(false);
 					res.body.should.have.property('color').not.eql(undefined);
 					res.body.should.have.property('language').eql("fr");
 					res.body.should.have.property('shared_journal').not.eql(undefined);
@@ -143,6 +161,7 @@ describe('Users', function() {
 					res.body.should.have.property('name').eql("Sugarizer_2" + (timestamp.toString()));
 					res.body.should.have.property('role').eql('student');
 					res.body.should.have.property('password').eql("pass");
+					res.body.should.have.property('tfa').eql(false);
 					res.body.should.have.property('color').not.eql(undefined);
 					res.body.should.have.property('language').eql("fr");
 					res.body.should.have.property('shared_journal').not.eql(undefined);
@@ -167,6 +186,7 @@ describe('Users', function() {
 					res.body.should.have.property('name').eql("SugarizerTeach_1" + (timestamp.toString()));
 					res.body.should.have.property('role').eql('teacher');
 					res.body.should.have.property('password').eql("bulbasaur");
+					res.body.should.have.property('tfa').eql(false);
 					res.body.should.have.property('color').not.eql(undefined);
 					res.body.should.have.property('language').eql("fr");
 					res.body.should.have.property('classrooms').eql([]);
@@ -677,6 +697,42 @@ describe('Users', function() {
 		});
 	});
 
+	describe('/PUT Enable/Disable 2FA', () => {
+		it('it should enable 2 Factor Authentication for the user', (done) => {
+
+			chai.request(server)
+				.put('/api/v1/dashboard/profile/enable2FA')
+				.set('x-access-token', fakeUser.tfa_user.token)
+				.set('x-key', fakeUser.tfa_user.user._id)
+				.send({
+					userToken: otplib.authenticator.generate("AAAAAAAAAAAAAAA")
+				})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.an('object');
+					res.body.should.have.property('_id').eql(fakeUser.tfa_user.user._id);
+					res.body.should.have.property('tfa').eql(true);
+					done();
+				});
+		});
+
+		it('it should disable 2 Factor Authentication for the user', (done) => {
+			chai.request(server)
+				.put('/api/v1/dashboard/profile/disable2FA')
+				.set('x-access-token', fakeUser.tfa_user.token)
+				.set('x-key', fakeUser.tfa_user.user._id)
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.an('object');
+					res.body.should.have.property('_id').eql(fakeUser.tfa_user.user._id);
+					res.body.should.not.have.property('uniqueSecret');
+					res.body.should.have.property('tfa').eql(false);
+					done();
+				});
+		});
+
+	});
+
 	//delete fake user access key
 	after((done) => {
 		chai.request(server)
@@ -698,12 +754,19 @@ describe('Users', function() {
 							.end((err, res) => {
 								res.should.have.status(200);
 								chai.request(server)
-									.delete('/api/v1/users/' + fakeUser.admin1.user._id)
+									.delete('/api/v1/users/' + fakeUser.tfa_user.user._id)
 									.set('x-access-token', fakeUser.admin1.token)
 									.set('x-key', fakeUser.admin1.user._id)
 									.end((err, res) => {
 										res.should.have.status(200);
-										done();
+										chai.request(server)
+											.delete('/api/v1/users/' + fakeUser.admin1.user._id)
+											.set('x-access-token', fakeUser.admin1.token)
+											.set('x-key', fakeUser.admin1.user._id)
+											.end((err, res) => {
+												res.should.have.status(200);
+												done();
+											});
 									});
 							});
 					});
