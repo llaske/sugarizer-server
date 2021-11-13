@@ -153,6 +153,7 @@ To implement the above functionalities, the sugarizer backend exposes an API. Th
 #### USERS ROUTES
 
         [POST]   /auth/login
+        [POST]   /auth/verify2FA
         [POST]   /auth/signup
         [GET]    /api/v1/users
         [GET]    /api/v1/users?name=tarun
@@ -208,6 +209,12 @@ To implement the above functionalities, the sugarizer backend exposes an API. Th
         [GET]    /api/v1/stats?user_id=:uid&sort=-timestamp
         [POST]   /api/v1/stats
         [DELETE] /api/v1/stats
+
+#### ACTIVITIES ROUTES
+
+        [GET]    /api/v1/dashboard/profile/enable2FA
+        [PUT]    /api/v1/dashboard/profile/enable2FA
+        [PUT]    /api/v1/dashboard/profile/disable2FA
 
 
 A full documentation of the API is available in http://127.0.0.1:8080/docs.
