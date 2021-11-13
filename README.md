@@ -210,7 +210,7 @@ To implement the above functionalities, the sugarizer backend exposes an API. Th
         [POST]   /api/v1/stats
         [DELETE] /api/v1/stats
 
-#### ACTIVITIES ROUTES
+#### TWO FACTOR AUTHENTICATION ROUTES
 
         [GET]    /api/v1/dashboard/profile/enable2FA
         [PUT]    /api/v1/dashboard/profile/enable2FA
