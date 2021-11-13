@@ -51,14 +51,6 @@ Following is the typical content of Sugarizer Server settings file:
         service_name = Sugarizer Server
         secret = super.sugarizer.schoolportal.key
 
-	min_password_size = 4
-	max_age = 172800000
-	https = false
-	certificate_file = ../server.crt
-	key_file = ../server.key
-	strict_ssl = false
-	no_signup_mode = false
-
     [privacy]
     consent_need = false
     policy = https://sugarizer.org/policy.html
