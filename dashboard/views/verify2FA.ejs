@@ -1,0 +1,36 @@
+<%- include includes/header %>
+<%- include('includes/navbar') %>
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row" style="margin-top:100px;">
+      <div class="col-lg-4 col-md-3 col-sm-12"></div>
+      <div class="col-lg-4 col-md-6 col-sm-12">
+        <h3 class="text-center"><%= server.name %></h3>
+        <h5 class="text-center" data-l10n-id="2FA-message"></h5>
+        <div class="card card-nav-tabs">
+            <div class="card-content">
+              <% include includes/flash-errors %>
+              <form method="post" action="/dashboard/verify2FA">
+                <div class="form-group form-black label-floating is-empty">
+                    <label class="control-label" data-l10n-id="2FA">Username</label>
+                    <input class = "form-control" type="text" name="tokenentry" id="token" 
+                    inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code"/>
+                    <span class="material-input"></span>
+                </div>
+                <button class="btn pull-right btn-round" type="submit" onclick="updateLanguage()" data-l10n-id="verify">Login<div class="ripple-container"></div></button>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-3 col-sm-12"></div>
+    </div>
+  </div>
+</div>
+<script>
+function updateLanguage() {
+	document.getElementById('formlang').value = document.getElementById('languageSelection').value;
+}
+</script>
+
+<%- include includes/footer %>

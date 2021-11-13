@@ -16,7 +16,7 @@ var Admin="admin", Teacher="teacher", Student="student";
 module.exports = function(app, ini, db) {
 
 	//Only the requests that start with /api/v1/* will be checked for the token.
-	app.all('/api/v1/*', [validate]);
+	app.all('/api/v1/*', [validate(false)]);
 
 	// Init modules
 	activities.load(ini);
@@ -29,6 +29,7 @@ module.exports = function(app, ini, db) {
 
 	// Routes that can be accessed by any one
 	app.get('/api', common.getAPIInfo);
+	app.post('/auth/verify2FA',[validate(true)], auth.verify2FA);
 	app.post('/auth/login', auth.login);
 	app.post('/auth/signup', auth.checkAdminOrLocal, auth.signup);
 
@@ -43,6 +44,11 @@ module.exports = function(app, ini, db) {
 	app.post("/api/v1/users", auth.allowedRoles([Admin, Teacher]), users.addUser);
 	app.put("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.updateUser);
 	app.delete("/api/v1/users/:uid", auth.allowedRoles([Admin, Student, Teacher]), users.removeUser);
+
+	//Register 2Factor API
+	app.get("/api/v1/dashboard/profile/enable2FA", auth.allowedRoles([Admin, Teacher]), users.updateSecret);
+	app.put("/api/v1/dashboard/profile/enable2FA", auth.allowedRoles([Admin, Teacher]), users.verifyTOTP);
+	app.put("/api/v1/dashboard/profile/disable2FA", auth.allowedRoles([Admin, Teacher]), users.disable2FA);
 
 	// Register stats API
 	app.get("/api/v1/stats", auth.allowedRoles([Admin, Student, Teacher]), stats.findAll);
