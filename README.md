@@ -40,6 +40,17 @@ Following is the typical content of Sugarizer Server settings file:
 	port = 8080
 
 	[security]
+        min_password_size = 4
+        max_age = 172800000
+        max_age_TFA = 180000
+        https = false
+        certificate_file = ../server.crt
+        key_file = ../server.key
+        strict_ssl = false
+        no_signup_mode = false
+        service_name = Sugarizer Server
+        secret = super.sugarizer.schoolportal.key
+
 	min_password_size = 4
 	max_age = 172800000
 	https = false
@@ -88,8 +99,10 @@ The **[information]** section is for describing your server. It could be useful 
 
 The **[web]** section describes the settings of the node.js process. By default, the web server is on the port 8080.
 
-The **[security]** section regroup security settings. `min_password_size` is the minimum number of characters for the password. `max_age` is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours). Parameters `https`, `certificate_file`, `key_file` and `strict_ssl` are explain above.
+The **[security]** section regroup security settings. `min_password_size` is the minimum number of characters for the password. `max_age` is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours). Similarly, `max_age_TFA` is is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. The default time is 180000 (30 mins).Parameters `https`, `certificate_file`, `key_file` and `strict_ssl` are explain above.
 It `no_signup_mode` is true, account creation is allowed only by an administrator or a teacher (no direct sign-up allowed by a student).
+The `service_name` is the issuer parameter, a string value indicating the provider or service this account is associated with, URL-encoded according to [RFC 3986](http://tools.ietf.org/html/rfc3986).
+The `secret` is the JWT Secret which is used to encrypt JSON Web Token. It should be replaced with a unique value to keep the SSP Server secure.
 
 The **[privacy]** section describe privacy settings. When `consent_need` is set to true, the Sugarizer client will ask a consent to user before they will be allowed to do their first connection to the server. `policy` is the URL that Sugarizer client shown in consent popup displayed to user.
 

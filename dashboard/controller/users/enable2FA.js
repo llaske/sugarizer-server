@@ -5,6 +5,7 @@ var superagent = require('superagent'),
 	qrCodeUtil = require('../../../api/controller/utils/qrCodeUtil');
 
 var users = require('./index');
+var min_token_size = 6;
 
 
 module.exports = function enable2FA(req, res) {
@@ -13,7 +14,7 @@ module.exports = function enable2FA(req, res) {
 
 	if (req.method == 'POST') {
 
-		req.assert('tokenentry', common.l10n.get('TokenAtLeast', {count:users.ini().security.min_token_size})).len(users.ini().security.min_token_size);
+		req.assert('tokenentry', common.l10n.get('TokenAtLeast', {min_token_size})).len(min_token_size);
 		req.assert('tokenentry', common.l10n.get('TokenInvalid')).matches(regexValidate("tokenentry"));
 
 		var otpToken = req.body.tokenentry;
