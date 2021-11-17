@@ -40,16 +40,16 @@ Following is the typical content of Sugarizer Server settings file:
 	port = 8080
 
 	[security]
-        min_password_size = 4
-        max_age = 172800000
-        max_age_TFA = 180000
-        https = false
-        certificate_file = ../server.crt
-        key_file = ../server.key
-        strict_ssl = false
-        no_signup_mode = false
-        service_name = Sugarizer Server
-        secret = super.sugarizer.schoolportal.key
+    min_password_size = 4
+    max_age = 172800000
+    max_age_TFA = 180000
+    https = false
+    certificate_file = ../server.crt
+    key_file = ../server.key
+    strict_ssl = false
+    no_signup_mode = false
+    service_name = Sugarizer Server
+    secret = super.sugarizer.server.key
 
     [privacy]
     consent_need = false
