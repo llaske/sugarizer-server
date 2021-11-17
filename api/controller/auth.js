@@ -1,13 +1,16 @@
 var jwt = require('jwt-simple'),
 	users = require('./users.js'),
 	mongo = require('mongodb'),
+	otplib = require('otplib'),
 	common = require('../../dashboard/helper/common');
 
 var security;
+var secret;
 
 // Init settings
 exports.init = function(settings) {
 	security = settings.security;
+	secret = settings.security.secret;
 };
 
 /**
@@ -110,12 +113,74 @@ exports.login = function(req, res) {
 			//take the first user incase of multple matches
 			user = users[0];
 
-			// If authentication is success, we will generate a token and dispatch it to the client
 			var maxAge = req.iniconfig.security.max_age;
-			res.send(genToken(user, maxAge));
+			var maxAgeTfa = req.iniconfig.security.max_age_TFA;
+			// If authentication is success, we will generate a token and dispatch it to the client
+			if (user.tfa === false || typeof user.tfa === "undefined") {
+				res.send(genToken(user, maxAge, false));
+			} else {
+				delete user.deployments;
+				res.send(genToken(user, maxAgeTfa, true)); //give users a buffer of 30 mins to verify.
+			}
 		} else {
 			res.status(401).send({
 				'error': "Invalid credentials",
+				'code': 1
+			});
+		}
+		return;
+	});
+};
+exports.verify2FA = function(req, res) {
+
+	if (!req.body.userToken) {
+		return res.status(401).send({
+			'error': 'User Token not defined',
+			'code': 31
+		});
+	}
+
+	//token that the user entered
+	var uniqueToken = req.body.userToken;
+
+	var uid = req.user._id; // unique uid.
+
+	//find user by user id.
+	users.getAllUsers({
+		_id: new mongo.ObjectID(uid),
+		verified: {
+			$ne: false
+		}
+	}, {enableSecret: true}, function(users) {
+		if (users && users.length > 0) {
+
+			//take the first user incase of multple matches
+			var user = users[0];
+			var uniqueSecret = user.uniqueSecret;
+			try {
+				var isValid = otplib.authenticator.check(uniqueToken, uniqueSecret);
+			} catch (err) {
+				res.status(401).send({
+					'error': 'Could not verify OTP error in otplib',
+					'code': 32
+				});
+			}
+
+			var maxAge = req.iniconfig.security.max_age;
+			var maxAgeTfa = req.iniconfig.security.max_age_TFA;
+
+			if (isValid === true) {
+				delete user.uniqueSecret;
+				// refresh the user token and set partial to false.
+				res.send(genToken(user, maxAge, false));
+			} else {
+				delete user.deployments;
+				delete user.uniqueSecret;
+				res.send(genToken(user, maxAgeTfa, true));
+			}
+		} else {
+			res.status(401).send({
+				'error': "User not found",
 				'code': 1
 			});
 		}
@@ -216,7 +281,7 @@ function validateUsername(name, callback) {
 			callback(false);
 		}
 	});
-};
+}
 
 exports.validateUser = function(uid, callback) {
 
@@ -307,16 +372,18 @@ exports.checkAdminOrLocal = function(req, res, next) {
 };
 
 // private method
-function genToken(user, age) {
+function genToken(user, age, partial) {
 	var expires = expiresIn(age);
 	var token = jwt.encode({
+		partial: partial,
 		exp: expires
-	}, require('../../config/secret')());
+	}, secret);
 
 	return {
 		token: token,
 		expires: expires,
-		user: user
+		user: user,
+		partial: partial
 	};
 }
 
