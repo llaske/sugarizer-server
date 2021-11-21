@@ -21,7 +21,7 @@ module.exports = function(app, ini) {
 	// must use cookieParser before express Session
 	app.use(cookieParser());
 	app.use(expressSession({
-		secret: require('./secret')(),
+		secret: ini.security.secret,
 		cookie: {
 			maxAge: parseInt(ini.security.max_age)
 		},

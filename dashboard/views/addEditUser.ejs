@@ -83,6 +83,20 @@
                                 </div>
                             </div>
                         </div>
+                            <div class="row" id="editUser-twoFactor">
+                                <% if (typeof user == 'object' && (typeof user.tfa === "undefined" || user.tfa === false)) { %>
+                                <div class="col-md-12">
+                                <input type="checkbox" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off" disabled>
+                                <label data-l10n-id="2FA"></label>
+                                </div>
+                                <% } %>
+                                <% if (typeof user == 'object' && user.tfa === true) { %>
+                                    <div class="col-md-12">
+                                        <input type="checkbox" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off" checked disabled>
+                                        <label data-l10n-id="2FA"></label>
+                                    </div>
+                                <% } %>
+                            </div>
                         <% if(typeof classrooms == 'object' && module != "profile") { %>
                         <div class="row" id='searchable-select-classrooms-row'>
                             <div class="col-md-12">
@@ -172,6 +186,20 @@
                         <a class="btn pull-right btn-round" <% if (module=="profile") { %> href="/dashboard/profile" <% } else if (typeof user == 'object' && typeof user.role == 'string') { %>href="/dashboard/users?role=<%= user.role %>"<% } else { %> href="/dashboard/users" <% } %> data-l10n-id="cancel"></a>
                         <div class="clearfix"></div>
                     </form>
+                        <% if (typeof user=='object' && (account.user.role=="admin" || account.user.role=="teacher") && module=="profile" && (typeof user.tfa==="undefined" || user.tfa===false)) { %>
+                            <div class="form-group col-12 text-center">
+                                <a class="btn btn-align btn pull-left btn-round" data-l10n-id="enable2FA" style="margin-top: -63px;"
+                                href="/dashboard/profile/enable2FA"></a>
+                            </div>
+                            <% } else if(typeof user=='object' && (account.user.role=="admin" || account.user.role=="teacher") && module=="profile" && user.tfa===true) { %>
+                                <form action="/dashboard/profile/disable2FA" method="POST">
+                                    <div class="form-group col-12 text-center">
+                                            <button class="btn btn pull-left btn-align btn-round" data-l10n-id="disable2FA" style="margin-top: -68px;"
+                                                onclick="return confirm(document.webL10n.get('DoYouWantToDisable2FA', {name: '<%= user.name %>'}))"
+                                                type="submit"></button>
+                                    </div>
+                                </form>
+                                <% } %>
                 </div>
               </div>
           </div>

@@ -196,8 +196,9 @@ function sugarizerTour(currentView, role, mode) {
 			tour.addStep(getStep("editUser", "#editUser-colors", "right", 5));
 			tour.addStep(getStep("editUser", "#editUser-password", "right", 6));
 			tour.addStep(getStep("editUser", "#searchable-select-classrooms-row", "right", 7));
-			tour.addStep(getStep("editUser", "#editUser-created", "right", 8));
-			tour.addStep(getStep("editUser", "#editUser-lastseen", "right", 9));
+			tour.addStep(getStep("editUser", "#editUser-twoFactor", "right", 8));
+			tour.addStep(getStep("editUser", "#editUser-created", "right", 9));
+			tour.addStep(getStep("editUser", "#editUser-lastseen", "right", 10));
 		} else if (currentView == "editClassroom") {
 			tour.addStep(getStep("editClassroom", "", "bottom", 1, true));
 			tour.addStep(getStep("editClassroom", "#editClassroom-name", "right", 2));

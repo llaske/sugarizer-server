@@ -4,7 +4,7 @@
 
 [Sugarizer](https://github.com/llaske/sugarizer) is the open source learning platform based on Sugar that began in the famous One Laptop Per Child project.
 
-Sugarizer Server allows the deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 6+ and MongoDB 2.6+.
+Sugarizer Server allows the deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 10+ and MongoDB 2.6+.
 
 
 ## Running Sugarizer Server
@@ -40,13 +40,20 @@ Following is the typical content of Sugarizer Server settings file:
 	port = 8080
 
 	[security]
-	min_password_size = 4
-	max_age = 172800000
-	https = false
-	certificate_file = ../server.crt
-	key_file = ../server.key
-	strict_ssl = false
-	no_signup_mode = false
+    min_password_size = 4
+    max_age = 172800000
+    max_age_TFA = 180000
+    https = false
+    certificate_file = ../server.crt
+    key_file = ../server.key
+    strict_ssl = false
+    no_signup_mode = false
+    service_name = Sugarizer Server
+    secret = super.sugarizer.server.key
+
+    [privacy]
+    consent_need = false
+    policy = https://sugarizer.org/policy.html
 
 	[client]
 	path = ../sugarizer/
@@ -84,12 +91,16 @@ The **[information]** section is for describing your server. It could be useful 
 
 The **[web]** section describes the settings of the node.js process. By default, the web server is on the port 8080.
 
-The **[security]** section regroup security settings. `min_password_size` is the minimum number of characters for the password. `max_age` is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours). Parameters `https`, `certificate_file`, `key_file` and `strict_ssl` are explain above.
+The **[security]** section regroup security settings. `min_password_size` is the minimum number of characters for the password. `max_age` is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours). Similarly, `max_age_TFA` is is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. The default time is 180000 (30 mins).Parameters `https`, `certificate_file`, `key_file` and `strict_ssl` are explain above.
 It `no_signup_mode` is true, account creation is allowed only by an administrator or a teacher (no direct sign-up allowed by a student).
+The `service_name` is the issuer parameter, a string value indicating the provider or service this account is associated with, URL-encoded according to [RFC 3986](http://tools.ietf.org/html/rfc3986).
+The `secret` is the JWT Secret which is used to encrypt JSON Web Token. It should be replaced with a unique value to keep the SSP Server secure.
+
+The **[privacy]** section describe privacy settings. When `consent_need` is set to true, the Sugarizer client will ask a consent to user before they will be allowed to do their first connection to the server. `policy` is the URL that Sugarizer client shown in consent popup displayed to user.
 
 The **[client]** indicate the place where is located Sugarizer Client. Sugarizer Client is need by the server.
 
-The **[presence]** section describes the settings of the presence server. By default, a web socket is created on port 8039. You need to change this value if you want to use another port.
+The **[presence]** section describes the settings of the presence server. By default, a web socket is created on port 8039. You need to change this value if you want to use another port. You could use the same value than the one in the `web` port.
 
 The **[database]** and **[collections]** sections are for MongoDB settings. You could update the server name (by default MongoDB run locally) and the server port. Names of the database and collections had no reason to be changed. The `waitdb` parameter allow you to force server to wait for the database. Optionally, the `replicaset` parameter can be set to `true` to enable MongoDB Replicaset support, in this case the server name becomes the replicaset connection string.
 
@@ -142,6 +153,7 @@ To implement the above functionalities, the sugarizer backend exposes an API. Th
 #### USERS ROUTES
 
         [POST]   /auth/login
+        [POST]   /auth/verify2FA
         [POST]   /auth/signup
         [GET]    /api/v1/users
         [GET]    /api/v1/users?name=tarun
@@ -197,6 +209,12 @@ To implement the above functionalities, the sugarizer backend exposes an API. Th
         [GET]    /api/v1/stats?user_id=:uid&sort=-timestamp
         [POST]   /api/v1/stats
         [DELETE] /api/v1/stats
+
+#### TWO FACTOR AUTHENTICATION ROUTES
+
+        [GET]    /api/v1/dashboard/profile/enable2FA
+        [PUT]    /api/v1/dashboard/profile/enable2FA
+        [PUT]    /api/v1/dashboard/profile/disable2FA
 
 
 A full documentation of the API is available in http://127.0.0.1:8080/docs.
@@ -290,11 +308,7 @@ Then launch Grunt task to minify Sugarizer JavaScript files:
 
 	grunt -v
 
-After minification, the `build` directory will contain the optimized version of each file in the same directory as the initial one, so you could just copy files:
-
-	cp -r build/* .
-
-Then navigate to Sugarizer-Server directory install the specific component for Sugarizer-Server by running:
+Now navigate to Sugarizer-Server directory install the specific component for Sugarizer-Server by running:
 
 	npm install
 
