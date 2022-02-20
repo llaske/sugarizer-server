@@ -17,6 +17,8 @@ The easiest way to run Sugarizer is to use Docker. To do that, type command line
 	sh generate-docker-compose.sh
 	docker-compose up -d
 
+By default, your sugarizer server will be accessible on http://127.0.0.1:8080 and your public IP. 
+
 For other options to install Sugarizer on your computer, to install it on the cloud or on a RaspberryPI, see [here](docs/install.md).
 
 

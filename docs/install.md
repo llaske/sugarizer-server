@@ -77,6 +77,8 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
     sudo mongod --fork --port 27018 --logpath ~/mongo.log
     nohup node sugarizer.js > ~/sugarizer.log
 
+By default, your sugarizer server will be accessible on http://127.0.0.1:8080 and your public IP.
+
 *Warning:* If your server had an unclean shutdown on previous boot, MongoDB could not start correctly telling that some files are locked. In that case, launch first:
 
 	sudo mongod --repair
@@ -134,6 +136,7 @@ To stop the Mongo daemon hit `command + c`
     mongod
     node sugarizer.js
 
+By default, your sugarizer server will be accessible on http://127.0.0.1:8080 and your public IP.
 
 ## Run Sugarizer on a RaspberryPI
 
