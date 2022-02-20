@@ -50,7 +50,7 @@ Your Sugarizer server will start automatically and will be accessible on http://
 To run Sugarizer Server **without Docker**, follow the step behind. Commands are shown from a new Debian Linux machine and could be different for other Linux distribution or for an already installed machine:
 
 
-**Install Node.js**: Install Node.js (6+) and npm to manage packages. See [here](http://nodejs.org/ "here") more information.
+**Install Node.js**: Install Node.js (6+) and npm to manage packages. See [here](http://nodejs.org/ "here") for more information.
 
     sudo apt update
 	sudo apt install nodejs
@@ -60,7 +60,7 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
     sudo apt-get install mongodb
     sudo mkdir -p /data/db
 
-**Install Git**: Install Git (2.17+). 
+**Install Git**: Install Git (2.17+). See [here](https://github.com/git-guides/install-git) for more information.
 
     sudo apt update 
 	sudo apt install git
