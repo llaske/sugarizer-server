@@ -1,3 +1,12 @@
+## Table of Contents
+
+- [Table of Contents](#table-of-contents)
+- [Run Sugarizer using Docker](#run-sugarizer-using-docker)
+- [Run Sugarizer on Linux](#run-sugarizer-on-linux)
+- [Run Sugarizer on MacOS](#run-sugarizer-on-macos)
+- [Run Sugarizer on a RaspberryPI](#run-sugarizer-on-a-raspberrypi)
+- [Run Sugarizer on the cloud](#run-sugarizer-on-the-cloud)
+- [Check your install](#check-your-install)
 
 ## Run Sugarizer using Docker
 
@@ -14,14 +23,19 @@ To run Sugarizer Server using Docker and Docker Compose:
 
 Install Docker Compose
 
-	curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" > /usr/local/bin/docker-compose
+	curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 	chmod +x /usr/local/bin/docker-compose
+
+If you have problems installing with `curl`, you can use `pip` instead: `pip install -U docker-compose`
 
 To install Docker Compose on ARM architectures (e.g. for the Raspberry Pi 3), the link above will not work.  You need to use [arm-compose](https://github.com/hypriot/arm-compose) instead.
 
 You can find more details about the installation of **Docker** [here](https://docker.github.io/engine/installation/)
 
 You can	find more details about	the installation of **Docker Compose** [here](https://docs.docker.com/compose/install/)
+
+Test the installation 
+    docker-compose --version
 
 After that, go to the Sugarizer Server folder and launch
 
@@ -36,28 +50,34 @@ Your Sugarizer server will start automatically and will be accessible on http://
 To run Sugarizer Server **without Docker**, follow the step behind. Commands are shown from a new Debian Linux machine and could be different for other Linux distribution or for an already installed machine:
 
 
-**Install Node.js**: Install Node.js (6+) and npm to manage packages. See [here](http://nodejs.org/ "here") more information.
+**Install Node.js**: Install Node.js (6+) and npm to manage packages. See [here](http://nodejs.org/ "here") for more information.
 
-    sudo apt-get install nodejs
+    sudo apt update
+	sudo apt install nodejs
 
-**Install MongoDB**: Install MongoDB (2.6+). Don't forget to create a /data/db directory to store databases. See [here](http://www.mongodb.org/ "here") more information.
+**Install MongoDB**: Install MongoDB (2.6+). Don't forget to create a /data/db directory to store databases. See [here](https://docs.mongodb.com/manual/installation/ "here") for more information.
 
     sudo apt-get install mongodb
     sudo mkdir -p /data/db
 
+**Install Git**: Install Git (2.17+). See [here](https://github.com/git-guides/install-git) for more information.
+
+    sudo apt update 
+	sudo apt install git
+
 **Install Sugarizer Client and Server**: If need, you could update sugarizer-server/sugarizer.ini file (update port for web, mongodb or presence, see below)
 
-    sudo apt-get install git
-    cd /home/root
-    sudo git clone https://github.com/llaske/sugarizer
-    sudo git clone https://github.com/llaske/sugarizer-server
-    cd /home/root/sugarizer-server
-    sudo npm install
+    git clone https://github.com/llaske/sugarizer
+    git clone https://github.com/llaske/sugarizer-server
+    cd sugarizer-server
+    npm install
 
 **Run MongoDB and Sugarizer Server**:Run mongo daemon and Sugarizer a background process.
 
-    sudo mongod --fork --port 27018 --logpath /home/root/mongo.log
-    sudo nohup node sugarizer.js > /home/root/sugarizer.log &
+    sudo mongod --fork --port 27018 --logpath ~/mongo.log
+    nohup node sugarizer.js > ~/sugarizer.log
+
+By default, your sugarizer server will be accessible on http://127.0.0.1:8080 and your public IP.
 
 *Warning:* If your server had an unclean shutdown on previous boot, MongoDB could not start correctly telling that some files are locked. In that case, launch first:
 
@@ -68,54 +88,55 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
 
 **Install homebrew**:Run this command on terminal
 
-        /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 *To check the version type the following command.*
         
-        brew -v
+    brew -v
 
 **Installing Node.js**:In the terminal type the following command to install Node.
         
-        brew install node
+    brew install node
 
 *If everything installed successfully then you can type in the following command in the terminal to check the Node and NPM version.*
         
-        node -v
-        npm -v
+    node -v
+    npm -v
 
 **Install and Run MongoDB with Homebrew**
 
 *Open the Terminal and type*
 
-        brew install mongodb
+    brew install mongodb
 
 *After downloading Mongo, create the “db” directory. This is where the Mongo data files will live. You can create the directory in the default location by running*
         
-        mkdir -p /data/db
+    mkdir -p /data/db
 
 *Make sure that the /data/db directory has the right permissions by running*
         
-        sudo chown -R `id -un` /data/db
+    sudo chown -R `id -un` /data/db
 
 Run the Mongo daemon, in one of your terminal windows run " mongod ". This should start the Mongo server. 
 
-To stop the Mongo daemon hit ctrl-c
+To stop the Mongo daemon hit `command + c`
 
 
 **Install Sugarizer Client and Server**
 
-        brew install git
-        cd desktop
-        git clone https://github.com/llaske/sugarizer
-        git clone https://github.com/llaske/sugarizer-server
-        cd sugarizer-server
-        npm install
+    brew install git
+    cd desktop
+    git clone https://github.com/llaske/sugarizer
+    git clone https://github.com/llaske/sugarizer-server
+    cd sugarizer-server
+    npm install
 
 **Run MongoDB and Sugarizer Server**:Run mongod and Sugarizer.
 
-        mongod
-        node sugarizer.js
+    mongod
+    node sugarizer.js
 
+By default, your sugarizer server will be accessible on http://127.0.0.1:8080 and your public IP.
 
 ## Run Sugarizer on a RaspberryPI
 
@@ -130,7 +151,6 @@ You could install on any existing cloud platform (Amazon, Microsoft Azure, Googl
 
 * **Google Cloud Platform** is available [here](deploytoGCP.md),
 * **Amazon Web Services** is available [here](deploytoAWS.md).
-
 
 
 ## Check your install
