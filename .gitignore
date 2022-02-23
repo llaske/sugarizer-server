@@ -12,5 +12,3 @@ build/
 
 *.csv
 tmp/
-
-sugarizer.log
