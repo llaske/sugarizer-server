@@ -21,19 +21,19 @@
         <div class="card card-nav-tabs">
             <div class="card-content">
               <% include includes/flash-errors %>
-              <form method="post" action="/dashboard/login">
+              <form onsubmit="return validateForm(this);" method="post" action="/dashboard/login">
                 <div class="form-group form-black label-floating is-empty">
                     <label class="control-label" data-l10n-id="username">Username</label>
-                    <input class="form-control" name="username" type="text">
+                    <input class="form-control" name="username"  id="username" type="text">
                     <span class="material-input"></span>
                 </div>
                 <div class="form-group form-black label-floating is-empty">
-                    <label class="control-label" data-l10n-id="password">Password</label>
-                    <input class="form-control" name="password" type="password">
+                    <label class="control-label" data-l10n-id="password"   >Password</label>
+                    <input class="form-control" name="password" id="password"  type="password">
 					<input id="formlang" type="hidden" name="lang">
                     <span class="material-input"></span>
                 </div>
-                <button class="btn pull-right" type="submit" onclick="updateLanguage()" data-l10n-id="login">Login<div class="ripple-container"></div></button>
+                <button class="btn pull-right"  type="submit" onclick="updateLanguage()" data-l10n-id="login">Login<div class="ripple-container"></div></button>
                 <div class="clearfix"></div>
               </form>
             </div>
@@ -44,9 +44,42 @@
   </div>
 </div>
 <script>
-function updateLanguage() {
-	document.getElementById('formlang').value = document.getElementById('languageSelection').value;
-}
+  var username = document.getElementById("username");
+  var password = document.getElementById("password");
+  function updateLanguage() {
+    document.getElementById('formlang').value = document.getElementById('languageSelection').value;
+  }
+
+
+  // validate form input  on submit 
+  function validateForm(e) {
+ 
+    let curr_username = username.value.trim();
+    let curr_password = password.value.trim();
+    let is_success = true;
+    if (curr_username === "") {
+      is_success = false;
+      notify("Username cannot be blank");
+    }
+    if (curr_password === "") {
+      is_success = false;
+      notify("Password cannot be blank");
+    }
+
+    return is_success;
+  }
+
+
+  function notify(message) {
+    $.notify({ icon: "error", message: message }, {
+      type: 'danger',
+      timer: 2000,
+      placement: {
+        from: 'top',
+        align: 'right'
+      }
+    });
+  } 
 </script>
 
 <%- include includes/footer %>
