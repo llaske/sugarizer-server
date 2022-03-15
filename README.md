@@ -17,7 +17,7 @@ The easiest way to run Sugarizer is to use Docker. To do that, type command line
 	sh generate-docker-compose.sh
 	docker-compose up -d
 
-For other options to install Sugarizer on your computer, it on the cloud or on a RaspberryPI, see [here](docs/install.md).
+For other options to install Sugarizer on your computer, on the cloud or on a RaspberryPI, see [here](docs/install.md).
 
 
 ## Global architecture
