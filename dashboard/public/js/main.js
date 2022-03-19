@@ -584,8 +584,8 @@ function onLocalized() {
 		};
 	}
 }
-document.webL10n.ready(onLocalized);
-
+// document.webL10n.ready(onLocalized);
+onLocalized() ;  // call this function to start localization 
 // Initiate localization in mobile view
 $(document).ready(function() {
 	var toggle = document.getElementById('navbar-toggle');

@@ -995,7 +995,7 @@ document.webL10n = (function(window, document, undefined) {
    */
 
   // load the default locale on startup
-  function l10nStartup() {
+  function l10nStartup(lang,callback) {
     gReadyState = 'interactive';
 
     // most browsers expose the UI language as `navigator.language'
@@ -1006,21 +1006,24 @@ document.webL10n = (function(window, document, undefined) {
 
     // load the default locale and translate the document if required
     if (document.documentElement.lang === userLocale) {
-      loadLocale(userLocale);
+      loadLocale(userLocale,callback);
     } else {
-      loadLocale(userLocale, translateFragment);
+      loadLocale(lang,callback);
+      // loadLocale("hi", translateFragment);
     }
   }
 
-  // browser-specific startup
+// start 'L10nStartup' with language and callback after page fully loaded 
+  function startL10nStartup(lang,callback){
+    // browser-specific startup
   if (document.addEventListener) { // modern browsers and IE9+
     if (document.readyState === 'loading') {
       // the document is not fully loaded yet: wait for DOMContentLoaded.
-      document.addEventListener('DOMContentLoaded', l10nStartup);
+      document.addEventListener('DOMContentLoaded', ()=>l10nStartup( lang ,callback));
     } else {
       // l10n.js is being loaded with <script defer> or <script async>,
       // the DOM is ready for parsing.
-      window.setTimeout(l10nStartup);
+      window.setTimeout(()=>l10nStartup( lang ,callback));
     }
   } else if (window.attachEvent) { // IE8 and before (= oldIE)
     // TODO: check if jQuery is loaded (CSS selector + JSON + events)
@@ -1125,9 +1128,10 @@ document.webL10n = (function(window, document, undefined) {
     // startup for IE<9
     window.attachEvent('onload', function() {
       gTextProp = document.textContent === null ? 'textContent' : 'innerText';
-      l10nStartup();
+      l10nStartup(lang ,callback);
     });
   }
+}
 
   // cross-browser API (sorry, oldIE doesn't support getters & setters)
   return {
@@ -1157,8 +1161,8 @@ document.webL10n = (function(window, document, undefined) {
 
     // get|set the document language
     getLanguage: function() { return gLanguage; },
-    setLanguage: function(lang, callback) {
-      loadLocale(lang, function() {
+    setLanguage:  function(lang, callback) {
+    startL10nStartup(lang, function() {
         if (callback)
           callback();
         translateFragment();
