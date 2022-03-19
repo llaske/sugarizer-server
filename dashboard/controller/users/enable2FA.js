@@ -14,7 +14,7 @@ module.exports = function enable2FA(req, res) {
 
 	if (req.method == 'POST') {
 
-		req.assert('tokenentry', common.l10n.get('TokenAtLeast', {min_token_size})).len(min_token_size);
+		req.assert('tokenentry', common.l10n.get('TokenAtLeast', min_token_size)).len(min_token_size);
 		req.assert('tokenentry', common.l10n.get('TokenInvalid')).matches(regexValidate("tokenentry"));
 
 		var otpToken = req.body.tokenentry;
