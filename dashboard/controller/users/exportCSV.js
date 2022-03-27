@@ -7,6 +7,10 @@ module.exports = function exportCSV(req, res) {
 	var users = [];
 	var Classrooms = {};
 
+	common.reinitLocale(req);
+	var selectedRole = req.params.role;
+	var selectedUsername = req.params.username;
+
 	function validateUser(user) {
 		var validUser = {
 			_id: "",
@@ -173,10 +177,22 @@ module.exports = function exportCSV(req, res) {
 				});
 		}
 	], function() {
+		var filteredUsers = [];
+		users.forEach(user => {
+			if(selectedUsername == 'undefined'){
+				if(user.type == selectedRole){
+					filteredUsers.push(user);
+				}
+			}else{
+				if(user.type == selectedRole && user.name.includes(selectedUsername)){
+					filteredUsers.push(user);
+				}
+			}
+		})
 		if (users.length == 0) {
 			res.json({success: false, msg: common.l10n.get('NoUsersFound')});
 		} else {
-			res.json({success: true, msg: common.l10n.get('ExportSuccess'), data: users});
+			res.json({success: true, msg: common.l10n.get('ExportSuccess'), data: filteredUsers});
 		}
 		return;
 	});

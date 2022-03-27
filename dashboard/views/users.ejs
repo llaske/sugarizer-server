@@ -72,10 +72,21 @@
                             </div>
                             <div class="btn pull-right btn-round" onclick="downloadUsers()" data-l10n-id="ExportUsers" id="users-exportusers">Export Users</div>
                             <script>
+                                var selectedRole = document.getElementById('user-type-select2');
+                                var typedName = document.getElementById('username');
+                                var roleValue = selectedRole.value;
+                                var usernameValue = typedName.value;
+                                // if(roleValue == 'undefined'){
+                                //     roleValue = 'student';
+                                // }
+                                if(usernameValue == ''){
+                                    usernameValue = 'undefined';
+                                }
+                                console.log(roleValue, usernameValue, "adadadad");
                                 function downloadUsers(event) {
                                     $.ajax({
                                             type: "GET",
-                                            url: "/dashboard/users/export",
+                                            url: `/dashboard/users/export/${roleValue}/${usernameValue}`,
                                             success: function (res) {
                                                 if (res && res.success) {
                                                     var headers = {
