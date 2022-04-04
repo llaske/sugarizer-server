@@ -221,7 +221,8 @@ function sugarizerTour(currentView, role, mode) {
 		if ($(window).width() > 992) {
 			document.webL10n.ready(function() {
 				var refreshIntervalId = setInterval(function() {
-					if (document.webL10n.getReadyState() == "complete") {
+					var testString = document.webL10n.get("TutoPrev"); 
+					if (document.webL10n.getReadyState() == "complete" && testString && testString.search(/^{{.*}}$/) <0 ) {
 						clearInterval(refreshIntervalId);
 						tutorial.init();
 						tour.start(true);

@@ -434,7 +434,8 @@ function matchColorField(params, data) {
 $(document).ready(function() {
 	document.webL10n.ready(function() {
 		var refreshIntervalId = setInterval(function() {
-			if (document.webL10n.getReadyState() == "complete") {
+        var testString = document.webL10n.get("searchUser");	
+			if (document.webL10n.getReadyState() == "complete" && testString && testString.search(/^{{.*}}$/) <0) {
 				clearInterval(refreshIntervalId);
 				if ($("#users-select2").length > 0) {
 					$("#users-select2").select2({
