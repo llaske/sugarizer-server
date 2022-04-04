@@ -45,7 +45,7 @@
 		"grunt-terser": "~1.0.0",
 		"mocha": "~6.2.0",
 		"nodemon": "*",
-		"pre-commit": "^1.2.2"
+		"husky": "^7.0.0"
 	},
 	"scripts": {
 		"test": "mocha api/test/ --timeout 20000 --exit",
@@ -53,9 +53,7 @@
 		"start": "node sugarizer.js",
 		"start:watch": "nodemon sugarizer.js",
 		"seed:users-csv": "node scripts/seed_users.js",
-		"lint": "eslint .; exit 0"
-	},
-	"pre-commit": [
-		"test"
-	]
+		"lint": "eslint .; exit 0",
+		"prepare": "husky install"
+	}
 }
