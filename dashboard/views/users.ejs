@@ -74,19 +74,15 @@
                             <script>
                                 var selectedRole = document.getElementById('user-type-select2');
                                 var typedName = document.getElementById('username');
-                                var roleValue = selectedRole.value;
-                                var usernameValue = typedName.value;
-                                // if(roleValue == 'undefined'){
-                                //     roleValue = 'student';
-                                // }
+                                var roleValue = selectedRole.value;  // specific role selected by the user to search
+                                var usernameValue = typedName.value; // specific username selected by the user to search
                                 if(usernameValue == ''){
-                                    usernameValue = 'undefined';
+                                    usernameValue = 'undefined';  // setting username value undefined to specify backend to work with the route even when nothing is typed
                                 }
-                                console.log(roleValue, usernameValue, "adadadad");
                                 function downloadUsers(event) {
                                     $.ajax({
                                             type: "GET",
-                                            url: `/dashboard/users/export/${roleValue}/${usernameValue}`,
+                                            url: `/dashboard/users/export/${roleValue}/${usernameValue}`,  // passing query parameters to backend
                                             success: function (res) {
                                                 if (res && res.success) {
                                                     var headers = {

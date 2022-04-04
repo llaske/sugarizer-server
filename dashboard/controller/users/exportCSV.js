@@ -177,22 +177,22 @@ module.exports = function exportCSV(req, res) {
 				});
 		}
 	], function() {
-		var filteredUsers = [];
+		var filteredUsers = []; // new array to store filtered data, as specified by the user
 		users.forEach(user => {
-			if(selectedUsername == 'undefined'){
+			if(selectedUsername == 'undefined'){  // if no specific username is typed, go with default role
 				if(user.type == selectedRole){
 					filteredUsers.push(user);
 				}
 			}else{
-				if(user.type == selectedRole && user.name.includes(selectedUsername)){
+				if(user.type == selectedRole && user.name.includes(selectedUsername)){ // if specific role and username is searched
 					filteredUsers.push(user);
 				}
 			}
-		})
+		});
 		if (users.length == 0) {
 			res.json({success: false, msg: common.l10n.get('NoUsersFound')});
 		} else {
-			res.json({success: true, msg: common.l10n.get('ExportSuccess'), data: filteredUsers});
+			res.json({success: true, msg: common.l10n.get('ExportSuccess'), data: filteredUsers}); // sending array of filtered users
 		}
 		return;
 	});
