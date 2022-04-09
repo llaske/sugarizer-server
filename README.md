@@ -17,7 +17,7 @@ The easiest way to run Sugarizer is to use Docker. To do that, type command line
 	sh generate-docker-compose.sh
 	docker-compose up -d
 
-For other options to install Sugarizer on your computer, to install it on the cloud or on a RaspberryPI, see [here](docs/install.md).
+For other options to install Sugarizer on your computer, on the cloud or on a RaspberryPI, see [here](docs/install.md).
 
 
 ## Global architecture
@@ -27,7 +27,7 @@ See [here](docs/architecture.md) for a global description of the Sugarizer Serve
 
 ## Server settings
 
-Sugarizer settings are load by default from file [env/sugarizer.ini](env/sugarizer.ini). You could change the name of this file by changing the value of environment variable ``NODE_ENV``. So if the ``NODE_ENV`` variable is set to ``production``, Sugarizer will try to load ``env/production.ini`` file.
+Sugarizer settings are loaded by default from file [env/sugarizer.ini](env/sugarizer.ini). You could change the name of this file by changing the value of environment variable ``NODE_ENV``. So if the ``NODE_ENV`` variable is set to ``production``, Sugarizer will try to load ``env/production.ini`` file.
 
 Following is the typical content of Sugarizer Server settings file:
 
@@ -91,12 +91,12 @@ The **[information]** section is for describing your server. It could be useful 
 
 The **[web]** section describes the settings of the node.js process. By default, the web server is on the port 8080.
 
-The **[security]** section regroup security settings. `min_password_size` is the minimum number of characters for the password. `max_age` is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours). Similarly, `max_age_TFA` is is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. The default time is 180000 (30 mins).Parameters `https`, `certificate_file`, `key_file` and `strict_ssl` are explain above.
+The **[security]** section regroup security settings. `min_password_size` is the minimum number of characters for the password. `max_age` is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should re-enter its password. Default time is 172800000 (48 hours). Similarly, `max_age_TFA` is is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should re-enter its password. The default time is 180000 (30 mins).Parameters `https`, `certificate_file`, `key_file` and `strict_ssl` are explain above.
 It `no_signup_mode` is true, account creation is allowed only by an administrator or a teacher (no direct sign-up allowed by a student).
 The `service_name` is the issuer parameter, a string value indicating the provider or service this account is associated with, URL-encoded according to [RFC 3986](http://tools.ietf.org/html/rfc3986).
 The `secret` is the JWT Secret which is used to encrypt JSON Web Token. It should be replaced with a unique value to keep the SSP Server secure.
 
-The **[privacy]** section describe privacy settings. When `consent_need` is set to true, the Sugarizer client will ask a consent to user before they will be allowed to do their first connection to the server. `policy` is the URL that Sugarizer client shown in consent popup displayed to user.
+The **[privacy]** section describe privacy settings. When `consent_need` is set to true, the Sugarizer client will ask a consent to user before they will be allowed to do their first connection to the server. `policy` is the URL that Sugarizer client shown in consent pop-up displayed to user.
 
 The **[client]** indicate the place where is located Sugarizer Client. Sugarizer Client is need by the server.
 
@@ -113,7 +113,7 @@ The **[activities]** section describes information on where to find embedded act
 
 ## Dashboard
 
-Sugarizer Server Dashboard is an admin tool for teachers and deployment administrator. This dashboard can be used to control and manage the work of learners and manage and analyze all activities on a Sugarizer Server. The Dashboard has following features:
+Sugarizer Server Dashboard is an admin tool for teachers and deployment administrator. This dashboard can be used to control and manage the work of learners as well as manage and analyze all activities on a Sugarizer Server. The Dashboard has following features:
 
 * Users: how many users have been registered on the server, recent users, top users on the server, create/edit/remove a user.
 * Journal: how many Journals and how many entries in Journal on the server, last Journal, and last entries, edit a journal (see/update/remove) entries.
@@ -308,7 +308,7 @@ Then launch Grunt task to minify Sugarizer JavaScript files:
 
 	grunt -v
 
-Now navigate to Sugarizer-Server directory install the specific component for Sugarizer-Server by running:
+Now navigate to Sugarizer-Server directory and install the specific component for Sugarizer-Server by running:
 
 	npm install
 
