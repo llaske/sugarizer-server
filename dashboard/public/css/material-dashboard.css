@@ -1062,6 +1062,7 @@ h2.title {
 
 .btn.btn-round, .navbar .navbar-nav>li>a.btn.btn-round {
   border-radius: 30px;
+  margin-right: 10px;
 }
 
 .btn:not(.btn-just-icon):not(.btn-fab) .fa, .navbar .navbar-nav>li>a.btn:not(.btn-just-icon):not(.btn-fab) .fa {
