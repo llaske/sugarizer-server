@@ -25,6 +25,11 @@ module.exports = function(app, ini) {
 	statsController.init(ini);
 	classroomsController.init(ini);
 
+	app.use(function(req, res, next) {
+		res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+		next();
+  	});
+	
 	// add routes
 	app.get('/dashboard/login', authController.getLogin);
 	app.post('/dashboard/login', authController.postLogin);
