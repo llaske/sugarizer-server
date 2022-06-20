@@ -7,7 +7,8 @@ var activities = require('./controller/activities'),
 	auth = require('./controller/auth'),
 	stats = require('./controller/stats'),
 	validate = require('./middleware/validateRequest'),
-	common = require('../dashboard/helper/common');
+	common = require('../dashboard/helper/common'),
+	assignments = require('./controller/assignments');
 
 // Define roles
 // eslint-disable-next-line no-unused-vars
@@ -25,6 +26,7 @@ module.exports = function(app, ini, db) {
 	stats.init(ini, db);
 	classrooms.init(ini, db);
 	charts.init(ini, db);
+	assignments.init(ini, db);
 	auth.init(ini);
 
 	// Routes that can be accessed by any one
@@ -69,7 +71,11 @@ module.exports = function(app, ini, db) {
 	app.post("/api/v1/classrooms", auth.allowedRoles([Admin]), classrooms.addClassroom);
 	app.put("/api/v1/classrooms/:classid", auth.allowedRoles([Admin, Teacher]), classrooms.updateClassroom);
 	app.delete("/api/v1/classrooms/:classid", auth.allowedRoles([Admin]), classrooms.removeClassroom);
-
+	
+	//Register Assignments APIs
+	app.get("/api/v1/assignments", auth.allowedRoles([Admin, Teacher]) ,assignments.findAll);
+	app.post("/api/v1/assignments", auth.allowedRoles([Admin, Teacher]), assignments.addAssignment);
+	app.get("/api/v1/assignments/launch/:assingid", auth.allowedRoles([Admin, Teacher]), assignments.launchAssignment);
 	// Register classroom API
 	app.get("/api/v1/charts", auth.allowedRoles([Admin]), charts.findAll);
 	app.get("/api/v1/charts/:chartid", auth.allowedRoles([Admin]), charts.findById);

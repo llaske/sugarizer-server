@@ -384,7 +384,7 @@ exports.disable2FA = function(req, res) {
  *    }
  **/
 exports.findAll = function(req, res) {
-
+	
 	//prepare condition
 	var query = {};
 	query = addQuery('name', req.query, query);
@@ -673,6 +673,7 @@ exports.addUser = function(req, res) {
 	}
 
 	//parse user details
+	console.log(req.body);
 	var user = JSON.parse(req.body.user);
 
 	//add timestamp & language

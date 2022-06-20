@@ -46,7 +46,6 @@ module.exports = function (partialAccess) {
 										uniqueStudents.push(students[i]._id.toString());
 									}
 								}
-	
 								req.user.students = uniqueStudents;
 								//update user timestamp
 								auth.updateTimestamp(key, function(err) {

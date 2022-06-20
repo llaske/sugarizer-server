@@ -64,6 +64,11 @@ exports.init = function(settings) {
 exports.login = function(req, res) {
 
 	//parse response
+	console.log(req.body.user)
+	console.log(req.session.user);
+
+	console.log(req.body)
+	console.log(typeof req.body.user)
 	var user = JSON.parse(req.body.user);
 	var name = user.name || '';
 	var password = user.password || '';

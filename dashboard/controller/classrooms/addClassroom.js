@@ -24,6 +24,8 @@ module.exports = function addClassroom(req, res) {
 		req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
 		req.body.options = { sync: true, stats: true };
 
+		console.log(req.body);
+
 		// get errors
 		var errors = req.validationErrors();
 

@@ -41,7 +41,7 @@ exports.index = function(req, res) {
 	if(req.query.sort != ''){
 		query['sort'] = req.query.sort;
 	}
-
+	console.log(ini.information)
 	superagent
 		.get(common.getAPIUrl(req) + 'api/v1/classrooms')
 		.set(common.getHeaders(req))
