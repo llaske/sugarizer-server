@@ -75,7 +75,7 @@ module.exports = function(app, ini, db) {
 	//Register Assignments APIs
 	app.get("/api/v1/assignments", auth.allowedRoles([Admin, Teacher]) ,assignments.findAll);
 	app.post("/api/v1/assignments", auth.allowedRoles([Admin, Teacher]), assignments.addAssignment);
-	app.get("/api/v1/assignments/launch/:assingid", auth.allowedRoles([Admin, Teacher]), assignments.launchAssignment);
+	app.get("/api/v1/assignments/:assingid", auth.allowedRoles([Admin, Teacher]), assignments.launchAssignment);
 	// Register classroom API
 	app.get("/api/v1/charts", auth.allowedRoles([Admin]), charts.findAll);
 	app.get("/api/v1/charts/:chartid", auth.allowedRoles([Admin]), charts.findById);

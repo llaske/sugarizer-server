@@ -41,6 +41,7 @@ exports.addAssignment = function(req, res){
     //add timestamps
     assignment.created_time = +new Date();
     assignment.timestamp = +new Date();
+    assignment.created_by = req.user._id;
 
     //add assignment to database with unique name
     db.collection(assignmentCollection, function(err, collection){
@@ -143,7 +144,7 @@ exports.launchAssignment = function(req, res){
                     }
 
                     private_journal_Ids = uniqueStudents;
-                    
+
                     return new Promise(function(resolve, reject){
                     db.collection(journalCollection, function(err, collection){
                         collection.find({
@@ -208,7 +209,6 @@ function addEntry(req,private_journal){
                 } else {
                     console.log({'journalEntry':journalEntry});
                     if(journalEntry.content.length > 0){
-                        
                        journalEntry.content[0].metadata = {
                             ...journalEntry.content[0].metadata,
                             assignment_id: req.params.assingid,
