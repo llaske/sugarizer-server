@@ -1,6 +1,7 @@
 var jwt = require('jwt-simple');
 var auth = require('../controller/auth');
 var classrooms = require('../controller/classrooms');
+var common = require('../controller/utils/common');
 var settings = require('../../config/settings').load();
 var config = settings.security.secret;
 
@@ -37,7 +38,7 @@ module.exports = function (partialAccess) {
 						//store the user object in req
 						req.user = user;
 						if (user.role == "teacher" && typeof user.classrooms == "object") {
-							fetchAllStudents(user.classrooms).then(function(students) {
+							common.fetchAllStudents(user.classrooms).then(function(students) {
 								var uniqueStudents = [];
 								var map = new Map();
 								for (var i=0; i < students.length; i++) {
@@ -98,19 +99,3 @@ module.exports = function (partialAccess) {
 	};
 };
 
-function fetchAllStudents(classrm) {
-	return new Promise(function(resolve) {
-		var students = [];
-		if (classrm.length == 0) return resolve(students);
-		for (var classCount=0, i=0; i < classrm.length; i++) {
-			classrooms.findStudents(classrm[i]).then(function(stds) {
-				students = students.concat(stds);
-				classCount++;
-				if (classCount == classrm.length) return resolve(students);
-			}).catch(function() {
-				classCount++;
-				if (classCount == classrm.length) return resolve(students);
-			});
-		}
-	});
-}
