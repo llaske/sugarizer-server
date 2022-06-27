@@ -12,9 +12,9 @@ var activities = require('./controller/activities'),
 
 // Define roles
 // eslint-disable-next-line no-unused-vars
-var Admin="admin", Teacher="teacher", Student="student";
+var Admin = "admin", Teacher = "teacher", Student = "student";
 
-module.exports = function(app, ini, db) {
+module.exports = function (app, ini, db) {
 
 	//Only the requests that start with /api/v1/* will be checked for the token.
 	app.all('/api/v1/*', [validate(false)]);//validate(partialAccess): partialAccess is middleware boolean. See middleware/validateRequest.js for more info.
@@ -31,7 +31,7 @@ module.exports = function(app, ini, db) {
 
 	// Routes that can be accessed by any one
 	app.get('/api', common.getAPIInfo);
-	app.post('/auth/verify2FA',[validate(true)], auth.verify2FA);//validate(partialAccess): partialAccess is middleware boolean. See middleware/validateRequest.js for more info.
+	app.post('/auth/verify2FA', [validate(true)], auth.verify2FA);//validate(partialAccess): partialAccess is middleware boolean. See middleware/validateRequest.js for more info.
 	app.post('/auth/login', auth.login);
 	app.post('/auth/signup', auth.checkAdminOrLocal, auth.signup);
 
@@ -71,11 +71,13 @@ module.exports = function(app, ini, db) {
 	app.post("/api/v1/classrooms", auth.allowedRoles([Admin]), classrooms.addClassroom);
 	app.put("/api/v1/classrooms/:classid", auth.allowedRoles([Admin, Teacher]), classrooms.updateClassroom);
 	app.delete("/api/v1/classrooms/:classid", auth.allowedRoles([Admin]), classrooms.removeClassroom);
-	
+
 	//Register Assignments APIs
-	app.get("/api/v1/assignments", auth.allowedRoles([Admin, Teacher]) ,assignments.findAll);
+	app.get("/api/v1/assignments", auth.allowedRoles([Admin, Teacher]), assignments.findAll);
 	app.post("/api/v1/assignments", auth.allowedRoles([Admin, Teacher]), assignments.addAssignment);
 	app.get("/api/v1/assignments/:assingid", auth.allowedRoles([Admin, Teacher]), assignments.launchAssignment);
+	app.put("/api/v1/assignments/:assingid", auth.allowedRoles([Admin, Teacher]), assignments.updateAssignment);
+	app.delete("/api/v1/assignments/:assingid", auth.allowedRoles([Admin, Teacher]), assignments.removeAssignment);
 	// Register classroom API
 	app.get("/api/v1/charts", auth.allowedRoles([Admin]), charts.findAll);
 	app.get("/api/v1/charts/:chartid", auth.allowedRoles([Admin]), charts.findById);
@@ -85,7 +87,7 @@ module.exports = function(app, ini, db) {
 	app.delete("/api/v1/charts/:chartid", auth.allowedRoles([Admin]), charts.removeChart);
 
 	// If no route is matched by now, it must be a 404
-	app.use('/api/v1/*', function(req, res) {
+	app.use('/api/v1/*', function (req, res) {
 		return res.status(404).json({
 			'status': 404,
 			'error': "Route Not Found!",

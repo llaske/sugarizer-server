@@ -1,6 +1,5 @@
 var jwt = require('jwt-simple');
 var auth = require('../controller/auth');
-var classrooms = require('../controller/classrooms');
 var common = require('../controller/utils/common');
 var settings = require('../../config/settings').load();
 var config = settings.security.secret;

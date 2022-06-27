@@ -21,17 +21,17 @@ var gridfsbucket, CHUNKS_COLL, FILES_COLL;
 // Extract from https://gist.github.com/kongchen/941a652882d89bb96f87
 function _toUTF8(str) {
 	var utf8 = [];
-	for (var i=0; i < str.length; i++) {
+	for (var i = 0; i < str.length; i++) {
 		var charcode = str.charCodeAt(i);
 		if (charcode < 0x80) utf8.push(charcode);
 		else if (charcode < 0x800) {
 			utf8.push(0xc0 | (charcode >> 6),
-			0x80 | (charcode & 0x3f));
+				0x80 | (charcode & 0x3f));
 		}
 		else if (charcode < 0xd800 || charcode >= 0xe000) {
 			utf8.push(0xe0 | (charcode >> 12),
-			0x80 | ((charcode>>6) & 0x3f),
-			0x80 | (charcode & 0x3f));
+				0x80 | ((charcode >> 6) & 0x3f),
+				0x80 | (charcode & 0x3f));
 		}
 		// surrogate pair
 		else {
@@ -39,12 +39,12 @@ function _toUTF8(str) {
 			// UTF-16 encodes 0x10000-0x10FFFF by
 			// subtracting 0x10000 and splitting the
 			// 20 bits of 0x0-0xFFFFF into two halves
-			charcode = 0x10000 + (((charcode & 0x3ff)<<10)
-			| (str.charCodeAt(i) & 0x3ff))
-			utf8.push(0xf0 | (charcode >>18),
-			0x80 | ((charcode>>12) & 0x3f),
-			0x80 | ((charcode>>6) & 0x3f),
-			0x80 | (charcode & 0x3f));
+			charcode = 0x10000 + (((charcode & 0x3ff) << 10)
+				| (str.charCodeAt(i) & 0x3ff));
+			utf8.push(0xf0 | (charcode >> 18),
+				0x80 | ((charcode >> 12) & 0x3f),
+				0x80 | ((charcode >> 6) & 0x3f),
+				0x80 | (charcode & 0x3f));
 		}
 	}
 	return utf8;
@@ -60,17 +60,17 @@ function _toUTF16(input) {
 }
 
 // Init database
-exports.init = function(settings, database) {
+exports.init = function (settings, database) {
 
 	// Open the journal collection
 	journalCollection = settings.collections.journal;
 
 	db = database;
-	db.collection(journalCollection, function(err, collection) {
+	db.collection(journalCollection, function (err, collection) {
 		// Get the shared journal collection
 		collection.findOne({
 			'shared': true
-		}, function(err, item) {
+		}, function (err, item) {
 			// Not found, create one
 			if (!err && item == null) {
 				collection.insertOne({
@@ -78,7 +78,7 @@ exports.init = function(settings, database) {
 					shared: true
 				}, {
 					safe: true
-				}, function(err, result) {
+				}, function (err, result) {
 					shared = result.ops[0];
 				});
 			}
@@ -91,8 +91,8 @@ exports.init = function(settings, database) {
 	});
 
 	var bucket = 'textBucket';
-	gridfsbucket = new mongo.GridFSBucket(db,{
-		chunkSizeBytes:102400,
+	gridfsbucket = new mongo.GridFSBucket(db, {
+		chunkSizeBytes: 102400,
 		bucketName: bucket
 	});
 	CHUNKS_COLL = bucket + ".chunks";
@@ -105,23 +105,23 @@ exports.init = function(settings, database) {
 	if (sugarizerPath[0] != '/') {
 		sugarizerPath = __dirname + '/../../' + settings.client.path;
 	}
-	sugarizerPath += (sugarizerPath[sugarizerPath.length-1] == '/' ? '' : '/');
+	sugarizerPath += (sugarizerPath[sugarizerPath.length - 1] == '/' ? '' : '/');
 
 	var packageName = 'package.json';
 	// Read activities directory
 
-	fs.readdir(sugarizerPath, function(err, files) {
+	fs.readdir(sugarizerPath, function (err, files) {
 		if (err) {
-			console.log("ERROR: can't find sugarizer path '"+sugarizerPath+"'");
+			console.log("ERROR: can't find sugarizer path '" + sugarizerPath + "'");
 			throw err;
 		}
-		files.forEach(function(file) {
+		files.forEach(function (file) {
 			if (file == packageName) {
 				// Get the file name
 				var filePath = sugarizerPath + path.sep + file;
-				fs.stat(filePath, function(err, stats) {
+				fs.stat(filePath, function (err, stats) {
 					if (err) {
-						console.log("ERROR: can't read '"+filePath+"'");
+						console.log("ERROR: can't read '" + filePath + "'");
 						throw err;
 					}
 					// If it's a directory, it's an activity
@@ -136,13 +136,13 @@ exports.init = function(settings, database) {
 };
 
 // Get shared journal
-exports.getShared = function() {
+exports.getShared = function () {
 	return shared;
 };
 
 // Create a new journal
-exports.createJournal = function(callback) {
-	db.collection(journalCollection, function(err, collection) {
+exports.createJournal = function (callback) {
+	db.collection(journalCollection, function (err, collection) {
 		collection.insertOne({
 			content: [],
 			shared: false
@@ -185,7 +185,7 @@ exports.createJournal = function(callback) {
  *      }
  *     ]
  **/
-exports.findAll = function(req, res) {
+exports.findAll = function (req, res) {
 
 	//set options
 	var options = {};
@@ -208,19 +208,19 @@ exports.findAll = function(req, res) {
 		users.getAllUsers({
 			role: 'student',
 			_id: {
-				$in: req.user.students.map(function(id) {
+				$in: req.user.students.map(function (id) {
 					return new mongo.ObjectID(id);
 				})
 			}
-		}, {}, function(users) {
+		}, {}, function (users) {
 			var journalList = [];
 			var map = new Map();
-			for (var i=0; i < users.length; i++) {
-				if(users[i].private_journal && !map.has(users[i].private_journal)){
+			for (var i = 0; i < users.length; i++) {
+				if (users[i].private_journal && !map.has(users[i].private_journal)) {
 					map.set(users[i].private_journal, true);
 					journalList.push(users[i].private_journal);
 				}
-				if(users[i].shared_journal && !map.has(users[i].shared_journal)){
+				if (users[i].shared_journal && !map.has(users[i].shared_journal)) {
 					map.set(users[i].shared_journal, true);
 					journalList.push(users[i].shared_journal);
 				}
@@ -228,14 +228,14 @@ exports.findAll = function(req, res) {
 			options['_id'] = {
 				$in: journalList
 			};
-			db.collection(journalCollection, function(err, collection) {
-				collection.find(options).toArray(function(err, items) {
+			db.collection(journalCollection, function (err, collection) {
+				collection.find(options).toArray(function (err, items) {
 
 					//count
-					for (var i=0; i<items.length; i++) {
+					for (var i = 0; i < items.length; i++) {
 						if (items[i].shared) {
 							items[i].count = 0;
-							for (var j=0; j<items[i].content.length; j++) {
+							for (var j = 0; j < items[i].content.length; j++) {
 								if (items[i].content[j] && items[i].content[j].metadata && items[i].content[j].metadata.user_id && req.user.students.includes(items[i].content[j].metadata.user_id)) {
 									items[i].count++;
 								}
@@ -255,8 +255,8 @@ exports.findAll = function(req, res) {
 		});
 	} else {
 		//get data
-		db.collection(journalCollection, function(err, collection) {
-			collection.find(options).toArray(function(err, items) {
+		db.collection(journalCollection, function (err, collection) {
+			collection.find(options).toArray(function (err, items) {
 
 				//count
 				for (var i = 0; i < items.length; i++) {
@@ -274,8 +274,8 @@ exports.findAll = function(req, res) {
 //- REST interface
 
 // Add a new journal
-exports.addJournal = function(req, res) {
-	exports.createJournal(function(err, result) {
+exports.addJournal = function (req, res) {
+	exports.createJournal(function (err, result) {
 		if (err) {
 			res.status(500).send({
 				'error': 'An error has occurred',
@@ -380,7 +380,7 @@ exports.addJournal = function(req, res) {
  *     "version": 1.2.0-alpha
  *    }
  **/
-exports.findJournalContent = function(req, res) {
+exports.findJournalContent = function (req, res) {
 
 	//validate journal  id
 	if (!mongo.ObjectID.isValid(req.params.jid)) {
@@ -395,9 +395,9 @@ exports.findJournalContent = function(req, res) {
 	var options = getOptions(req);
 
 	//get data
-	db.collection(journalCollection, function(err, collection) {
-		collection.aggregate(options, function(err, cursor) {
-			cursor.toArray(function(err, items) {
+	db.collection(journalCollection, function (err, collection) {
+		collection.aggregate(options, function (err, cursor) {
+			cursor.toArray(function (err, items) {
 
 				//check for errors
 				if (err) {
@@ -418,17 +418,17 @@ exports.findJournalContent = function(req, res) {
 
 				var reqCount = 0, resCount = 0;
 
-				for (var i=0; i<items.length; i++) {
+				for (var i = 0; i < items.length; i++) {
 					if (items[i] && items[i].text && mongo.ObjectID.isValid(items[i].text)) {
 						reqCount++;
-						db.collection(CHUNKS_COLL, function(err, collection) {
+						db.collection(CHUNKS_COLL, function (err, collection) {
 							var ind = i;
-							collection.find({ files_id: items[i].text }).toArray(function(error, docs) {
+							collection.find({ files_id: items[i].text }).toArray(function (error, docs) {
 								items[ind].text = "";
 								if (error || (docs && docs.length == 0)) {
 									resCount++;
 								} else {
-									for (var k=0; k<docs.length; k++) {
+									for (var k = 0; k < docs.length; k++) {
 										items[ind].text += docs[k].data ? docs[k].data.toString("utf8") : "";
 										if (k == docs.length - 1) {
 											resCount++;
@@ -437,7 +437,7 @@ exports.findJournalContent = function(req, res) {
 													var textObject = JSON.parse(items[ind].text);
 													items[ind].text = textObject.encoding ? _toUTF16(textObject.text) : textObject.text;
 												} catch (e) {
-													return res.status(500).send({'error': 'Invalid text value', 'code': 12});
+													return res.status(500).send({ 'error': 'Invalid text value', 'code': 12 });
 												}
 												return returnResponse();
 											}
@@ -449,7 +449,7 @@ exports.findJournalContent = function(req, res) {
 										var textObject = JSON.parse(items[ind].text);
 										items[ind].text = textObject.text;
 									} catch (e) {
-										return res.status(500).send({'error': 'Invalid text value', 'code': 12});
+										return res.status(500).send({ 'error': 'Invalid text value', 'code': 12 });
 									}
 									return returnResponse();
 								}
@@ -457,7 +457,7 @@ exports.findJournalContent = function(req, res) {
 									var textObject = JSON.parse(items[ind].text);
 									items[ind].text = textObject.text;
 								} catch (e) {
-									return res.status(500).send({'error': 'Invalid text value', 'code': 12});
+									return res.status(500).send({ 'error': 'Invalid text value', 'code': 12 });
 								}
 							});
 						});
@@ -679,7 +679,7 @@ function getOptions(req) {
  *       "objectId": "4837240f-bf78-4d22-b936-3db96880f0a0"
  *    }
  **/
-exports.addEntryInJournal = function(req, res) {
+exports.addEntryInJournal = function (req, res) {
 	// Get parameter
 	if (!mongo.ObjectID.isValid(req.params.jid) || !req.body.journal) {
 		res.status(401).send({
@@ -697,8 +697,8 @@ exports.addEntryInJournal = function(req, res) {
 		'_id': new mongo.ObjectID(jid),
 		'content.objectId': journal.objectId
 	};
-	db.collection(journalCollection, function(err, collection) {
-		collection.findOne(filter, function(err, item) {
+	db.collection(journalCollection, function (err, collection) {
+		collection.findOne(filter, function (err, item) {
 			if (item == null) {
 				// Add a new entry
 				if (journal.text) {
@@ -744,12 +744,12 @@ function updateJournal(req, res, journal, text) {
 			content: journal
 		}
 	};
-	db.collection(journalCollection, function(err, collection) {
+	db.collection(journalCollection, function (err, collection) {
 		collection.updateOne({
 			'_id': new mongo.ObjectID(jid)
 		}, newcontent, {
 			safe: true
-		}, function(err, result) {
+		}, function (err, result) {
 			if (err) {
 				return res.status(500).send({
 					'error': 'An error has occurred',
@@ -824,7 +824,7 @@ function updateJournal(req, res, journal, text) {
  *       "objectId": "4837240f-bf78-4d22-b936-3db96880f0a0"
  *    }
  **/
-exports.updateEntryInJournal = function(req, res) {
+exports.updateEntryInJournal = function (req, res) {
 	if (!mongo.ObjectID.isValid(req.params.jid) || !req.query.oid) {
 		res.status(401).send({
 			'error': 'Invalid journal or object id',
@@ -843,13 +843,13 @@ exports.updateEntryInJournal = function(req, res) {
 			}
 		}
 	};
-	db.collection(journalCollection, function(err, collection) {
+	db.collection(journalCollection, function (err, collection) {
 		collection.findOneAndUpdate({
 			'_id': new mongo.ObjectID(jid)
 		}, deletecontent, {
 			safe: true,
 			returnNewDocument: false
-		}, function(err, doc) {
+		}, function (err, doc) {
 			if (err) {
 				return res.status(500).send({
 					'error': 'An error has occurred',
@@ -857,14 +857,14 @@ exports.updateEntryInJournal = function(req, res) {
 				});
 			} else if (doc && doc.value && typeof doc.value.content == 'object') {
 				var cont = [];
-				for (var i=0; i<doc.value.content.length; i++) {
+				for (var i = 0; i < doc.value.content.length; i++) {
 					if (doc.value.content[i] && doc.value.content[i].objectId == oid && mongo.ObjectID.isValid(doc.value.content[i].text)) {
 						cont.push(doc.value.content[i].text);
 					}
 				}
 				var deleteCount = 0;
-				for (var i=0; i < cont.length; i++) {
-					gridfsbucket.delete(cont[i], function() {
+				for (var i = 0; i < cont.length; i++) {
+					gridfsbucket.delete(cont[i], function () {
 						deleteCount++;
 						if (deleteCount == cont.length) exports.addEntryInJournal(req, res);
 					});
@@ -911,7 +911,7 @@ exports.updateEntryInJournal = function(req, res) {
  *      "objectId": "d3c7cfc2-8a02-4ce8-9306-073814a2024e"
  *     }
  **/
-exports.removeInJournal = function(req, res) {
+exports.removeInJournal = function (req, res) {
 	if (!mongo.ObjectID.isValid(req.params.jid)) {
 		res.status(401).send({
 			'error': 'Invalid journal id',
@@ -925,10 +925,10 @@ exports.removeInJournal = function(req, res) {
 
 	//whether or partial is deleted!
 	if (type == 'full') {
-		db.collection(journalCollection, function(err, collection) {
+		db.collection(journalCollection, function (err, collection) {
 			collection.findOneAndDelete({
 				'_id': new mongo.ObjectID(jid)
-			}, function(err, result) {
+			}, function (err, result) {
 				if (err) {
 					return res.status(500).send({
 						'error': 'An error has occurred',
@@ -938,14 +938,14 @@ exports.removeInJournal = function(req, res) {
 					if (result && result.value && result.ok) {
 						if (typeof result.value.content == 'object') {
 							var cont = [];
-							for (var i=0; i<result.value.content.length; i++) {
+							for (var i = 0; i < result.value.content.length; i++) {
 								if (result.value.content[i] && mongo.ObjectID.isValid(result.value.content[i].text)) {
 									cont.push(result.value.content[i].text);
 								}
 							}
 							var deleteCount = 0;
-							for (var i=0; i < cont.length; i++) {
-								gridfsbucket.delete(cont[i], function() {
+							for (var i = 0; i < cont.length; i++) {
+								gridfsbucket.delete(cont[i], function () {
 									deleteCount++;
 									if (deleteCount == cont.length) return res.send({
 										'jid': jid
@@ -971,7 +971,7 @@ exports.removeInJournal = function(req, res) {
 		});
 	} else {
 		if (oid) {
-			db.collection(journalCollection, function(err, collection) {
+			db.collection(journalCollection, function (err, collection) {
 				collection.findOneAndUpdate({
 					'_id': new mongo.ObjectID(jid)
 				}, {
@@ -982,7 +982,7 @@ exports.removeInJournal = function(req, res) {
 					}
 				}, {
 					safe: true
-				}, function(err, result) {
+				}, function (err, result) {
 					if (err) {
 						return res.status(500).send({
 							'error': 'An error has occurred',
@@ -992,14 +992,14 @@ exports.removeInJournal = function(req, res) {
 						if (result && result.value && result.ok) {
 							if (typeof result.value.content == 'object') {
 								var cont = [];
-								for (var i=0; i<result.value.content.length; i++) {
+								for (var i = 0; i < result.value.content.length; i++) {
 									if (result.value.content[i] && result.value.content[i].objectId == oid && mongo.ObjectID.isValid(result.value.content[i].text)) {
 										cont.push(result.value.content[i].text);
 									}
 								}
 								var deleteCount = 0;
-								for (var i=0; i < cont.length; i++) {
-									gridfsbucket.delete(cont[i], function() {
+								for (var i = 0; i < cont.length; i++) {
+									gridfsbucket.delete(cont[i], function () {
 										deleteCount++;
 										if (deleteCount == cont.length) return res.send({
 											'objectId': oid
@@ -1133,7 +1133,7 @@ exports.removeInJournal = function(req, res) {
  *      }
  *     ]
  **/
-exports.findAllEntries = function(req, res) {
+exports.findAllEntries = function (req, res) {
 	// set options
 	var options = {};
 	if (req.query.type == 'shared') {
@@ -1147,19 +1147,19 @@ exports.findAllEntries = function(req, res) {
 		users.getAllUsers({
 			role: 'student',
 			_id: {
-				$in: req.user.students.map(function(id) {
+				$in: req.user.students.map(function (id) {
 					return new mongo.ObjectID(id);
 				})
 			}
-		}, {}, function(users) {
+		}, {}, function (users) {
 			var journalList = [];
 			var map = new Map();
-			for (var i=0; i < users.length; i++) {
-				if(users[i].private_journal && !map.has(users[i].private_journal)){
+			for (var i = 0; i < users.length; i++) {
+				if (users[i].private_journal && !map.has(users[i].private_journal)) {
 					map.set(users[i].private_journal, true);
 					journalList.push(users[i].private_journal);
 				}
-				if(users[i].shared_journal && !map.has(users[i].shared_journal)){
+				if (users[i].shared_journal && !map.has(users[i].shared_journal)) {
 					map.set(users[i].shared_journal, true);
 					journalList.push(users[i].shared_journal);
 				}
@@ -1167,8 +1167,8 @@ exports.findAllEntries = function(req, res) {
 			options['_id'] = {
 				$in: journalList
 			};
-			db.collection(journalCollection, function(err, collection) {
-				collection.find(options).toArray(function(err, items) {
+			db.collection(journalCollection, function (err, collection) {
+				collection.find(options).toArray(function (err, items) {
 					//check for errors
 					if (err) {
 						return res.status(500).send({
@@ -1177,10 +1177,10 @@ exports.findAllEntries = function(req, res) {
 						});
 					}
 					//count
-					for (var i=0; i<items.length; i++) {
+					for (var i = 0; i < items.length; i++) {
 						if (items[i].shared && typeof items[i].content == "object") {
 							var content = [];
-							for (var j=0; j<items[i].content.length; j++) {
+							for (var j = 0; j < items[i].content.length; j++) {
 								if (items[i].content[j] && items[i].content[j].metadata && items[i].content[j].metadata.user_id && req.user.students.includes(items[i].content[j].metadata.user_id)) {
 									delete items[i].content[j].text;
 									content.push(items[i].content[j]);
@@ -1195,8 +1195,8 @@ exports.findAllEntries = function(req, res) {
 		});
 	} else {
 		//get data
-		db.collection(journalCollection, function(err, collection) {
-			collection.find(options).toArray(function(err, items) {
+		db.collection(journalCollection, function (err, collection) {
+			collection.find(options).toArray(function (err, items) {
 				//check for errors
 				if (err) {
 					return res.status(500).send({
@@ -1206,9 +1206,9 @@ exports.findAllEntries = function(req, res) {
 				}
 
 				// Delete the text field from the data
-				for (var i=0; i<items.length; i++) {
+				for (var i = 0; i < items.length; i++) {
 					if (typeof items[i].content == "object") {
-						for (var j=0; j<items[i].content.length; j++) {
+						for (var j = 0; j < items[i].content.length; j++) {
 							if (items[i].content[j] && items[i].content[j].text) {
 								delete items[i].content[j].text;
 							}
