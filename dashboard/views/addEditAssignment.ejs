@@ -1,0 +1,218 @@
+<%- include includes/header %>
+  <div class="wrapper">
+  	<%- include includes/sidebar %>
+    	<div class="main-panel">
+    	<%- include includes/navbar %>
+    		<div class="content">
+    			<div class="container-fluid">
+            <div class="col-md-8 col-lg-8 col-sm-12">
+              <div class="card">
+                <div class="card-content">
+                    <%- include ./includes/flash-errors %>
+                    <form id="assignment-add-edit-form" method="post" <% if(typeof assignment == 'object'){ %> action="<%= assignment._id %>" <% } %>>
+                       <div class="row" id="editAssignment-name">
+                            <div class="col-md-12">
+                                <div class="form-group form-black label-floating">
+                                    <label class="control-label" data-l10n-id="name"></label>
+                                    <input class="form-control" name="name" value="<% if(typeof assignment == 'object'){ %><%= assignment.name %><% } %>" type="text">
+                                    <span class="material-input"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <% if(mode =="edit"){%>
+                          
+                          <div class="col-md-6">
+                            <!-- add xoColor icon-->
+                                <div class="xo-icon" data-stroke="<%= assignment.assignedWork.metadata.buddy_color.stroke %>" data-fill="<%= assignment.assignedWork.metadata.buddy_color.fill %>"  data-icon="activity-icon">
+                                </div>
+                         
+                                <div class="form-group form-black label-floating">
+                                    <label class="control-label" data-l10n-id="assignedWork"></label>
+                                   
+                                    <select class="form-control" disabled name="Assign work"> 
+                                         <option selected  value='<%= assignment.assignedWork.objectId %>'><%= assignment.assignedWork.metadata.title %></option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                              <div class="form-group form-black label-floating">
+                                <a data-l10n-id="deleteAssignment" title="Delete Assignment"  class="material-icons text-muted">delete_forever</i></a>
+                              </div>
+                              
+                            </div>
+                            <%}%>
+                        <% if(mode =="add"){%>
+                             <div class="col-md-6">
+                                <div class="form-group form-black label-floating">
+                                    <label class="control-label" data-l10n-id="assignedWork"></label>
+                                    <select class="form-control" name="assignedWork"  id="select-activity-select2"> 
+                                        <% for(var i=0; i < entries.length; i++) {%> 
+                                        <option selected data-icon="activity-icon" data-stroke="<%= entries[i].metadata.buddy_color.stroke %>" data-fill="<%= entries[i].metadata.buddy_color.fill %>" value='<%= entries[i].objectId %>'><%= entries[i].metadata.title %></option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                              <div class="form-group form-black label-floating">
+                                <a data-l10n-id="deleteAssignment" title="Delete Assignment"  class="material-icons text-muted">delete_forever</i></a>
+                              </div>
+                              
+                            </div>
+                            <%}%>
+
+                            <div class="row" id="editAssignment-instructions">
+                              <div class="col-md-12">
+                                <div class="form-group form-black label-floating">
+                                  <label class="control-label" data-l10n-id="instructions"></label>
+                                  <textarea class="form-control" name="instructions" value="<% if(typeof assignment == 'object'){ %><%= assignment.instructions %><% } %>" type="text"><% if(typeof assignment == 'object'){ %><%= assignment.instructions %><% } %></textarea>
+                                  <span class="material-input"></span>
+                                </div>
+                                
+                              </div>
+                              
+                            </div>
+                            <div class="row" >
+                              <div class="col-md-3">
+                                 <div class="form-group form-black label-floating">
+                                   <label data-l10n-id="dueDate"></label>
+                                  </div>
+                                </div>
+                               
+                                <div class="col-md-3">
+                                   <div class="form-group form-black label-floating">
+                                    <input id="datetimepicker1"  name="dueDate" class="form-control" value="<% if(typeof assignment == 'object'){ %><%= assignment.dueDate %><% } %>" type="text" />
+                                       <span class="material-input"></span>
+                                     </div>
+                                </div>
+                                <script>
+                                  $(document).ready(function() {
+                                    $('#datetimepicker1').datetimepicker();
+                                  });
+                                
+                                </script>
+                                
+                               
+                                <div class="col-md-3">
+                                   <div class="form-group form-black label-floating">
+                                     <input  class="form-control" type="time" placeholder="Date" >
+                                    </div>
+                                </div>
+                                  <div class="col-md-3">
+                                   
+                                    <div class="form-group form-black label-floating">
+                                      <label data-l10n-id="lateTurnIn"></label>
+                                      <input type="checkbox" class="btn-check" name="lateTurnIn"  id="checkbox-outlined"  autocomplete="off" >
+                                    </div>
+                                    <script>
+                                      $(document).ready(function() {
+                                        //onchange of checkbox
+                                        $('#checkbox-outlined').change(function() {
+                                          if($(this).is(":checked")) {
+                                            $('#checkbox-outlined').val(true);
+                                          } else {
+                                            $('#checkbox-outlined').val(false);
+                                          }
+                                        
+                                        });
+                                      });
+                                    </script>
+                                </div>
+                            </div>
+                        <% if(typeof classrooms == 'object') { %>
+                          <div class="row" id='searchable-select-classrooms-row'>
+                              <div class="col-md-12">
+                                  <div class="form-group form-black" style="margin-top: -15px;" >
+                                      <label class="control-label" data-l10n-id="classrooms"></label>
+                                      <select id='searchable-select-classrooms' multiple='multiple' name="classrooms" class="form-control">
+                                        <% for(var i=0; i < classrooms.length; i++) { %>
+                                            <% if(mode == "edit"){ %> <option disabled <% if(classrooms[i]) { %> selected <% } %> value='<%= classrooms[i]._id %>'><%= "class_" + classrooms[i]._id %></option> <% } %>  
+                                            <% if(mode == "add"){ %> <option  value='<%= classrooms[i]._id %>'><%= "class_" + classrooms[i]._id %></option> <% } %>  
+                                        <% } %>
+                                    </select>
+                                    <% for(var i=0; i < classrooms.length; i++) { %>
+                                        <div id='<%= "class_" + classrooms[i]._id %>' style="display:none;">
+                                            <div style="height: 35px;">
+                                                <div class="color <%= classrooms[i]._id + '_icon' %>">
+                                                    <div class="xo-icon"></div>
+                                                </div>
+                                                <script>
+                                                    new icon().loadByClass("/public/img/classroom-icon.svg", (<%- JSON.stringify(classrooms[i].color) %>), "<%= classrooms[i]._id + '_icon' %>");
+                                                </script>
+                                                <div style="padding: 4px 0px 0px 40px;"><%= classrooms[i].name %></div>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                    <script type="text/javascript">
+                                        // run multiSelect
+                                        $('#searchable-select-classrooms').multiSelect({
+                                            selectableHeader: "<input type='text' class='form-control' data-l10n-id='doe' autocomplete='off' placeholder='search classroom'>",
+                                            selectionHeader: "<input type='text' class='form-control' data-l10n-id='doe' autocomplete='off' placeholder='search classroom'>",
+                                            afterInit: function(ms){
+                                                var that = this,
+                                                    $selectableSearch = that.$selectableUl.prev(),
+                                                    $selectionSearch = that.$selectionUl.prev(),
+                                                    selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
+                                                    selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+
+                                                that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+                                                    .on('keydown', function(e){
+                                                    if (e.which === 40){
+                                                        that.$selectableUl.focus();
+                                                        return false;
+                                                    }
+                                                });
+
+                                                that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+                                                    .on('keydown', function(e){
+                                                    if (e.which == 40){
+                                                        that.$selectionUl.focus();
+                                                        return false;
+                                                    }
+                                                });
+                                            },
+                                            afterSelect: function(){
+                                                this.qs1.cache();
+                                                this.qs2.cache();
+                                            },
+                                            afterDeselect: function(){
+                                                this.qs1.cache();
+                                                this.qs2.cache();
+                                            }
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                      <% } %>      
+                      <% if(typeof classroom == 'object' && classroom.timestamp) { %>
+                        <div class="row" id="editClassroom-lastupdated">
+                            <div class="col-md-12">
+                                <div class="form-group form-black label-floating">
+                                    <label class="control-label" data-l10n-id="lastUpdated"></label>
+                                    <input class="form-control" readonly value="<%= moment(classroom.timestamp).calendar() %>" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                        <button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
+                        <a class="btn pull-right btn-round" href="/dashboard/assignments" data-l10n-id="cancel"></a>
+                        <div class="clearfix"></div>
+                    </form>
+                  
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<%- include includes/footer %>
+
+<script>
+    var currTour = sugarizerTour("editClassroom", <% if (account.user && account.user.role=="admin") { %> "admin" <% } else { %> "teacher" <% } %>, "<%= mode %>");
+    if (!currTour.isFinished()) currTour.start();
+</script>
+ 

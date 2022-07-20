@@ -21,6 +21,7 @@
 		"express-validator": "5.3.1",
 		"http": "0.0.x",
 		"ini": "~1.3.x",
+		"jquery-datetimepicker": "^2.5.21",
 		"jwt-simple": "~0.5.1",
 		"moment": "^2.29.3",
 		"mongodb": "~3.5.7",
@@ -49,7 +50,7 @@
 	"scripts": {
 		"test": "mocha api/test/ --timeout 20000",
 		"docs": "apidoc -i api/controller -i dashboard/helper -o docs/www/",
-		"start": "node sugarizer.js",
+		"start": "nodemon sugarizer.js",
 		"start:watch": "nodemon sugarizer.js",
 		"seed:users-csv": "node scripts/seed_users.js",
 		"lint": "eslint .; exit 0"

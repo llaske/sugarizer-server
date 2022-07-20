@@ -15,7 +15,7 @@ var authController = require('./controller/auth'),
 	assignmentsController = require('./controller/assignments'),
 	statsController = require('./controller/stats');
 
-module.exports = function(app, ini) {
+module.exports = function (app, ini) {
 
 	// init routes using settings
 	authController.init(ini);
@@ -68,18 +68,24 @@ module.exports = function(app, ini) {
 
 	// classrooms routes
 	app.get('/dashboard/classrooms', authController.validateSession, classroomsController.index);
-	app.get('/dashboard/classrooms/add', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
-	app.post('/dashboard/classrooms/add', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
+	app.get('/dashboard/classrooms/add/', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
+	app.post('/dashboard/classrooms/add/', authController.validateSession, authController.checkRole(classroomsController.addClassroom));
 	app.get('/dashboard/classrooms/edit/:classid', authController.validateSession, authController.checkRole(classroomsController.editClassroom));
 	app.post('/dashboard/classrooms/edit/:classid', authController.validateSession, authController.checkRole(classroomsController.editClassroom));
 	app.get('/dashboard/classrooms/delete/:classid', authController.validateSession, authController.checkRole(classroomsController.deleteClassroom));
 
 	//assignments routes
 	app.get('/dashboard/assignments', authController.validateSession, assignmentsController.index);
+	app.get('/dashboard/assignments/deliveries/:assignmentId', authController.validateSession, authController.checkRole(assignmentsController.getAllDeliveries));
+	app.get('/dashboard/assignments/add/', authController.validateSession, assignmentsController.addAssignment);
+	app.post('/dashboard/assignments/add/', authController.validateSession, assignmentsController.addAssignment);
+	app.get('/dashboard/assignments/delete/:assignmentId', authController.validateSession, authController.checkRole(assignmentsController.deleteAssignment));
+	app.get('/dashboard/assignments/edit/:assignmentId', authController.validateSession, authController.checkRole(assignmentsController.editAssignment));
+	app.post('/dashboard/assignments/edit/:assignmentId', authController.validateSession, authController.checkRole(assignmentsController.editAssignment));
 
 
 	// If no route is matched by now, it must be a 404
-	app.get('/dashboard/*', function(req, res) {
+	app.get('/dashboard/*', function (req, res) {
 		res.render('404', {
 			"message": "Route Not Found!",
 			"url": req.protocol + '://' + req.get('host') + req.originalUrl

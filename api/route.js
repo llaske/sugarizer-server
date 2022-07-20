@@ -74,10 +74,13 @@ module.exports = function (app, ini, db) {
 
 	//Register Assignments APIs
 	app.get("/api/v1/assignments", auth.allowedRoles([Admin, Teacher]), assignments.findAll);
-	app.post("/api/v1/assignments", auth.allowedRoles([Admin, Teacher]), assignments.addAssignment);
-	app.get("/api/v1/assignments/:assingid", auth.allowedRoles([Admin, Teacher]), assignments.launchAssignment);
-	app.put("/api/v1/assignments/:assingid", auth.allowedRoles([Admin, Teacher]), assignments.updateAssignment);
-	app.delete("/api/v1/assignments/:assingid", auth.allowedRoles([Admin, Teacher]), assignments.removeAssignment);
+	app.get("/api/v1/assignments/deliveries/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.findAllDeliveries);
+	app.get("/api/v1/assignments/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.findById);
+	app.post("/api/v1/assignments/", auth.allowedRoles([Admin, Teacher]), assignments.addAssignment);
+	app.get("/api/v1/assignments/launch/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.launchAssignment);
+	app.put("/api/v1/assignments/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.updateAssignment);
+	app.delete("/api/v1/assignments/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.removeAssignment);
+	app.put("/api/v1/assignments/deliveries/comment/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.updateComment);
 	// Register classroom API
 	app.get("/api/v1/charts", auth.allowedRoles([Admin]), charts.findAll);
 	app.get("/api/v1/charts/:chartid", auth.allowedRoles([Admin]), charts.findById);

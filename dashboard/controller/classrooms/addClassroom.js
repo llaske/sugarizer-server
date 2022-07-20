@@ -42,12 +42,12 @@ module.exports = function addClassroom(req, res) {
 
 						// send to classrooms page
 						req.flash('success', {
-							msg: common.l10n.get('ClassroomCreated', {name: req.body.name})
+							msg: common.l10n.get('ClassroomCreated', { name: req.body.name })
 						});
 						return res.redirect('/dashboard/classrooms/');
 					} else {
 						req.flash('errors', {
-							msg: common.l10n.get('ErrorCode'+response.body.code)
+							msg: common.l10n.get('ErrorCode' + response.body.code)
 						});
 						return res.redirect('/dashboard/classrooms/add');
 					}

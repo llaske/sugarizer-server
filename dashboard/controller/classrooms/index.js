@@ -9,16 +9,16 @@ var superagent = require('superagent'),
 
 // init settings
 var ini = null;
-exports.init = function(settings) {
+exports.init = function (settings) {
 	ini = settings;
 };
 
-exports.ini = function() {
+exports.ini = function () {
 	return ini;
 };
 
 // main landing page
-exports.index = function(req, res) {
+exports.index = function (req, res) {
 
 	// reinit l10n and momemt with locale
 	common.reinitLocale(req);
@@ -38,10 +38,9 @@ exports.index = function(req, res) {
 	if (req.query.offset != '') {
 		query['offset'] = req.query.offset;
 	}
-	if(req.query.sort != ''){
+	if (req.query.sort != '') {
 		query['sort'] = req.query.sort;
 	}
-	console.log(ini.information)
 	superagent
 		.get(common.getAPIUrl(req) + 'api/v1/classrooms')
 		.set(common.getHeaders(req))
@@ -59,12 +58,12 @@ exports.index = function(req, res) {
 					account: req.session.user,
 					server: ini.information
 				});
-	
+
 			} else {
 				req.flash('errors', {
-					msg: common.l10n.get('ErrorCode'+response.body.code)
+					msg: common.l10n.get('ErrorCode' + response.body.code)
 				});
-			}	
+			}
 		});
 };
 
