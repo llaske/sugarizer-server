@@ -47,7 +47,7 @@
 		"nodemon": "*"
 	},
 	"scripts": {
-		"test": "mocha api/test/ --timeout 20000",
+		"test": "mocha api/test/ --timeout 20000 --exit",
 		"docs": "apidoc -i api/controller -i dashboard/helper -o docs/www/",
 		"start": "node sugarizer.js",
 		"start:watch": "nodemon sugarizer.js",
