@@ -88,7 +88,7 @@
                                           <td><%= moment(data.deliveries[i].timestamp).calendar() %></td>
                                           <td>
                                              
-                                              <% if (account.user && account.user.role=="admin") { %>
+                                              <% if (account.user && account.user.role=="admin" || account.user.role=="teacher") { %>
                                                 <a id="assignment-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= data.deliveries[i]._id %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=launch')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
                                               <a data-l10n-id="editAssignment" title="Edit Assignment" href="/dashboard/assignments/edit/<%= data.deliveries[i]._id %>"><i id="assignment-edit-class" class="material-icons text-muted">comment</i></a>
                                              <a id="journal-activity-download" href="javascript:download_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=download')" data-l10n-id="download" title="Download"><i class="material-icons text-muted">cloud_download</i></a>

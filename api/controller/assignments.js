@@ -36,6 +36,21 @@ exports.addAssignment = function (req, res) {
     assignment.journal_id = req.user.private_journal;
     assignment.isAssigned = false;
 
+    if (!assignment.lateTurnIn) {
+        assignment.lateTurnIn = false;
+    } else {
+        assignment.lateTurnIn = true;
+    }
+    //join dueDate and time
+    if (assignment.dueDate && assignment.time) {
+        assignment.dueDate = assignment.dueDate + " " + assignment.time;
+    }
+
+    //delete assignment.time
+    if (assignment.time) {
+        delete assignment.time;
+    }
+
     if (typeof assignment == 'boolean' || assignment.name == "" || assignment.classrooms == "" || assignment.dueDate == "" || assignment.instructions == "") {
         return res.status(400).send({
             error: "Please fill all the fields",
@@ -430,7 +445,7 @@ exports.launchAssignment = function (req, res) {
                                     try {
                                         updateEntries(entry[0].content[0], privateJournalIds).then(function (result) {
                                             updateStatus(req, res, "Assigned", entry[0].content[0].objectId);
-                                            res.send(result);
+                                            res.status(200).send(result);
 
                                         });
                                     }
@@ -562,6 +577,19 @@ exports.updateAssignment = function (req, res) {
     var assignment = JSON.parse(req.body.assignment);
     //add timestamp
     assignment.timestamp = +new Date();
+
+    //join dueDate and time
+    if (assignment.dueDate && assignment.time) {
+        assignment.dueDate = assignment.dueDate + " " + assignment.time;
+    }
+
+    //delete assignment.time
+    if (assignment.time) {
+        delete assignment.time;
+    }
+    // if (assignment.lateTurnIn == 'on') {
+    //     assignment.lateTurnIn = true;
+    // }
 
     //find assignment by id
     db.collection(assignmentCollection, function (err, collection) {

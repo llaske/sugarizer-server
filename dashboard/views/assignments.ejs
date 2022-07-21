@@ -95,11 +95,8 @@
                                         </td>
                                           <td><%= moment(data.assignments[i].timestamp).calendar() %></td>
                                           <td>
-                                              
-                                                  
-                                              
-                                          
                                             <% if (account.user && (account.user.role=="admin" || account.user.role == "teacher")) { %>
+                                            <a data-l10n-id="launchAssignment" title="Launch Assignment" href="/dashboard/assignments/launch/<%= data.assignments[i]._id %>" "> <i id="assignments-delete-class" class="material-icons text-muted">add</i></a>
                                             <a id="assignment-deliveries" href="/dashboard/assignments/deliveries/<%= data.assignments[i]._id %>" data-l10n-id="deliveries" title="deliveries"><i class="material-icons text-muted">close</i></a>
                                             <a id="assignment-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= data.assignments[i].assignedWork %>?oid=<%= data.assignments[i].assignedWork.objectId %>&source=journal&uid=<%= data.assignments[i].assignedWork.metadata.user_id %>&aid=<%= data.assignments[i].assignedWork.metadata.activity_id %>&mode=launch')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
                                               <a data-l10n-id="editAssignment" title="Edit Assignment" href="/dashboard/assignments/edit/<%= data.assignments[i]._id %>"><i id="assignment-edit-class" class="material-icons text-muted">edit</i></a>

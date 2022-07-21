@@ -49,7 +49,14 @@
                                     <label class="control-label" data-l10n-id="assignedWork"></label>
                                     <select class="form-control" name="assignedWork"  id="select-activity-select2"> 
                                         <% for(var i=0; i < entries.length; i++) {%> 
-                                        <option selected data-icon="activity-icon" data-stroke="<%= entries[i].metadata.buddy_color.stroke %>" data-fill="<%= entries[i].metadata.buddy_color.fill %>" value='<%= entries[i].objectId %>'><%= entries[i].metadata.title %></option>
+                                        <option selected  class="xo-icon" data-icon="activity-icon" data-stroke="<%= entries[i].metadata.buddy_color.stroke %>" data-fill="<%= entries[i].metadata.buddy_color.fill %>" value='<%= entries[i].objectId %>'>
+                                          <!-- xo icon  -->
+                                          <div class="xo-icon" data-stroke="<%= entries[i].metadata.buddy_color.stroke %>" data-fill="<%= entries[i].metadata.buddy_color.fill %>"  data-icon="activity-icon">
+
+                                          </div>
+                                          <%= entries[i].metadata.title %>
+                                        </option>
+                                       
                                         <% } %>
                                     </select>
                                 </div>
@@ -83,13 +90,16 @@
                                
                                 <div class="col-md-3">
                                    <div class="form-group form-black label-floating">
-                                    <input id="datetimepicker1"  name="dueDate" class="form-control" value="<% if(typeof assignment == 'object'){ %><%= assignment.dueDate %><% } %>" type="text" />
+                                    <input id="datetimepicker1"   name="dueDate" placeholder="Date" class="form-control" value="<% if(typeof assignment == 'object'){ %><%= assignment.dueDate.split(" ")[0] %><% } %>" type="text" autocomplete="off" />
                                        <span class="material-input"></span>
                                      </div>
                                 </div>
                                 <script>
                                   $(document).ready(function() {
-                                    $('#datetimepicker1').datetimepicker();
+                                    $('#datetimepicker1').datetimepicker({
+                                      timepicker : false ,
+                                      format:'d.m.Y' 
+                                    });
                                   });
                                 
                                 </script>
@@ -97,28 +107,27 @@
                                
                                 <div class="col-md-3">
                                    <div class="form-group form-black label-floating">
-                                     <input  class="form-control" type="time" placeholder="Date" >
+                                 
+                                     <input   class="form-control" id="timepicker" name="time"  value="<% if(typeof assignment == 'object'){ %><%= assignment.dueDate.split(" ")[1] %><% } %>" type="text" placeholder="Time" autocomplete="off" >
+                                      <span class="material-input"></span>
                                     </div>
+                                     <script>
+                                    $(document).ready(function() {
+                                      $('#timepicker').datetimepicker({
+                                        datepicker:false,
+                                        format:'H:i'
+                                      });
+                                    });
+                                
+                                </script>
                                 </div>
                                   <div class="col-md-3">
-                                   
                                     <div class="form-group form-black label-floating">
                                       <label data-l10n-id="lateTurnIn"></label>
-                                      <input type="checkbox" class="btn-check" name="lateTurnIn"  id="checkbox-outlined"  autocomplete="off" >
+                                      <input type="checkbox" class="btn-check" name="lateTurnIn"  id="checkbox-outlined" <% if(typeof assignment == 'object'){ %><% if(assignment.lateTurnIn){ %> checked <% } %><% } %> autocomplete="off" >
+                                       <span class="material-input"></span>
                                     </div>
-                                    <script>
-                                      $(document).ready(function() {
-                                        //onchange of checkbox
-                                        $('#checkbox-outlined').change(function() {
-                                          if($(this).is(":checked")) {
-                                            $('#checkbox-outlined').val(true);
-                                          } else {
-                                            $('#checkbox-outlined').val(false);
-                                          }
-                                        
-                                        });
-                                      });
-                                    </script>
+                                    
                                 </div>
                             </div>
                         <% if(typeof classrooms == 'object') { %>

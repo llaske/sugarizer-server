@@ -5,7 +5,8 @@ var superagent = require('superagent'),
     addAssignment = require('./addAssignment'),
     deleteAssignment = require('./deleteAssignment'),
     editAssignment = require('./editAssignment'),
-    getAllDeliveries = require('./getAllDeliveries');
+    getAllDeliveries = require('./getAllDeliveries'),
+    launchAssignment = require('./launchAssignment');
 
 
 var _util = require('../journal/util'),
@@ -74,3 +75,4 @@ exports.addAssignment = addAssignment;
 exports.deleteAssignment = deleteAssignment;
 exports.editAssignment = editAssignment;
 exports.getAllDeliveries = getAllDeliveries;
+exports.launchAssignment = launchAssignment;
