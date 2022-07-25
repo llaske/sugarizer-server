@@ -3,11 +3,12 @@ var os = require('os');
 var ini = null;
 var language = '*';
 var moment = require('moment');
+var version = '';
 
 exports.init = function(settings) {
 	ini = settings;
 	var info = JSON.parse(fs.readFileSync("./package.json", 'utf-8'));
-	ini.version = info.version;
+	version = info.version;
 };
 
 // language features
@@ -146,7 +147,7 @@ exports.getAPIInfo = function(req, res) {
 		"web": ini.web.port,
 		"presence": ini.presence.port,
 		"secure": ini.security.https,
-		"version": ini.version,
+		"version": version,
 		"options": {
 			"min-password-size": ini.security.min_password_size,
 			"statistics": ini.statistics.active,
