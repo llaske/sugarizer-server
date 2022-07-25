@@ -24,9 +24,9 @@
                           
                           <div class="col-md-6">
                             <!-- add xoColor icon-->
-                                <div class="xo-icon" data-stroke="<%= assignment.assignedWork.metadata.buddy_color.stroke %>" data-fill="<%= assignment.assignedWork.metadata.buddy_color.fill %>"  data-icon="activity-icon">
-                                </div>
-                         
+                                <div class="color" id="<%= assignment.assignedWork.objectId %> " >
+                                 <div class="xo-icon"></div>
+                               </div>
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="assignedWork"></label>
                                    
@@ -44,25 +44,41 @@
                             </div>
                             <%}%>
                         <% if(mode =="add"){%>
-                             <div class="col-md-6">
+                          <div class="col-md-2">
+                             <div class="color" id="<%= entries[0].objectId %>" 12>
+                                 <div class="xo-icon"></div>
+                               </div>
+                          </div>
+                             <div class="col-md-7">
                                 <div class="form-group form-black label-floating">
                                     <label class="control-label" data-l10n-id="assignedWork"></label>
                                     <select class="form-control" name="assignedWork"  id="select-activity-select2"> 
-                                        <% for(var i=0; i < entries.length; i++) {%> 
-                                        <option selected  class="xo-icon" data-icon="activity-icon" data-stroke="<%= entries[i].metadata.buddy_color.stroke %>" data-fill="<%= entries[i].metadata.buddy_color.fill %>" value='<%= entries[i].objectId %>'>
-                                          <!-- xo icon  -->
-                                          <div class="xo-icon" data-stroke="<%= entries[i].metadata.buddy_color.stroke %>" data-fill="<%= entries[i].metadata.buddy_color.fill %>"  data-icon="activity-icon">
-
-                                          </div>
-                                          <%= entries[i].metadata.title %>
+                                      <% for(var i=0; i < entries.length; i++) {%> 
+                                      <option selected  class="xo-icon" data-icon="activity-icon" data-stroke="<%= entries[i].metadata.buddy_color.stroke %>" data-fill="<%= entries[i].metadata.buddy_color.fill %>" value='<%= entries[i].objectId %>'>
+                                              <div class="color" id="<%= entries[i].objectId %>" 12>
+                                                <div class="xo-icon"></div>
+                                              </div>
+                                        <%= entries[i].metadata.title %>
                                         </option>
-                                       
+                                        <script>
+                                            <% if (entries[i].metadata.mimetype == "text/plain") { %>
+                                                new icon().load("<%= iconList[entries[i].metadata.activity] || '/public/img/application-x-txt.svg' %>", (<%- JSON.stringify(entries[i].metadata.buddy_color?entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries[i].objectId %>");
+                                            <% } else if (entries[i].metadata.mimetype == "application/pdf") { %>
+                                                new icon().load("<%= iconList[entries[i].metadata.activity] || '/public/img/application-x-pdf.svg' %>", (<%- JSON.stringify(entries[i].metadata.buddy_color?entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries[i].objectId %>");
+                                            <% } else if (entries[i].metadata.mimetype == "application/msword") { %>
+                                                new icon().load("<%= iconList[entries[i].metadata.activity] || '/public/img/application-x-doc.svg' %>", (<%- JSON.stringify(entries[i].metadata.buddy_color?entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries[i].objectId %>");
+                                            <% } else if (entries[i].metadata.mimetype == "application/vnd.oasis.opendocument.text") { %>
+                                                new icon().load("<%= iconList[entries[i].metadata.activity] || '/public/img/application-x-odt.svg' %>", (<%- JSON.stringify(entries[i].metadata.buddy_color?entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries[i].objectId %>");
+                                            <% } else {%>
+                                                new icon().load("<%= iconList[entries[i].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(entries[i].metadata.buddy_color?entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries[i].objectId %>");
+                                            <% } %>
+                                        </script>
                                         <% } %>
-                                    </select>
+                                      </select>
                                 </div>
                             </div>
                             
-                            <div class="col-md-6">
+                            <div class="col-md-2">
                               <div class="form-group form-black label-floating">
                                 <a data-l10n-id="deleteAssignment" title="Delete Assignment"  class="material-icons text-muted">delete_forever</i></a>
                               </div>
@@ -137,8 +153,7 @@
                                       <label class="control-label" data-l10n-id="classrooms"></label>
                                       <select id='searchable-select-classrooms' multiple='multiple' name="classrooms" class="form-control">
                                         <% for(var i=0; i < classrooms.length; i++) { %>
-                                            <% if(mode == "edit"){ %> <option disabled <% if(classrooms[i]) { %> selected <% } %> value='<%= classrooms[i]._id %>'><%= "class_" + classrooms[i]._id %></option> <% } %>  
-                                            <% if(mode == "add"){ %> <option  value='<%= classrooms[i]._id %>'><%= "class_" + classrooms[i]._id %></option> <% } %>  
+                                            <option <% if(classrooms[i].is_member) { %> selected <% } %> value='<%= classrooms[i]._id %>'><%= "class_" + classrooms[i]._id %></option>
                                         <% } %>
                                     </select>
                                     <% for(var i=0; i < classrooms.length; i++) { %>
