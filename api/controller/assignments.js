@@ -1,7 +1,6 @@
 /* eslint-disable indent */
 /* eslint-disable no-mixed-spaces-and-tabs */
 //assignments handling 
-const { option } = require('grunt');
 var mongo = require('mongodb');
 var journal = require('./journal');
 var common = require('./utils/common');
@@ -114,11 +113,8 @@ exports.findAll = function (req, res) {
             }
             //find
             collection.aggregate(conf).toArray(function (err, items) {
-                if (option.skip) {
+                if (options.skip) {
                     items.skip(options.skip);
-                }
-                if (option.limit) {
-                    items.limit(options.limit);
                 }
                 if (err) {
                     return res.status(500).send({
@@ -548,14 +544,6 @@ exports.updateAssignment = function (req, res) {
     var assignment = JSON.parse(req.body.assignment);
     //add timestamp
     assignment.timestamp = +new Date();
-    //join dueDate and time
-    if (assignment.dueDate && assignment.time) {
-        assignment.dueDate = assignment.dueDate + " " + assignment.time;
-    }
-    //delete assignment.time
-    if (assignment.time) {
-        delete assignment.time;
-    }
     //find assignment by id
     db.collection(assignmentCollection, function (err, collection) {
         //count data
