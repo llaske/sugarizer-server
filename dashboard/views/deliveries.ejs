@@ -8,28 +8,28 @@
           <%- include includes/flash-errors %>
           <div class="row">
               <div class="col-md-12">
-                  <div class="card" id="assignment-serach-row" >
+                  <div class="card" id="deliveries-serach-row" >
                       <form method="get" id="user-form">
                         <div class="col-md-3">
                           <div class="form-group form-black label-floating is-empty">
-                              <input  placeholder="Search Assignment..." class="form-control" name="assignment" value="<% if(query.q){ %><%= query.q %><% } %>" type="text">
+                              <input  placeholder="Search User..." class="form-control" name="user" value="<% if(query.u){ %><%= query.u %><% } %>" type="text">
                               <span class="material-input"></span>
                           </div>
                         </div>
                         <div class="col-md-3"></div>
                         <div class="col-md-6">
-                            <div class="upload-btn-wrapper pull-right" id="assignment-deleteMultiple">
+                            <div class="upload-btn-wrapper pull-right" id="deliveries-deleteMultiple">
                                 <a href="#" onclick="deleteMultipleAssignment(); return false;" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
                             </div>
                             <% if (account.user && account.user.role=="admin" ) { %>
-                                <a class="btn btn-round pull-right" href="/dashboard/assignments/add" data-l10n-id="addAssignment" id="assignment-addassignment"><div class="ripple-container"></div></a>
+                                <a class="btn btn-round pull-right" href="/dashboard/assignments/add" data-l10n-id="addAssignment" id="deliveries-addassignment"><div class="ripple-container"></div></a>
                             <% } %>
                            <button class="btn btn-round pull-right" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                         </div>
                       </form>
                   </div>
               </div>
-              <div class="col-md-12" id="assignment-cards-parent">
+              <div class="col-md-12" id="deliveries-cards-parent">
                   <% if(data.deliveries.length == 0){%>
                     <div class="text-center" style="margin-top:50px;">
                             <i class="material-icons dp96">info_outline</i>
@@ -61,8 +61,8 @@
                                 </thead>
                                 <tbody>
                                     <% for(var i=0; i < data.deliveries.length; i++) { %>
-                                      <tr id="assignment-card">
-                                          <td><input type="checkbox" class="assignment-checkbox" cid="<%= data.deliveries[i]._id %>"></td>
+                                      <tr id="deliveries-card">
+                                          <td><input type="checkbox" class="deliveries-checkbox" cid="<%= data.deliveries[i]._id %>"></td>
                                           <td><%= data.offset + i + 1 %></td>
                                           <td>
                                               <div class="color" id="<%= data.deliveries[i].content[0].objectId %>">
@@ -89,10 +89,9 @@
                                           <td>
                                              
                                               <% if (account.user && account.user.role=="admin" || account.user.role=="teacher") { %>
-                                                <a id="assignment-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= data.deliveries[i]._id %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=launch')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
-                                              <a data-l10n-id="editAssignment" title="Edit Assignment" href="/dashboard/assignments/edit/<%= data.deliveries[i]._id %>"><i id="assignment-edit-class" class="material-icons text-muted">comment</i></a>
-                                             <a id="journal-activity-download" href="javascript:download_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=download')" data-l10n-id="download" title="Download"><i class="material-icons text-muted">cloud_download</i></a>
-                                              <!-- <a data-l10n-id="deleteAssignment" title="Delete Assignment" href="/dashboard/assignments/delete/<%= data.deliveries[i]._id %>?&name=<%= data.deliveries[i].name %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteAssignment', {assignment:'<%= data.deliveries[i].name %>'}))"><i id="assignments-delete-class" class="material-icons text-muted">arrow</i></a> -->
+                                                <a id="deliveries-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= data.deliveries[i]._id %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=launch')" data-l10n-id="deliveries-launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
+                                                <a title="Comment" href=""><i id="deliveries-comment" class="material-icons text-muted">comment</i></a>
+                                                <a id="deliveries-journal-activity-download" href="javascript:download_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=download')" data-l10n-id="download" title="Download"><i class="material-icons text-muted">cloud_download</i></a>
                                               <% } %>
                                           </td>
                                       </tr>
@@ -110,10 +109,10 @@
 </div>
 <%- include includes/footer %>
 <script>
-    set headers
+    //set headers
     var headers = <%- JSON.stringify(headers) %>;
 
     handleSort();
-    var currTour = sugarizerTour("assignment", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+    var currTour = sugarizerTour("deliveries", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
 	if (!currTour.isFinished()) currTour.start();
 </script>

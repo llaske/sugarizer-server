@@ -183,6 +183,17 @@ function sugarizerTour(currentView, role, mode) {
 			tour.addStep(getStep("assignment", "#assignment-delete-class", "left", 8));
 			tour.addStep(getStep("assignment", "#assignment-view-students", "left", 6));
 			tour.addStep(getStep("assignment", "#assignment-launch", "left", 5));
+		} else if (currentView == "deliveries") {
+			tour.addStep(getStep("deliveries", "#deliveries-serach-row", "bottom", 2));
+			tour.addStep(getStep("deliveries", "#deliveries-deleteMultiple", "left", 10));
+			tour.addStep(getStep("deliveries", "#deliveries-cards-parent", "top", 4));
+			tour.addStep(getStep("deliveries", "#checkAll", "right", 9));
+			tour.addStep(getStep("deliveries", "#deliveries-card", "bottom", 5));
+			tour.addStep(getStep("deliveries", "#deliveries-delete-delivery", "left", 8));
+			tour.addStep(getStep("deliveries", "#deliveries-comment", "left", 11));
+			tour.addStep(getStep("deliveries", "#deliveries-launch", "left", 7));
+			tour.addStep(getStep("deliveries", "#deliveries-journal-activity-download", "right", 3));
+
 		}
 		else if (currentView == "stats") {
 			tour.addStep(getStep("stats", "", "bottom", 1, true));
