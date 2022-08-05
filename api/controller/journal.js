@@ -112,7 +112,7 @@ exports.init = function (settings, database) {
 
 	fs.readdir(sugarizerPath, function (err, files) {
 		if (err) {
-			console.log("ERROR: can't find sugarizer path '" + sugarizerPath + "'");
+
 			throw err;
 		}
 		files.forEach(function (file) {
@@ -121,7 +121,7 @@ exports.init = function (settings, database) {
 				var filePath = sugarizerPath + path.sep + file;
 				fs.stat(filePath, function (err, stats) {
 					if (err) {
-						console.log("ERROR: can't read '" + filePath + "'");
+
 						throw err;
 					}
 					// If it's a directory, it's an activity
@@ -1222,54 +1222,41 @@ exports.findAllEntries = function (req, res) {
 	}
 };
 
-exports.copyEntry = function (entryDoc) {
+exports.copyEntry = function (entryDoc, chunks) {
 	return new Promise(function (resolve, reject) {
 		if (typeof entryDoc == "undefined") {
-			reject("Entry is undefined");
+			reject(entryDoc);
 		}
-		if (!typeof entryDoc.text == "string" || mongo.ObjectID.isValid(entryDoc.text)) {
-			db.collection(CHUNKS_COLL, function (err, collection) {
-				collection.find({
-					files_id: new mongo.ObjectID(entryDoc.text)
-				}).toArray(function (err, chunks) {
-					if (err) {
-						reject(err);
-					}
-					var text = "";
-					for (var i = 0; i < chunks.length; i++) {
-						text += chunks[i].data ? chunks[i].data.toString("utf8") : "";
 
-					}
-					entryDoc.text = text;
-					var textObject = JSON.parse(entryDoc.text);
-					entryDoc.text = textObject.encoding ? _toUTF16(textObject.text) : textObject.text;
+		var text = "";
+		for (var i = 0; i < chunks.length; i++) {
+			text += chunks[i].data ? chunks[i].data.toString("utf8") : "";
+		}
+		entryDoc.text = text;
+		var textObject = JSON.parse(entryDoc.text);
+		entryDoc.text = textObject.encoding ? _toUTF16(textObject.text) : textObject.text;
 
-					var utftext = _toUTF8(entryDoc.text);
-					var isUtf16 = (entryDoc.text.length != utftext.length);
-					var filename = mongo.ObjectId();
-					var textContent = JSON.stringify({
-						text_type: typeof entryDoc.text,
-						text: isUtf16 ? utftext : entryDoc.text,
-						encoding: isUtf16
-					});
+		var utftext = _toUTF8(entryDoc.text);
+		var isUtf16 = (entryDoc.text.length != utftext.length);
+		var filename = mongo.ObjectId();
+		var textContent = JSON.stringify({
+			text_type: typeof entryDoc.text,
+			text: isUtf16 ? utftext : entryDoc.text,
+			encoding: isUtf16
+		});
 
-					streamifier.createReadStream(textContent)
-						.pipe(gridfsbucket.openUploadStreamWithId(filename, filename.toString()))
-						.on('error', function () {
-							reject(err);
-						}).on('finish', function (uploadStr) {
-							entryDoc.text = uploadStr._id;
-							var objectId = common.createUUID();
-							if (typeof entryDoc == "object") {
-								entryDoc.objectId = objectId;
-							}
-							resolve(entryDoc);
-						});
-
-				});
-
+		streamifier.createReadStream(textContent)
+			.pipe(gridfsbucket.openUploadStreamWithId(filename, filename.toString()))
+			.on('error', function () {
+				reject(new Error());
+			}).on('finish', function (uploadStr) {
+				entryDoc.text = uploadStr._id;
+				var objectId = common.createUUID();
+				if (typeof entryDoc == "object") {
+					entryDoc.objectId = objectId;
+				}
+				resolve(entryDoc);
 			});
-		}
 
 	});
 };
