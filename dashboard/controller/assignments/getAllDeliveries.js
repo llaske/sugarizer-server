@@ -19,12 +19,12 @@ var assignment = require('./index');
 module.exports = function getAllDeliveries(req, res) {
     common.reinitLocale(req);
     var query = {
-        sort: '+name'
+        sort: '+buddy_name'
     };
 
     //get query params
-    if (req.query.assignments != '') {
-        query['q'] = req.query.assignments;
+    if (req.query.user != '') {
+        query['u'] = req.query.user;
     }
     if (req.query.limit != '') {
         query['limit'] = req.query.limit;
@@ -48,7 +48,7 @@ module.exports = function getAllDeliveries(req, res) {
             .query(query)
             .end(function (error, response) {
                 if (response.statusCode == 200) {
-
+                    console.log({ u: query });
                     res.render('deliveries', {
                         moment: moment,
                         query: query,
@@ -61,12 +61,8 @@ module.exports = function getAllDeliveries(req, res) {
                     });
 
                 } else {
-                    res.render('error', {
-                        message: response.body.message,
-                        error: response.body.error,
-                        module: 'assignments',
-                        status: response.statusCode,
-                        title: 'Error'
+                    req.flash('errors', {
+                        msg: common.l10n.get('ErrorCode' + response.body.code)
                     });
                 }
             });
