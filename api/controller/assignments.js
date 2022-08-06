@@ -422,6 +422,11 @@ exports.launchAssignment = function (req, res) {
                                     updateEntries(entry[0].content[0], privateJournalIds).then(function (result) {
                                         updateStatus(req, res, "Assigned", entry[0].content[0].objectId);
                                         res.status(200).send(result);
+                                    }).catch(function () {
+                                        return res.status(500).send({
+                                            'error': "An error has occurred",
+                                            'code': 10
+                                        });
                                     });
                                 }
                             });
@@ -473,7 +478,7 @@ function updateEntries(entryDoc, privateJournalIds) {
                                                 if (err) {
                                                     reject(err);
                                                 } else {
-                                                    if (counter == privateJournalIds.length) return resolve(copy);
+                                                    if (counter == privateJournalIds.length) return resolve(counter);
                                                 }
                                             });
                                     }

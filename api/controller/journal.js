@@ -1224,8 +1224,9 @@ exports.findAllEntries = function (req, res) {
 
 exports.copyEntry = function (entryDoc, chunks) {
 	return new Promise(function (resolve, reject) {
+		var error = new Error("Entry not found");
 		if (typeof entryDoc == "undefined") {
-			reject(entryDoc);
+			reject(error);
 		}
 
 		var text = "";
