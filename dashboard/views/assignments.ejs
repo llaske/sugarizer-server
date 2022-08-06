@@ -16,7 +16,26 @@
                               <span class="material-input"></span>
                           </div>
                         </div>
-                        <div class="col-md-3"></div>
+                        <div class="col-md-3"> 
+                          <div class="form-group form-black label-floating is-empty">
+                            <select class="form-control" id="select-status-select2" name="status" value="<% if(query.s){ %><%= query.s %><% } %>">
+                                <option value=""></option>
+                            <select/>
+                            <script>
+                                $('#select-status-select2').select2({
+                                    placeholder: "All Status",
+                                    allowClear: true,
+                                    // data will be some status which can be assigned and terminated
+                                    data: [
+                                        {id: 'true', text: 'Assigned'},
+                                        {id: 'false', text: 'Created'},
+                                        {id: 'Terminated', text: 'Terminated'},
+                                        ]
+                                });
+                            </script>
+                          </div>
+                        </div>
+                        <!-- <div class="col-md-3"></div> -->
                         <div class="col-md-6">
                             <div class="upload-btn-wrapper pull-right" id="assignment-deleteMultiple">
                                 <a href="#" onclick="deleteMultipleAssignment(); return false;" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
@@ -71,15 +90,15 @@
                                           </td>
                                         <script>
 											<% if (data.assignments[i].assignedWork.metadata.mimetype == "text/plain") { %>
-											    new icon().load("<%= iconList[data.assignments[i].assignedWork.metadata.activity] || '/public/img/application-x-txt.svg' %>", (<%- JSON.stringify(data.assignments[i].assignedWork.metadata.buddy_color?data.assignments[i].assignedWork.metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.assignments[i].assignedWork.objectId %>");
+											    new icon().load("<%= iconMap[data.assignments[i].assignedWork.metadata.activity] || '/public/img/application-x-txt.svg' %>", (<%- JSON.stringify(data.assignments[i].assignedWork.metadata.buddy_color?data.assignments[i].assignedWork.metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.assignments[i].assignedWork.objectId %>");
 											<% } else if (data.assignments[i].assignedWork.metadata.mimetype == "application/pdf") { %>
-											    new icon().load("<%= iconList[data.assignments[i].assignedWork.metadata.activity] || '/public/img/application-x-pdf.svg' %>", (<%- JSON.stringify(data.assignments[i].assignedWork.metadata.buddy_color?data.assignments[i].assignedWork.metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.assignments[i].assignedWork.objectId %>");
+											    new icon().load("<%= iconMap[data.assignments[i].assignedWork.metadata.activity] || '/public/img/application-x-pdf.svg' %>", (<%- JSON.stringify(data.assignments[i].assignedWork.metadata.buddy_color?data.assignments[i].assignedWork.metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.assignments[i].assignedWork.objectId %>");
 											<% } else if (data.assignments[i].assignedWork.metadata.mimetype == "application/msword") { %>
-											    new icon().load("<%= iconList[data.assignments[i].assignedWork.metadata.activity] || '/public/img/application-x-doc.svg' %>", (<%- JSON.stringify(data.assignments[i].assignedWork.metadata.buddy_color?data.assignments[i].assignedWork.metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.assignments[i].assignedWork.objectId %>");
+											    new icon().load("<%= iconMap[data.assignments[i].assignedWork.metadata.activity] || '/public/img/application-x-doc.svg' %>", (<%- JSON.stringify(data.assignments[i].assignedWork.metadata.buddy_color?data.assignments[i].assignedWork.metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.assignments[i].assignedWork.objectId %>");
 											<% } else if (data.assignments[i].assignedWork.metadata.mimetype == "application/vnd.oasis.opendocument.text") { %>
-											    new icon().load("<%= iconList[data.assignments[i].assignedWork.metadata.activity] || '/public/img/application-x-odt.svg' %>", (<%- JSON.stringify(data.assignments[i].assignedWork.metadata.buddy_color?data.assignments[i].assignedWork.metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.assignments[i].assignedWork.objectId %>");
+											    new icon().load("<%= iconMap[data.assignments[i].assignedWork.metadata.activity] || '/public/img/application-x-odt.svg' %>", (<%- JSON.stringify(data.assignments[i].assignedWork.metadata.buddy_color?data.assignments[i].assignedWork.metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.assignments[i].assignedWork.objectId %>");
 											<% } else {%>
-											    new icon().load("<%= iconList[data.assignments[i].assignedWork.metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(data.assignments[i].assignedWork.metadata.buddy_color?data.assignments[i].assignedWork.metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.assignments[i].assignedWork.objectId %>");
+											    new icon().load("<%= iconMap[data.assignments[i].assignedWork.metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(data.assignments[i].assignedWork.metadata.buddy_color?data.assignments[i].assignedWork.metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.assignments[i].assignedWork.objectId %>");
 											<% } %>
 											</script>
                                          
@@ -95,12 +114,24 @@
                                         </td>
                                           <td><%= moment(data.assignments[i].timestamp).calendar() %></td>
                                           <td>
-                                            <% if (account.user && (account.user.role=="admin" || account.user.role == "teacher")) { %>
-                                            <a data-l10n-id="launchAssignment" title="Launch Assignment" href="/dashboard/assignments/launch/<%= data.assignments[i]._id %>" "> <i id="assignments-delete-class" class="material-icons text-muted">add</i></a>
-                                            <a id="assignment-deliveries" href="/dashboard/assignments/deliveries/<%= data.assignments[i]._id %>" data-l10n-id="deliveries" title="deliveries"><i class="material-icons text-muted">close</i></a>
-                                            <a id="assignment-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= data.assignments[i].assignedWork %>?oid=<%= data.assignments[i].assignedWork.objectId %>&source=journal&uid=<%= data.assignments[i].assignedWork.metadata.user_id %>&aid=<%= data.assignments[i].assignedWork.metadata.activity_id %>&mode=launch')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
-                                              <a data-l10n-id="editAssignment" title="Edit Assignment" href="/dashboard/assignments/edit/<%= data.assignments[i]._id %>"><i id="assignment-edit-class" class="material-icons text-muted">edit</i></a>
-                                              <a data-l10n-id="deleteAssignment" title="Delete Assignment" href="/dashboard/assignments/delete/<%= data.assignments[i]._id %>?&name=<%= data.assignments[i].name %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteAssignment', {assignment:'<%= data.assignments[i].name %>'}))"><i id="assignments-delete-class" class="material-icons text-muted">delete_forever</i></a>
+                                            <% if (account.user  && (account.user.role=="admin" || account.user.role == "teacher" )) { %>    
+                                                <% if(account.user._id == data.assignments[i].created_by) {%>
+                                                        <% if(data.assignments[i].isAssigned == false){ %>
+                                                            <a data-l10n-id="launchAssignment" title="Launch Assignment" href="/dashboard/assignments/launch/<%= data.assignments[i]._id %>" "> <i id="assignments-delete-class" class="material-icons text-muted">add</i></a>
+                                                        <% } else { %>
+                                                            <a data-l10n-id="launchAssignment" style=" cursor: not-allowed; pointer-events: none;" title="Launch Assignment" href="/dashboard/assignments/launch/<%= data.assignments[i]._id %>" "> <i id="assignments-delete-class" class="material-icons text-muted">add</i></a>
+                                                        <% } %>
+
+                                                        <a id="assignment-deliveries" href="/dashboard/assignments/deliveries/<%= data.assignments[i]._id %>" data-l10n-id="deliveries" title="deliveries"><i class="material-icons text-muted">close</i></a>
+                                                        <a data-l10n-id="editAssignment" title="Edit Assignment" href="/dashboard/assignments/edit/<%= data.assignments[i]._id %>"><i id="assignment-edit-class" class="material-icons text-muted">edit</i></a> 
+                                                        <a data-l10n-id="deleteAssignment" title="Delete Assignment" href="/dashboard/assignments/delete/<%= data.assignments[i]._id %>?&name=<%= data.assignments[i].name %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteAssignment', {assignment:'<%= data.assignments[i].name %>'}))"><i id="assignments-delete-class" class="material-icons text-muted">delete_forever</i></a>
+                                                    <% } else { %> 
+                                                        <a data-l10n-id="launchAssignment" style=" cursor: not-allowed; pointer-events: none;" title="Launch Assignment" href="/dashboard/assignments/launch/<%= data.assignments[i]._id %>" "> <i  id="assignments-delete-class" class="material-icons text-muted">add</i></a>
+                                                        <a id="assignment-deliveries" style=" cursor: not-allowed; pointer-events: none;" href="/dashboard/assignments/deliveries/<%= data.assignments[i]._id %>" data-l10n-id="deliveries" title="deliveries"><i class="material-icons text-muted">close</i></a>
+                                                        <a data-l10n-id="editAssignment" style=" cursor: not-allowed; pointer-events: none;" title="Edit Assignment" href="/dashboard/assignments/edit/<%= data.assignments[i]._id %>"><i id="assignment-edit-class" class="material-icons text-muted">edit</i></a> 
+                                                        <a data-l10n-id="deleteAssignment" style=" cursor: not-allowed; pointer-events: none;" title="Delete Assignment" href="/dashboard/assignments/delete/<%= data.assignments[i]._id %>?&name=<%= data.assignments[i].name %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteAssignment', {assignment:'<%= data.assignments[i].name %>'}))"><i id="assignments-delete-class" class="material-icons text-muted">delete_forever</i></a>
+                                                    <% } %> 
+                                            
                                               <% } %>
                                           </td>
                                       </tr>
@@ -118,7 +149,7 @@
 </div>
 <%- include includes/footer %>
 <script>
-    set headers
+    //set headers
     var headers = <%- JSON.stringify(headers) %>;
 
     handleSort();
