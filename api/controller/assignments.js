@@ -1,6 +1,5 @@
-/* eslint-disable indent */
-/* eslint-disable no-mixed-spaces-and-tabs */
 //assignments handling 
+
 var mongo = require('mongodb');
 var journal = require('./journal');
 var common = require('./utils/common');
