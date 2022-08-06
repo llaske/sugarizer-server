@@ -2,107 +2,101 @@
 <div class="wrapper">
 	<%- include includes/sidebar %>
 	<div class="main-panel">
-	<%- include includes/navbar %>
+		<%- include includes/navbar %>
 		<div class="content">
 			<div class="container-fluid">
-          <%- include includes/flash-errors %>
-          <div class="row">
-              <div class="col-md-12">
-                  <div class="card" id="deliveries-serach-row" >
-                      <form method="get" id="user-form">
-                        <div class="col-md-3">
-                          <div class="form-group form-black label-floating is-empty">
-                              <input  placeholder="Search User..." class="form-control" name="user" value="<% if(query.u){ %><%= query.u %><% } %>" type="text">
-                              <span class="material-input"></span>
-                          </div>
-                        </div>
-                        <div class="col-md-3"></div>
-                        <div class="col-md-6">
-                            <div class="upload-btn-wrapper pull-right" id="deliveries-deleteMultiple">
-                                <a href="#" onclick="deleteMultipleAssignment(); return false;" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
-                            </div>
-                            <% if (account.user && account.user.role=="admin" ) { %>
-                                <a class="btn btn-round pull-right" href="/dashboard/assignments/add" data-l10n-id="addAssignment" id="deliveries-addassignment"><div class="ripple-container"></div></a>
-                            <% } %>
-                           <button class="btn btn-round pull-right" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
-                        </div>
-                      </form>
-                  </div>
-              </div>
-              <div class="col-md-12" id="deliveries-cards-parent">
-                  <% if(data.deliveries.length == 0){%>
-                    <div class="text-center" style="margin-top:50px;">
-                            <i class="material-icons dp96">info_outline</i>
-                            <p data-l10n-id="noAssignmentText"></p>
-                        </div>
-                  <% } else{%>
-                    <div class="card">
-                        <div class="card-header row" data-background-color="black">
-                            <div class="col-md-4 col-sm-4 col-lg-4 text-left">
-                           
-                            </div>
-                            <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset + 1 %>", "to": "<%= data.offset + data.deliveries.length %>", "total": "<%= data.total %>" }'></div>
-                            <div class="col-md-4 col-sm-4 col-lg-4 text-right">
-                            
-                            </div>
-                        </div>
-                        <div class="card-content table-responsive">
-                            <table class="table">
-                                <thead class="text-muted">
-                                    <tr>
-                                        <th class="text-muted"><input type="checkbox" id="checkAll" onclick="checkAll()"></th>
-                                        <th>#</th>
-                                        <th data-l10n-id="icon">Activity</th>
-                                        <th><button data-l10n-id="name" id="name-column" onclick="sortBy('name')"></button></th>
-                                        <th data-l10n-id="status">Status</th>
-                                        <th><button data-l10n-id="deliveredAt" id="last-column" onclick="sortBy('time')"></button></th>
-                                        <th data-l10n-id="action">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% for(var i=0; i < data.deliveries.length; i++) { %>
-                                      <tr id="deliveries-card">
-                                          <td><input type="checkbox" class="deliveries-checkbox" cid="<%= data.deliveries[i]._id %>"></td>
-                                          <td><%= data.offset + i + 1 %></td>
-                                          <td>
-                                              <div class="color" id="<%= data.deliveries[i].content[0].objectId %>">
-                                                  <div class="xo-icon"></div>
-                                              </div>
-                                          </td>
-                                          <script>
-											<% if (data.deliveries[i].content[0].metadata.mimetype == "text/plain") { %>
-											    new icon().load("<%= iconList[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-txt.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
-											<% } else if (data.deliveries[i].content[0].metadata.mimetype == "application/pdf") { %>
-											    new icon().load("<%= iconList[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-pdf.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
-											<% } else if (data.deliveries[i].content[0].metadata.mimetype == "application/msword") { %>
-											    new icon().load("<%= iconList[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-doc.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
-											<% } else if (data.deliveries[i].content[0].metadata.mimetype == "application/vnd.oasis.opendocument.text") { %>
-											    new icon().load("<%= iconList[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-odt.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
-											<% } else {%>
-											    new icon().load("<%= iconList[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
+          		<%- include includes/flash-errors %>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card" id="deliveries-serach-row" >
+							<form method="get" id="user-form">
+								<div class="col-md-3">
+								<div class="form-group form-black label-floating is-empty">
+									<input  placeholder="Search User..." class="form-control" name="user" value="<% if(query.u){ %><%= query.u %><% } %>" type="text">
+									<span class="material-input"></span>
+								</div>
+								</div>
+								<div class="col-md-3"></div>
+								<div class="col-md-6">
+									<div class="upload-btn-wrapper pull-right" id="deliveries-deleteMultiple">
+										<a href="#" onclick="deleteMultipleAssignment(); return false;" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
+									</div>
+									<% if (account.user && account.user.role=="admin" ) { %>
+										<a class="btn btn-round pull-right" href="/dashboard/assignments/add" data-l10n-id="addAssignment" id="deliveries-addassignment"><div class="ripple-container"></div></a>
+									<% } %>
+									<button class="btn btn-round pull-right" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="col-md-12" id="deliveries-cards-parent">
+						<% if(data.deliveries.length == 0){%>
+							<div class="text-center" style="margin-top:50px;">
+									<i class="material-icons dp96">info_outline</i>
+									<p data-l10n-id="noAssignmentText"></p>
+								</div>
+						<% } else{%>
+							<div class="card">
+								<div class="card-header row" data-background-color="black">
+									<div class="col-md-4 col-sm-4 col-lg-4 text-left"></div>
+									<div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset + 1 %>", "to": "<%= data.offset + data.deliveries.length %>", "total": "<%= data.total %>" }'></div>
+									<div class="col-md-4 col-sm-4 col-lg-4 text-right"></div>
+								</div>
+								<div class="card-content table-responsive">
+									<table class="table">
+										<thead class="text-muted">
+											<tr>
+												<th class="text-muted"><input type="checkbox" id="checkAll" onclick="checkAll()"></th>
+												<th>#</th>
+												<th data-l10n-id="icon">Activity</th>
+												<th><button data-l10n-id="name" id="name-column" onclick="sortBy('name')"></button></th>
+												<th data-l10n-id="status">Status</th>
+												<th><button data-l10n-id="deliveredAt" id="last-column" onclick="sortBy('time')"></button></th>
+												<th data-l10n-id="action">Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											<% for(var i=0; i < data.deliveries.length; i++) { %>
+											<tr id="deliveries-card">
+												<td><input type="checkbox" class="deliveries-checkbox" cid="<%= data.deliveries[i]._id %>"></td>
+												<td><%= data.offset + i + 1 %></td>
+												<td>
+													<div class="color" id="<%= data.deliveries[i].content[0].objectId %>">
+														<div class="xo-icon"></div>
+													</div>
+												</td>
+												<script>
+													<% if (data.deliveries[i].content[0].metadata.mimetype == "text/plain") { %>
+														new icon().load("<%= iconList[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-txt.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
+													<% } else if (data.deliveries[i].content[0].metadata.mimetype == "application/pdf") { %>
+														new icon().load("<%= iconList[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-pdf.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
+													<% } else if (data.deliveries[i].content[0].metadata.mimetype == "application/msword") { %>
+														new icon().load("<%= iconList[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-doc.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
+													<% } else if (data.deliveries[i].content[0].metadata.mimetype == "application/vnd.oasis.opendocument.text") { %>
+														new icon().load("<%= iconList[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-odt.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
+													<% } else {%>
+														new icon().load("<%= iconList[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
+													<% } %>
+													</script>
+												<td><%= data.deliveries[i].content[0].metadata.buddy_name %></td>
+												<td><% if(data.deliveries[i].content[0].metadata.isSubmitted == true ){%> Delivered <% } %> <% if(data.deliveries[i].content[0].metadata.isSubmitted == false ){%> Expected <% } %> </td>
+												<td><%= moment(data.deliveries[i].timestamp).calendar() %></td>
+												<td>
+													<% if (account.user && account.user.role=="admin" || account.user.role=="teacher") { %>
+														<a id="deliveries-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= data.deliveries[i]._id %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=launch')" data-l10n-id="deliveries-launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
+														<a title="Comment" href=""><i id="deliveries-comment" class="material-icons text-muted">comment</i></a>
+														<a id="deliveries-journal-activity-download" href="javascript:download_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=download')" data-l10n-id="download" title="Download"><i class="material-icons text-muted">cloud_download</i></a>
+													<% } %>
+												</td>
+											</tr>
 											<% } %>
-											</script>
-                                          <td><%= data.deliveries[i].content[0].metadata.buddy_name %></td>
-                                          <td><% if(data.deliveries[i].content[0].metadata.isSubmitted == true ){%> Delivered <% } %> <% if(data.deliveries[i].content[0].metadata.isSubmitted == false ){%> Expected <% } %> </td>
-                                      
-                                          <td><%= moment(data.deliveries[i].timestamp).calendar() %></td>
-                                          <td>
-                                             
-                                              <% if (account.user && account.user.role=="admin" || account.user.role=="teacher") { %>
-                                                <a id="deliveries-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= data.deliveries[i]._id %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=launch')" data-l10n-id="deliveries-launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
-                                                <a title="Comment" href=""><i id="deliveries-comment" class="material-icons text-muted">comment</i></a>
-                                                <a id="deliveries-journal-activity-download" href="javascript:download_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=download')" data-l10n-id="download" title="Download"><i class="material-icons text-muted">cloud_download</i></a>
-                                              <% } %>
-                                          </td>
-                                      </tr>
-                                    <% } %>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                <%}%>
-              </div>
-          </div>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						<%}%>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
