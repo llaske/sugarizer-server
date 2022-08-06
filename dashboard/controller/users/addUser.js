@@ -21,7 +21,7 @@ module.exports = function addUser(req, res) {
 		req.body.password = req.body.password.trim();
 		req.body.color = JSON.parse(req.body.color);
 		req.assert('name', common.l10n.get('UsernameInvalid')).matches(regexValidate("user"));
-		req.assert('password', common.l10n.get('PasswordAtLeast', { count: users.ini().security.min_password_size })).len(users.ini().security.min_password_size);
+		req.assert('password', common.l10n.get('PasswordAtLeast', {count:users.ini().security.min_password_size})).len(users.ini().security.min_password_size);
 		req.assert('password', common.l10n.get('PasswordInvalid')).matches(regexValidate("pass"));
 		req.body.options = { sync: true, stats: true };
 		req.body.role = req.body.role.trim();
@@ -34,7 +34,7 @@ module.exports = function addUser(req, res) {
 			}
 		}
 
-		if (req.session && req.session.user && req.session.user.user && req.session.user.user.role == "teacher") {
+		if (req.session &&  req.session.user && req.session.user.user && req.session.user.user.role == "teacher") {
 			if ((!req.body.classrooms) || !(req.body.classrooms.length > 0)) {
 				req.flash('errors', {
 					msg: common.l10n.get('EmptyClassroom')
@@ -56,11 +56,11 @@ module.exports = function addUser(req, res) {
 				})
 				.end(function (error, response) {
 					if (response.statusCode == 200) {
-						if (req.body.role == "student" && req.body.classrooms && typeof (req.body.classrooms) == "object" && req.body.classrooms.length > 0) {
-							dashboard_utils.getAllClassrooms(req, res, function (classrooms) {
+						if (req.body.role=="student" && req.body.classrooms && typeof(req.body.classrooms) == "object" && req.body.classrooms.length > 0) {
+							dashboard_utils.getAllClassrooms(req, res, function(classrooms) {
 								if (classrooms && classrooms.classrooms && classrooms.classrooms.length > 0) {
 									var classroomCounter = 0;
-									for (var i = 0; i < classrooms.classrooms.length; i++) {
+									for (var i=0; i<classrooms.classrooms.length; i++) {
 										if (req.body.classrooms.includes(classrooms.classrooms[i]._id)) {
 											if (typeof classrooms.classrooms[i].students == "object" && classrooms.classrooms[i].students.length > 0) {
 												if (!classrooms.classrooms[i].students.includes(response.body._id)) {
@@ -81,7 +81,7 @@ module.exports = function addUser(req, res) {
 													classroomCounter++;
 													if (classroomCounter == req.body.classrooms.length) {
 														req.flash('success', {
-															msg: common.l10n.get('UserCreated', { name: req.body.name })
+															msg: common.l10n.get('UserCreated', {name: req.body.name})
 														});
 														return res.redirect('/dashboard/users/');
 													}
@@ -90,14 +90,14 @@ module.exports = function addUser(req, res) {
 									}
 								} else {
 									req.flash('success', {
-										msg: common.l10n.get('UserCreated', { name: req.body.name })
+										msg: common.l10n.get('UserCreated', {name: req.body.name})
 									});
 									return res.redirect('/dashboard/users/');
 								}
 							});
 						} else {
 							req.flash('success', {
-								msg: common.l10n.get('UserCreated', { name: req.body.name })
+								msg: common.l10n.get('UserCreated', {name: req.body.name})
 							});
 							if (response.body.role == "admin") {
 								// send to admin page
@@ -112,15 +112,15 @@ module.exports = function addUser(req, res) {
 						}
 					} else {
 						req.flash('errors', {
-							msg: common.l10n.get('ErrorCode' + response.body.code)
+							msg: common.l10n.get('ErrorCode'+response.body.code)
 						});
 						return res.redirect('/dashboard/users/add');
 					}
 				});
 		} else {
-			dashboard_utils.getAllClassrooms(req, res, function (classrooms) {
-				if (req.body.classrooms && typeof (req.body.classrooms) == "object" && req.body.classrooms.length > 0 && classrooms && classrooms.classrooms && classrooms.classrooms.length > 0) {
-					for (var i = 0; i < classrooms.classrooms.length; i++) {
+			dashboard_utils.getAllClassrooms(req, res, function(classrooms) {
+				if (req.body.classrooms && typeof(req.body.classrooms) == "object" && req.body.classrooms.length > 0 && classrooms && classrooms.classrooms && classrooms.classrooms.length > 0) {
+					for (var i=0; i<classrooms.classrooms.length; i++) {
 						if (req.body.classrooms.indexOf(classrooms.classrooms[i]._id) != -1) {
 							classrooms.classrooms[i]['is_member'] = true;
 						}
@@ -130,11 +130,11 @@ module.exports = function addUser(req, res) {
 				return res.render('addEditUser', {
 					module: 'users',
 					user: {
-						name: req.body.name,
+						name:req.body.name,
 						password: req.body.password,
 						color: req.body.color,
-						language: req.body.language,
-						role: req.body.role
+						language:req.body.language,
+						role:req.body.role
 					},
 					classrooms: classrooms.classrooms,
 					xocolors: xocolors,
@@ -148,7 +148,7 @@ module.exports = function addUser(req, res) {
 		}
 
 	} else {
-		dashboard_utils.getAllClassrooms(req, res, function (classrooms) {
+		dashboard_utils.getAllClassrooms(req, res, function(classrooms) {
 			res.render('addEditUser', {
 				module: 'users',
 				classrooms: classrooms.classrooms,

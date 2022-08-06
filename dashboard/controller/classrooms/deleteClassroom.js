@@ -14,11 +14,11 @@ module.exports = function deleteClassroom(req, res) {
 
 					// send to classrooms page
 					req.flash('success', {
-						msg: common.l10n.get('ClassroomDeleted', { name: name })
+						msg: common.l10n.get('ClassroomDeleted', {name: name})
 					});
 				} else {
 					req.flash('errors', {
-						msg: common.l10n.get('ErrorCode' + response.body.code)
+						msg: common.l10n.get('ErrorCode'+response.body.code)
 					});
 				}
 				return res.redirect('/dashboard/classrooms');
