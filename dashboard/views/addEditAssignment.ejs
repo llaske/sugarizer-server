@@ -67,7 +67,7 @@
                                                 $("#select2-activity").on("change", function(){
                                                   var activity = $("#select2-activity").val();
                                                   $("#icon").html("<div class='color' id='"+activity+"'><div class='xo-icon'></div></div>");
-                                                  new icon().load("<%= iconList[entries[i].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(entries[i].metadata.buddy_color?entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries[i].objectId %>");
+                                                  new icon().load("<%= iconMap[entries[i].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(entries[i].metadata.buddy_color?entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries[i].objectId %>");
                                                 });
                                               });
                                             </script>
