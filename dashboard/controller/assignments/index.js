@@ -1,4 +1,4 @@
-/* eslint-disable indent */
+//include libraries
 var superagent = require('superagent'),
     moment = require('moment'),
     common = require('../../helper/common'),
@@ -7,7 +7,6 @@ var superagent = require('superagent'),
     editAssignment = require('./editAssignment'),
     getAllDeliveries = require('./getAllDeliveries'),
     launchAssignment = require('./launchAssignment');
-
 
 var _util = require('../journal/util'),
     getActivities = _util.getActivities;
@@ -24,12 +23,11 @@ exports.ini = function () {
 
 //main Loading page
 exports.index = function (req, res) {
-
+    // reinit l10n and momemt with locale
     common.reinitLocale(req);
     var query = {
         sort: '+name'
     };
-
     //get query params
     if (req.query.assignment != '') {
         query['q'] = req.query.assignment;

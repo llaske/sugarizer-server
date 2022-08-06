@@ -1,4 +1,4 @@
-/* eslint-disable indent */
+//include libraries
 var superagent = require('superagent'),
     moment = require('moment'),
     common = require('../../helper/common');
@@ -14,7 +14,6 @@ exports.init = function (settings) {
 exports.ini = function () {
     return ini;
 };
-var assignment = require('./index');
 
 module.exports = function getAllDeliveries(req, res) {
     common.reinitLocale(req);
@@ -37,11 +36,10 @@ module.exports = function getAllDeliveries(req, res) {
     }
 
     getActivities(req, res, function (activities) {
-        var hashList = {};
+        var iconMap = {};
         for (var i = 0; i < activities.length; i++) {
-            hashList[activities[i].id] = '/' + activities[i].directory + '/' + activities[i].icon;
+            iconMap[activities[i].id] = '/' + activities[i].directory + '/' + activities[i].icon;
         }
-
         superagent
             .get(common.getAPIUrl(req) + 'api/v1/assignments/deliveries/' + req.params.assignmentId)
             .set(common.getHeaders(req))
@@ -55,18 +53,16 @@ module.exports = function getAllDeliveries(req, res) {
                         module: 'assignments',
                         headers: common.getHeaders(req),
                         server: assignment.ini().information,
-                        iconList: hashList,
+                        iconMap: iconMap,
                         account: req.session.user,
                         data: response.body,
                     });
-
                 } else {
                     req.flash('errors', {
                         msg: common.l10n.get('ErrorCode' + response.body.code)
                     });
                 }
             });
-
     });
 };
 
