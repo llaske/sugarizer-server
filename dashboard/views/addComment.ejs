@@ -1,0 +1,40 @@
+<%- include includes/header %>
+  	<div class="wrapper">
+  	<%- include includes/sidebar %>
+    	<div class="main-panel">
+    		<%- include includes/navbar %>
+    		<div class="content">
+    			<div class="container-fluid">
+					<div class="col-md-8 col-lg-8 col-sm-12">
+					<div class="card">
+						<div class="card-content">
+							<%- include ./includes/flash-errors %>
+							<form id="comment-add-edit-form" method="post" <% if(typeof comment == 'object'){ %> action="<%= comment.comment %>" <% } %>>
+							<div class="row" id="addComment-comment">
+									<div class="col-md-12">
+										<div class="form-group form-black label-floating">
+											<label class="control-label" data-l10n-id="comment"></label>
+											<input class="form-control" name="comment" value="<% if(typeof comment == 'object'){ %><%= comment.comment %><% } %>" type="text">
+											<span class="material-input"></span>
+										</div>
+									</div>
+								</div>
+					
+							<button class="btn pull-right btn-round" type="submit" data-l10n-id="save"></button>
+							<a class="btn pull-right btn-round" href="/dashboard/assignments" data-l10n-id="cancel"></a>
+							<div class="clearfix"></div>
+							</form>
+						</div>
+					</div>
+					</div>
+        		</div>
+      	</div>
+    </div>
+  </div>
+<%- include includes/footer %>
+
+<script>
+    var currTour = sugarizerTour("editClassroom", <% if (account.user && account.user.role=="admin") { %> "admin" <% } else { %> "teacher" <% } %>, "<%= mode %>");
+    if (!currTour.isFinished()) currTour.start();
+</script>
+ 
