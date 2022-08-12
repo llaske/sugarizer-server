@@ -420,9 +420,9 @@ exports.launchAssignment = function (req, res) {
                                     }
                                     updateEntries(entry[0].content[0], privateJournalIds).then(function (result) {
                                         updateStatus(req, res, "Assigned", entry[0].content[0].objectId);
-                                        res.status(200).send(result);
+                                        res.status(200).send((result).toString());
                                     }).catch(function () {
-                                        return res.status(500).send({
+                                        res.status(500).send({
                                             'error': "An error has occurred",
                                             'code': 10
                                         });
@@ -723,7 +723,7 @@ exports.updateComment = function (req, res) {
                         code: 10
                     });
                 } else {
-                    res.send(result);
+                    res.status(200).send(result);
                 }
             });
     });
@@ -805,6 +805,65 @@ function updateStatus(req, res, status, objectId) {
                 });
         });
     }
+}
+
+// submit assignment 
+exports.submitAssignment = function (req, res) {
+    //validate
+    if (!mongo.ObjectID.isValid(req.params.assignmentId)) {
+        return res.status(401).send({
+            'error': "Invalid assignment id",
+            'code': 23
+        });
+
+    }
+    if (!req.params.assignmentId) {
+        return res.status(400).send({
+            'error': "Assignment id is not defined",
+            'code': 22
+        });
+
+    }
+    var assignmentId = req.params.assignmentId;
+    if (!req.query.oid) {
+        return res.status(401).send({
+            error: "Invalid object id",
+            code: 23
+        });
+    }
+    var objectId = req.query.oid;
+    updateStatus(req, res, "Delivered", objectId);
+    db.collection(journalCollection, function (err, collection) {
+        collection.findOneAndUpdate(
+            {
+                'content.objectId': objectId,
+                'content.metadata.assignmentId': assignmentId,
+            },
+            {  //set isSubmitted only if it is match with objectId
+                $set: {
+                    'content.$[elem].metadata.isSubmitted': true
+                }
+            },
+            {
+                safe: true,
+                arrayFilters: [{
+                    'elem.objectId': objectId
+
+                }]
+            },
+            function (err, result) {
+                if (err) {
+                    return res.status(500).send({
+                        error: "An error has occurred",
+                        code: 10
+                    });
+                } else {
+                    res.send(result);
+                }
+            });
+    });
+
+
 }
 
 

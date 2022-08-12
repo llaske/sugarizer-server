@@ -81,6 +81,7 @@ module.exports = function (app, ini, db) {
 	app.put("/api/v1/assignments/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.updateAssignment);
 	app.delete("/api/v1/assignments/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.removeAssignment);
 	app.put("/api/v1/assignments/deliveries/comment/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.updateComment);
+	app.put("/api/v1/assignments/deliveries/submit/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.submitAssignment);
 	// Register classroom API
 	app.get("/api/v1/charts", auth.allowedRoles([Admin]), charts.findAll);
 	app.get("/api/v1/charts/:chartid", auth.allowedRoles([Admin]), charts.findById);
