@@ -82,7 +82,7 @@ module.exports = function (app, ini) {
 	app.get('/dashboard/assignments/add/', authController.validateSession, assignmentsController.addAssignment);
 	app.post('/dashboard/assignments/add/', authController.validateSession, assignmentsController.addAssignment);
 	app.get('/dashboard/assignments/delete/:assignmentId', authController.validateSession, assignmentsController.deleteAssignment);
-	app.get('/dashboard/assignments/launch/:assignmentId', authController.validateSession, assignmentsController.launchAssignment);
+	app.post('/dashboard/assignments/launch/:assignmentId', authController.validateSession, assignmentsController.launchAssignment);
 	app.get('/dashboard/assignments/edit/:assignmentId', authController.validateSession, assignmentsController.editAssignment);
 	app.get('/dashboard/assignments/edit/:assignmentId', authController.validateSession, assignmentsController.editAssignment);
 	app.post('/dashboard/assignments/edit/:assignmentId', authController.validateSession, assignmentsController.editAssignment);

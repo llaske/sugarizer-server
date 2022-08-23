@@ -77,7 +77,7 @@ module.exports = function (app, ini, db) {
 	app.get("/api/v1/assignments/deliveries/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.findAllDeliveries);
 	app.get("/api/v1/assignments/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.findById);
 	app.post("/api/v1/assignments/", auth.allowedRoles([Admin, Teacher]), assignments.addAssignment);
-	app.get("/api/v1/assignments/launch/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.launchAssignment);
+	app.put("/api/v1/assignments/launch/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.launchAssignment);
 	app.put("/api/v1/assignments/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.updateAssignment);
 	app.delete("/api/v1/assignments/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.removeAssignment);
 	app.put("/api/v1/assignments/deliveries/comment/:assignmentId", auth.allowedRoles([Admin, Teacher]), assignments.updateComment);
