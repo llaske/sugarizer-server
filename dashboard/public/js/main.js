@@ -973,9 +973,17 @@ function upload_journal(files, journalId, name, user_id, color) {
 			if (err) {
 				return;
 			}
+			if(metadata.assignmentId){
+				$.notify({
+					icon: "error",
+					message: "Error"
+				}, {
+					type: 'danger'
+				});
+				return;
+			}
 			metadata["timestamp"] = new Date().getTime();
 			metadata["creation_time"] = new Date().getTime();
-
 			if (text) {
 				metadata["textsize"] = text.length;
 			}
