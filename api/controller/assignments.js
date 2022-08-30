@@ -82,8 +82,10 @@ exports.findAll = function (req, res) {
                         dueDate: 1,
                         time: 1,
                         assignedWork: 1,
+                        instructions: 1,
                         lateTurnIn: 1,
                         created_time: 1,
+                        classrooms: 1,
                         created_by: 1,
                         timestamp: 1,
                         isAssigned: 1,
@@ -359,8 +361,15 @@ exports.launchAssignment = function (req, res) {
     db.collection(assignmentCollection, function (err, collection) {
         collection.findOne({ _id: new mongo.ObjectID(req.params.assignmentId) }, function (err, assignment) {
             if (err) {
-                res.send({ 'error': 'An error has occurred in finding assignment' });
-            } else {
+                return res.status(400).send({
+                    'error': 'Inexisting assignment id',
+                    'code': 23
+                });
+            }
+            if (!assignment) {
+                return res.status(401).send({});
+            }
+            else {
                 //find all students from classrooms
                 var classrooms = assignment.classrooms;
                 var privateJournalIds = []; //to store private journal ids of every student
@@ -414,13 +423,21 @@ exports.launchAssignment = function (req, res) {
                                     if (entry.length > 0) {
                                         entry[0].content[0].metadata.assignmentId = req.params.assignmentId;
                                         entry[0].content[0].metadata.submissionDate = null;
+                                        entry[0].content[0].metadata.dueDate = assignment.dueDate;
+                                        entry[0].content[0].metadata.instructions = assignment.instructions;
+                                        entry[0].content[0].metadata.lateTurnIn = assignment.lateTurnIn;
                                         entry[0].content[0].metadata.isSubmitted = false;
                                         entry[0].content[0].metadata.status = null;
                                         entry[0].content[0].metadata.comment = "";
+                                    } else {
+                                        return res.status(404).send({
+                                            'error': "Entry not found",
+                                            'code': 36
+                                        });
                                     }
                                     updateEntries(entry[0].content[0], privateJournalIds).then(function (result) {
                                         updateStatus(req, res, "Assigned", entry[0].content[0].objectId);
-                                        res.status(200).send((result).toString());
+                                        res.status(200).send((result));
                                     }).catch(function () {
                                         res.status(500).send({
                                             'error': "An error has occurred",
@@ -457,12 +474,10 @@ function updateEntries(entryDoc, privateJournalIds) {
                         for (var counter = 0, i = 0, j = 0; i < privateJournalIds.length; i++) {
                             // add objectid
                             journal.copyEntry(entryDoc, chunks).then(function (copy) {
-
                                 db.collection(journalCollection, function (err, collection) {
                                     if (err) {
                                         reject(err);
                                     } else {
-
                                         collection.updateOne(
                                             {
                                                 _id: new mongo.ObjectID(privateJournalIds[j++])
@@ -675,28 +690,14 @@ function addQuery(filter, params, query, default_val) {
 //update comment 
 exports.updateComment = function (req, res) {
     //validate
-    if (!mongo.ObjectID.isValid(req.params.assignmentId)) {
+    if (!req.query.oid || !mongo.ObjectID.isValid(req.params.assignmentId)) {
         return res.status(401).send({
             'error': "Invalid assignment id",
-            'code': 23
+            'code': 35
         });
-
-    }
-    if (!req.params.assignmentId) {
-        return res.status(400).send({
-            'error': "Assignment id is not defined",
-            'code': 22
-        });
-
     }
     var assignmentId = req.params.assignmentId;
     var comment = JSON.parse(req.body.comment);
-    if (!req.query.oid) {
-        return res.status(401).send({
-            error: "Invalid object id",
-            code: 23
-        });
-    }
     var objectId = req.query.oid;
     db.collection(journalCollection, function (err, collection) {
         collection.findOneAndUpdate(
@@ -718,11 +719,16 @@ exports.updateComment = function (req, res) {
             },
             function (err, result) {
                 if (err) {
-                    return res.status(500).send({
+                    
+                    return res.status(401).send({
                         error: "An error has occurred",
                         code: 10
                     });
-                } else {
+                }
+                if (!result) {
+                    return res.status(401).send({});
+                }
+                else {
                     res.status(200).send(result);
                 }
             });
@@ -737,14 +743,12 @@ function updateStatus(req, res, status, objectId) {
             'error': "Invalid assignment id",
             'code': 23
         });
-
     }
     if (!req.params.assignmentId) {
         return res.status(400).send({
             'error': "Assignment id is not defined",
             'code': 22
         });
-
     }
     var assignmentId = req.params.assignmentId;
     if (status == "Assigned") {
@@ -774,7 +778,6 @@ function updateStatus(req, res, status, objectId) {
         });
     }
     if (status == "Delivered") {
-
         db.collection(journalCollection, function (err, collection) {
             collection.findOneAndUpdate(
                 {
@@ -810,27 +813,13 @@ function updateStatus(req, res, status, objectId) {
 // submit assignment 
 exports.submitAssignment = function (req, res) {
     //validate
-    if (!mongo.ObjectID.isValid(req.params.assignmentId)) {
+    if (!req.query.oid || !mongo.ObjectID.isValid(req.params.assignmentId)) {
         return res.status(401).send({
             'error': "Invalid assignment id",
-            'code': 23
+            'code': 35
         });
-
-    }
-    if (!req.params.assignmentId) {
-        return res.status(400).send({
-            'error': "Assignment id is not defined",
-            'code': 22
-        });
-
     }
     var assignmentId = req.params.assignmentId;
-    if (!req.query.oid) {
-        return res.status(401).send({
-            error: "Invalid object id",
-            code: 23
-        });
-    }
     var objectId = req.query.oid;
     updateStatus(req, res, "Delivered", objectId);
     db.collection(journalCollection, function (err, collection) {

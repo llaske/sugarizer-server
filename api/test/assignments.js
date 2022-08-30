@@ -353,12 +353,12 @@ describe('Assignments', () => {
     });
 
     //lauch assignment ---POST/:id/launch---
-    describe('/PUT/:id launch assignment ', () => {
+    describe('/GET/:id launch assignment ', () => {
 
         it('it should do nothing on invalid assignment', (done) => {
 
             chai.request(server)
-                .put('/api/v1/assignments/launch/' + 'invalid')
+                .get('/api/v1/assignments/launch/' + 'invalid')
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .end((err, res) => {
@@ -371,7 +371,7 @@ describe('Assignments', () => {
         it('it should do nothing on inexisting assignment', (done) => {
 
             chai.request(server)
-                .put('/api/v1/assignments/launch/' + 'ffffffffffffffffffffffff')
+                .get('/api/v1/assignments/launch/' + 'ffffffffffffffffffffffff')
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .end((err, res) => {
@@ -385,7 +385,7 @@ describe('Assignments', () => {
 
         it('it should launch the valid assignment', (done) => {
             chai.request(server)
-                .put('/api/v1/assignments/launch/' + fake.assignment1._id)
+                .get('/api/v1/assignments/launch/' + fake.assignment1._id)
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .end((err, res) => {
