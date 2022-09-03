@@ -30,7 +30,6 @@ module.exports = function editAssignment(req, res) {
             req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
             // get errors
             var errors = req.validationErrors();
-
             //call
             if (!errors) {
                 superagent
@@ -64,10 +63,8 @@ module.exports = function editAssignment(req, res) {
                 .end(function (error, response) {
                     if (response.statusCode == 200) {
                         var assignment = response.body;
-                        console.log({ r: assignment.classrooms });
-                        dashboard_utils.getAllClassrooms(req, res, function (classrooms) {
-                            console.log({ k: classrooms });
 
+                        dashboard_utils.getAllClassrooms(req, res, function (classrooms) {
                             if (assignment.classrooms && typeof (assignment.classrooms) == "object" && assignment.classrooms.length > 0 && classrooms && classrooms.classrooms && classrooms.classrooms.length > 0) {
                                 for (var i = 0; i < assignment.classrooms.length; i++) {
                                     for (var j = 0; j < classrooms.classrooms.length; j++) {

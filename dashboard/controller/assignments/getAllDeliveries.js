@@ -6,6 +6,8 @@ var superagent = require('superagent'),
 var _util = require('../journal/util'),
     getActivities = _util.getActivities;
 
+var assignment = require('./index');
+
 // init settings
 var ini = null;
 exports.init = function (settings) {
@@ -22,8 +24,8 @@ module.exports = function getAllDeliveries(req, res) {
     };
 
     //get query params
-    if (req.query.user != '') {
-        query['u'] = req.query.user;
+    if (req.query.buddy_name != '') {
+        query['buddy_name'] = req.query.buddy_name;
     }
     if (req.query.limit != '') {
         query['limit'] = req.query.limit;
@@ -65,5 +67,3 @@ module.exports = function getAllDeliveries(req, res) {
             });
     });
 };
-
-

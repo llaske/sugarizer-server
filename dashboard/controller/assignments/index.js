@@ -7,7 +7,8 @@ var superagent = require('superagent'),
     editAssignment = require('./editAssignment'),
     getAllDeliveries = require('./getAllDeliveries'),
     launchAssignment = require('./launchAssignment'),
-    addComment = require('./addComment');
+    addComment = require('./addComment'),
+    returnAssignment = require('./returnAssignment');
 
 var _util = require('../journal/util'),
     getActivities = _util.getActivities;
@@ -31,10 +32,10 @@ exports.index = function (req, res) {
     };
     //get query params
     if (req.query.assignment != '') {
-        query['q'] = req.query.assignment;
+        query['name'] = req.query.assignment;
     }
     if (req.query.status != '') {
-        query['s'] = req.query.status;
+        query['isAssigned'] = req.query.status;
     }
     if (req.query.limit != '') {
         query['limit'] = req.query.limit;
@@ -82,3 +83,4 @@ exports.editAssignment = editAssignment;
 exports.getAllDeliveries = getAllDeliveries;
 exports.launchAssignment = launchAssignment;
 exports.addComment = addComment;
+exports.returnAssignment = returnAssignment;

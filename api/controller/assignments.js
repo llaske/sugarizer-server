@@ -62,8 +62,8 @@ exports.addAssignment = function (req, res) {
 exports.findAll = function (req, res) {
     var query = {};
 
-    query = addQuery("q", req.query, query);
-    query = addQuery("s", req.query, query);
+    query = addQuery("name", req.query, query);
+    query = addQuery("isAssigned", req.query, query);
 
     db.collection(assignmentCollection, function (err, collection) {
         //count
@@ -190,7 +190,7 @@ exports.findAllDeliveries = function (req, res) {
     }
     //find all deliveries with filters and pagination
     var query = {};
-    query = addQuery("u", req.query, query);
+    query = addQuery("buddy_name", req.query, query);
     db.collection(journalCollection, function (err, collection) {
         //count
         collection.countDocuments(query, function (err, count) {
@@ -437,7 +437,7 @@ exports.launchAssignment = function (req, res) {
                                     }
                                     updateEntries(entry[0].content[0], privateJournalIds).then(function (result) {
                                         updateStatus(req, res, "Assigned", entry[0].content[0].objectId);
-                                        res.status(200).send((result));
+                                        res.status(200).send((result).toString());
                                     }).catch(function () {
                                         res.status(500).send({
                                             'error': "An error has occurred",
@@ -659,16 +659,18 @@ function addQuery(filter, params, query, default_val) {
         typeof params[filter] === "string"
     ) {
 
-        if (filter == "q") {
+        if (filter == "name") {
             query["name"] = {
                 $regex: new RegExp(params[filter], "i")
             };
-        } else if (filter == "u") {
+        } else if (filter == "buddy_Name") {
+            console.log("buddy_Name");
             query["buddy_name"] = {
+                // buddy_Name is a field in the database under metadata of journal entry
                 $regex: new RegExp(params[filter], "i")
             };
         }
-        else if (filter == "s") {
+        else if (filter == "isAssigned") {
             query["isAssigned"] = params[filter] == "true";
         }
         else {
@@ -810,9 +812,8 @@ function updateStatus(req, res, status, objectId) {
     }
 }
 
-// submit assignment 
-exports.submitAssignment = function (req, res) {
-    //validate
+exports.returnAssignment = function (req, res) {
+      //validate
     if (!req.query.oid || !mongo.ObjectID.isValid(req.params.assignmentId)) {
         return res.status(401).send({
             'error': "Invalid assignment id",
@@ -821,16 +822,15 @@ exports.submitAssignment = function (req, res) {
     }
     var assignmentId = req.params.assignmentId;
     var objectId = req.query.oid;
-    updateStatus(req, res, "Delivered", objectId);
     db.collection(journalCollection, function (err, collection) {
         collection.findOneAndUpdate(
             {
                 'content.objectId': objectId,
                 'content.metadata.assignmentId': assignmentId,
             },
-            {  //set isSubmitted only if it is match with objectId
+            {  
                 $set: {
-                    'content.$[elem].metadata.isSubmitted': true
+                    'content.$[elem].metadata.isSubmitted': false
                 }
             },
             {
@@ -851,10 +851,49 @@ exports.submitAssignment = function (req, res) {
                 }
             });
     });
-
-
 }
 
+// submit assignment 
+exports.submitAssignment = function (req, res) {
+    //validate
+    if (!req.query.oid || !mongo.ObjectID.isValid(req.params.assignmentId)) {
+        return res.status(401).send({
+            'error': "Invalid assignment id",
+            'code': 35
+        });
+    }
+    var assignmentId = req.params.assignmentId;
+    var objectId = req.query.oid;
+    updateStatus(req, res, "Delivered", objectId);
+    db.collection(journalCollection, function (err, collection) {
+        collection.findOneAndUpdate(
+            {
+                'content.objectId': objectId,
+                'content.metadata.assignmentId': assignmentId,
+            },
+            {  //set isSubmitted only if it is match with objectId
+                $set: {
+                    'content.$[elem].metadata.isSubmitted': true,
+                    'content.$[elem].metadata.submissionDate': new Date(),
+                    
+                }
+            },
+            {
+                safe: true,
+                arrayFilters: [{
+                    'elem.objectId': objectId
 
-
-
+                }]
+            },
+            function (err, result) {
+                if (err) {
+                    return res.status(500).send({
+                        error: "An error has occurred",
+                        code: 10
+                    });
+                } else {
+                    res.send(result);
+                }
+            });
+    });
+}

@@ -1261,5 +1261,3 @@ exports.copyEntry = function (entryDoc, chunks) {
 
 	});
 };
-
-

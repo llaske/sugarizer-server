@@ -242,7 +242,7 @@ exports.findAll = function(req, res) {
 				}
 			];
 	
-			if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >=2) {
+			if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >= 2) {
 				conf[1]["$project"]["insensitive"] = { "$toLower": "$" + options.sort[0][0] };
 	
 				if (options.sort[0][1] == 'desc') {
@@ -572,7 +572,7 @@ function addQuery(filter, params, query, default_val) {
 	//validate
 	if (
 		typeof params[filter] != "undefined" &&
-    typeof params[filter] === "string"
+    	typeof params[filter] === "string"
 	) {
 		if (filter == "q") {
 			query["name"] = {

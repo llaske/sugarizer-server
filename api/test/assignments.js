@@ -616,5 +616,3 @@ describe('Assignments', () => {
         });
     }
 });
-
-

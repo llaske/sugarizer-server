@@ -8,7 +8,7 @@ var superagent = require('superagent'),
 var assignment = require('./index');
 
 module.exports = function addComment(req, res) {
-    console.log("addComment");
+    
     //reinit l10n and momemt with locale
     common.reinitLocale(req);
     var query = {
@@ -16,7 +16,6 @@ module.exports = function addComment(req, res) {
     };
 
     if (req.method == 'POST') {
-        console.log("MFss");
         // validate 
         req.body.comment = req.body.comment.trim();
         req.assert('comment', common.l10n.get('CommentInvalid')).notEmpty();
@@ -24,7 +23,6 @@ module.exports = function addComment(req, res) {
         var errors = req.validationErrors();
 
         if (!errors) {
-            console.log("MsF");
             superagent
                 .put(common.getAPIUrl(req) + 'api/v1/assignments/deliveries/comment/' + req.params.assignmentId)
                 .set(common.getHeaders(req))
@@ -35,14 +33,11 @@ module.exports = function addComment(req, res) {
                 .end(function (err, response) {
                     if (response.statusCode == 200) {
                         // send to deliveries page
-                        console.log("INCCC");
-                        console.log(response.body);
                         req.flash('success', {
                             msg: common.l10n.get('CommentAdded', { comment: req.body.comment })
                         });
                         return res.redirect('/dashboard/assignments/deliveries/' + req.params.assignmentId);
                     } else {
-                        console.log("me here")
                         req.flash('error', {
                             msg: common.l10n.get('ErrorCode' + response.body.code)
                         });
@@ -50,13 +45,11 @@ module.exports = function addComment(req, res) {
                     }
                 });
         } else {
-            console.log("MF");
             req.flash('error', {
                 msg: common.l10n.get('ErrorCode' + response.body.code)
             });
             return res.redirect('/dashboard/assignments/deliveries/' + req.params.assignmentId);
         }
-
     } else {
         // send to deliveries page
         res.render('addComment', {
