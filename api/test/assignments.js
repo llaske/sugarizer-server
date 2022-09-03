@@ -458,7 +458,8 @@ describe('Assignments', () => {
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .send({
-                    isSubmitted: true
+                    isSubmitted: true,
+                    submissionDate: new Date()
                 })
                 .end((err, res) => {
                     res.should.have.status(401);
@@ -474,7 +475,8 @@ describe('Assignments', () => {
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .send({
-                    isSubmitted: true
+                    isSubmitted: true,
+                    submissionDate: new Date()
                 })
                 .end((err, res) => {
                     res.should.have.status(401);
@@ -489,7 +491,60 @@ describe('Assignments', () => {
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .send({
-                    isSubmitted: true
+                    isSubmitted: true,
+                    submissionDate: new Date()
+                })
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    done();
+                });
+        });
+    });
+
+     // return assignment ---GET/:id/return---
+    describe('/GET/:id/return assignments', () => {
+        it('it should do nothing on invalid assignment', (done) => {
+
+            chai.request(server)
+                .get('/api/v1/assignments/deliveries/return/' + 'invalid?oid=' + fake.delivery1.objectId)
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .send({
+                    isSubmitted: false,
+                    
+                })
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    res.body.code.should.be.eql(35);
+                    done();
+                });
+        });
+
+        it('it should do nothing on return with inexisting assignment and without oid', (done) => {
+
+            chai.request(server)
+                .get('/api/v1/assignments/deliveries/return/' + 'ffffffffffffffffffffffff?oid=')
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .send({
+                    isSubmitted: false,
+                    
+                })
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    res.body.code.should.be.eql(35);
+                    done();
+                });
+        });
+
+        it('it should do return with an valid oid and assignment id', (done) => {
+            chai.request(server)
+                .get('/api/v1/assignments/deliveries/return/' + fake.assignment1._id + '?oid=' + fake.delivery1.objectId)
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .send({
+                    isSubmitted: false,
+                    
                 })
                 .end((err, res) => {
                     res.should.have.status(200);
