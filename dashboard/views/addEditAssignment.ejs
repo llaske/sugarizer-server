@@ -10,7 +10,7 @@
 						<div class="card-content">
 							<%- include ./includes/flash-errors %>
 							<form id="assignment-add-edit-form" method="post" <% if(typeof assignment == 'object'){ %> action="<%= assignment._id %>" <% } %>>
-							<div class="row" id="editAssignment-name">
+								<div class="row" id="editAssignment-name">
 									<div class="col-md-12">
 										<div class="form-group form-black label-floating">
 											<label class="control-label" data-l10n-id="name"></label>
@@ -39,27 +39,21 @@
 								<% } %>
 								<% if(mode =="add"){%>
 									<div class="col-md-2">
-										<div id="icon" >
-											<% if(account.user && account.user.role=="teacher"){ %>
-												<div class="color" id="<%= entries[0].objectId %>">
-													<div class="xo-icon"></div>
-												</div>
-											<% } %>
-										</div>
+										<div id="icon" ></div>
 									</div>
 									<div class="col-md-7">
 										<div class="form-group form-black label-floating">
 											<label class="control-label" data-l10n-id="assignedWork"></label>
-											<select id="select2-activity" name="assignedWork" >
+											<select id="select2-activity" name="assignedWork">
 												<% for( var i=0; i < entries.length; i++) { %> 
-													<option value="<%= entries[i].objectId %>,<%= entries[i].metadata.activity %>"><%= entries[i].metadata.title %></option>
+													<option value="<%= entries[i].objectId %>"><%= entries[i].metadata.title %></option>
 													<script>
 													$(document).ready(function(){
-														console.log("ready");
+														$('#select2-activity').val(null).trigger('change');
 														$("#select2-activity").on("change", function(){
-														var activity = $("#select2-activity").val();
-														$("#icon").html("<div class='color' id='"+activity.split(',')[0]+"'><div class='xo-icon'></div></div>");
-														new icon().load("<%= iconMap[entries[i].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(entries[i].metadata.buddy_color?entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries[i].objectId %>");
+															var activity = $("#select2-activity").val();
+															$("#icon").html("<div class='color' id='"+activity+"'><div class='xo-icon'></div></div>");
+															new icon().load("<%= iconMap[entries[i].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(entries[i].metadata.buddy_color?entries[i].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= entries[i].objectId %>");
 														});
 													});
 													</script>
@@ -68,10 +62,9 @@
 											<script>
 											$(document).ready(function() {
 												var entries = <%- JSON.stringify(entries) %>;
-												console.log(entries);
 												$('#select2-activity').select2({
-												placeholder:"Select an activity",
-												allowClear:true,
+													placeholder:"Select an activity",
+													allowClear:true,
 												});
 											});
 											</script>
@@ -79,8 +72,18 @@
 									</div>
 									<div class="col-md-2">
 										<div class="form-group form-black label-floating">
-											<a data-l10n-id="deleteAssignment" title="Delete Assignment"  class="material-icons text-muted">delete_forever</i></a>
+											<a data-l10n-id="deleteAssignment" title="Delete Assignment" id="remove-activity"  class="material-icons text-muted">delete_forever</i></a>
 										</div>
+										<script>
+										$(document).ready(function(){
+											$("#remove-activity").css("cursor","pointer");
+											$("#remove-activity").click(function(){
+												if($("#select2-activity").val() != null){
+													$('#select2-activity').val(null).trigger('change');
+												}
+											});
+										});
+										</script>
 									</div>
 									<% } %>
 									<div class="row" id="editAssignment-instructions">
