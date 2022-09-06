@@ -1,4 +1,4 @@
-/* eslint-disable indent */
+//include libraries
 var superagent = require('superagent'),
     moment = require('moment'),
     common = require('../../helper/common'),
@@ -11,7 +11,6 @@ var assignment = require('./index');
 
 module.exports = function addAssignment(req, res) {
     // reinit l10n and momemt with locale
-
     common.reinitLocale(req);
     var query = {
         limit: (req.query.limit ? req.query.limit : 10),
@@ -28,21 +27,28 @@ module.exports = function addAssignment(req, res) {
 
         query['type'] = "shared";
     }
-    console.log(query);
-
-
     if (req.method == 'POST') {
         // validate
-        console.log({ BODY: req.body });
         req.body.name = req.body.name.trim();
         req.body.classrooms = req.body.classrooms || [];
         if (typeof req.body.classrooms == 'string') {
             req.body.classrooms = [req.body.classrooms];
         }
-        // req.body.color = JSON.parse(req.body.color);
+        if (!req.body.lateTurnIn) {
+            req.body.lateTurnIn = false;
+        } else {
+            req.body.lateTurnIn = true;
+        }
+        //join date and time
+        if (req.body.dueDate && req.body.time) {
+            req.body.dueDate = req.body.dueDate + " " + req.body.time;
+        }
+        //delete time
+        if (req.body.time) {
+            delete req.body.time;
+        }
         req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
         req.body.options = { sync: true, stats: true };
-
         // get errors
         var errors = req.validationErrors();
 
@@ -56,7 +62,6 @@ module.exports = function addAssignment(req, res) {
                 })
                 .end(function (error, response) {
                     if (response.statusCode == 200) {
-                        console.log({ "body": response.body });
                         // send to classrooms page
                         req.flash('success', {
                             msg: common.l10n.get('AssignmentCreated', { name: req.body.name })
@@ -72,50 +77,60 @@ module.exports = function addAssignment(req, res) {
         } else {
             dashboard_utils.getAllClassrooms(req, res, function (classrooms) {
                 journal_utils.getJournalEntries(req, res, query, function (journalEntries) {
-                    console.log({ "journalEntries": journalEntries });
-                    if (req.body.classrooms && typeof (req.body.classrooms) == "object" && req.body.classrooms.length > 0 && classrooms && classrooms.classrooms && classrooms.classrooms.length > 0) {
-                        for (var i = 0; i < classrooms.classrooms.length; i++) {
-                            if (req.body.classrooms.indexOf(classrooms.classrooms[i]._id) != -1) {
-                                classrooms.classrooms[i]['is_member'] = true;
+                    journal_utils.getActivities(req, res, function (activities) {
+                        //make iconMap
+                        var iconMap = {};
+                        for (var i = 0; i < activities.length; i++) {
+                            iconMap[activities[i].id] = '/' + activities[i].directory + '/' + activities[i].icon;
+                        }
+                        if (req.body.classrooms && typeof (req.body.classrooms) == "object" && req.body.classrooms.length > 0 && classrooms && classrooms.classrooms && classrooms.classrooms.length > 0) {
+                            for (var i = 0; i < classrooms.classrooms.length; i++) {
+                                if (req.body.classrooms.indexOf(classrooms.classrooms[i]._id) != -1) {
+                                    classrooms.classrooms[i]['is_member'] = true;
+                                }
                             }
                         }
+                        req.flash('errors', errors);
+                        return res.render('addEditAssignment', {
+                            mode: "add",
+                            module: 'assignments',
+                            xocolors: xocolors,
+                            emoji: emoji,
+                            moment: moment,
+                            entries: journalEntries.entries,
+                            classrooms: classrooms.classrooms,
+                            iconMap: iconMap,
+                            account: req.session.user,
+                            server: assignment.ini().information
+                        });
+                    });
+                });
+            });
+        }
+    } else {
+        // send back
+        dashboard_utils.getAllClassrooms(req, res, function (classrooms) {
+            journal_utils.getJournalEntries(req, res, query, function (journalEntries) {
+                journal_utils.getActivities(req, res, function (activities) {
+                    //make hashlist
+                    var iconMap = {};
+                    for (var i = 0; i < activities.length; i++) {
+                        iconMap[activities[i].id] = '/' + activities[i].directory + '/' + activities[i].icon;
                     }
-                    req.flash('errors', errors);
-                    return res.render('addEditAssignment', {
+                    res.render('addEditAssignment', {
                         mode: "add",
                         module: 'assignments',
+                        classrooms: classrooms.classrooms,
                         xocolors: xocolors,
                         emoji: emoji,
-                        moment: moment,
                         entries: journalEntries.entries,
-                        classrooms: classrooms.classrooms,
+                        iconMap: iconMap,
+                        moment: moment,
                         account: req.session.user,
                         server: assignment.ini().information
                     });
                 });
             });
-        }
-
-    } else {
-
-        // send back
-        dashboard_utils.getAllClassrooms(req, res, function (classrooms) {
-            journal_utils.getJournalEntries(req, res, query, function (journalEntries) {
-                console.log({ "journalEntries": journalEntries.entries });
-                console.log(query);
-                res.render('addEditAssignment', {
-                    mode: "add",
-                    module: 'assignments',
-                    classrooms: classrooms.classrooms,
-                    xocolors: xocolors,
-                    emoji: emoji,
-                    entries: journalEntries.entries,
-                    moment: moment,
-                    account: req.session.user,
-                    server: assignment.ini().information
-                });
-            });
         });
-
     }
 };

@@ -1,4 +1,4 @@
-/* eslint-disable indent */
+//include libraries
 var superagent = require('superagent'),
     moment = require('moment'),
     common = require('../../helper/common'),
@@ -6,8 +6,9 @@ var superagent = require('superagent'),
     deleteAssignment = require('./deleteAssignment'),
     editAssignment = require('./editAssignment'),
     getAllDeliveries = require('./getAllDeliveries'),
-    launchAssignment = require('./launchAssignment');
-
+    launchAssignment = require('./launchAssignment'),
+    addComment = require('./addComment'),
+    returnAssignment = require('./returnAssignment');
 
 var _util = require('../journal/util'),
     getActivities = _util.getActivities;
@@ -24,15 +25,17 @@ exports.ini = function () {
 
 //main Loading page
 exports.index = function (req, res) {
-    console.log(req.session.user.user.role);
+    // reinit l10n and momemt with locale
     common.reinitLocale(req);
     var query = {
         sort: '+name'
     };
-
     //get query params
-    if (req.query.classroom != '') {
-        query['q'] = req.query.assignments;
+    if (req.query.assignment != '') {
+        query['name'] = req.query.assignment;
+    }
+    if (req.query.status != '') {
+        query['isAssigned'] = req.query.status;
     }
     if (req.query.limit != '') {
         query['limit'] = req.query.limit;
@@ -45,9 +48,9 @@ exports.index = function (req, res) {
     }
 
     getActivities(req, res, function (activities) {
-        var hashList = {};
+        var iconMap = {};
         for (var i = 0; i < activities.length; i++) {
-            hashList[activities[i].id] = '/' + activities[i].directory + '/' + activities[i].icon;
+            iconMap[activities[i].id] = '/' + activities[i].directory + '/' + activities[i].icon;
         }
         superagent
             .get(common.getAPIUrl(req) + 'api/v1/assignments')
@@ -55,16 +58,19 @@ exports.index = function (req, res) {
             .query(query)
             .end(function (error, response) {
                 if (response.statusCode == 200) {
-
                     res.render('assignments', {
                         moment: moment,
                         query: query,
                         module: 'assignments',
                         headers: common.getHeaders(req),
                         server: ini.information,
-                        iconList: hashList,
+                        iconMap: iconMap,
                         account: req.session.user,
                         data: response.body,
+                    });
+                } else {
+                    req.flash('errors', {
+                        msg: common.l10n.get('ErrorCode' + response.body.code)
                     });
                 }
             });
@@ -76,3 +82,5 @@ exports.deleteAssignment = deleteAssignment;
 exports.editAssignment = editAssignment;
 exports.getAllDeliveries = getAllDeliveries;
 exports.launchAssignment = launchAssignment;
+exports.addComment = addComment;
+exports.returnAssignment = returnAssignment;

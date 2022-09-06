@@ -1,11 +1,8 @@
-/* eslint-disable indent */
 //include libraries
 var superagent = require('superagent'),
     common = require('../../helper/common');
 
-
 module.exports = function launchAssignment(req, res) {
-
     if (req.params.assignmentId) {
         var name = req.query.name || 'assignment';
         superagent
@@ -13,7 +10,6 @@ module.exports = function launchAssignment(req, res) {
             .set(common.getHeaders(req))
             .end(function (error, response) {
                 if (response.statusCode == 200) {
-
                     // send to assignments page
                     req.flash('success', {
                         msg: common.l10n.get('AssignmentLaunched', { name: name })
