@@ -18,7 +18,7 @@
 								</div>
 								<div class="col-md-3"> 
 									<div class="form-group form-black label-floating is-empty">
-										<select class="form-control" id="select-status-select2" name="status" value="<% if(query.s){ %><%= query.s %><% } %>">
+										<select class="form-control" id="select-status-select2" name="status" value="<% if(query.isAssigned){ %><%= query.isAssigned %><% } %>">
 											<option value=""></option>
 										<select/>
 										<script>
@@ -99,8 +99,8 @@
 												<td><%= data.assignments[i].name %></td>
 												<td>
 													<% if(data.assignments[i].isAssigned == false){ %> Created <% } %> 
-													<% if(data.assignments[i].isAssigned == true){ %> Assigned <% } %>
-													<% if(data.assignments[i].dueDate == new Date() && data.assignments[i].isAssigned == true){ %> Terminate <% } %>
+													<% if( Date.parse(new Date(data.assignments[i].dueDate))/1000 >= Date.parse(new Date())/1000 && data.assignments[i].isAssigned == true){ %> Assigned <% } %>
+													<% if( Date.parse(data.assignments[i].dueDate)/1000 <= Date.parse(new Date())/1000 && data.assignments[i].isAssigned == true ){ %> Terminated <% } %>
 												</td>
 												<td><%= moment(data.assignments[i].timestamp).calendar() %></td>
 												<td>

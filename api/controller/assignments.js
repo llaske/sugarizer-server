@@ -436,7 +436,16 @@ exports.launchAssignment = function (req, res) {
                                         });
                                     }
                                     updateEntries(entry[0].content[0], privateJournalIds).then(function (result) {
-                                        updateStatus(req, res, "Assigned", entry[0].content[0].objectId);
+                                        updateStatus(req, res, "Assigned", entry[0].content[0].objectId, function (err, result) {
+                                            if (err) {
+                                                return res.status(500).send({
+                                                    'error': "An error has occurred",
+                                                    'code': 10
+                                                });
+                                            } else {
+                                                res.status(200).send(result);
+                                            }
+                                        });
                                         res.status(200).send((result).toString());
                                     }).catch(function () {
                                         res.status(500).send({
@@ -664,7 +673,7 @@ function addQuery(filter, params, query, default_val) {
                 $regex: new RegExp(params[filter], "i")
             };
         } else if (filter == "buddy_Name") {
-            console.log("buddy_Name");
+            
             query["buddy_name"] = {
                 // buddy_Name is a field in the database under metadata of journal entry
                 $regex: new RegExp(params[filter], "i")
@@ -738,19 +747,10 @@ exports.updateComment = function (req, res) {
 };
 
 //update status
-function updateStatus(req, res, status, objectId) {
+function updateStatus(req, res, status, objectId, callback) {
     //validate
     if (!mongo.ObjectID.isValid(req.params.assignmentId)) {
-        return res.status(401).send({
-            'error': "Invalid assignment id",
-            'code': 23
-        });
-    }
-    if (!req.params.assignmentId) {
-        return res.status(400).send({
-            'error': "Assignment id is not defined",
-            'code': 22
-        });
+       callback();
     }
     var assignmentId = req.params.assignmentId;
     if (status == "Assigned") {
@@ -759,7 +759,7 @@ function updateStatus(req, res, status, objectId) {
                 {
                     '_id': new mongo.ObjectID(assignmentId)
                 },
-                {  //set comment only if it is match with objectId
+                {  
                     $set: {
                         'isAssigned': true,
                     }
@@ -769,12 +769,9 @@ function updateStatus(req, res, status, objectId) {
                 },
                 function (err, result) {
                     if (err) {
-                        return res.status(500).send({
-                            error: "An error has occurred",
-                            code: 10
-                        });
+                        callback(err);
                     } else {
-                        res.send(result);
+                        callback(result);
                     }
                 });
         });
@@ -786,7 +783,7 @@ function updateStatus(req, res, status, objectId) {
                     'content.objectId': objectId,
                     'content.metadata.assignmentId': assignmentId,
                 },
-                {  //set comment only if it is match with objectId
+                {  
                     $set: {
                         'content.$[elem].metadata.status': status
                     }
@@ -800,12 +797,9 @@ function updateStatus(req, res, status, objectId) {
                 },
                 function (err, result) {
                     if (err) {
-                        return res.status(500).send({
-                            error: "An error has occurred",
-                            code: 10
-                        });
+                        callback(err);
                     } else {
-                        res.send(result);
+                        callback(result);
                     }
                 });
         });
@@ -864,17 +858,28 @@ exports.submitAssignment = function (req, res) {
     }
     var assignmentId = req.params.assignmentId;
     var objectId = req.query.oid;
-    updateStatus(req, res, "Delivered", objectId);
+    updateStatus(req, res, "Delivered", objectId, function (result) {
+        if (result) {
+            res.status(200).send(result);
+        }
+        else {
+            res.status(500).send({
+                error: "An error has occurred",
+                code: 10
+            });
+        }
+    });
     db.collection(journalCollection, function (err, collection) {
+        var date = +new Date();
         collection.findOneAndUpdate(
             {
                 'content.objectId': objectId,
                 'content.metadata.assignmentId': assignmentId,
             },
-            {  //set isSubmitted only if it is match with objectId
+            {  
                 $set: {
                     'content.$[elem].metadata.isSubmitted': true,
-                    'content.$[elem].metadata.submissionDate': new Date(),
+                    'content.$[elem].metadata.submissionDate': date
                     
                 }
             },

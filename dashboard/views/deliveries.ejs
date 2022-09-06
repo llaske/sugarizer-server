@@ -81,13 +81,14 @@
 													</script>
 												<td><%= data.deliveries[i].content[0].metadata.buddy_name %></td>
 												<td><% if(data.deliveries[i].content[0].metadata.isSubmitted == true ){%> Delivered <% } %> <% if(data.deliveries[i].content[0].metadata.isSubmitted == false ){%> Expected <% } %> </td>
-												<td><%= moment(data.deliveries[i].timestamp).calendar() %></td>
+												<td><%= moment(data.deliveries[i].content[0].metadata.submissionDate).format('DD/MM/YYYY h:mmA')%></td>
 												<td><%= data.deliveries[i].content[0].metadata.comment %></td>
 												<td>
 													<% if (account.user && account.user.role=="admin" || account.user.role=="teacher") { %>
 														<a id="deliveries-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= data.deliveries[i]._id %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=launch')" data-l10n-id="deliveries-launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
 														<a title="Comment" href="/dashboard/assignments/deliveries/comment/<%= data.deliveries[i].content[0].metadata.assignmentId %>?oid=<%= data.deliveries[i].content[0].objectId %>"><i id="deliveries-comment" class="material-icons text-muted">comment</i></a>
 														<a id="deliveries-journal-activity-download" href="javascript:download_activity('/dashboard/activities/launch/<%= query.journal %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=download')" data-l10n-id="download" title="Download"><i class="material-icons text-muted">cloud_download</i></a>
+														<a title="Return" href="/dashboard/assignments/deliveries/return/<%= data.deliveries[i].content[0].metadata.assignmentId %>?oid=<%= data.deliveries[i].content[0].objectId %>"><i id="deliveries-return" class="material-icons text-muted">building</i></a>
 													<% } %>
 												</td>
 											</tr>
