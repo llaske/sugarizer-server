@@ -36,7 +36,7 @@
 								</div>
 								<div class="col-md-6">
 									<div class="upload-btn-wrapper pull-right" id="assignment-deleteMultiple">
-										<a href="#" onclick="deleteMultipleAssignment(); return false;" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
+										<a href="#" onclick="deleteMultipleAssignments(); return false;" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
 									</div>
 									<% if (account.user && account.user.role=="admin" || account.user.role == "teacher") { %>
 										<a class="btn btn-round pull-right" href="/dashboard/assignments/add" data-l10n-id="addAssignment" id="assignment-addassignment"><div class="ripple-container"></div></a>
@@ -75,7 +75,7 @@
 										<tbody>
 											<% for(var i=0; i < data.assignments.length; i++) { %>
 											<tr id="assignment-card">
-												<td><input type="checkbox" class="assignment-checkbox" cid="<%= data.assignments[i]._id %>"></td>
+												<td><input type="checkbox" class="assignments-checkbox" aid="<%= data.assignments[i]._id %>"></td>
 												<td><%= data.offset + i + 1 %></td>
 												<td>
 													<div class="color" id="<%= data.assignments[i].assignedWork.objectId %>">
