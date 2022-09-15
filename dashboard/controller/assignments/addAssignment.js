@@ -47,7 +47,7 @@ module.exports = function addAssignment(req, res) {
         if (req.body.time) {
             delete req.body.time;
         }
-        req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
+        req.assert('name', common.l10n.get('AssignmentNameInvalid')).matches(/^[a-z0-9 ]+$/i);
         req.body.options = { sync: true, stats: true };
         // get errors
         var errors = req.validationErrors();

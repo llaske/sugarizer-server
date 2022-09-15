@@ -207,7 +207,7 @@ exports.findAllDeliveries = function (req, res) {
                 },
                 {
                     $project: {
-                        _id: 0,
+                        _id: 1,
                         content: {
                             $filter: {
                                 input: "$content",
@@ -376,6 +376,12 @@ exports.launchAssignment = function (req, res) {
                 //get students private_journal
                 common.fetchAllStudents(classrooms).then(function (stds) {
                     var uniqueJournalIds = [];
+                    if(stds.length <= 0){
+                        return res.status(400).send({
+                            'error': 'No students found',
+                            'code': 37
+                        });
+                    }
                     //make set for getting unique values of private_journal
                     var uniqueJournalIdsSet = new Set();
                     for (var i = 0; i < stds.length; i++) {
@@ -383,8 +389,20 @@ exports.launchAssignment = function (req, res) {
                             uniqueJournalIdsSet.add(stds[i].private_journal.toString());
                         }
                     }
+                    //getting unique values of _id and name
+                    var arr = [];
+                    var uniqueStudents = [];
+                    for (var i = 0; i < stds.length; i++) {
+                        arr.push({ _id: stds[i]._id, name: stds[i].name });
+                    }
+                    var uniqueStudentsSet = new Set();
+                    arr.forEach(obj => (
+                        !uniqueStudentsSet.has(obj) && uniqueStudentsSet.add(JSON.stringify(obj))
+                    ))
+                    uniqueStudentsSet = new Set([...uniqueStudentsSet].map(o => JSON.parse(o)))
                     //convert set to array
                     uniqueJournalIds = Array.from(uniqueJournalIdsSet);
+                    uniqueStudents = Array.from(uniqueStudentsSet);
                     privateJournalIds = uniqueJournalIds;
                     db.collection(journalCollection, function (err, collection) {
                         if (err) {
@@ -435,7 +453,7 @@ exports.launchAssignment = function (req, res) {
                                             'code': 36
                                         });
                                     }
-                                    updateEntries(entry[0].content[0], privateJournalIds).then(function (result) {
+                                    updateEntries(entry[0].content[0], privateJournalIds, uniqueStudents).then(function (result) {
                                         updateStatus(req, res, "Assigned", entry[0].content[0].objectId, function (err, result) {
                                             if (err) {
                                                 return res.status(500).send({
@@ -469,7 +487,7 @@ exports.launchAssignment = function (req, res) {
 };
 
 //private function to update entries
-function updateEntries(entryDoc, privateJournalIds) {
+function updateEntries(entryDoc, privateJournalIds, uniqueStudents) {
     return new Promise(function (resolve, reject) {
         if (mongo.ObjectID.isValid(entryDoc.text)) {
             db.collection(CHUNKS_COLL, function (err, collection) {
@@ -482,7 +500,7 @@ function updateEntries(entryDoc, privateJournalIds) {
                     else {
                         for (var counter = 0, i = 0, j = 0; i < privateJournalIds.length; i++) {
                             // add objectid
-                            journal.copyEntry(entryDoc, chunks).then(function (copy) {
+                            journal.copyEntry(entryDoc, chunks, uniqueStudents[i]).then(function (copy) {
                                 db.collection(journalCollection, function (err, collection) {
                                     if (err) {
                                         reject(err);
@@ -673,7 +691,6 @@ function addQuery(filter, params, query, default_val) {
                 $regex: new RegExp(params[filter], "i")
             };
         } else if (filter == "buddy_Name") {
-            
             query["buddy_name"] = {
                 // buddy_Name is a field in the database under metadata of journal entry
                 $regex: new RegExp(params[filter], "i")
