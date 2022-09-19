@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 // User handling
 
 var mongo = require('mongodb'),

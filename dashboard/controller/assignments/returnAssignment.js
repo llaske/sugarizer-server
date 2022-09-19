@@ -14,7 +14,7 @@ module.exports = function returnAssignment(req, res) {
             .query(query)
             .end(function (error, response) {
                 if (response.statusCode == 200) {
-                    // send to assignments page
+                    // send to deliveries page
                     req.flash('success', {
                         msg: common.l10n.get('AssignmentReturned', { name: name })
                     });

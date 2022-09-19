@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 //include libraries
 var superagent = require('superagent'),
     common = require('../../helper/common');
