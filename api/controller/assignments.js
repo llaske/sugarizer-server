@@ -64,7 +64,7 @@ exports.findAll = function (req, res) {
 
     query = addQuery("name", req.query, query);
     query = addQuery("isAssigned", req.query, query);
-
+    query = addQuery("terminated", req.query, query);
     db.collection(assignmentCollection, function (err, collection) {
         //count
         collection.countDocuments(query, function (err, count) {
@@ -197,11 +197,10 @@ exports.findAllDeliveries = function (req, res) {
             var params = JSON.parse(JSON.stringify(req.query));
             var route = req.route.path;
             var options = getOptions(req, count, "+buddy_name");
-            //find all entries whic match with assignment id using aggregate
+            //find all entries which matches with assignment id using aggregation
             collection.aggregate([
                 {
                     $match: {
-
                         "content.metadata.assignmentId": assignmentId
                     }
                 },
@@ -224,7 +223,6 @@ exports.findAllDeliveries = function (req, res) {
                 }
 
             ]).toArray(function (err, items) {
-
                 if (err) {
                     return res.status(500).send({
                         error: "An error has occurred",
@@ -454,7 +452,7 @@ exports.launchAssignment = function (req, res) {
                                         });
                                     }
                                     updateEntries(entry[0].content[0], privateJournalIds, uniqueStudents).then(function (result) {
-                                        updateStatus(req, res, "Assigned", entry[0].content[0].objectId, function (err, result) {
+                                        updateStatus(req.params.assignmentId, "Assigned", entry[0].content[0].objectId, function (err, result) {
                                             if (err) {
                                                 return res.status(500).send({
                                                     'error': "An error has occurred",
@@ -685,26 +683,38 @@ function addQuery(filter, params, query, default_val) {
         typeof params[filter] != "undefined" &&
         typeof params[filter] === "string"
     ) {
-
         if (filter == "name") {
             query["name"] = {
                 $regex: new RegExp(params[filter], "i")
             };
         } else if (filter == "buddy_Name") {
             query["buddy_name"] = {
-                // buddy_Name is a field in the database under metadata of journal entry
                 $regex: new RegExp(params[filter], "i")
             };
-        }
-        else if (filter == "isAssigned") {
-            query["isAssigned"] = params[filter] == "true";
-        }
-        else {
+        } else if (filter == "isAssigned") {
+            if(params[filter] == "true"){
+                query["isAssigned"] = {
+                    $eq: true
+                }
+                //also checking dueDate is greater than current date.
+                query["dueDate"] = {
+                    $gte: new Date().getTime()
+                }
+            } 
+            if(params[filter] == "false"){
+                query["isAssigned"] = {
+                    $eq: false
+                }
+            }
+        } else if (filter == "terminated") {
+            query["dueDate"] = {
+                $lte : new Date().getTime()
+            };
+        } else {
             query[filter] = {
                 $regex: new RegExp("^" + params[filter] + "$", "i")
             };
         }
-
     } else {
         //default case
         if (typeof default_val != "undefined") {
@@ -747,7 +757,6 @@ exports.updateComment = function (req, res) {
             },
             function (err, result) {
                 if (err) {
-                    
                     return res.status(401).send({
                         error: "An error has occurred",
                         code: 10
@@ -757,19 +766,18 @@ exports.updateComment = function (req, res) {
                     return res.status(401).send({});
                 }
                 else {
-                    res.status(200).send(result);
+                    return res.status(200).send(result);
                 }
             });
     });
 };
 
 //update status
-function updateStatus(req, res, status, objectId, callback) {
+function updateStatus(assignmentId, status, objectId, callback) {
     //validate
-    if (!mongo.ObjectID.isValid(req.params.assignmentId)) {
+    if (!mongo.ObjectID.isValid(assignmentId)) {
        callback();
     }
-    var assignmentId = req.params.assignmentId;
     if (status == "Assigned") {
         db.collection(assignmentCollection, function (err, collection) {
             collection.findOneAndUpdate(
@@ -875,7 +883,7 @@ exports.submitAssignment = function (req, res) {
     }
     var assignmentId = req.params.assignmentId;
     var objectId = req.query.oid;
-    updateStatus(req, res, "Delivered", objectId, function (result) {
+    updateStatus(assignmentId, "Delivered", objectId, function (result) {
         if (result) {
             res.status(200).send(result);
         }
@@ -887,7 +895,9 @@ exports.submitAssignment = function (req, res) {
         }
     });
     db.collection(journalCollection, function (err, collection) {
-        var date = +new Date();
+        //date in unix timestamp format
+        var date = new Date().getTime();
+        
         collection.findOneAndUpdate(
             {
                 'content.objectId': objectId,
@@ -895,8 +905,8 @@ exports.submitAssignment = function (req, res) {
             },
             {  
                 $set: {
-                    'content.$[elem].metadata.isSubmitted': true,
-                    'content.$[elem].metadata.submissionDate': date
+                    'content.$[elem].metadata.submissionDate': date,
+                    'content.$[elem].metadata.isSubmitted': true
                     
                 }
             },
