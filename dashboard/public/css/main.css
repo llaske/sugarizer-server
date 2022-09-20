@@ -214,6 +214,10 @@
   background-image: url('/public/img/user-icon.svg')
 }
 
+.remove-activity {
+  cursor: pointer;
+}
+
 .material-icons.dp24 {
   font-size: 24px;
   line-height: 36px;

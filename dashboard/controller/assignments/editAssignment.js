@@ -22,6 +22,7 @@ module.exports = function editAssignment(req, res) {
             //join dueDate and time
             if (req.body.dueDate && req.body.time) {
                 req.body.dueDate = req.body.dueDate + " " + req.body.time;
+                 req.body.dueDate = Math.floor(new Date(req.body.dueDate).getTime())
             }
             //delete req.body.time
             if (req.body.time) {

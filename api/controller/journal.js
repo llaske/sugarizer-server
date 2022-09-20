@@ -1248,7 +1248,7 @@ exports.copyEntry = function (entryDoc, chunks, uniqueStudents) {
 		streamifier.createReadStream(textContent)
 			.pipe(gridfsbucket.openUploadStreamWithId(filename, filename.toString()))
 			.on('error', function () {
-				reject(new Error());
+				reject(new Error("Failed to write journal entry"));
 			}).on('finish', function (uploadStr) {
 				entryDoc.text = uploadStr._id;
 				entryDoc.metadata.user_id = uniqueStudents._id;

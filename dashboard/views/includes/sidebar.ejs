@@ -66,7 +66,6 @@
 					<p data-l10n-id="classrooms">Classrooms</p>
 				</a>
 			</li>
-			<%if (account.user && account.user.role == "admin" || account.user.role == "teacher") { %>
 			<%if (module == 'assignments') { %>
 				<li class="active">
 			<% } else {%>
@@ -77,7 +76,6 @@
 					<p data-l10n-id="assignments">Assignments</p>
 				</a>
 			</li>
-			<% } %>
 			<%if (account.user && account.user.role == "admin") { %>
 			<%if (module == 'stats') { %>
 				<li class="active">
