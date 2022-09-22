@@ -98,7 +98,7 @@
                                                 
                                                 <td><%= data.assignments[i].name %></td>
                                                 <td>
-                                                    <% if(data.assignments[i].isAssigned == false){ %> Created <% } %> 
+                                                    <% if( data.assignments[i].dueDate >= new Date().getTime() && data.assignments[i].isAssigned == false){ %> Created <% } %>  
                                                     <% if( data.assignments[i].dueDate >= new Date().getTime() && data.assignments[i].isAssigned == true){ %> Assigned <% } %>
                                                     <% if( data.assignments[i].dueDate < new Date().getTime() && data.assignments[i].isAssigned == true ){ %> Terminated <% } %>
                                                 </td>
