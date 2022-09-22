@@ -24,7 +24,6 @@ module.exports = function addAssignment(req, res) {
         query['uid'] = req.query.uid;
         query['type'] = "private";
     } else {
-
         query['type'] = "shared";
     }
     if (req.method == 'POST') {
@@ -42,12 +41,15 @@ module.exports = function addAssignment(req, res) {
         //join date and time
         if (req.body.dueDate && req.body.time) {
             req.body.dueDate = req.body.dueDate + " " + req.body.time;
+            req.body.dueDate = Math.floor(new Date(req.body.dueDate).getTime())
         }
+        console.log({d:req.body.dueDate})
         //delete time
         if (req.body.time) {
             delete req.body.time;
         }
         req.assert('name', common.l10n.get('AssignmentNameInvalid')).matches(/^[a-z0-9 ]+$/i);
+        req.assert('instructions', common.l10n.get('AssignmentInstructionsInvalid')).matches(/^[a-z0-9 ]+$/i);
         req.body.options = { sync: true, stats: true };
         // get errors
         var errors = req.validationErrors();
@@ -95,6 +97,12 @@ module.exports = function addAssignment(req, res) {
                             mode: "add",
                             module: 'assignments',
                             xocolors: xocolors,
+                            assignment: {
+                                name: req.body.name,
+                                instructions: req.body.instructions,
+                                dueDate: req.body.dueDate,
+                                lateTurnIn: req.body.lateTurnIn,
+                            },
                             emoji: emoji,
                             moment: moment,
                             entries: journalEntries.entries,
