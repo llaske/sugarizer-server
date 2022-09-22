@@ -167,8 +167,6 @@ describe('Assignments', () => {
                             });
                     });
             });
-
-
     });
     //create fake assignment ---POST---
     describe('/POST assignment', () => {
@@ -202,7 +200,6 @@ describe('Assignments', () => {
     //get assignment ---GET/:id---
     describe('/GET/:id assignment', () => {
         it('it should return nothing on invalid', (done) => {
-
             chai.request(server)
                 .get('/api/v1/assignments/' + 'xxx')
                 .set('x-access-token', fake.teacher1.token)
@@ -215,7 +212,6 @@ describe('Assignments', () => {
         });
 
         it('it should return nothing on inexisting id', (done) => {
-
             chai.request(server)
                 .get('/api/v1/assignments/' + 'ffffffffffffffffffffffff')
                 .set('x-access-token', fake.teacher1.token)
@@ -228,7 +224,6 @@ describe('Assignments', () => {
         });
 
         it('it should return an assignment', (done) => {
-
             chai.request(server)
                 .get('/api/v1/assignments/' + fake.assignment1._id)
                 .set('x-access-token', fake.teacher1.token)
@@ -249,7 +244,6 @@ describe('Assignments', () => {
     //get all assignments ---GET---
     describe('/GET assignments', () => {
         it('it should return all the assignments', (done) => {
-
             chai.request(server)
                 .get('/api/v1/assignments')
                 .set('x-access-token', fake.teacher1.token)
@@ -263,7 +257,6 @@ describe('Assignments', () => {
         });
 
         it('it should return all the fields for assignments', (done) => {
-
             chai.request(server)
                 .get('/api/v1/assignments')
                 .set('x-access-token', fake.teacher1.token)
@@ -305,7 +298,6 @@ describe('Assignments', () => {
         });
 
         it('it should do nothing on invalid assignment', (done) => {
-
             chai.request(server)
                 .put('/api/v1/assignments/' + 'invalid')
                 .set('x-access-token', fake.teacher1.token)
@@ -321,7 +313,6 @@ describe('Assignments', () => {
         });
 
         it('it should do nothing on inexisting assignment', (done) => {
-
             chai.request(server)
                 .put('/api/v1/assignments/' + 'ffffffffffffffffffffffff')
                 .set('x-access-token', fake.teacher1.token)
@@ -337,7 +328,6 @@ describe('Assignments', () => {
         });
 
         it('it should update the valid assignment', (done) => {
-
             chai.request(server)
                 .put('/api/v1/assignments/' + fake.assignment1._id)
                 .set('x-access-token', fake.teacher1.token)
@@ -356,7 +346,6 @@ describe('Assignments', () => {
     describe('/GET/:id launch assignment ', () => {
 
         it('it should do nothing on invalid assignment', (done) => {
-
             chai.request(server)
                 .get('/api/v1/assignments/launch/' + 'invalid')
                 .set('x-access-token', fake.teacher1.token)
@@ -369,7 +358,6 @@ describe('Assignments', () => {
         });
 
         it('it should do nothing on inexisting assignment', (done) => {
-
             chai.request(server)
                 .get('/api/v1/assignments/launch/' + 'ffffffffffffffffffffffff')
                 .set('x-access-token', fake.teacher1.token)
@@ -380,8 +368,6 @@ describe('Assignments', () => {
                     done();
                 });
         });
-
-
 
         it('it should launch the valid assignment', (done) => {
             chai.request(server)
@@ -400,7 +386,6 @@ describe('Assignments', () => {
     describe('/POST/:id/comments assignments', () => {
 
         it('it should do nothing on invalid assignment', (done) => {
-
             chai.request(server)
                 .put('/api/v1/assignments/deliveries/comment/' + 'invalid?oid=' + fake.delivery1.objectId)
                 .set('x-access-token', fake.teacher1.token)
@@ -413,10 +398,9 @@ describe('Assignments', () => {
                     res.body.code.should.be.eql(35);
                     done();
                 });
-        })
+        });
 
         it('it should do nothing on comment with inexisting assignment and without oid', (done) => {
-
             chai.request(server)
                 .put('/api/v1/assignments/deliveries/comment/' + 'ffffffffffffffffffffffff?oid=')
                 .set('x-access-token', fake.teacher1.token)
@@ -430,8 +414,6 @@ describe('Assignments', () => {
                     done();
                 });
         });
-
-
 
         it('it should do add comment in entry and with an valid oid and assignment id', (done) => {
             chai.request(server)
@@ -448,11 +430,9 @@ describe('Assignments', () => {
         })
     });
 
-
     // submit assignment ---PUT/:id/submit---
     describe('/PUT/:id/submit assignments', () => {
         it('it should do nothing on invalid assignment', (done) => {
-
             chai.request(server)
                 .put('/api/v1/assignments/deliveries/submit/' + 'invalid?oid=' + fake.delivery1.objectId)
                 .set('x-access-token', fake.teacher1.token)
@@ -469,7 +449,6 @@ describe('Assignments', () => {
         });
 
         it('it should do nothing on submit with inexisting assignment and without oid', (done) => {
-
             chai.request(server)
                 .put('/api/v1/assignments/deliveries/submit/' + 'ffffffffffffffffffffffff?oid=')
                 .set('x-access-token', fake.teacher1.token)
@@ -501,17 +480,16 @@ describe('Assignments', () => {
         });
     });
 
-     // return assignment ---GET/:id/return---
+    // return assignment ---GET/:id/return---
     describe('/GET/:id/return assignments', () => {
         it('it should do nothing on invalid assignment', (done) => {
-
             chai.request(server)
-                .get('/api/v1/assignments/deliveries/return/' + 'invalid?oid=' + fake.delivery1.objectId)
+                .put('/api/v1/assignments/deliveries/return/' + 'invalid?oid=' + fake.delivery1.objectId)
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .send({
                     isSubmitted: false,
-                    
+
                 })
                 .end((err, res) => {
                     res.should.have.status(401);
@@ -521,14 +499,13 @@ describe('Assignments', () => {
         });
 
         it('it should do nothing on return with inexisting assignment and without oid', (done) => {
-
             chai.request(server)
-                .get('/api/v1/assignments/deliveries/return/' + 'ffffffffffffffffffffffff?oid=')
+                .put('/api/v1/assignments/deliveries/return/' + 'ffffffffffffffffffffffff?oid=')
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .send({
                     isSubmitted: false,
-                    
+
                 })
                 .end((err, res) => {
                     res.should.have.status(401);
@@ -539,12 +516,12 @@ describe('Assignments', () => {
 
         it('it should do return with an valid oid and assignment id', (done) => {
             chai.request(server)
-                .get('/api/v1/assignments/deliveries/return/' + fake.assignment1._id + '?oid=' + fake.delivery1.objectId)
+                .put('/api/v1/assignments/deliveries/return/' + fake.assignment1._id + '?oid=' + fake.delivery1.objectId)
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .send({
                     isSubmitted: false,
-                    
+
                 })
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -556,7 +533,6 @@ describe('Assignments', () => {
     //delete assignment ---DELETE/:id---
     describe('/DELETE/:id assignments', () => {
         it('it should do nothing on invalid assignment', (done) => {
-
             chai.request(server)
                 .delete('/api/v1/assignments/' + 'invalid')
                 .set('x-access-token', fake.teacher1.token)
@@ -569,7 +545,6 @@ describe('Assignments', () => {
         });
 
         it('it should do nothing on inexisting assignment', (done) => {
-
             chai.request(server)
                 .delete('/api/v1/assignments/' + 'ffffffffffffffffffffffff')
                 .set('x-access-token', fake.teacher1.token)
@@ -582,7 +557,6 @@ describe('Assignments', () => {
         });
 
         it('it should delete the valid assignment', (done) => {
-
             chai.request(server)
                 .delete('/api/v1/assignments/' + fake.assignment1._id)
                 .set('x-access-token', fake.teacher1.token)
