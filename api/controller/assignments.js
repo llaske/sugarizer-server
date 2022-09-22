@@ -20,13 +20,60 @@ var CHUNKS_COLL;
 var bucket = 'textBucket';
 CHUNKS_COLL = bucket + ".chunks";
 
-//add assignments
+/**
+ * @api {post} api/v1/assignments Add assignment
+ * @apiName AddAssignment
+ * @apiDescription Add assignment in the database. Returns the inserted assignment.
+ * @apiGroup Assignments
+ * @apiVersion 1.1.0
+ * @apiHeader {String} x-key User uinque id.
+ * @apiHeader {String} x-access-token User access token.
+ * 
+ * @apiSuccess {String} _id Unique assignment id.
+ * @apiSuccess {String} name Assignment name.
+ * @apiSuccess {Number} dueDate Assignment due date.
+ * @apiSuccess {String} assignedWork Assignment assigned work.
+ * @apiSuccess {String} instructions Assignment instructions.
+ * @apiSuccess {Boolean} lateTurnIn Assignment late turn in.
+ * @apiSuccess {Number} created_time Assignment created time.
+ * @apiSuccess {Array} classrooms Assignment assigned to classrooms.
+ * @apiSuccess {Object} options Assignment options.
+ * @apiSuccess {String} created_by Assignment created by.
+ * @apiSuccess {Number} timestamp Assignment timestamp.
+ * @apiSuccess {Boolean} isAssigned Assignment is assigned.
+ * @apiSuccess {String} journal_id Assignment journal id.
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *    HTTP/1.1 200 OK
+ *   {
+        "name": "DrawAssignment",
+        "assignedWork": "9bd39613-c6e2-413f-8672-4b85d7f85ce2",
+        "instructions": "Draw a penguin",
+        "lateTurnIn": false,
+        "dueDate": "1663617458035",
+        "options": {
+            "sync": true,
+            "stats": true
+        },
+        "classrooms": [
+            "630b469b43225439163b8d42",
+            "630b46aa43225439163b8d43"
+        ],
+        "created_time": 1663617458028,
+        "timestamp": 1663617458028,
+        "created_by": "630b467143225439163b8d40",
+        "journal_id": "630b467143225439163b8d3f",
+        "isAssigned": false,
+        "_id": "6328c9b2831c11556edd785e"
+    }   
+ * 
+ **/
 exports.addAssignment = function (req, res) {
     //validate
     if (!req.body.assignment) {
         return res.status(400).send({
             'error': "Assignment object is not defined",
-            'code': 22
+            'code': 38
         });
     }
     //parse assignment details
@@ -53,11 +100,77 @@ exports.addAssignment = function (req, res) {
                     'code': 10
                 });
             }
-            res.status(200).send(result.ops[0]);
+            return res.status(200).send(result.ops[0]);
         });
     });
 };
 
+/**
+ *@api {get} api/v1/assignments Get all assignments
+ * @apiName GetAssignments
+ * @apiDescription Retrieve all assignment data registered on the server.
+ * @apiGroup Assignments
+ * @apiVersion 1.1.0
+ * @apiHeader {String} x-key User uinque id.
+ * @apiHeader {String} x-access-token User access token.
+ * 
+ * @apiExample Example usage:
+ *      "/api/v1/assignments"
+ * 
+ * @apiSuccess {Object[]} assignments.
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *   HTTP/1.1 200 OK
+ *   {
+ *      "assignments": [
+ *          {
+ *              "_id": "63275d05bcb501f024681518",
+ *              "name": "Draw Monkey",
+ *              "assignedWork": {
+ *                  "metadata": {
+ *                      "title": "Paint Assignment",
+ *                      "title_set_by_user": "0",
+ *                      "activity": "org.olpcfrance.PaintActivity",
+ *                      "activity_id": "7abd556d-d43a-4e0b-83ec-40f8bf2f13af",
+ *                      "creation_time": 1663272983745,
+ *                      "timestamp": 1663273031602,
+ *                      "file_size": 0,
+ *                      "buddy_name": "t1",
+ *                      "buddy_color": {
+ *                          "stroke": "#FF8F00",
+ *                          "fill": "#00A0FF"
+ *                      },
+ *                      "textsize": 12211,
+ *                      "user_id": "630b463f43225439163b8d3e"
+ *                  },
+ *                  "text": "63238847d625795abbd4b4b6",
+ *                  "objectId": "8d909712-68d5-482d-8878-2a978726f05c"
+ *              },
+ *              "instructions": "Draw some",
+ *              "dueDate": 1663547400000,
+ *              "classrooms": [
+ *                  "630b469b43225439163b8d42",
+ *                  "630b468e43225439163b8d41"
+ *              ],
+ *              "lateTurnIn": false,
+ *              "created_time": 1663524101201,
+ *              "timestamp": 1663531297792,
+ *              "created_by": "630b463f43225439163b8d3e",
+ *              "journal_id": "630b463f43225439163b8d3d",
+ *              "isAssigned": true,
+ *              "insensitive": "draw monkey"
+ *          }
+ *      ],
+ *      "offset": 0,
+ *      "limit": 10,
+ *      "total": 5,
+ *      "sort": "name(asc)",
+ *      "links": {
+ *          "prev_page": "/api/v1/assignments?limit=10&offset=10",
+ *   	    "next_page": "/api/v1/assignments?limit=10&offset=30"
+ *      }
+ *  }
+ **/
 //find All assignments 
 exports.findAll = function (req, res) {
     var query = {};
@@ -119,16 +232,16 @@ exports.findAll = function (req, res) {
                 }
                 if (err) {
                     return res.status(500).send({
-                        error: "An error has occurred",
-                        code: 10
+                        'error': "An error has occurred",
+                        'code': 10
                     });
                 }
                 //find journal entries bt _id and objectId with aggregate
                 db.collection(journalCollection, function (err, collection) {
                     if (err) {
                         return res.status(500).send({
-                            error: "Error accessing database",
-                            code: 23
+                            'error': "An error has occurred",
+                            'code': 10
                         });
                     }
                     collection.find({
@@ -146,8 +259,8 @@ exports.findAll = function (req, res) {
                     }).toArray(function (err, journals) {
                         if (err) {
                             return res.status(500).send({
-                                error: "Error accessing database",
-                                code: 23
+                                'error': "An error has occurred",
+                                'code': 10
                             });
                         }
                         var data = {
@@ -170,7 +283,7 @@ exports.findAll = function (req, res) {
                                 });
                             });
                         });
-                        res.status(200).send(data);
+                        return res.status(200).send(data);
                     });
                 });
             });
@@ -178,6 +291,98 @@ exports.findAll = function (req, res) {
     });
 };
 
+/**
+ * @api {get} /api/v1/assignments/:id Get Deliveries
+ * @apiName Get Deliveries.
+ * @apiGroup Assignments  
+ * @apiDescription Get all deliveries for a specific assignment.
+ * @apiParam {String} assignmentId Assignment id.
+ * 
+ * @apiSuccess {Object[]} deliveries List of deliveries.
+ * @apiSuccess {String} _id Journal id.
+ * @apiSuccess {Array} content Journal Entry.
+ * @apiSuccess {Object} content.metadata Journal Entry metadata.
+ * @apiSuccess {String} content.text Journal Entry text.
+ * @apiSuccess {String} content.objectId Journal Entry objectId.
+ * 
+ * @apiSuccessExample Success-Response:
+ *    HTTP/1.1 200 OK
+ *   {
+ *       "deliveries": [
+ *           {
+ *               "_id": "630b460e43225439163b8d3b",
+ *               "content": [
+ *                   {
+ *                       "metadata": {
+ *                           "title": "Implode Activity",
+ *                           "title_set_by_user": "0",
+ *                           "activity": "org.sugarlabs.Implode",
+ *                           "activity_id": "5cf070b7-8ba0-4e71-a670-ed9df4a4dfc5",
+ *                           "creation_time": 1663274452551,
+ *                           "timestamp": 1663584032296,
+ *                           "file_size": 0,
+ *                           "buddy_name": "Nikhil",
+ *                           "buddy_color": {
+ *                               "stroke": "#F8E800",
+ *                               "fill": "#008009"
+ *                           },
+ *                           "textsize": 2352,
+ *                           "user_id": "630b460e43225439163b8d3c",
+ *                           "assignmentId": "63275962bcb501f02468148f",
+ *                           "submissionDate": 1663584032294,
+ *                           "dueDate": 1663605000000,
+ *                           "instructions": "dffdfdf",
+ *                           "lateTurnIn": true,
+ *                           "isSubmitted": true,
+ *                           "status": null,
+ *                           "comment": ""
+ *                       },
+ *                       "text": "632848d1781c3ddaa0eb6b9d",
+ *                       "objectId": "2b20826f-90c0-4810-83b0-de31cd35b5fe"
+ *                   }
+ *               ]
+ *           },
+ *           {
+ *               "_id": "630b45f443225439163b8d39",
+ *               "content": [
+ *                   {
+ *                       "metadata": {
+ *                           "title": "Implode Activity",
+ *                           "title_set_by_user": "0",
+ *                           "activity": "org.sugarlabs.Implode",
+ *                           "activity_id": "5cf070b7-8ba0-4e71-a670-ed9df4a4dfc5",
+ *                           "creation_time": 1663274452551,
+ *                           "timestamp": 1663576160640,
+ *                           "file_size": 0,
+ *                           "buddy_name": "Rohan",
+ *                           "buddy_color": {
+ *                               "stroke": "#8BFF7A",
+ *                               "fill": "#AC32FF"
+ *                           },
+ *                           "textsize": 2352,
+ *                           "user_id": "630b45f443225439163b8d3a",
+ *                           "assignmentId": "63275962bcb501f02468148f",
+ *                           "submissionDate": 1663576267006,
+ *                           "dueDate": 1663605000000,
+ *                           "instructions": "dffdfdf",
+ *                           "lateTurnIn": true,
+ *                           "isSubmitted": true,
+ *                           "status": "Delivered",
+ *                           "comment": ""
+ *                       },
+ *                       "text": "63282866781c3ddaa0eb6b1c",
+ *                       "objectId": "c90cfadf-83ce-4fba-904a-95ea6c33e3ac"
+ *                   }
+ *               ]
+ *           }
+ *       ],
+ *       "offset": 0,
+ *       "limit": 10,
+ *       "total": 7,
+ *       "sort": "buddy_name(asc)",
+ *       "links": {}
+ *      }
+**/
 //find all deliveries
 exports.findAllDeliveries = function (req, res) {
     var assignmentId = req.params.assignmentId;
@@ -185,7 +390,7 @@ exports.findAllDeliveries = function (req, res) {
     if (!mongo.ObjectID.isValid(assignmentId)) {
         return res.status(401).send({
             'error': "Invalid assignment id",
-            'code': 23
+            'code': 35
         });
     }
     //find all deliveries with filters and pagination
@@ -225,8 +430,8 @@ exports.findAllDeliveries = function (req, res) {
             ]).toArray(function (err, items) {
                 if (err) {
                     return res.status(500).send({
-                        error: "An error has occurred",
-                        code: 10
+                        'error': "An error has occurred",
+                        'code': 10
                     });
                 } else {
                     var data = {
@@ -240,14 +445,118 @@ exports.findAllDeliveries = function (req, res) {
                             next_page: (options.skip + options.limit < options.total) ? formPaginatedUrl(route, params, options.skip + options.limit, options.limit) : undefined
                         }
                     };
-                    res.send(data);
+                    return res.status(200).send(data);
                 }
             });
         });
     });
 };
 
-//find assignment by id
+/**
+ * @api {get} api/v1/assignment/:assignmentId Get assignment details.
+ * @apiName GetAssignment
+ * @apiDescription Retrieve detail for a specific assignment.
+ * @apiGroup Assignments
+ * @apiVersion 1.1.0
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ * 
+ * @apiParam {String} assignmentId Unique id of Assignment to be delete.
+ * 
+ * @apiSuccess {String} _id Unique assignment id.
+ * @apiSuccess {String} name Assignment name.
+ * @apiSuccess {Number} dueDate Assignment due date.
+ * @apiSuccess {Object} assignedWork Assignment assigned work.
+ * @apiSuccess {String} instructions Assignment instructions.
+ * @apiSuccess {Boolean} lateTurnIn Assignment late turn in.
+ * @apiSuccess {Number} created_time Assignment created time.
+ * @apiSuccess {Array} classrooms Assignment assigned to classrooms.
+ * @apiSuccess {Object} options Assignment options.
+ * @apiSuccess {String} created_by Assignment created by.
+ * @apiSuccess {Number} timestamp Assignment timestamp.
+ * @apiSuccess {Boolean} isAssigned Assignment is assigned.
+ * @apiSuccess {String} journal_id Assignment journal id.
+ * 
+ * @apiExample Example usage:
+ *      "/api/v1/assignment/:assignmentId"
+ * 
+ * @apiSuccessExample Success-Response:
+ *    HTTP/1.1 200 OK
+ *   {
+ *      "_id": "63275d05bcb501f024681518",
+ *      "name": "Draw Monkey",
+ *      "assignedWork": {
+ *          "metadata": {
+ *              "title": "Paint Assignment",
+ *              "title_set_by_user": "0",
+ *              "activity": "org.olpcfrance.PaintActivity",
+ *              "activity_id": "7abd556d-d43a-4e0b-83ec-40f8bf2f13af",
+ *              "creation_time": 1663272983745,
+ *              "timestamp": 1663273031602,
+ *              "file_size": 0,
+ *              "buddy_name": "t1",
+ *              "buddy_color": {
+ *                  "stroke": "#FF8F00",
+ *                  "fill": "#00A0FF"
+ *                  },
+ *              "textsize": 12211,
+ *              "user_id": "630b463f43225439163b8d3e"
+ *          },
+ *          "text": "63238847d625795abbd4b4b6",
+ *          "objectId": "8d909712-68d5-482d-8878-2a978726f05c"
+ *     },
+ *    "instructions": "Draw some",
+ *    "dueDate": 1663547400000,
+ *   "classrooms": [
+ *      {
+ *          "_id": "630b469b43225439163b8d42",
+ *          "name": "JS",
+ *          "students": [
+ *              "630b45f443225439163b8d3a",
+ *              "631153f4f2a064f218544c79"
+ *          ],
+ *          "color": {
+ *              "stroke": "#D1A3FF",
+ *              "fill": "#F8E800"
+ *          },
+ *          "options": {
+ *              "sync": true,
+ *              "stats": true
+ *          },
+ *          "created_time": 1661683355253,
+ *          "timestamp": 1662323105024
+ *      },
+ *      {
+ *          "_id": "630b468e43225439163b8d41",
+ *          "name": "Physics",
+ *          "students": [
+ *              "630b460e43225439163b8d3c",
+ *              "630b45f443225439163b8d3a"
+ *          ],
+ *          "color": {
+ *              "stroke": "#FF2B34",
+ *              "fill": "#AC32FF"
+ *          },
+ *          "options": {
+ *              "sync": true,
+ *              "stats": true
+ *          },
+ *          "created_time": 1661683342983,
+ *          "timestamp": 1661683342983
+ *      }
+ *   ],
+ *   "lateTurnIn": false,
+ *   "options": {
+ *      "sync": true,
+ *      "stats": true
+ *      },
+ *   "created_time": 1663524101201,
+ *   "timestamp": 1663531297792,
+ *   "created_by": "630b463f43225439163b8d3e",
+ *   "journal_id": "630b463f43225439163b8d3d",
+ *   "isAssigned": true
+ *  }
+ **/
 exports.findById = function (req, res) {
     var assignmentId = req.params.assignmentId;
     //validate
@@ -266,14 +575,17 @@ exports.findById = function (req, res) {
                 });
             }
             if (!assignment) {
-                return res.status(401).send({});
+                return res.status(401).send({
+                    'error': "Assignment not found",
+                    'code': 39
+                });
             }
             //find classrooms
             db.collection(classroomCollection, function (err, collection) {
                 if (err) {
                     return res.status(500).send({
-                        error: "Error accessing database",
-                        code: 23
+                        'error': "An error has occurred",
+                        'code': 10
                     });
                 }
                 collection.find(
@@ -291,61 +603,73 @@ exports.findById = function (req, res) {
                             'code': 10
                         });
                     }
-                    if (!classrooms) {
-                        return res.status(404).send({
-                            'error': "Classrooms not found",
-                            'code': 34
+                    assignment.classrooms.map(function (class_id) {
+                        classrooms.map(function (classroom) {
+                            if (classroom._id.toString() == class_id) {
+                                assignment.classrooms.splice(assignment.classrooms.indexOf(class_id), 1, classroom);
+                            }
                         });
-                    } else {
-                        assignment.classrooms.map(function (class_id) {
-                            classrooms.map(function (classroom) {
-                                if (classroom._id.toString() == class_id) {
-                                    assignment.classrooms.splice(assignment.classrooms.indexOf(class_id), 1, classroom);
-                                }
+                    });
+                    db.collection(journalCollection, function (err, collection) {
+                        if (err) {
+                            return res.status(500).send({
+                                'error': "An error has occurred",
+                                'code': 10
                             });
-                        });
-                        db.collection(journalCollection, function (err, collection) {
+                        }
+                        collection.find(
+                            {
+                                _id: new mongo.ObjectID(assignment.journal_id)
+                            },
+                            {
+                                $project: {
+                                    'content.objectId': 1,
+                                    'content.metadata': 1,
+                                    'content.text': 1,
+                                }
+                            }
+                        ).toArray(function (err, journals) {
                             if (err) {
                                 return res.status(500).send({
                                     'error': "An error has occurred",
                                     'code': 10
                                 });
                             }
-                            collection.find(
-                                {
-                                    _id: new mongo.ObjectID(assignment.journal_id)
-                                },
-                                {
-                                    $project: {
-                                        'content.objectId': 1,
-                                        'content.metadata': 1,
-                                        'content.text': 1,
+                            journals.find(function (journal) {
+                                journal.content.filter(function (entry) {
+                                    if (entry.objectId === assignment.assignedWork) {
+                                        assignment.assignedWork = entry;
                                     }
-                                }
-                            ).toArray(function (err, journals) {
-                                if (err) {
-                                    return res.status(500).send({
-                                        'error': "An error has occurred",
-                                        'code': 10
-                                    });
-                                }
-                                journals.find(function (journal) {
-                                    journal.content.filter(function (entry) {
-                                        if (entry.objectId === assignment.assignedWork) {
-                                            assignment.assignedWork = entry;
-                                        }
-                                    });
                                 });
-                                res.status(200).send(assignment);
                             });
+                            return res.status(200).send(assignment);
                         });
-                    }
+                    });
                 });
             });
         });
     });
 };
 
+/** 
+ * @api {get} /api/v1/assignments/launch/:assignmentId Launch for an assignment.
+ * @apiName LaunchAssignment
+ * @apiGroup Assignments
+ * @apiVersion 1.1.0
+ * @apiDescription Launches the assignment for the Students.
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ * @apiParam {String} assignmentId Assignment unique id.
+ * 
+ * @apiSuccess {Object} Number of students to whom the assignment has been assigned.
+ * 
+ * @apiSuccessExample Success-Response:
+ *    HTTP/1.1 200 OK
+ *   {
+ *     "count": 3
+ *   }
+ * 
+ **/
 //launch Assignment
 exports.launchAssignment = function (req, res) {
     //validate
@@ -365,7 +689,10 @@ exports.launchAssignment = function (req, res) {
                 });
             }
             if (!assignment) {
-                return res.status(401).send({});
+                return res.status(401).send({
+                    'error': "Assignment not found",
+                    'code': 39
+                });
             }
             else {
                 //find all students from classrooms
@@ -374,7 +701,7 @@ exports.launchAssignment = function (req, res) {
                 //get students private_journal
                 common.fetchAllStudents(classrooms).then(function (stds) {
                     var uniqueJournalIds = [];
-                    if(stds.length <= 0){
+                    if (stds.length <= 0) {
                         return res.status(400).send({
                             'error': 'No students found',
                             'code': 37
@@ -459,12 +786,14 @@ exports.launchAssignment = function (req, res) {
                                                     'code': 10
                                                 });
                                             } else {
-                                                res.status(200).send(result);
+                                                return res.status(200).send(result);
                                             }
                                         });
-                                        res.status(200).send((result).toString());
+                                        return res.status(200).send({
+                                            count: result
+                                        });
                                     }).catch(function () {
-                                        res.status(500).send({
+                                        return res.status(500).send({
                                             'error': "An error has occurred",
                                             'code': 10
                                         });
@@ -533,7 +862,22 @@ function updateEntries(entryDoc, privateJournalIds, uniqueStudents) {
     });
 }
 
-//delete assignment
+/**
+ *@api {delete} /api/assignments/:assignmentId Remove assignment.
+ * @apiName RemoveAssignment
+ * @apiDescription Remove assignment by assignmentId.
+ * @apiGroup Assignments
+ * @apiVersion 1.1.0
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ * @apiParam {String} assignmentId Unique id of Assignment to be delete.
+ * 
+ * @apiSucessExample {json} Success-Response:
+ *    HTTP/1.1 200 OK
+ *  {
+        "id": "6328c9b2831c11556edd785e"
+    }
+ **/
 exports.removeAssignment = function (req, res) {
     //validate
     if (!mongo.ObjectID.isValid(req.params.assignmentId)) {
@@ -549,17 +893,17 @@ exports.removeAssignment = function (req, res) {
             },
             function (err, result) {
                 if (err) {
-                    res.status(500).send({
+                    return res.status(500).send({
                         error: "An error has occurred",
                         code: 10
                     });
                 } else {
                     if (result && result.result && result.result.n == 1) {
-                        res.status(200).send({
+                        return res.status(200).send({
                             id: req.params.assignmentId
                         });
                     } else {
-                        res.status(401).send({
+                        return res.status(401).send({
                             error: "Inexisting assignment id",
                             code: 23
                         });
@@ -569,6 +913,22 @@ exports.removeAssignment = function (req, res) {
     });
 };
 
+//api doc for update Assignment
+/**
+ * @api {put} /api/assignments/:assignmentId Update assignment.
+ * @apiName UpdateAssignment
+ * @apiDescription UUpdate an assignment. Return the assignment updated.
+ * @apiGroup Assignments
+ * @apiVersion 1.1.0
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *   HTTP/1.1 200 OK
+ *  {
+ *     "id": "6328c9b2831c11556edd785e",
+ *  }
+ * */
 // update assignment
 exports.updateAssignment = function (req, res) {
     //validate
@@ -576,12 +936,6 @@ exports.updateAssignment = function (req, res) {
         return res.status(401).send({
             'error': "Invalid assignment id",
             'code': 35
-        });
-    }
-    if (!req.params.assignmentId) {
-        return res.status(400).send({
-            'error': "Assignment id is not defined",
-            'code': 22
         });
     }
     var assignmentId = req.params.assignmentId;
@@ -596,11 +950,13 @@ exports.updateAssignment = function (req, res) {
                 '_id': {
                     $ne: new mongo.ObjectID(assignmentId)
                 },
-                'name': new RegExp("^" + assignment.name + "$", "i")
             }
             , function (err, count) {
                 if (err) {
-                    res.send({ 'error': 'An error has occurred in finding assignment' });
+                    return res.status(500).send({
+                        'error': "An error has occurred",
+                        'code': 10
+                    });
                 } else {
                     if (count == 0) {
                         collection.updateOne(
@@ -616,26 +972,26 @@ exports.updateAssignment = function (req, res) {
                             function (err, result) {
                                 if (err) {
                                     return res.status(500).send({
-                                        error: "An error has occurred",
-                                        code: 10
+                                        'error': "An error has occurred",
+                                        'code': 10
                                     });
                                 } else {
                                     if (result && result.result && result.result.n == 1) {
-                                        res.send({
+                                        return res.send({
                                             id: assignmentId
                                         });
                                     } else {
-                                        res.status(401).send({
-                                            error: "Inexisting assignment id",
-                                            code: 23
+                                        return res.status(401).send({
+                                            'error': "Inexisting assignment id",
+                                            'code': 23
                                         });
                                     }
                                 }
                             });
                     } else {
                         return res.status(401).send({
-                            error: "Assignment already exists",
-                            code: 24
+                            'error': "Assignment already exists",
+                            'code': 40
                         });
                     }
                 }
@@ -692,7 +1048,7 @@ function addQuery(filter, params, query, default_val) {
                 $regex: new RegExp(params[filter], "i")
             };
         } else if (filter == "isAssigned") {
-            if(params[filter] == "true"){
+            if (params[filter] == "true") {
                 query["isAssigned"] = {
                     $eq: true
                 }
@@ -700,15 +1056,15 @@ function addQuery(filter, params, query, default_val) {
                 query["dueDate"] = {
                     $gte: new Date().getTime()
                 }
-            } 
-            if(params[filter] == "false"){
+            }
+            if (params[filter] == "false") {
                 query["isAssigned"] = {
                     $eq: false
                 }
             }
         } else if (filter == "terminated") {
             query["dueDate"] = {
-                $lte : new Date().getTime()
+                $lte: new Date().getTime()
             };
         } else {
             query[filter] = {
@@ -725,6 +1081,26 @@ function addQuery(filter, params, query, default_val) {
     return query;
 }
 
+/**
+ * @api {put} /api/assignments/:assignmentId/comments/:commentId Update comment.
+ * @apiName UpdateComment
+ * @apiDescription Update a comment. Return the comment updated.
+ * @apiGroup Assignments
+ * @apiVersion 1.1.0
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ * 
+ * @apiSuccess {String} comment Comment.
+ * 
+ * @apiExample Example usage:
+ *    "/api/v1/assignments/deliveries/comment/:assignmentId?oid=5b9b1b0b0f0000b800000000"
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *    HTTP/1.1 200 OK
+ *   {
+ *      "comment": "Good"
+ *   }
+ **/
 //update comment 
 exports.updateComment = function (req, res) {
     //validate
@@ -758,15 +1134,14 @@ exports.updateComment = function (req, res) {
             function (err, result) {
                 if (err) {
                     return res.status(401).send({
-                        error: "An error has occurred",
-                        code: 10
+                        'error': "An error has occurred",
+                        'code': 10
                     });
                 }
-                if (!result) {
-                    return res.status(401).send({});
-                }
                 else {
-                    return res.status(200).send(result);
+                    return res.status(200).send({
+                        comment: comment.comment
+                    });
                 }
             });
     });
@@ -776,7 +1151,7 @@ exports.updateComment = function (req, res) {
 function updateStatus(assignmentId, status, objectId, callback) {
     //validate
     if (!mongo.ObjectID.isValid(assignmentId)) {
-       callback();
+        callback();
     }
     if (status == "Assigned") {
         db.collection(assignmentCollection, function (err, collection) {
@@ -784,7 +1159,7 @@ function updateStatus(assignmentId, status, objectId, callback) {
                 {
                     '_id': new mongo.ObjectID(assignmentId)
                 },
-                {  
+                {
                     $set: {
                         'isAssigned': true,
                     }
@@ -808,7 +1183,7 @@ function updateStatus(assignmentId, status, objectId, callback) {
                     'content.objectId': objectId,
                     'content.metadata.assignmentId': assignmentId,
                 },
-                {  
+                {
                     $set: {
                         'content.$[elem].metadata.status': status
                     }
@@ -817,7 +1192,6 @@ function updateStatus(assignmentId, status, objectId, callback) {
                     safe: true,
                     arrayFilters: [{
                         'elem.objectId': objectId
-
                     }]
                 },
                 function (err, result) {
@@ -831,8 +1205,96 @@ function updateStatus(assignmentId, status, objectId, callback) {
     }
 }
 
+/** 
+ * @api {PUT} /api/v1/assignments/deliveries/return/:assignmentId Return Assignment 
+ * @apiName ReturnAssignment
+ * @apiDescription Return Assignment 
+ * @apiGroup Assignments
+ * @apiVersion 1.1.0
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ * @apiParam {String} assignmentId Assignment id.
+ * @apiParam {String} oid ObjectId.
+ * 
+ * @apiExample Example usage:
+ *    "/api/v1/assignments/deliveries/return/:assignmentId?oid=5b9b1b0b0f0000b800000000"
+ * 
+ * @apiSuccessExample Success-Response:
+ *    HTTP/1.1 200 OK
+ *   {
+ *   "lastErrorObject": {
+ *       "n": 1,
+ *       "updatedExisting": true
+ *   },
+ *   "value": {
+ *       "_id": "630b460e43225439163b8d3b",
+ *       "content": [
+ *           {
+ *               "metadata": {
+ *                   "title": "Write Activity",
+ *                   "title_set_by_user": "0",
+ *                   "activity": "org.sugarlabs.Write",
+ *                   "activity_id": "06dd648a-9f6a-4251-8f15-0abd6bcc3017",
+ *                   "creation_time": 1663274425907,
+ *                   "timestamp": 1663576199678,
+ *                   "file_size": 0,
+ *                   "buddy_name": "Nikhil",
+ *                   "buddy_color": {
+ *                       "stroke": "#F8E800",
+ *                       "fill": "#008009"
+ *                   },
+ *                   "textsize": 100553,
+ *                   "user_id": "630b460e43225439163b8d3c",
+ *                   "assignmentId": "6327099f730d98993ee793ff",
+ *                   "submissionDate": 1663576204212,
+ *                   "dueDate": 1663781400000,
+ *                   "instructions": "Write about Elon musk",
+ *                   "lateTurnIn": false,
+ *                   "isSubmitted": false,
+ *                   "status": "Delivered",
+ *                   "comment": "Nice work"
+ *               },
+ *               "text": "63282889781c3ddaa0eb6b25",
+ *               "objectId": "fc801777-fdb1-4ce2-8f62-561cccc0c38b"
+ *           },
+ *           ....more objects
+ *           {
+ *               "metadata": {
+ *                   "title": "Write Activity",
+ *                   "title_set_by_user": "0",
+ *                   "activity": "org.sugarlabs.Write",
+ *                   "activity_id": "06dd648a-9f6a-4251-8f15-0abd6bcc3017",
+ *                   "creation_time": 1663274425907,
+ *                   "timestamp": 1663274434078,
+ *                   "file_size": 0,
+ *                   "buddy_name": "Nikhil",
+ *                   "buddy_color": {
+ *                       "stroke": "#00EA11",
+ *                       "fill": "#005FE4"
+ *                   },
+ *                   "textsize": 100524,
+ *                   "user_id": "630b460e43225439163b8d3c",
+ *                   "assignmentId": "63275d05bcb501f024681518",
+ *                   "submissionDate": null,
+ *                   "dueDate": "",
+ *                   "instructions": "ins",
+ *                   "lateTurnIn": false,
+ *                   "isSubmitted": false,
+ *                   "status": null,
+ *                   "comment": "paint"
+ *               },
+ *               "text": "632c0475ad098c1a779b05b8",
+ *               "objectId": "98406ca6-861d-4e98-836d-eb819ab60e3c"
+ *           }
+ *       ],
+ *       "shared": false
+ *   },
+ *   "ok": 1
+ *   }
+ * 
+ **/
 exports.returnAssignment = function (req, res) {
-      //validate
+    //validate
     if (!req.query.oid || !mongo.ObjectID.isValid(req.params.assignmentId)) {
         return res.status(401).send({
             'error': "Invalid assignment id",
@@ -847,7 +1309,7 @@ exports.returnAssignment = function (req, res) {
                 'content.objectId': objectId,
                 'content.metadata.assignmentId': assignmentId,
             },
-            {  
+            {
                 $set: {
                     'content.$[elem].metadata.isSubmitted': false
                 }
@@ -856,7 +1318,6 @@ exports.returnAssignment = function (req, res) {
                 safe: true,
                 arrayFilters: [{
                     'elem.objectId': objectId
-
                 }]
             },
             function (err, result) {
@@ -866,12 +1327,100 @@ exports.returnAssignment = function (req, res) {
                         code: 10
                     });
                 } else {
-                    res.send(result);
+                    return res.send(result);
                 }
             });
     });
 }
 
+/** 
+ * @api {PUT} /api/v1/assignments/deliveries/submit/:assignmentId Submit Assignment.
+ * @apiName SubmitAssignment
+ * @apiDescription Submit Assignment. 
+ * @apiGroup Assignments
+ * @apiVersion 1.1.0
+ * @apiHeader {String} x-key User unique id.
+ * @apiHeader {String} x-access-token User access token.
+ * @apiParam {String} assignmentId Assignment id.
+ * @apiParam {String} oid ObjectId.
+ * 
+ * @apiExample Example usage:
+ *    "/api/v1/assignments/deliveries/submit/:assignmentId?oid=5b9b1b0b0f0000b800000000"
+ * 
+ * @apiSuccessExample Success-Response:
+ *    HTTP/1.1 200 OK
+ *   {
+ *   "lastErrorObject": {
+ *       "n": 1,
+ *       "updatedExisting": true
+ *   },
+ *   "value": {
+ *       "_id": "630b460e43225439163b8d3b",
+ *       "content": [
+ *           {
+ *               "metadata": {
+ *                   "title": "Write Activity",
+ *                   "title_set_by_user": "0",
+ *                   "activity": "org.sugarlabs.Write",
+ *                   "activity_id": "06dd648a-9f6a-4251-8f15-0abd6bcc3017",
+ *                   "creation_time": 1663274425907,
+ *                   "timestamp": 1663576199678,
+ *                   "file_size": 0,
+ *                   "buddy_name": "Nikhil",
+ *                   "buddy_color": {
+ *                       "stroke": "#F8E800",
+ *                       "fill": "#008009"
+ *                   },
+ *                   "textsize": 100553,
+ *                   "user_id": "630b460e43225439163b8d3c",
+ *                   "assignmentId": "6327099f730d98993ee793ff",
+ *                   "submissionDate": 1663576204212,
+ *                   "dueDate": 1663781400000,
+ *                   "instructions": "Write about Elon musk",
+ *                   "lateTurnIn": false,
+ *                   "isSubmitted": false,
+ *                   "status": "Delivered",
+ *                   "comment": "Nice work"
+ *               },
+ *               "text": "63282889781c3ddaa0eb6b25",
+ *               "objectId": "fc801777-fdb1-4ce2-8f62-561cccc0c38b"
+ *           },
+ *           ....more objects
+ *           {
+ *               "metadata": {
+ *                   "title": "Write Activity",
+ *                   "title_set_by_user": "0",
+ *                   "activity": "org.sugarlabs.Write",
+ *                   "activity_id": "06dd648a-9f6a-4251-8f15-0abd6bcc3017",
+ *                   "creation_time": 1663274425907,
+ *                   "timestamp": 1663274434078,
+ *                   "file_size": 0,
+ *                   "buddy_name": "Nikhil",
+ *                   "buddy_color": {
+ *                       "stroke": "#00EA11",
+ *                       "fill": "#005FE4"
+ *                   },
+ *                   "textsize": 100524,
+ *                   "user_id": "630b460e43225439163b8d3c",
+ *                   "assignmentId": "63275d05bcb501f024681518",
+ *                   "submissionDate": null,
+ *                   "dueDate": "1663741400000",
+ *                   "instructions": "ins",
+ *                   "lateTurnIn": false,
+ *                   "isSubmitted": true,
+ *                   "status": "Delivered",
+ *                   "comment": "paint"
+ *               },
+ *               "text": "632c0475ad098c1a779b05b8",
+ *               "objectId": "98406ca6-861d-4e98-836d-eb819ab60e3c"
+ *           }
+ *       ],
+ *       "shared": false
+ *   },
+ *   "ok": 1
+ *   }
+ * 
+ **/
 // submit assignment 
 exports.submitAssignment = function (req, res) {
     //validate
@@ -885,10 +1434,10 @@ exports.submitAssignment = function (req, res) {
     var objectId = req.query.oid;
     updateStatus(assignmentId, "Delivered", objectId, function (result) {
         if (result) {
-            res.status(200).send(result);
+            return res.status(200).send(result);
         }
         else {
-            res.status(500).send({
+            return res.status(500).send({
                 error: "An error has occurred",
                 code: 10
             });
@@ -897,24 +1446,23 @@ exports.submitAssignment = function (req, res) {
     db.collection(journalCollection, function (err, collection) {
         //date in unix timestamp format
         var date = new Date().getTime();
-        
+
         collection.findOneAndUpdate(
             {
                 'content.objectId': objectId,
                 'content.metadata.assignmentId': assignmentId,
             },
-            {  
+            {
                 $set: {
                     'content.$[elem].metadata.submissionDate': date,
                     'content.$[elem].metadata.isSubmitted': true
-                    
+
                 }
             },
             {
                 safe: true,
                 arrayFilters: [{
                     'elem.objectId': objectId
-
                 }]
             },
             function (err, result) {
@@ -924,7 +1472,7 @@ exports.submitAssignment = function (req, res) {
                         code: 10
                     });
                 } else {
-                    res.send(result);
+                    return res.send(result);
                 }
             });
     });
