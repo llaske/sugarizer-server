@@ -22,7 +22,6 @@ var fake = {
     'assignment2': '{"name":"assignment_2' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a pikachu","lateTurnIn":"true","classrooms":[], "dueDate":"' + (timestamp.toString()) + '"}',
     'assignment3': '{"name":"assignment_1' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a bulbasaur","lateTurnIn":"false","classrooms":[], "dueDate":"' + (timestamp.toString()) + '"}',
     'delivery1': '{}',
-
 };
 
 //init server
@@ -82,8 +81,8 @@ describe('Assignments', () => {
                                                     "classroom": fake.classroom1
                                                 })
                                                 .end((err, res) => {
-
-                                                    fake.classroom1 = res.body;                                                    //create classroom2
+                                                    //store classroom data
+                                                    fake.classroom1 = res.body;
                                                     chai.request(server)
                                                         .post('/api/v1/classrooms/')
                                                         .set('x-access-token', fake.admin.token)
@@ -129,7 +128,6 @@ describe('Assignments', () => {
                     })
                     .end((err, res) => {
                         //teacher to classroom1
-
                         fake.teacher1 = res.body;
                         fake.teacher1.classrooms = [fake.classroom1._id];
 
@@ -148,7 +146,6 @@ describe('Assignments', () => {
                                     })
                                     .end((err, res) => {
                                         fake.teacher2 = res.body;
-
                                         //add entry in journal
                                         var entry = genFakeJournalEntry(1);
                                         chai.request(server)
@@ -187,7 +184,6 @@ describe('Assignments', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     fake.assignment1 = res.body;
-
                     res.body.should.be.an('object');
                     res.body.should.have.property('_id').not.eql(undefined);
                     res.body.should.have.property('name').eql("assignment_1" + (timestamp.toString()));
@@ -218,7 +214,7 @@ describe('Assignments', () => {
                 .set('x-key', fake.teacher1.user._id)
                 .end((err, res) => {
                     res.should.have.status(401);
-                    res.body.should.be.eql({});
+                    res.body.code.should.be.eql(39);
                     done();
                 });
         });
@@ -322,7 +318,7 @@ describe('Assignments', () => {
                 })
                 .end((err, res) => {
                     res.should.have.status(401);
-                    res.body.code.should.be.eql(23);
+                    res.body.code.should.be.eql(40);
                     done();
                 });
         });
@@ -337,6 +333,8 @@ describe('Assignments', () => {
                 })
                 .end((err, res) => {
                     res.should.have.status(200);
+                    res.body.should.be.an('object');
+                    res.body.should.have.property('id').eql(fake.assignment1._id);
                     done();
                 });
         });
@@ -364,7 +362,7 @@ describe('Assignments', () => {
                 .set('x-key', fake.teacher1.user._id)
                 .end((err, res) => {
                     res.should.have.status(401);
-                    res.body.should.be.eql({});
+                    res.body.code.should.be.eql(39);
                     done();
                 });
         });
@@ -377,6 +375,10 @@ describe('Assignments', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     fake.delivery1 = res.body;
+                    res.body.should.be.an('object');
+                    res.body.should.have.property('count').not.eql(0);
+                    res.body.should.have.property('count').not.eql(undefined);
+                    res.body.should.have.property('count').be.a('number');
                     done();
                 });
         });
@@ -425,6 +427,7 @@ describe('Assignments', () => {
                 })
                 .end((err, res) => {
                     res.should.have.status(200);
+                    res.body.should.have.property('comment').eql("comment_");
                     done();
                 });
         })
@@ -525,6 +528,7 @@ describe('Assignments', () => {
                 })
                 .end((err, res) => {
                     res.should.have.status(200);
+                    res.body.should.be.an('object');
                     done();
                 });
         });
@@ -551,7 +555,7 @@ describe('Assignments', () => {
                 .set('x-key', fake.teacher1.user._id)
                 .end((err, res) => {
                     res.should.have.status(401);
-                    res.body.code.should.be.eql(23);
+                    res.body.code.should.be.eql(40);
                     done();
                 });
         });

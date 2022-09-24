@@ -685,7 +685,7 @@ exports.launchAssignment = function (req, res) {
             if (err) {
                 return res.status(400).send({
                     'error': 'Inexisting assignment id',
-                    'code': 23
+                    'code': 40
                 });
             }
             if (!assignment) {
@@ -905,7 +905,7 @@ exports.removeAssignment = function (req, res) {
                     } else {
                         return res.status(401).send({
                             error: "Inexisting assignment id",
-                            code: 23
+                            code: 40
                         });
                     }
                 }
@@ -967,8 +967,8 @@ exports.updateAssignment = function (req, res) {
                         });
                     } else {
                         return res.status(401).send({
-                            'error': "Assignment not found",
-                            'code': 39
+                            'error': "Inexisting assignment id",
+                            'code': 40
                         });
                     }
                 }
