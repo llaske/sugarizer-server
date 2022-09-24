@@ -210,8 +210,52 @@
   background-image: url('/public/img/assignment.png')
 }
 
+.assignment-icon2 {
+  background-image: url('/public/img/assignment.svg');
+  background-size: 26px;
+  height: 26px;
+  width: 26px;
+  display: inline-table;
+  position: relative;
+  top: 9px;
+}
+
+.launchAssignment-icon {
+  background-image: url('/public/img/play_black.svg');
+  background-size: 24px;
+  height: 24px;
+  width: 24px;
+  display: inline-table;
+  position: relative;
+  top: 7px;
+}
+
+.returnAssignment-icon {
+  background-image: url('/public/img/back.svg');
+  background-size: 30px;
+  height: 30px;
+  width: 30px;
+  display: inline-table;
+  position: relative;
+  top: 10px;
+}
+
+.comment-icon {
+  background-image: url('/public/img/comment.svg');
+  background-size: 34px;
+  height: 31px;
+  width: 31px;
+  display: inline-table;
+  position: relative;
+  top: 10px;
+}
+
 .user-icon {
   background-image: url('/public/img/user-icon.svg')
+}
+
+.remove-activity {
+  cursor: pointer;
 }
 
 .material-icons.dp24 {

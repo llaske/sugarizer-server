@@ -37,6 +37,9 @@ exports.index = function (req, res) {
     if (req.query.status != '') {
         query['isAssigned'] = req.query.status;
     }
+    if(req.query.status == 'terminated'){
+        query['terminated'] = req.query.status;
+    }
     if (req.query.limit != '') {
         query['limit'] = req.query.limit;
     }
