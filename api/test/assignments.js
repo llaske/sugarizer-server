@@ -474,7 +474,7 @@ describe('Assignments', () => {
                 .set('x-key', fake.teacher1.user._id)
                 .send({
                     isSubmitted: true,
-                    submissionDate: new Date()
+                    submissionDate: new Date().getTime()
                 })
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -567,6 +567,7 @@ describe('Assignments', () => {
                 .set('x-key', fake.teacher1.user._id)
                 .end((err, res) => {
                     res.should.have.status(200);
+                    res.body.should.have.property('id').eql(fake.assignment1._id);
                     done();
                 });
         });
