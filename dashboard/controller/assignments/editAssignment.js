@@ -22,13 +22,15 @@ module.exports = function editAssignment(req, res) {
             //join dueDate and time
             if (req.body.dueDate && req.body.time) {
                 req.body.dueDate = req.body.dueDate + " " + req.body.time;
-                 req.body.dueDate = Math.floor(new Date(req.body.dueDate).getTime())
+                req.body.dueDate = Math.floor(new Date(req.body.dueDate).getTime())
             }
             //delete req.body.time
             if (req.body.time) {
                 delete req.body.time;
             }
-            req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
+            req.assert('name', common.l10n.get('AssignmentNameInvalid')).matches(/^[a-z0-9 ]+$/i);
+            req.assert('instructions', common.l10n.get('AssignmentInstructionsInvalid')).matches(/^[\s\S]*$/i);
+
             // get errors
             var errors = req.validationErrors();
             //call

@@ -944,54 +944,31 @@ exports.updateAssignment = function (req, res) {
     assignment.timestamp = +new Date();
     //find assignment by id
     db.collection(assignmentCollection, function (err, collection) {
-        //count data
-        collection.countDocuments(
+        collection.updateOne(
             {
-                '_id': {
-                    $ne: new mongo.ObjectID(assignmentId)
-                },
-            }
-            , function (err, count) {
+                _id: new mongo.ObjectID(req.params.assignmentId)
+            },
+            {
+                $set: assignment
+            },
+            {
+                safe: true,
+            },
+            function (err, result) {
                 if (err) {
                     return res.status(500).send({
                         'error': "An error has occurred",
                         'code': 10
                     });
                 } else {
-                    if (count == 0) {
-                        collection.updateOne(
-                            {
-                                _id: new mongo.ObjectID(req.params.assignmentId)
-                            },
-                            {
-                                $set: assignment
-                            },
-                            {
-                                safe: true,
-                            },
-                            function (err, result) {
-                                if (err) {
-                                    return res.status(500).send({
-                                        'error': "An error has occurred",
-                                        'code': 10
-                                    });
-                                } else {
-                                    if (result && result.result && result.result.n == 1) {
-                                        return res.send({
-                                            id: assignmentId
-                                        });
-                                    } else {
-                                        return res.status(401).send({
-                                            'error': "Inexisting assignment id",
-                                            'code': 23
-                                        });
-                                    }
-                                }
-                            });
+                    if (result && result.result && result.result.n == 1) {
+                        return res.send({
+                            id: assignmentId
+                        });
                     } else {
                         return res.status(401).send({
-                            'error': "Assignment already exists",
-                            'code': 40
+                            'error': "Assignment not found",
+                            'code': 39
                         });
                     }
                 }
