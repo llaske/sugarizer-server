@@ -43,7 +43,6 @@ module.exports = function addAssignment(req, res) {
             req.body.dueDate = req.body.dueDate + " " + req.body.time;
             req.body.dueDate = Math.floor(new Date(req.body.dueDate).getTime())
         }
-        console.log({d:req.body.dueDate})
         //delete time
         if (req.body.time) {
             delete req.body.time;
