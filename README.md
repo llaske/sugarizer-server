@@ -209,6 +209,18 @@ To implement the above functionalities, the sugarizer backend exposes an API. Th
         [GET]    /api/v1/stats?user_id=:uid&sort=-timestamp
         [POST]   /api/v1/stats
         [DELETE] /api/v1/stats
+	
+#### ASSIGNMENT ROUTES
+
+	    [GET]    /api/v1/assignments/
+	    [GET]    /api/v1/assignments/deliveries/:assignmentId
+	    [GET]    /api/v1/assignments/:assignmentId
+	    [GET]    /api/v1/assignments/launch/:assignmentId
+	    [PUT]    /api/v1/assignments/:assignmentId
+	    [PUT]    /api/v1/assignments/deliveries/comment/:assignmentId
+	    [PUT]    /api/v1/assignments/deliveries/submit/:assignmentId
+	    [PUT]    /api/v1/assignments/deliveries/return/:assignmentId
+	    [DELETE] /api/v1/assignments/:assignmentId
 
 #### TWO FACTOR AUTHENTICATION ROUTES
 

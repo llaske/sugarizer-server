@@ -79,8 +79,8 @@ module.exports = function (app, ini) {
 	app.get('/dashboard/assignments/deliveries/:assignmentId', authController.validateSession, assignmentsController.getAllDeliveries);
 	app.get('/dashboard/assignments/deliveries/comment/:assignmentId', authController.validateSession, assignmentsController.addComment);
 	app.post('/dashboard/assignments/deliveries/comment/:assignmentId', authController.validateSession, assignmentsController.addComment);
-	app.get('/dashboard/assignments/add/', authController.validateSession, assignmentsController.addAssignment);
-	app.post('/dashboard/assignments/add/', authController.validateSession, assignmentsController.addAssignment);
+	app.get('/dashboard/assignments/add', authController.validateSession, assignmentsController.addAssignment);
+	app.post('/dashboard/assignments/add', authController.validateSession, assignmentsController.addAssignment);
 	app.get('/dashboard/assignments/delete/:assignmentId', authController.validateSession, assignmentsController.deleteAssignment);
 	app.get('/dashboard/assignments/launch/:assignmentId', authController.validateSession, assignmentsController.launchAssignment);
 	app.get('/dashboard/assignments/deliveries/return/:assignmentId', authController.validateSession, assignmentsController.returnAssignment);

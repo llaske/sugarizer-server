@@ -22,7 +22,6 @@ var fake = {
     'assignment2': '{"name":"assignment_2' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a pikachu","lateTurnIn":"true","classrooms":[], "dueDate":"' + (timestamp.toString()) + '"}',
     'assignment3': '{"name":"assignment_1' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a bulbasaur","lateTurnIn":"false","classrooms":[], "dueDate":"' + (timestamp.toString()) + '"}',
     'delivery1': '{}',
-
 };
 
 //init server
@@ -82,8 +81,8 @@ describe('Assignments', () => {
                                                     "classroom": fake.classroom1
                                                 })
                                                 .end((err, res) => {
-
-                                                    fake.classroom1 = res.body;                                                    //create classroom2
+                                                    //store classroom data
+                                                    fake.classroom1 = res.body;
                                                     chai.request(server)
                                                         .post('/api/v1/classrooms/')
                                                         .set('x-access-token', fake.admin.token)
@@ -129,7 +128,6 @@ describe('Assignments', () => {
                     })
                     .end((err, res) => {
                         //teacher to classroom1
-
                         fake.teacher1 = res.body;
                         fake.teacher1.classrooms = [fake.classroom1._id];
 
@@ -148,7 +146,6 @@ describe('Assignments', () => {
                                     })
                                     .end((err, res) => {
                                         fake.teacher2 = res.body;
-
                                         //add entry in journal
                                         var entry = genFakeJournalEntry(1);
                                         chai.request(server)
@@ -167,8 +164,6 @@ describe('Assignments', () => {
                             });
                     });
             });
-
-
     });
     //create fake assignment ---POST---
     describe('/POST assignment', () => {
@@ -189,7 +184,6 @@ describe('Assignments', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     fake.assignment1 = res.body;
-
                     res.body.should.be.an('object');
                     res.body.should.have.property('_id').not.eql(undefined);
                     res.body.should.have.property('name').eql("assignment_1" + (timestamp.toString()));
@@ -202,7 +196,6 @@ describe('Assignments', () => {
     //get assignment ---GET/:id---
     describe('/GET/:id assignment', () => {
         it('it should return nothing on invalid', (done) => {
-
             chai.request(server)
                 .get('/api/v1/assignments/' + 'xxx')
                 .set('x-access-token', fake.teacher1.token)
@@ -215,20 +208,18 @@ describe('Assignments', () => {
         });
 
         it('it should return nothing on inexisting id', (done) => {
-
             chai.request(server)
                 .get('/api/v1/assignments/' + 'ffffffffffffffffffffffff')
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .end((err, res) => {
                     res.should.have.status(401);
-                    res.body.should.be.eql({});
+                    res.body.code.should.be.eql(39);
                     done();
                 });
         });
 
         it('it should return an assignment', (done) => {
-
             chai.request(server)
                 .get('/api/v1/assignments/' + fake.assignment1._id)
                 .set('x-access-token', fake.teacher1.token)
@@ -249,7 +240,6 @@ describe('Assignments', () => {
     //get all assignments ---GET---
     describe('/GET assignments', () => {
         it('it should return all the assignments', (done) => {
-
             chai.request(server)
                 .get('/api/v1/assignments')
                 .set('x-access-token', fake.teacher1.token)
@@ -263,7 +253,6 @@ describe('Assignments', () => {
         });
 
         it('it should return all the fields for assignments', (done) => {
-
             chai.request(server)
                 .get('/api/v1/assignments')
                 .set('x-access-token', fake.teacher1.token)
@@ -305,7 +294,6 @@ describe('Assignments', () => {
         });
 
         it('it should do nothing on invalid assignment', (done) => {
-
             chai.request(server)
                 .put('/api/v1/assignments/' + 'invalid')
                 .set('x-access-token', fake.teacher1.token)
@@ -321,7 +309,6 @@ describe('Assignments', () => {
         });
 
         it('it should do nothing on inexisting assignment', (done) => {
-
             chai.request(server)
                 .put('/api/v1/assignments/' + 'ffffffffffffffffffffffff')
                 .set('x-access-token', fake.teacher1.token)
@@ -331,13 +318,12 @@ describe('Assignments', () => {
                 })
                 .end((err, res) => {
                     res.should.have.status(401);
-                    res.body.code.should.be.eql(23);
+                    res.body.code.should.be.eql(40);
                     done();
                 });
         });
 
         it('it should update the valid assignment', (done) => {
-
             chai.request(server)
                 .put('/api/v1/assignments/' + fake.assignment1._id)
                 .set('x-access-token', fake.teacher1.token)
@@ -347,6 +333,8 @@ describe('Assignments', () => {
                 })
                 .end((err, res) => {
                     res.should.have.status(200);
+                    res.body.should.be.an('object');
+                    res.body.should.have.property('id').eql(fake.assignment1._id);
                     done();
                 });
         });
@@ -356,7 +344,6 @@ describe('Assignments', () => {
     describe('/GET/:id launch assignment ', () => {
 
         it('it should do nothing on invalid assignment', (done) => {
-
             chai.request(server)
                 .get('/api/v1/assignments/launch/' + 'invalid')
                 .set('x-access-token', fake.teacher1.token)
@@ -369,19 +356,16 @@ describe('Assignments', () => {
         });
 
         it('it should do nothing on inexisting assignment', (done) => {
-
             chai.request(server)
                 .get('/api/v1/assignments/launch/' + 'ffffffffffffffffffffffff')
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .end((err, res) => {
                     res.should.have.status(401);
-                    res.body.should.be.eql({});
+                    res.body.code.should.be.eql(39);
                     done();
                 });
         });
-
-
 
         it('it should launch the valid assignment', (done) => {
             chai.request(server)
@@ -391,6 +375,10 @@ describe('Assignments', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     fake.delivery1 = res.body;
+                    res.body.should.be.an('object');
+                    res.body.should.have.property('count').not.eql(0);
+                    res.body.should.have.property('count').not.eql(undefined);
+                    res.body.should.have.property('count').be.a('number');
                     done();
                 });
         });
@@ -400,7 +388,6 @@ describe('Assignments', () => {
     describe('/POST/:id/comments assignments', () => {
 
         it('it should do nothing on invalid assignment', (done) => {
-
             chai.request(server)
                 .put('/api/v1/assignments/deliveries/comment/' + 'invalid?oid=' + fake.delivery1.objectId)
                 .set('x-access-token', fake.teacher1.token)
@@ -413,10 +400,9 @@ describe('Assignments', () => {
                     res.body.code.should.be.eql(35);
                     done();
                 });
-        })
+        });
 
         it('it should do nothing on comment with inexisting assignment and without oid', (done) => {
-
             chai.request(server)
                 .put('/api/v1/assignments/deliveries/comment/' + 'ffffffffffffffffffffffff?oid=')
                 .set('x-access-token', fake.teacher1.token)
@@ -431,8 +417,6 @@ describe('Assignments', () => {
                 });
         });
 
-
-
         it('it should do add comment in entry and with an valid oid and assignment id', (done) => {
             chai.request(server)
                 .put('/api/v1/assignments/deliveries/comment/' + fake.assignment1._id + '?oid=' + fake.delivery1.objectId)
@@ -443,16 +427,15 @@ describe('Assignments', () => {
                 })
                 .end((err, res) => {
                     res.should.have.status(200);
+                    res.body.should.have.property('comment').eql("comment_");
                     done();
                 });
         })
     });
 
-
     // submit assignment ---PUT/:id/submit---
     describe('/PUT/:id/submit assignments', () => {
         it('it should do nothing on invalid assignment', (done) => {
-
             chai.request(server)
                 .put('/api/v1/assignments/deliveries/submit/' + 'invalid?oid=' + fake.delivery1.objectId)
                 .set('x-access-token', fake.teacher1.token)
@@ -469,7 +452,6 @@ describe('Assignments', () => {
         });
 
         it('it should do nothing on submit with inexisting assignment and without oid', (done) => {
-
             chai.request(server)
                 .put('/api/v1/assignments/deliveries/submit/' + 'ffffffffffffffffffffffff?oid=')
                 .set('x-access-token', fake.teacher1.token)
@@ -492,7 +474,7 @@ describe('Assignments', () => {
                 .set('x-key', fake.teacher1.user._id)
                 .send({
                     isSubmitted: true,
-                    submissionDate: new Date()
+                    submissionDate: new Date().getTime()
                 })
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -501,17 +483,16 @@ describe('Assignments', () => {
         });
     });
 
-     // return assignment ---GET/:id/return---
+    // return assignment ---GET/:id/return---
     describe('/GET/:id/return assignments', () => {
         it('it should do nothing on invalid assignment', (done) => {
-
             chai.request(server)
-                .get('/api/v1/assignments/deliveries/return/' + 'invalid?oid=' + fake.delivery1.objectId)
+                .put('/api/v1/assignments/deliveries/return/' + 'invalid?oid=' + fake.delivery1.objectId)
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .send({
                     isSubmitted: false,
-                    
+
                 })
                 .end((err, res) => {
                     res.should.have.status(401);
@@ -521,14 +502,13 @@ describe('Assignments', () => {
         });
 
         it('it should do nothing on return with inexisting assignment and without oid', (done) => {
-
             chai.request(server)
-                .get('/api/v1/assignments/deliveries/return/' + 'ffffffffffffffffffffffff?oid=')
+                .put('/api/v1/assignments/deliveries/return/' + 'ffffffffffffffffffffffff?oid=')
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .send({
                     isSubmitted: false,
-                    
+
                 })
                 .end((err, res) => {
                     res.should.have.status(401);
@@ -539,15 +519,16 @@ describe('Assignments', () => {
 
         it('it should do return with an valid oid and assignment id', (done) => {
             chai.request(server)
-                .get('/api/v1/assignments/deliveries/return/' + fake.assignment1._id + '?oid=' + fake.delivery1.objectId)
+                .put('/api/v1/assignments/deliveries/return/' + fake.assignment1._id + '?oid=' + fake.delivery1.objectId)
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .send({
                     isSubmitted: false,
-                    
+
                 })
                 .end((err, res) => {
                     res.should.have.status(200);
+                    res.body.should.be.an('object');
                     done();
                 });
         });
@@ -556,7 +537,6 @@ describe('Assignments', () => {
     //delete assignment ---DELETE/:id---
     describe('/DELETE/:id assignments', () => {
         it('it should do nothing on invalid assignment', (done) => {
-
             chai.request(server)
                 .delete('/api/v1/assignments/' + 'invalid')
                 .set('x-access-token', fake.teacher1.token)
@@ -569,26 +549,25 @@ describe('Assignments', () => {
         });
 
         it('it should do nothing on inexisting assignment', (done) => {
-
             chai.request(server)
                 .delete('/api/v1/assignments/' + 'ffffffffffffffffffffffff')
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .end((err, res) => {
                     res.should.have.status(401);
-                    res.body.code.should.be.eql(23);
+                    res.body.code.should.be.eql(40);
                     done();
                 });
         });
 
         it('it should delete the valid assignment', (done) => {
-
             chai.request(server)
                 .delete('/api/v1/assignments/' + fake.assignment1._id)
                 .set('x-access-token', fake.teacher1.token)
                 .set('x-key', fake.teacher1.user._id)
                 .end((err, res) => {
                     res.should.have.status(200);
+                    res.body.should.have.property('id').eql(fake.assignment1._id);
                     done();
                 });
         });
