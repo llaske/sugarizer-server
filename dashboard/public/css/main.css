@@ -206,6 +206,10 @@
   background-image: url('/public/img/classroom-icon.svg')
 }
 
+.assignment-icon {
+  background-image: url('/public/img/assignment.png')
+}
+
 .user-icon {
   background-image: url('/public/img/user-icon.svg')
 }

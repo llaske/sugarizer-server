@@ -4,7 +4,7 @@ var mongo = require('mongodb'),
 	streamifier = require('streamifier'),
 	fs = require('fs'),
 	path = require('path');
-
+var common = require('../controller/utils/common');
 
 var db;
 
@@ -1220,4 +1220,44 @@ exports.findAllEntries = function(req, res) {
 			});
 		});
 	}
+};
+
+exports.copyEntry = function (entryDoc, chunks) {
+	return new Promise(function (resolve, reject) {
+		var error = new Error("Entry not found");
+		if (typeof entryDoc == "undefined") {
+			reject(error);
+		}
+
+		var text = "";
+		for (var i = 0; i < chunks.length; i++) {
+			text += chunks[i].data ? chunks[i].data.toString("utf8") : "";
+		}
+		entryDoc.text = text;
+		var textObject = JSON.parse(entryDoc.text);
+		entryDoc.text = textObject.encoding ? _toUTF16(textObject.text) : textObject.text;
+
+		var utftext = _toUTF8(entryDoc.text);
+		var isUtf16 = (entryDoc.text.length != utftext.length);
+		var filename = mongo.ObjectId();
+		var textContent = JSON.stringify({
+			text_type: typeof entryDoc.text,
+			text: isUtf16 ? utftext : entryDoc.text,
+			encoding: isUtf16
+		});
+
+		streamifier.createReadStream(textContent)
+			.pipe(gridfsbucket.openUploadStreamWithId(filename, filename.toString()))
+			.on('error', function () {
+				reject(new Error());
+			}).on('finish', function (uploadStr) {
+				entryDoc.text = uploadStr._id;
+				var objectId = common.createUUID();
+				if (typeof entryDoc == "object") {
+					entryDoc.objectId = objectId;
+				}
+				resolve(entryDoc);
+			});
+
+	});
 };
