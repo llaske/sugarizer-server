@@ -396,6 +396,7 @@ exports.findAllDeliveries = function (req, res) {
     //find all deliveries with filters and pagination
     var query = {};
     query = addQuery("buddy_name", req.query, query);
+    query = addQuery("Delivered", req.query, query);
     db.collection(journalCollection, function (err, collection) {
         //count
         collection.countDocuments(query, function (err, count) {
@@ -1043,7 +1044,16 @@ function addQuery(filter, params, query, default_val) {
             query["dueDate"] = {
                 $lte: new Date().getTime()
             };
-        } else {
+        }
+        else if (filter == "Delivered") {
+            if (params[filter] == "true") {
+                console.log("Delivered true");
+                query["content.$[elem].metadata.isSubmitted"] = {
+                    $eq: true
+                }
+            }
+        }
+        else {
             query[filter] = {
                 $regex: new RegExp("^" + params[filter] + "$", "i")
             };
