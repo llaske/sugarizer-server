@@ -8,7 +8,7 @@ var superagent = require('superagent'),
 var assignment = require('./index');
 
 module.exports = function addComment(req, res) {
-    
+
     //reinit l10n and momemt with locale
     common.reinitLocale(req);
     var query = {
@@ -18,7 +18,6 @@ module.exports = function addComment(req, res) {
     if (req.method == 'POST') {
         // validate 
         req.body.comment = req.body.comment.trim();
-        req.assert('comment', common.l10n.get('CommentInvalid')).notEmpty();
         // get errors
         var errors = req.validationErrors();
 

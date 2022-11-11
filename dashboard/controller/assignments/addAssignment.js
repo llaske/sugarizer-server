@@ -43,12 +43,15 @@ module.exports = function addAssignment(req, res) {
             req.body.dueDate = req.body.dueDate + " " + req.body.time;
             req.body.dueDate = Math.floor(new Date(req.body.dueDate).getTime())
         }
+        //check if due date is in the past
+        if (req.body.dueDate && req.body.dueDate < Date.now()) {
+            req.assert('dueDate', common.l10n.get('InvalidDueDate')).equals(req.body.dueDate);
+        }
         //delete time
         if (req.body.time) {
             delete req.body.time;
         }
         req.assert('name', common.l10n.get('AssignmentNameInvalid')).matches(/^[a-z0-9 ]+$/i);
-        req.assert('instructions', common.l10n.get('AssignmentInstructionsInvalid')).matches(/^[a-z0-9 ]+$/i);
         req.body.options = { sync: true, stats: true };
         // get errors
         var errors = req.validationErrors();

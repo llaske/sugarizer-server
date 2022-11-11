@@ -27,6 +27,9 @@ module.exports = function getAllDeliveries(req, res) {
     if (req.query.buddy_name != '') {
         query['buddy_name'] = req.query.buddy_name;
     }
+    if (req.query.status != 'Delivered') {
+        query['Delivered'] = req.query.status;
+    }
     if (req.query.limit != '') {
         query['limit'] = req.query.limit;
     }
