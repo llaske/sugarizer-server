@@ -15,7 +15,7 @@
 		"csv-parser": "~2.2.0",
 		"csv-writer": "~1.2.0",
 		"ejs": "~2.6.2",
-		"express": "4.16.4",
+		"express": "4.17.3",
 		"express-flash": "~0.0.2",
 		"express-session": "1.15.6",
 		"express-validator": "~5.3.1",
