@@ -4,104 +4,107 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: Sat Oct 12 2019 11:05:31 GMT+0200 (GMT+02:00)\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-12-12 15:41+0000\n"
+"Last-Translator: cccczl <z.cccczl@gmail.com>\n"
+"Language-Team: Chinese (Simplified) "
+"<http://translate.sugarizer.org/projects/sugarizer/sugarizer-server/zh_Hans/>"
+"\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: ini2po 0.0.1\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 2.16\n"
 
 #: users
 msgctxt "users"
 msgid "Users"
-msgstr ""
+msgstr "用户"
 
 #: dashboard
 msgctxt "dashboard"
 msgid "Home"
-msgstr ""
+msgstr "首页"
 
 #: journals
 msgctxt "journals"
 msgid "Journals"
-msgstr ""
+msgstr "日志"
 
 #: activities
 msgctxt "activities"
 msgid "Activities"
-msgstr ""
+msgstr "最新活动"
 
 #: activityNotFound
 msgctxt "activityNotFound"
 msgid "Activity not found"
-msgstr ""
+msgstr "没有找到活动项"
 
 #: stats
 msgctxt "stats"
 msgid "Statistics"
-msgstr ""
+msgstr "统计数据"
 
 #: icon
 msgctxt "icon"
 msgid "Icon"
-msgstr ""
+msgstr "图标"
 
 #: size
 msgctxt "size"
 msgid "Size"
-msgstr ""
+msgstr "大小"
 
 #: name
 msgctxt "name"
 msgid "Name"
-msgstr ""
+msgstr "姓名"
 
 #: activity
 msgctxt "activity"
 msgid "Activity"
-msgstr ""
+msgstr "活动"
 
 #: version
 msgctxt "version"
 msgid "Version"
-msgstr ""
+msgstr "版本"
 
 #: favorite
 msgctxt "favorite"
 msgid "Favorite"
-msgstr ""
+msgstr "收藏"
 
 #: action
 msgctxt "action"
 msgid "Action"
-msgstr ""
+msgstr "动作"
 
 #: role
 msgctxt "role"
 msgid "Role"
-msgstr ""
+msgstr "任务"
 
 #: language
 msgctxt "language"
 msgid "Language"
-msgstr ""
+msgstr "语言"
 
 #: timestamp
 msgctxt "timestamp"
 msgid "Timestamp"
-msgstr ""
+msgstr "时间戳"
 
 #: title
 msgctxt "title"
 msgid "Title"
-msgstr ""
+msgstr "标题"
 
 #: searchActivity.placeholder
 msgctxt "searchActivity.placeholder"
 msgid "Search Activity..."
-msgstr ""
+msgstr "搜索..."
 
 #: successActivityUpdate
 msgctxt "successActivityUpdate"
