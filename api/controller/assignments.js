@@ -25,8 +25,8 @@ CHUNKS_COLL = bucket + ".chunks";
  * @apiName AddAssignment
  * @apiDescription Add assignment in the database. Returns the inserted assignment.
  * @apiGroup Assignments
- * @apiVersion 1.1.0
- * @apiHeader {String} x-key User uinque id.
+ * @apiVersion 1.5.0
+ * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  * 
  * @apiSuccess {String} _id Unique assignment id.
@@ -110,8 +110,8 @@ exports.addAssignment = function (req, res) {
  * @apiName GetAssignments
  * @apiDescription Retrieve all assignment data registered on the server.
  * @apiGroup Assignments
- * @apiVersion 1.1.0
- * @apiHeader {String} x-key User uinque id.
+ * @apiVersion 1.5.0
+ * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  * 
  * @apiExample Example usage:
@@ -292,11 +292,12 @@ exports.findAll = function (req, res) {
 };
 
 /**
- * @api {get} /api/v1/assignments/:id Get Deliveries
- * @apiName Get Deliveries.
- * @apiGroup Assignments  
+ * @api {get} api/v1/assignments/:id Get Deliveries
+ * @apiName GetDeliveries
+ * @apiGroup Assignments
+ * @apiVersion 1.5.0 
  * @apiDescription Get all deliveries for a specific assignment.
- * @apiParam {String} assignmentId Assignment id.
+ * @apiParam {String} id Assignment id.
  * 
  * @apiSuccess {Object[]} deliveries List of deliveries.
  * @apiSuccess {String} _id Journal id.
@@ -454,11 +455,11 @@ exports.findAllDeliveries = function (req, res) {
 };
 
 /**
- * @api {get} api/v1/assignment/:assignmentId Get assignment details.
+ * @api {get} api/v1/assignment/:assignmentId Get assignment details
  * @apiName GetAssignment
  * @apiDescription Retrieve detail for a specific assignment.
  * @apiGroup Assignments
- * @apiVersion 1.1.0
+ * @apiVersion 1.5.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  * 
@@ -653,16 +654,16 @@ exports.findById = function (req, res) {
 };
 
 /** 
- * @api {get} /api/v1/assignments/launch/:assignmentId Launch for an assignment.
+ * @api {get} api/v1/assignments/launch/:assignmentId Launch an assignment
  * @apiName LaunchAssignment
  * @apiGroup Assignments
- * @apiVersion 1.1.0
+ * @apiVersion 1.5.0
  * @apiDescription Launches the assignment for the Students.
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  * @apiParam {String} assignmentId Assignment unique id.
  * 
- * @apiSuccess {Object} Number of students to whom the assignment has been assigned.
+ * @apiSuccess {Object} count Number of students to whom the assignment has been assigned.
  * 
  * @apiSuccessExample Success-Response:
  *    HTTP/1.1 200 OK
@@ -864,16 +865,16 @@ function updateEntries(entryDoc, privateJournalIds, uniqueStudents) {
 }
 
 /**
- *@api {delete} /api/assignments/:assignmentId Remove assignment.
+ *@api {delete} api/assignments/:assignmentId Remove assignment
  * @apiName RemoveAssignment
  * @apiDescription Remove assignment by assignmentId.
  * @apiGroup Assignments
- * @apiVersion 1.1.0
+ * @apiVersion 1.5.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  * @apiParam {String} assignmentId Unique id of Assignment to be delete.
  * 
- * @apiSucessExample {json} Success-Response:
+ * @apiSuccessExample {json} Success-Response:
  *    HTTP/1.1 200 OK
  *  {
         "id": "6328c9b2831c11556edd785e"
@@ -916,13 +917,15 @@ exports.removeAssignment = function (req, res) {
 
 //api doc for update Assignment
 /**
- * @api {put} /api/assignments/:assignmentId Update assignment.
+ * @api {put} api/assignments/:assignmentId Update assignment
  * @apiName UpdateAssignment
- * @apiDescription UUpdate an assignment. Return the assignment updated.
+ * @apiDescription Update an assignment. Return the assignment updated.
  * @apiGroup Assignments
- * @apiVersion 1.1.0
+ * @apiVersion 1.5.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
+ * 
+ * @apiParam {String} assignmentId Assignment unique id.
  * 
  * @apiSuccessExample {json} Success-Response:
  *   HTTP/1.1 200 OK
@@ -1069,13 +1072,16 @@ function addQuery(filter, params, query, default_val) {
 }
 
 /**
- * @api {put} /api/assignments/:assignmentId/comments/:commentId Update comment.
+ * @api {put} api/assignments/:assignmentId/comments/:commentId Update comment
  * @apiName UpdateComment
  * @apiDescription Update a comment. Return the comment updated.
  * @apiGroup Assignments
- * @apiVersion 1.1.0
+ * @apiVersion 1.5.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
+ * 
+ * @apiParam {String} assignmentId Assignment unique id.
+ * @apiParam {String} commentId Comment unique id.
  * 
  * @apiSuccess {String} comment Comment.
  * 
@@ -1193,15 +1199,14 @@ function updateStatus(assignmentId, status, objectId, callback) {
 }
 
 /** 
- * @api {PUT} /api/v1/assignments/deliveries/return/:assignmentId Return Assignment 
+ * @api {PUT} api/v1/assignments/deliveries/return/:assignmentId Return Assignment 
  * @apiName ReturnAssignment
  * @apiDescription Return Assignment 
  * @apiGroup Assignments
- * @apiVersion 1.1.0
+ * @apiVersion 1.5.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  * @apiParam {String} assignmentId Assignment id.
- * @apiParam {String} oid ObjectId.
  * 
  * @apiExample Example usage:
  *    "/api/v1/assignments/deliveries/return/:assignmentId?oid=5b9b1b0b0f0000b800000000"
@@ -1321,15 +1326,14 @@ exports.returnAssignment = function (req, res) {
 }
 
 /** 
- * @api {PUT} /api/v1/assignments/deliveries/submit/:assignmentId Submit Assignment.
+ * @api {PUT} api/v1/assignments/deliveries/submit/:assignmentId Submit Assignment
  * @apiName SubmitAssignment
  * @apiDescription Submit Assignment. 
  * @apiGroup Assignments
- * @apiVersion 1.1.0
+ * @apiVersion 1.5.0
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  * @apiParam {String} assignmentId Assignment id.
- * @apiParam {String} oid ObjectId.
  * 
  * @apiExample Example usage:
  *    "/api/v1/assignments/deliveries/submit/:assignmentId?oid=5b9b1b0b0f0000b800000000"
