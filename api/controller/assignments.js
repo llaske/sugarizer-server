@@ -700,6 +700,7 @@ exports.launchAssignment = function (req, res) {
                 //find all students from classrooms
                 var classrooms = assignment.classrooms;
                 var privateJournalIds = []; //to store private journal ids of every student
+                var launchDate = new Date().getTime();
                 //get students private_journal
                 common.fetchAllStudents(classrooms).then(function (stds) {
                     var uniqueJournalIds = [];
@@ -774,6 +775,7 @@ exports.launchAssignment = function (req, res) {
                                         entry[0].content[0].metadata.isSubmitted = false;
                                         entry[0].content[0].metadata.status = null;
                                         entry[0].content[0].metadata.comment = "";
+                                        entry[0].content[0].metadata.timestamp = launchDate;
                                     } else {
                                         return res.status(404).send({
                                             'error': "Entry not found",
