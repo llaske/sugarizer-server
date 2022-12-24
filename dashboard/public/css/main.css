@@ -220,6 +220,16 @@
   top: 9px;
 }
 
+.assignment-icon2-inactive {
+  background-image: url('/public/img/assignment-inactive.svg');
+  background-size: 26px;
+  height: 26px;
+  width: 26px;
+  display: inline-table;
+  position: relative;
+  top: 9px;
+}
+
 .launchAssignment-icon {
   background-image: url('/public/img/play_black.svg');
   background-size: 24px;
