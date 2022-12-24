@@ -43,6 +43,16 @@
 		"RemoveEntryJournal",
 		"GetAllStats",
 		"AddStats",
-		"RemoveStats"
+		"RemoveStats",
+		"GetAssignments",
+		"GetAssignment",
+		"AddAssignment",
+		"UpdateAssignment",
+		"UpdateComment",
+		"RemoveAssignment",
+		"LaunchAssignment",
+		"SubmitAssignment",
+		"ReturnAssignment",
+		"GetDeliveries"
 	]
 }

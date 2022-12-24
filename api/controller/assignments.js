@@ -114,8 +114,16 @@ exports.addAssignment = function (req, res) {
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  * 
+ * @apiParam {String} [name] Name of the assignment <code>e.g. name=final</code>
+ * @apiParam {Boolean} [isAssigned] To get assignment already launched <code>e.g. isAssigned=true</code>
+ * @apiParam {Boolean} [terminated] To get terminated assignment <code>e.g. terminated=true</code>
+ * @apiParam {String} [created_by] Id of the author of the assignment <code>e.g. created_by=630b463f43225439163b8d3e</code>
+ * 
  * @apiExample Example usage:
  *      "/api/v1/assignments"
+ *      "/api/v1/assignments?name=final"
+ *      "/api/v1/assignments?terminated=true"
+ *      "/api/v1/assignments?created_by=630b463f43225439163b8d3e"
  * 
  * @apiSuccess {Object[]} assignments.
  * 
@@ -178,6 +186,7 @@ exports.findAll = function (req, res) {
     query = addQuery("name", req.query, query);
     query = addQuery("isAssigned", req.query, query);
     query = addQuery("terminated", req.query, query);
+    query = addQuery("created_by", req.query, query);
     db.collection(assignmentCollection, function (err, collection) {
         //count
         collection.countDocuments(query, function (err, count) {
@@ -1049,16 +1058,17 @@ function addQuery(filter, params, query, default_val) {
             query["dueDate"] = {
                 $lte: new Date().getTime()
             };
-        }
-        else if (filter == "Delivered") {
+        } else if (filter == "Delivered") {
             if (params[filter] == "true") {
-                console.log("Delivered true");
                 query["content.$[elem].metadata.isSubmitted"] = {
                     $eq: true
                 }
             }
-        }
-        else {
+        } else if (filter == "created_by") {
+            query["created_by"] = {
+                $eq: new mongo.ObjectID(params[filter])
+            }
+        } else {
             query[filter] = {
                 $regex: new RegExp("^" + params[filter] + "$", "i")
             };

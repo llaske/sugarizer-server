@@ -271,6 +271,54 @@ describe('Assignments', () => {
                     done();
                 });
         });
+
+        it('it should filter by name', (done) => {
+            chai.request(server)
+                .get('/api/v1/assignments?name=' + fake.assignment1.name)
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.assignments.length.should.be.above(0);
+                    done();
+                });
+        });
+
+        it('it should return nothing on fake name filtering', (done) => {
+            chai.request(server)
+                .get('/api/v1/assignments?name=' + "xxxx")
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.assignments.length.should.be.eql(0);
+                    done();
+                });
+        });
+
+        it('it should filter by created_by', (done) => {
+            chai.request(server)
+                .get('/api/v1/assignments?created_by=' + fake.assignment1.created_by)
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.assignments.length.should.be.above(0);
+                    done();
+                });
+        });
+
+        it('it should return nothing on fake created_by filtering', (done) => {
+            chai.request(server)
+                .get('/api/v1/assignments?created_by=' + 'ffffffffffffffffffffffff')
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.assignments.length.should.be.eql(0);
+                    done();
+                });
+        });
     });
 
     //update assignment ---PUT/:id---

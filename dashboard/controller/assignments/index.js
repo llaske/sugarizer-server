@@ -49,6 +49,9 @@ exports.index = function (req, res) {
     if (req.query.sort != '') {
         query['sort'] = req.query.sort;
     }
+    if (req.session.user.user.role != 'admin') {
+        query['created_by'] = req.session.user.user._id;
+    }
 
     getActivities(req, res, function (activities) {
         var iconMap = {};
