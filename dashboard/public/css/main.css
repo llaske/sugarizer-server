@@ -230,6 +230,16 @@
   top: 7px;
 }
 
+.launchAssignment-icon-inactive {
+  background-image: url('/public/img/play_black_inactive.svg');
+  background-size: 24px;
+  height: 24px;
+  width: 24px;
+  display: inline-table;
+  position: relative;
+  top: 7px;
+}
+
 .returnAssignment-icon {
   background-image: url('/public/img/back.svg');
   background-size: 30px;
