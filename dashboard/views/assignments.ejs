@@ -107,10 +107,11 @@
                                                     <% if(account.user._id == data.assignments[i].created_by) {%>
                                                         <% if(data.assignments[i].isAssigned == false){ %>
                                                             <a data-l10n-id="launchAssignment" title="Launch Assignment" href="/dashboard/assignments/launch/<%= data.assignments[i]._id %>" "><div class="launchAssignment-icon"></div></a>
+                                                            <a id="assignment-deliveries" style=" cursor: not-allowed; pointer-events: none;" href="/dashboard/assignments/deliveries/<%= data.assignments[i]._id %>" data-l10n-id="deliveries" title="deliveries"><div class="assignment-icon2-inactive"></div></a>
                                                         <% } else { %>
                                                             <a data-l10n-id="launchAssignment" style=" cursor: not-allowed; pointer-events: none;" title="Launch Assignment" href="/dashboard/assignments/launch/<%= data.assignments[i]._id %>" "><div class="launchAssignment-icon-inactive"></div></a>
-                                                        <% } %>
                                                             <a id="assignment-deliveries" href="/dashboard/assignments/deliveries/<%= data.assignments[i]._id %>" data-l10n-id="deliveries" title="deliveries"><div class="assignment-icon2"></div></a>
+                                                        <% } %>
                                                             <% if(data.assignments[i].isAssigned == false) {%>
                                                                 <a data-l10n-id="editAssignment" title="Edit Assignment" href="/dashboard/assignments/edit/<%= data.assignments[i]._id %>"><i id="assignment-edit-class" class="material-icons text-muted">edit</i></a>
                                                              <% } else { %> 
