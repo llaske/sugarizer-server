@@ -38,7 +38,7 @@
                                     <div class="upload-btn-wrapper pull-right" id="assignment-deleteMultiple">
                                         <a href="#" onclick="deleteMultipleAssignments(); return false;" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
                                     </div>
-                                    <% if (account.user && account.user.role=="admin" || account.user.role == "teacher") { %>
+                                    <% if (account.user && account.user.role == "teacher") { %>
                                         <a class="btn btn-round pull-right" href="/dashboard/assignments/add" data-l10n-id="addAssignment" id="assignment-addassignment"><div class="ripple-container"></div></a>
                                     <% } %>
                                     <button class="btn btn-round pull-right" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
