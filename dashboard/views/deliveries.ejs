@@ -69,6 +69,7 @@
                                                 <th><button data-l10n-id="name" id="name-column" onclick="sortBy('name')"></button></th>
                                                 <th data-l10n-id="status">Status</th>
                                                 <th><button data-l10n-id="deliveredAt" id="last-column" onclick="sortBy('time')"></button></th>
+                                                <th data-l10n-id="score">Score</th>
                                                 <th data-l10n-id="comment">Comment</th>
                                                 <th data-l10n-id="action">Action</th>
                                             </tr>
@@ -99,6 +100,7 @@
                                                 <td><%= data.deliveries[i].content[0].metadata.buddy_name %></td>
                                                 <td><% if(data.deliveries[i].content[0].metadata.isSubmitted == true ){%> Delivered <% } %> <% if(data.deliveries[i].content[0].metadata.isSubmitted == false ){%> Expected <% } %> </td>
                                                 <td><% if(data.deliveries[i].content[0].metadata.submissionDate !== null) {%> <%= moment(data.deliveries[i].content[0].metadata.submissionDate).format('DD/MM/YYYY h:mmA') %> <% } %></td>
+                                                <td><%= data.deliveries[i].content[0].metadata.score %></td>
                                                 <td><%= data.deliveries[i].content[0].metadata.comment %></td>
                                                 <td>
                                                     <a id="deliveries-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= data.deliveries[i]._id %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=launch')" data-l10n-id="deliveries-launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
