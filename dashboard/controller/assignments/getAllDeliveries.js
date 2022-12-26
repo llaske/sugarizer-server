@@ -51,7 +51,6 @@ module.exports = function getAllDeliveries(req, res) {
             .query(query)
             .end(function (error, response) {
                 if (response.statusCode == 200) {
-                    console.log({ u: query });
                     res.render('deliveries', {
                         moment: moment,
                         query: query,
