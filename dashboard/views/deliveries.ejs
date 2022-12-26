@@ -35,12 +35,6 @@
                                 </div>
                                 <div class="col-md-3"></div>
                                 <div class="col-md-6">
-                                    <div class="upload-btn-wrapper pull-right" id="deliveries-deleteMultiple">
-                                        <a href="#" onclick="deleteMultipleAssignment(); return false;" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
-                                    </div>
-                                    <% if (account.user && account.user.role=="admin" ) { %>
-                                        <a class="btn btn-round pull-right" href="/dashboard/assignments/add" data-l10n-id="addAssignment" id="deliveries-addassignment"><div class="ripple-container"></div></a>
-                                    <% } %>
                                     <button class="btn btn-round pull-right" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
                                 </div>
                             </form>
@@ -75,7 +69,12 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <% for(var i=0; i < data.deliveries.length; i++) { %>
+                                            <% for(var i=0; i < data.deliveries.length; i++) {
+                                                if (query.Delivered !== undefined) {
+                                                    if (query.Delivered === "true" && data.deliveries[i].content[0].metadata.isSubmitted === false) { continue; }
+                                                    if (query.Delivered === "false" && data.deliveries[i].content[0].metadata.isSubmitted === true) { continue; }
+                                                }
+                                            %>
                                             <tr id="deliveries-card">
                                                 <td><input type="checkbox" class="deliveries-checkbox" cid="<%= data.deliveries[i]._id %>"></td>
                                                 <td><%= data.offset + i + 1 %></td>
