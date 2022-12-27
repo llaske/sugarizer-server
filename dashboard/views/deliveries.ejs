@@ -105,7 +105,11 @@
                                                     <a id="deliveries-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= data.deliveries[i]._id %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=launch')" data-l10n-id="deliveries-launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
                                                     <a title="Comment" href="/dashboard/assignments/deliveries/comment/<%= data.deliveries[i].content[0].metadata.assignmentId %>?oid=<%= data.deliveries[i].content[0].objectId %>"><div class="comment-icon"></div></a>
                                                     <a id="journal-activity-download" href="javascript:download_activity('/dashboard/activities/launch/<%= data.deliveries[i]._id %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=download')" data-l10n-id="download" title="Download"><i class="material-icons text-muted">cloud_download</i></a>
+                                                    <% if(data.deliveries[i].content[0].metadata.isSubmitted == true ){%> 
                                                     <a title="Return" href="/dashboard/assignments/deliveries/return/<%= data.deliveries[i].content[0].metadata.assignmentId %>?oid=<%= data.deliveries[i].content[0].objectId %>"><div class="returnAssignment-icon"></div></a>
+                                                    <% } else {%>
+                                                    <a title="Return" style=" cursor: not-allowed; pointer-events: none;" href="/dashboard/assignments/deliveries/return/<%= data.deliveries[i].content[0].metadata.assignmentId %>?oid=<%= data.deliveries[i].content[0].objectId %>"><div class="returnAssignment-icon-inactive"></div></a>
+                                                    <% } %>
                                                 </td>
                                             </tr>
                                             <% } %>

@@ -260,6 +260,16 @@
   top: 10px;
 }
 
+.returnAssignment-icon-inactive {
+  background-image: url('/public/img/back-inactive.svg');
+  background-size: 30px;
+  height: 30px;
+  width: 30px;
+  display: inline-table;
+  position: relative;
+  top: 10px;
+}
+
 .comment-icon {
   background-image: url('/public/img/comment.svg');
   background-size: 34px;
