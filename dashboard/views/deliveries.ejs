@@ -69,12 +69,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <% for(var i=0; i < data.deliveries.length; i++) {
-                                                if (query.Delivered !== undefined) {
-                                                    if (query.Delivered === "true" && data.deliveries[i].content[0].metadata.isSubmitted === false) { continue; }
-                                                    if (query.Delivered === "false" && data.deliveries[i].content[0].metadata.isSubmitted === true) { continue; }
-                                                }
-                                            %>
+                                            <% for(var i=0; i < data.deliveries.length; i++) { %>
                                             <tr id="deliveries-card">
                                                 <td><input type="checkbox" class="deliveries-checkbox" cid="<%= data.deliveries[i]._id %>"></td>
                                                 <td><%= data.offset + i + 1 %></td>

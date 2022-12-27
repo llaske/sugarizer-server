@@ -307,7 +307,14 @@ exports.findAll = function (req, res) {
  * @apiVersion 1.5.0 
  * @apiDescription Get all deliveries for a specific assignment.
  * @apiParam {String} id Assignment id.
- * 
+ * @apiParam {String} [buddy_name] Buddy name to filter <code>e.g. buddy_name=Nikhil</code>
+ * @apiParam {Boolean} [Delivered] To get only assignments already delivered <code>e.g. Delivered=true</code>
+ *
+ * @apiExample Example usage:
+ *      "/api/v1/assignments/630b460e43225439163b8d3b"
+ *      "/api/v1/assignments/630b460e43225439163b8d3b?buddy_name=Nikhil"
+ *      "/api/v1/assignments/630b460e43225439163b8d3b?Delivered=true"
+ *  
  * @apiSuccess {Object[]} deliveries List of deliveries.
  * @apiSuccess {String} _id Journal id.
  * @apiSuccess {Array} content Journal Entry.
@@ -404,7 +411,7 @@ exports.findAllDeliveries = function (req, res) {
         });
     }
     //find all deliveries with filters and pagination
-    var query = {};
+    var query = {"metadata.assignmentId": assignmentId};
     query = addQuery("buddy_name", req.query, query);
     query = addQuery("Delivered", req.query, query);
     db.collection(journalCollection, function (err, collection) {
@@ -416,9 +423,7 @@ exports.findAllDeliveries = function (req, res) {
             //find all entries which matches with assignment id using aggregation
             collection.aggregate([
                 {
-                    $match: {
-                        "content.metadata.assignmentId": assignmentId
-                    }
+                    $match: {content: {$elemMatch: query}},
                 },
                 {
                     $project: {
@@ -449,7 +454,7 @@ exports.findAllDeliveries = function (req, res) {
                         'deliveries': items,
                         'offset': options.skip,
                         'limit': options.limit,
-                        'total': options.total,
+                        'total': items.length, // TODO: Should be options.total if paginate works
                         'sort': options.sort[0][0] + "(" + options.sort[0][1] + ")",
                         'links': {
                             prev_page: (options.skip - options.limit >= 0) ? formPaginatedUrl(route, params, options.skip - options.limit, options.limit) : undefined,
@@ -1060,8 +1065,12 @@ function addQuery(filter, params, query, default_val) {
             };
         } else if (filter == "Delivered") {
             if (params[filter] == "true") {
-                query["content.$[elem].metadata.isSubmitted"] = {
+                query["metadata.isSubmitted"] = {
                     $eq: true
+                }
+            } else if (params[filter] == "false") {
+                query["metadata.isSubmitted"] = {
+                    $eq: false
                 }
             }
         } else if (filter == "created_by") {
