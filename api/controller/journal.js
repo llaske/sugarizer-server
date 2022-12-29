@@ -1222,12 +1222,13 @@ exports.findAllEntries = function(req, res) {
 	}
 };
 
-exports.copyEntry = function (entryDoc, chunks, uniqueStudents) {
+exports.copyEntry = function (initialDoc, chunks, uniqueStudents) {
 	return new Promise(function (resolve, reject) {
 		var error = new Error("Entry not found");
-		if (typeof entryDoc == "undefined") {
+		if (typeof initialDoc == "undefined") {
 			reject(error);
 		}
+		var entryDoc = JSON.parse(JSON.stringify(initialDoc));
 		var text = "";
 		for (var i = 0; i < chunks.length; i++) {
 			text += chunks[i].data ? chunks[i].data.toString("utf8") : "";
@@ -1257,7 +1258,7 @@ exports.copyEntry = function (entryDoc, chunks, uniqueStudents) {
 				if (typeof entryDoc == "object") {
 					entryDoc.objectId = objectId;
 				}
-				resolve(entryDoc);
+				resolve({copy: entryDoc, student: uniqueStudents});
 			});
 
 	});

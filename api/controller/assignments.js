@@ -713,29 +713,20 @@ exports.launchAssignment = function (req, res) {
             else {
                 //find all students from classrooms
                 var classrooms = assignment.classrooms;
-                var privateJournalIds = []; //to store private journal ids of every student
                 var launchDate = new Date().getTime();
                 //get students private_journal
                 common.fetchAllStudents(classrooms).then(function (stds) {
-                    var uniqueJournalIds = [];
                     if (stds.length <= 0) {
                         return res.status(400).send({
                             'error': 'No students found',
                             'code': 37
                         });
                     }
-                    //make set for getting unique values of private_journal
-                    var uniqueJournalIdsSet = new Set();
-                    for (var i = 0; i < stds.length; i++) {
-                        if (!uniqueJournalIdsSet.has(stds[i].private_journal.toString())) {
-                            uniqueJournalIdsSet.add(stds[i].private_journal.toString());
-                        }
-                    }
                     //getting unique values of _id and name
                     var arr = [];
                     var uniqueStudents = [];
                     for (var i = 0; i < stds.length; i++) {
-                        arr.push({ _id: stds[i]._id, name: stds[i].name });
+                        arr.push({ _id: stds[i]._id, name: stds[i].name, journal: stds[i].private_journal.toString() });
                     }
                     var uniqueStudentsSet = new Set();
                     arr.forEach(obj => (
@@ -743,9 +734,7 @@ exports.launchAssignment = function (req, res) {
                     ))
                     uniqueStudentsSet = new Set([...uniqueStudentsSet].map(o => JSON.parse(o)))
                     //convert set to array
-                    uniqueJournalIds = Array.from(uniqueJournalIdsSet);
                     uniqueStudents = Array.from(uniqueStudentsSet);
-                    privateJournalIds = uniqueJournalIds;
                     db.collection(journalCollection, function (err, collection) {
                         if (err) {
                             return res.status(500).send({
@@ -796,8 +785,10 @@ exports.launchAssignment = function (req, res) {
                                             'code': 36
                                         });
                                     }
-                                    updateEntries(entry[0].content[0], privateJournalIds, uniqueStudents).then(function (result) {
-                                        updateStatus(req.params.assignmentId, "Assigned", entry[0].content[0].objectId, function (err, result) {
+                                    updateEntries(entry[0].content[0], uniqueStudents).then(function (result) {
+                                        var content = result.content;
+                                        var count = result.count;
+                                        updateStatus(req.params.assignmentId, "Assigned", content.objectId, function (err, result) {
                                             if (err) {
                                                 return res.status(500).send({
                                                     'error': "An error has occurred",
@@ -808,7 +799,7 @@ exports.launchAssignment = function (req, res) {
                                             }
                                         });
                                         return res.status(200).send({
-                                            count: result
+                                            count: count
                                         });
                                     }).catch(function () {
                                         return res.status(500).send({
@@ -832,7 +823,7 @@ exports.launchAssignment = function (req, res) {
 };
 
 //private function to update entries
-function updateEntries(entryDoc, privateJournalIds, uniqueStudents) {
+function updateEntries(entryDoc, uniqueStudents) {
     return new Promise(function (resolve, reject) {
         if (mongo.ObjectID.isValid(entryDoc.text)) {
             db.collection(CHUNKS_COLL, function (err, collection) {
@@ -843,16 +834,18 @@ function updateEntries(entryDoc, privateJournalIds, uniqueStudents) {
                         reject(err);
                     }
                     else {
-                        for (var counter = 0, i = 0, j = 0; i < privateJournalIds.length; i++) {
+                        for (var counter = 0, i = 0; i < uniqueStudents.length; i++) {
                             // add objectid
-                            journal.copyEntry(entryDoc, chunks, uniqueStudents[i]).then(function (copy) {
+                            journal.copyEntry(entryDoc, chunks, uniqueStudents[i]).then(function (result) {
+                                var copy = result.copy;
+                                var student = result.student;
                                 db.collection(journalCollection, function (err, collection) {
                                     if (err) {
                                         reject(err);
                                     } else {
                                         collection.updateOne(
                                             {
-                                                _id: new mongo.ObjectID(privateJournalIds[j++])
+                                                _id: new mongo.ObjectID(student.journal)
                                             },
                                             {
                                                 $push:
@@ -864,7 +857,7 @@ function updateEntries(entryDoc, privateJournalIds, uniqueStudents) {
                                                 if (err) {
                                                     reject(err);
                                                 } else {
-                                                    if (counter == privateJournalIds.length) return resolve(counter);
+                                                    if (counter == uniqueStudents.length) return resolve({content: entryDoc, count: counter});
                                                 }
                                             });
                                     }
