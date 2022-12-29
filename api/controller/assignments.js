@@ -118,12 +118,14 @@ exports.addAssignment = function (req, res) {
  * @apiParam {Boolean} [isAssigned] To get assignment already launched <code>e.g. isAssigned=true</code>
  * @apiParam {Boolean} [terminated] To get terminated assignment <code>e.g. terminated=true</code>
  * @apiParam {String} [created_by] Id of the author of the assignment <code>e.g. created_by=630b463f43225439163b8d3e</code>
+ * @apiParam {String} [sort=+timestamp] Order of results <code>e.g. sort=-timestamp or sort=-name</code>
  * 
  * @apiExample Example usage:
  *      "/api/v1/assignments"
  *      "/api/v1/assignments?name=final"
  *      "/api/v1/assignments?terminated=true"
  *      "/api/v1/assignments?created_by=630b463f43225439163b8d3e"
+ *      "/api/v1/assignments?sort=-name"
  * 
  * @apiSuccess {Object[]} assignments.
  * 
@@ -192,7 +194,7 @@ exports.findAll = function (req, res) {
         collection.countDocuments(query, function (err, count) {
             var params = JSON.parse(JSON.stringify(req.query));
             var route = req.route.path;
-            var options = getOptions(req, count, "+name");
+            var options = getOptions(req, count, "-timestamp");
             var conf = [
                 {
                     "$match": query
@@ -223,16 +225,13 @@ exports.findAll = function (req, res) {
             ];
             if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >= 2) {
                 conf[1]["$project"]["insensitive"] = { "$toLower": "$" + options.sort[0][0] };
-
+                var sortItem = {};
                 if (options.sort[0][1] == 'desc') {
-                    conf[2]["$sort"] = {
-                        "insensitive": -1
-                    };
+                    sortItem[options.sort[0][0]] = -1;
                 } else {
-                    conf[2]["$sort"] = {
-                        "insensitive": 1
-                    };
+                    sortItem[options.sort[0][0]] = 1;
                 }
+                conf[2]["$sort"] = sortItem;
             }
             //find
             collection.aggregate(conf).toArray(function (err, items) {
