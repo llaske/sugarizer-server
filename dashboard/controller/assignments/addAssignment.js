@@ -28,6 +28,9 @@ module.exports = function addAssignment(req, res) {
     }
     if (req.method == 'POST') {
         // validate
+        if (!req.body.assignedWork || !req.body.assignedWork.length) {
+            req.assert('assignedWork', common.l10n.get('InvalidAid')).equals(null);
+        }
         req.body.name = req.body.name.trim();
         req.body.classrooms = req.body.classrooms || [];
         if (typeof req.body.classrooms == 'string') {
