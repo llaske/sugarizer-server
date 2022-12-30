@@ -102,7 +102,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group form-black label-floating">
-                                                <input id="datetimepicker1"   name="dueDate" placeholder="Date" class="form-control" value="<% if(typeof assignment == 'object'){ %><%= new Date(assignment.dueDate).toLocaleString("en-US", {year: "numeric", month:"numeric", day:"numeric"})%><% } %>" type="text" autocomplete="off" />
+                                                <input id="datetimepicker1"   name="dueDate" placeholder="Date" class="form-control" value="<% if(typeof assignment == 'object' && assignment.dueDate){ %><%= new Date(assignment.dueDate).toLocaleString("en-US", {year: "numeric", month:"numeric", day:"numeric"})%><% } %>" type="text" autocomplete="off" />
                                                 <span class="material-input"></span>
                                             </div>
                                         </div>
@@ -116,7 +116,7 @@
                                         </script>
                                         <div class="col-md-3">
                                             <div class="form-group form-black label-floating">
-                                                <input class="form-control" id="timepicker" name="time"  value="<% if(typeof assignment == 'object'){ %><%= new Date(assignment.dueDate).toLocaleString("en-US", {hour: '2-digit', minute: '2-digit', hour12: false}) %><% } %>" type="text" placeholder="Time" autocomplete="off" >
+                                                <input class="form-control" id="timepicker" name="time"  value="<% if(typeof assignment == 'object' && assignment.dueDate){ %><%= new Date(assignment.dueDate).toLocaleString("en-US", {hour: '2-digit', minute: '2-digit', hour12: false}) %><% } %>" type="text" placeholder="Time" autocomplete="off" >
                                                 <span class="material-input"></span>
                                                 </div>
                                                 <script>

@@ -39,6 +39,9 @@ module.exports = function addAssignment(req, res) {
             req.body.lateTurnIn = true;
         }
         //join date and time
+        if (!req.body.dueDate || !req.body.time) {
+            req.assert('dueDate', common.l10n.get('InvalidDueDate')).equals(null);
+        }
         if (req.body.dueDate && req.body.time) {
             req.body.dueDate = req.body.dueDate + " " + req.body.time;
             req.body.dueDate = Math.floor(new Date(req.body.dueDate).getTime())
