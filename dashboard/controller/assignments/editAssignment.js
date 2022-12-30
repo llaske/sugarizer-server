@@ -4,7 +4,8 @@ var superagent = require('superagent'),
     common = require('../../helper/common'),
     xocolors = require('../../helper/xocolors')(),
     emoji = require('../../public/js/emoji'),
-    dashboard_utils = require('../dashboard/util');
+    dashboard_utils = require('../dashboard/util'),
+    journal_utils = require('../journal/util/index');
 
 var assignments = require('./index');
 
@@ -68,27 +69,36 @@ module.exports = function editAssignment(req, res) {
                         var assignment = response.body;
 
                         dashboard_utils.getAllClassrooms(req, res, function (classrooms) {
-                            if (assignment.classrooms && typeof (assignment.classrooms) == "object" && assignment.classrooms.length > 0 && classrooms && classrooms.classrooms && classrooms.classrooms.length > 0) {
-                                for (var i = 0; i < assignment.classrooms.length; i++) {
-                                    for (var j = 0; j < classrooms.classrooms.length; j++) {
-                                        if (assignment.classrooms[i]._id == classrooms.classrooms[j]._id) {
-                                            classrooms.classrooms[j]["is_member"] = true;
+                            journal_utils.getActivities(req, res, function (activities) {
+                                //make iconMap
+                                var iconMap = {};
+                                for (var i = 0; i < activities.length; i++) {
+                                    iconMap[activities[i].id] = '/' + activities[i].directory + '/' + activities[i].icon;
+                                }
+                                                            
+                                if (assignment.classrooms && typeof (assignment.classrooms) == "object" && assignment.classrooms.length > 0 && classrooms && classrooms.classrooms && classrooms.classrooms.length > 0) {
+                                    for (var i = 0; i < assignment.classrooms.length; i++) {
+                                        for (var j = 0; j < classrooms.classrooms.length; j++) {
+                                            if (assignment.classrooms[i]._id == classrooms.classrooms[j]._id) {
+                                                classrooms.classrooms[j]["is_member"] = true;
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            // send back
-                            res.render('addEditAssignment', {
-                                module: 'assignments',
-                                name: "Assignments",
-                                mode: "edit",
-                                assignment: response.body,
-                                classrooms: classrooms.classrooms,
-                                moment: moment,
-                                xocolors: xocolors,
-                                emoji: emoji,
-                                account: req.session.user,
-                                server: assignments.ini().information
+                                // send back
+                                res.render('addEditAssignment', {
+                                    module: 'assignments',
+                                    name: "Assignments",
+                                    mode: "edit",
+                                    assignment: response.body,
+                                    classrooms: classrooms.classrooms,
+                                    moment: moment,
+                                    xocolors: xocolors,
+                                    emoji: emoji,
+                                    iconMap: iconMap,
+                                    account: req.session.user,
+                                    server: assignments.ini().information
+                                });
                             });
                         });
                     } else {

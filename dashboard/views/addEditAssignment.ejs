@@ -22,19 +22,19 @@
                                 <% if(mode =="edit"){%>
                                     <div class="col-md-6">
                                         <div class="color" id="<%= assignment.assignedWork.objectId %>" >
-                                            <div class="xo-icon"></div>
+                                            <div class='xo-icon'></div>
                                         </div>
                                         <div class="form-group form-black label-floating">
                                             <label class="control-label" data-l10n-id="assignedWork"></label>
-                                            <select class="form-control" disabled name="Assign work"> 
+                                            <select  id="select2-activity" class="form-control" disabled name="Assign work"> 
                                                 <option selected  value='<%= assignment.assignedWork.objectId %>'><%= assignment.assignedWork.metadata.title %></option>
                                             </select>
+                                            <script>
+                                                $(document).ready(function(){
+                                                    new icon().load("<%= iconMap[assignment.assignedWork.metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(assignment.assignedWork.metadata.buddy_color?assignment.assignedWork.metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= assignment.assignedWork.objectId %>");
+                                                });
+                                            </script>
                                         </div>		
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group form-black label-floating">
-                                            <a data-l10n-id="deleteAssignment" title="Delete Assignment"  class="material-icons text-muted">delete_forever</i></a>
-                                        </div>
                                     </div>
                                 <% } %>
                                 <% if(mode =="add"){%>
