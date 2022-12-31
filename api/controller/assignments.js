@@ -119,13 +119,15 @@ exports.addAssignment = function (req, res) {
  * @apiParam {Boolean} [terminated] To get terminated assignment <code>e.g. terminated=true</code>
  * @apiParam {String} [created_by] Id of the author of the assignment <code>e.g. created_by=630b463f43225439163b8d3e</code>
  * @apiParam {String} [sort=+timestamp] Order of results <code>e.g. sort=-timestamp or sort=-name</code>
+ * @apiParam {String} [offset=0] Offset in results <code>e.g. offset=15</code>
+ * @apiParam {String} [limit=10] Limit results <code>e.g. limit=5</code>
  * 
  * @apiExample Example usage:
  *      "/api/v1/assignments"
  *      "/api/v1/assignments?name=final"
  *      "/api/v1/assignments?terminated=true"
  *      "/api/v1/assignments?created_by=630b463f43225439163b8d3e"
- *      "/api/v1/assignments?sort=-name"
+ *      "/api/v1/assignments?sort=-name&limit=5&offset=20"
  * 
  * @apiSuccess {Object[]} assignments.
  * 
@@ -234,64 +236,69 @@ exports.findAll = function (req, res) {
                 conf[2]["$sort"] = sortItem;
             }
             //find
-            collection.aggregate(conf).toArray(function (err, items) {
-                if (options.skip) {
-                    items.skip(options.skip);
-                }
+            collection.aggregate(conf, function(err, assignments) {
                 if (err) {
                     return res.status(500).send({
                         'error': "An error has occurred",
                         'code': 10
                     });
                 }
-                //find journal entries bt _id and objectId with aggregate
-                db.collection(journalCollection, function (err, collection) {
-                    if (err) {
-                        return res.status(500).send({
-                            'error': "An error has occurred",
-                            'code': 10
-                        });
-                    }
-                    collection.find({
-                        '_id': {
-                            $in: items.map(function (item) {
-                                return item.journal_id;
-                            })
-                        }
-                    }, {
-                        projection: {
-                            'content.objectId': 1,
-                            'content.metadata': 1,
-                            'content.text': 1,
-                        }
-                    }).toArray(function (err, journals) {
+                if (options.skip) {
+                    assignments.skip(options.skip);
+                }
+                if (options.limit) {
+                    assignments.limit(options.limit);
+                }
+                assignments.toArray(function (err, items) {
+                    //find journal entries bt _id and objectId with aggregate
+                    db.collection(journalCollection, function (err, collection) {
                         if (err) {
                             return res.status(500).send({
                                 'error': "An error has occurred",
                                 'code': 10
                             });
                         }
-                        var data = {
-                            'assignments': items,
-                            'offset': options.skip,
-                            'limit': options.limit,
-                            'total': options.total,
-                            'sort': options.sort[0][0] + "(" + options.sort[0][1] + ")",
-                            'links': {
-                                prev_page: (options.skip - options.limit >= 0) ? formPaginatedUrl(route, params, options.skip - options.limit, options.limit) : undefined,
-                                next_page: (options.skip + options.limit < options.total) ? formPaginatedUrl(route, params, options.skip + options.limit, options.limit) : undefined
+                        collection.find({
+                            '_id': {
+                                $in: items.map(function (item) {
+                                    return item.journal_id;
+                                })
                             }
-                        };
-                        data.assignments.map(function (item) {
-                            journals.find(function (journal) {
-                                journal.content.filter(function (entry) {
-                                    if (entry.objectId === item.assignedWork) {
-                                        item.assignedWork = entry;
-                                    }
+                        }, {
+                            projection: {
+                                'content.objectId': 1,
+                                'content.metadata': 1,
+                                'content.text': 1,
+                            }
+                        }).toArray(function (err, journals) {
+                            if (err) {
+                                return res.status(500).send({
+                                    'error': "An error has occurred",
+                                    'code': 10
+                                });
+                            }
+                            var data = {
+                                'assignments': items,
+                                'offset': options.skip,
+                                'limit': options.limit,
+                                'total': options.total,
+                                'sort': options.sort[0][0] + "(" + options.sort[0][1] + ")",
+                                'links': {
+                                    prev_page: (options.skip - options.limit >= 0) ? formPaginatedUrl(route, params, options.skip - options.limit, options.limit) : undefined,
+                                    next_page: (options.skip + options.limit < options.total) ? formPaginatedUrl(route, params, options.skip + options.limit, options.limit) : undefined
+                                }
+                            };
+                            data.assignments.map(function (item) {
+                                journals.find(function (journal) {
+                                    journal.content.filter(function (entry) {
+                                        if (entry.objectId === item.assignedWork) {
+                                            item.assignedWork = entry;
+                                        }
+                                    });
                                 });
                             });
+                            return res.status(200).send(data);
                         });
-                        return res.status(200).send(data);
                     });
                 });
             });
