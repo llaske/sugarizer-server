@@ -20,7 +20,7 @@
                                     <div class="form-group form-black label-floating is-empty">
                                         <select class="form-control" id="select-status-select2" name="status" value="<% if(query.Delivered){ %><%= query.Delivered %><% } %>">
                                             <option value=""></option>
-                                        <select/>
+                                        </select>
                                         <script>
                                             $('#select-status-select2').select2({
                                                 placeholder: "All Status",
@@ -49,9 +49,17 @@
                         <% } else{%>
                             <div class="card">
                                 <div class="card-header row" data-background-color="black">
-                                    <div class="col-md-4 col-sm-4 col-lg-4 text-left"></div>
+                                    <div class="col-md-4 col-sm-4 col-lg-4 text-left">
+                                        <% if(data.links.prev_page) { %>
+                                           <a href="<%= data.links.prev_page %>" class="page-button" data-l10n-id="prevPage">&lt;&lt; Prev Page</a>
+                                        <% } %>
+                                    </div>
                                     <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset + 1 %>", "to": "<%= data.offset + data.deliveries.length %>", "total": "<%= data.total %>" }'></div>
-                                    <div class="col-md-4 col-sm-4 col-lg-4 text-right"></div>
+                                    <div class="col-md-4 col-sm-4 col-lg-4 text-right">
+                                        <% if(data.links.next_page) { %>
+                                           <a href="<%= data.links.next_page %>" class="page-button" data-l10n-id="nextPage">Next Page &gt;&gt;</a>
+                                        <% } %>
+                                    </div>
                                 </div>
                                 <div class="card-content table-responsive">
                                     <table class="table">

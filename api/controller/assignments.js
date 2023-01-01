@@ -440,7 +440,7 @@ exports.findAllDeliveries = function (req, res) {
                                 as: "item",
                                 cond: { $eq: ["$$item.metadata.assignmentId", assignmentId] },
                             }
-                        },
+                        }
                     }
                 },
                 {
@@ -448,27 +448,37 @@ exports.findAllDeliveries = function (req, res) {
                         "content.metadata.buddy_name": 1
                     }
                 }
-
-            ]).toArray(function (err, items) {
+            ], function(err, deliveries) {
                 if (err) {
                     return res.status(500).send({
                         'error': "An error has occurred",
                         'code': 10
                     });
-                } else {
-                    var data = {
-                        'deliveries': items,
-                        'offset': options.skip,
-                        'limit': options.limit,
-                        'total': items.length, // TODO: Should be options.total if paginate works
-                        'sort': options.sort[0][0] + "(" + options.sort[0][1] + ")",
-                        'links': {
-                            prev_page: (options.skip - options.limit >= 0) ? formPaginatedUrl(route, params, options.skip - options.limit, options.limit) : undefined,
-                            next_page: (options.skip + options.limit < options.total) ? formPaginatedUrl(route, params, options.skip + options.limit, options.limit) : undefined
-                        }
-                    };
-                    return res.status(200).send(data);
                 }
+                deliveries.get(function(err, all){
+                    var length = all.length;
+                    if (options.skip) {
+                        deliveries.skip(options.skip);
+                    }
+                    if (options.limit) {
+                        deliveries.limit(options.limit);
+                    }
+                    deliveries.toArray(function (err, items) {
+                        options.total = length;
+                        var data = {
+                            'deliveries': items,
+                            'offset': options.skip,
+                            'limit': options.limit,
+                            'total': options.total,
+                            'sort': options.sort[0][0] + "(" + options.sort[0][1] + ")",
+                            'links': {
+                                prev_page: (options.skip - options.limit >= 0) ? formPaginatedUrl(route, params, options.skip - options.limit, options.limit) : undefined,
+                                next_page: (options.skip + options.limit < options.total) ? formPaginatedUrl(route, params, options.skip + options.limit, options.limit) : undefined
+                            }
+                        };
+                        return res.status(200).send(data);
+                    });
+                });
             });
         });
     });
