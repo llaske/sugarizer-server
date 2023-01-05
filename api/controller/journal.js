@@ -311,10 +311,11 @@ exports.addJournal = function(req, res) {
  * @apiParam {Boolean} [oid] filter on object id of the activity <code>e.g. oid=4837240f-bf78-4d22-b936-3db96880f0a0</code>
  * @apiParam {String} [uid] filter on user id <code>e.g. uid=5569f4b019e0b4c9525b3c97</code>
  * @apiParam {String} [fields=metadata] field limiting <code>e.g. fields=text,metadata </code>
- * @apiParam {String} [sort=+timestamp] Order of results <code>e.g. sort=-timestamp or sort=-creation_time</code>
+ * @apiParam {String} [sort=+timestamp] Order of results <code>e.g. sort=-timestamp or sort=-creation_time or sort=-dueDate or sort=-textsize</code>
  * @apiParam {String} [title] entry title contains the text (case insensitive) <code>e.g. title=cTIviTy</code>
  * @apiParam {Number} [stime] results starting from stime in ms <code>e.g. stime=712786812367</code>
  * @apiParam {Boolean} [favorite] filter on favorite field <code>e.g. favorite=true or favorite=false</code>
+ * @apiParam {Boolean} [assignment] filter on assignment items <code>e.g. assignment=true or assignment=false</code>
  * @apiParam {String} [offset=0] Offset in results <code>e.g. offset=15</code>
  * @apiParam {String} [limit=10] Limit results <code>e.g. limit=5</code>*
  *
@@ -593,6 +594,19 @@ function getOptions(req) {
 				$match: {
 					'metadata.keep': {
 						$ne: 1
+					}
+				}
+			});
+		}
+	}
+
+	// check for assignment filter
+	if (req.query.assignment) {
+		if (req.query.assignment == 'true') {
+			options.push({
+				$match: {
+					'metadata.assignmentId': {
+						$ne: null
 					}
 				}
 			});
