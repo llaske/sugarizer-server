@@ -727,6 +727,12 @@ exports.launchAssignment = function (req, res) {
                 });
             }
             else {
+                if (assignment.dueDate < Date.now()) {
+                    return res.status(400).send({
+                        'error': 'Due date already expired',
+                        'code': 41
+                    });
+                }
                 //find all students from classrooms
                 var classrooms = assignment.classrooms;
                 var launchDate = new Date().getTime();
