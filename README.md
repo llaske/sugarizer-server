@@ -74,6 +74,7 @@ Following is the typical content of Sugarizer Server settings file:
 	stats = stats
 	classrooms = classrooms
 	charts = charts
+	assignments=assignments
 
 	[statistics]
 	active = true
@@ -119,6 +120,7 @@ Sugarizer Server Dashboard is an admin tool for teachers and deployment administ
 * Journal: how many Journals and how many entries in Journal on the server, last Journal, and last entries, edit a journal (see/update/remove) entries.
 * Activities: how many activities are available on the server, change activities visibility from Client, update order and way to appear in the favorite view.
 * Classrooms: a way to organize users on the server side to handle them more easily.
+* Assignments: to give assignments to students and follow deliveries
 * Graphic and request: display graphics and report on previous data.
 
 To login to the Dashboard the first time, you will have to create an admin account using this command:
@@ -209,6 +211,18 @@ To implement the above functionalities, the sugarizer backend exposes an API. Th
         [GET]    /api/v1/stats?user_id=:uid&sort=-timestamp
         [POST]   /api/v1/stats
         [DELETE] /api/v1/stats
+	
+#### ASSIGNMENT ROUTES
+
+        [GET]    /api/v1/assignments/
+        [GET]    /api/v1/assignments/deliveries/:assignmentId
+        [GET]    /api/v1/assignments/:assignmentId
+        [GET]    /api/v1/assignments/launch/:assignmentId
+        [PUT]    /api/v1/assignments/:assignmentId
+        [PUT]    /api/v1/assignments/deliveries/comment/:assignmentId
+        [PUT]    /api/v1/assignments/deliveries/submit/:assignmentId
+        [PUT]    /api/v1/assignments/deliveries/return/:assignmentId
+        [DELETE] /api/v1/assignments/:assignmentId
 
 #### TWO FACTOR AUTHENTICATION ROUTES
 

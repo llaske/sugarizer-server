@@ -105,7 +105,7 @@ exports.findById = function(req, res) {
 };
 
 // function to generate OTP Token for QR code.
-function generateOTPToken (username, serviceName, secret){
+function generateOTPToken(username, serviceName, secret){
 	return otplib.authenticator.keyuri(
 		username,
 		serviceName,
@@ -494,7 +494,7 @@ exports.getAllUsers = function(query, options, callback) {
 					insensitive: { "$toLower": "$name" }
 				}
 			},
-			{ 
+			{
 				$sort: {
 					"insensitive": 1
 				}
@@ -519,7 +519,7 @@ exports.getAllUsers = function(query, options, callback) {
 			}
 		}
 
-		collection.aggregate(conf, function (err, users) {
+		collection.aggregate(conf, function(err, users) {
 			if (options.skip) users.skip(options.skip);
 			if (options.limit) users.limit(options.limit);
 			//return
@@ -1046,4 +1046,3 @@ exports.updateUserTimestamp = function(uid, callback) {
 		});
 	});
 };
-

@@ -277,6 +277,773 @@
   },
   {
     "type": "post",
+    "url": "api/v1/assignments",
+    "title": "Add assignment",
+    "name": "AddAssignment",
+    "description": "<p>Add assignment in the database. Returns the inserted assignment.</p>",
+    "group": "Assignments",
+    "version": "1.5.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>Unique assignment id.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Assignment name.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "dueDate",
+            "description": "<p>Assignment due date.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "assignedWork",
+            "description": "<p>Assignment assigned work.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "instructions",
+            "description": "<p>Assignment instructions.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "lateTurnIn",
+            "description": "<p>Assignment late turn in.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "created_time",
+            "description": "<p>Assignment created time.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "classrooms",
+            "description": "<p>Assignment assigned to classrooms.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "options",
+            "description": "<p>Assignment options.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "created_by",
+            "description": "<p>Assignment created by.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "timestamp",
+            "description": "<p>Assignment timestamp.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "isAssigned",
+            "description": "<p>Assignment is assigned.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "journal_id",
+            "description": "<p>Assignment journal id.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " HTTP/1.1 200 OK\n{\n      \"name\": \"DrawAssignment\",\n      \"assignedWork\": \"9bd39613-c6e2-413f-8672-4b85d7f85ce2\",\n      \"instructions\": \"Draw a penguin\",\n      \"lateTurnIn\": false,\n      \"dueDate\": \"1663617458035\",\n      \"options\": {\n          \"sync\": true,\n          \"stats\": true\n      },\n      \"classrooms\": [\n          \"630b469b43225439163b8d42\",\n          \"630b46aa43225439163b8d43\"\n      ],\n      \"created_time\": 1663617458028,\n      \"timestamp\": 1663617458028,\n      \"created_by\": \"630b467143225439163b8d40\",\n      \"journal_id\": \"630b467143225439163b8d3f\",\n      \"isAssigned\": false,\n      \"_id\": \"6328c9b2831c11556edd785e\"\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/assignments.js",
+    "groupTitle": "Assignments"
+  },
+  {
+    "type": "get",
+    "url": "api/v1/assignment/:assignmentId",
+    "title": "Get assignment details",
+    "name": "GetAssignment",
+    "description": "<p>Retrieve detail for a specific assignment.</p>",
+    "group": "Assignments",
+    "version": "1.5.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "assignmentId",
+            "description": "<p>Unique id of Assignment to be delete.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>Unique assignment id.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Assignment name.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "dueDate",
+            "description": "<p>Assignment due date.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "assignedWork",
+            "description": "<p>Assignment assigned work.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "instructions",
+            "description": "<p>Assignment instructions.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "lateTurnIn",
+            "description": "<p>Assignment late turn in.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "created_time",
+            "description": "<p>Assignment created time.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "classrooms",
+            "description": "<p>Assignment assigned to classrooms.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "options",
+            "description": "<p>Assignment options.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "created_by",
+            "description": "<p>Assignment created by.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "timestamp",
+            "description": "<p>Assignment timestamp.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "isAssigned",
+            "description": "<p>Assignment is assigned.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "journal_id",
+            "description": "<p>Assignment journal id.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "  HTTP/1.1 200 OK\n {\n    \"_id\": \"63275d05bcb501f024681518\",\n    \"name\": \"Draw Monkey\",\n    \"assignedWork\": {\n        \"metadata\": {\n            \"title\": \"Paint Assignment\",\n            \"title_set_by_user\": \"0\",\n            \"activity\": \"org.olpcfrance.PaintActivity\",\n            \"activity_id\": \"7abd556d-d43a-4e0b-83ec-40f8bf2f13af\",\n            \"creation_time\": 1663272983745,\n            \"timestamp\": 1663273031602,\n            \"file_size\": 0,\n            \"buddy_name\": \"t1\",\n            \"buddy_color\": {\n                \"stroke\": \"#FF8F00\",\n                \"fill\": \"#00A0FF\"\n                },\n            \"textsize\": 12211,\n            \"user_id\": \"630b463f43225439163b8d3e\"\n        },\n        \"text\": \"63238847d625795abbd4b4b6\",\n        \"objectId\": \"8d909712-68d5-482d-8878-2a978726f05c\"\n   },\n  \"instructions\": \"Draw some\",\n  \"dueDate\": 1663547400000,\n \"classrooms\": [\n    {\n        \"_id\": \"630b469b43225439163b8d42\",\n        \"name\": \"JS\",\n        \"students\": [\n            \"630b45f443225439163b8d3a\",\n            \"631153f4f2a064f218544c79\"\n        ],\n        \"color\": {\n            \"stroke\": \"#D1A3FF\",\n            \"fill\": \"#F8E800\"\n        },\n        \"options\": {\n            \"sync\": true,\n            \"stats\": true\n        },\n        \"created_time\": 1661683355253,\n        \"timestamp\": 1662323105024\n    },\n    {\n        \"_id\": \"630b468e43225439163b8d41\",\n        \"name\": \"Physics\",\n        \"students\": [\n            \"630b460e43225439163b8d3c\",\n            \"630b45f443225439163b8d3a\"\n        ],\n        \"color\": {\n            \"stroke\": \"#FF2B34\",\n            \"fill\": \"#AC32FF\"\n        },\n        \"options\": {\n            \"sync\": true,\n            \"stats\": true\n        },\n        \"created_time\": 1661683342983,\n        \"timestamp\": 1661683342983\n    }\n ],\n \"lateTurnIn\": false,\n \"options\": {\n    \"sync\": true,\n    \"stats\": true\n    },\n \"created_time\": 1663524101201,\n \"timestamp\": 1663531297792,\n \"created_by\": \"630b463f43225439163b8d3e\",\n \"journal_id\": \"630b463f43225439163b8d3d\",\n \"isAssigned\": true\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "\"/api/v1/assignment/:assignmentId\"",
+        "type": "json"
+      }
+    ],
+    "filename": "api/controller/assignments.js",
+    "groupTitle": "Assignments"
+  },
+  {
+    "type": "get",
+    "url": "api/v1/assignments",
+    "title": "Get all assignments",
+    "name": "GetAssignments",
+    "description": "<p>Retrieve all assignment data registered on the server.</p>",
+    "group": "Assignments",
+    "version": "1.5.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "\"/api/v1/assignments\"",
+        "type": "json"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "assignments.",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " HTTP/1.1 200 OK\n {\n    \"assignments\": [\n        {\n            \"_id\": \"63275d05bcb501f024681518\",\n            \"name\": \"Draw Monkey\",\n            \"assignedWork\": {\n                \"metadata\": {\n                    \"title\": \"Paint Assignment\",\n                    \"title_set_by_user\": \"0\",\n                    \"activity\": \"org.olpcfrance.PaintActivity\",\n                    \"activity_id\": \"7abd556d-d43a-4e0b-83ec-40f8bf2f13af\",\n                    \"creation_time\": 1663272983745,\n                    \"timestamp\": 1663273031602,\n                    \"file_size\": 0,\n                    \"buddy_name\": \"t1\",\n                    \"buddy_color\": {\n                        \"stroke\": \"#FF8F00\",\n                        \"fill\": \"#00A0FF\"\n                    },\n                    \"textsize\": 12211,\n                    \"user_id\": \"630b463f43225439163b8d3e\"\n                },\n                \"text\": \"63238847d625795abbd4b4b6\",\n                \"objectId\": \"8d909712-68d5-482d-8878-2a978726f05c\"\n            },\n            \"instructions\": \"Draw some\",\n            \"dueDate\": 1663547400000,\n            \"classrooms\": [\n                \"630b469b43225439163b8d42\",\n                \"630b468e43225439163b8d41\"\n            ],\n            \"lateTurnIn\": false,\n            \"created_time\": 1663524101201,\n            \"timestamp\": 1663531297792,\n            \"created_by\": \"630b463f43225439163b8d3e\",\n            \"journal_id\": \"630b463f43225439163b8d3d\",\n            \"isAssigned\": true,\n            \"insensitive\": \"draw monkey\"\n        }\n    ],\n    \"offset\": 0,\n    \"limit\": 10,\n    \"total\": 5,\n    \"sort\": \"name(asc)\",\n    \"links\": {\n        \"prev_page\": \"/api/v1/assignments?limit=10&offset=10\",\n \t    \"next_page\": \"/api/v1/assignments?limit=10&offset=30\"\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/assignments.js",
+    "groupTitle": "Assignments"
+  },
+  {
+    "type": "get",
+    "url": "api/v1/assignments/:id",
+    "title": "Get Deliveries",
+    "name": "GetDeliveries",
+    "group": "Assignments",
+    "version": "1.5.0",
+    "description": "<p>Get all deliveries for a specific assignment.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "assignmentId",
+            "description": "<p>Assignment id.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "deliveries",
+            "description": "<p>List of deliveries.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>Journal id.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "content",
+            "description": "<p>Journal Entry.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "content.metadata",
+            "description": "<p>Journal Entry metadata.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "content.text",
+            "description": "<p>Journal Entry text.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "content.objectId",
+            "description": "<p>Journal Entry objectId.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " HTTP/1.1 200 OK\n{\n    \"deliveries\": [\n        {\n            \"_id\": \"630b460e43225439163b8d3b\",\n            \"content\": [\n                {\n                    \"metadata\": {\n                        \"title\": \"Implode Activity\",\n                        \"title_set_by_user\": \"0\",\n                        \"activity\": \"org.sugarlabs.Implode\",\n                        \"activity_id\": \"5cf070b7-8ba0-4e71-a670-ed9df4a4dfc5\",\n                        \"creation_time\": 1663274452551,\n                        \"timestamp\": 1663584032296,\n                        \"file_size\": 0,\n                        \"buddy_name\": \"Nikhil\",\n                        \"buddy_color\": {\n                            \"stroke\": \"#F8E800\",\n                            \"fill\": \"#008009\"\n                        },\n                        \"textsize\": 2352,\n                        \"user_id\": \"630b460e43225439163b8d3c\",\n                        \"assignmentId\": \"63275962bcb501f02468148f\",\n                        \"submissionDate\": 1663584032294,\n                        \"dueDate\": 1663605000000,\n                        \"instructions\": \"dffdfdf\",\n                        \"lateTurnIn\": true,\n                        \"isSubmitted\": true,\n                        \"status\": null,\n                        \"comment\": \"\"\n                    },\n                    \"text\": \"632848d1781c3ddaa0eb6b9d\",\n                    \"objectId\": \"2b20826f-90c0-4810-83b0-de31cd35b5fe\"\n                }\n            ]\n        },\n        {\n            \"_id\": \"630b45f443225439163b8d39\",\n            \"content\": [\n                {\n                    \"metadata\": {\n                        \"title\": \"Implode Activity\",\n                        \"title_set_by_user\": \"0\",\n                        \"activity\": \"org.sugarlabs.Implode\",\n                        \"activity_id\": \"5cf070b7-8ba0-4e71-a670-ed9df4a4dfc5\",\n                        \"creation_time\": 1663274452551,\n                        \"timestamp\": 1663576160640,\n                        \"file_size\": 0,\n                        \"buddy_name\": \"Rohan\",\n                        \"buddy_color\": {\n                            \"stroke\": \"#8BFF7A\",\n                            \"fill\": \"#AC32FF\"\n                        },\n                        \"textsize\": 2352,\n                        \"user_id\": \"630b45f443225439163b8d3a\",\n                        \"assignmentId\": \"63275962bcb501f02468148f\",\n                        \"submissionDate\": 1663576267006,\n                        \"dueDate\": 1663605000000,\n                        \"instructions\": \"dffdfdf\",\n                        \"lateTurnIn\": true,\n                        \"isSubmitted\": true,\n                        \"status\": \"Delivered\",\n                        \"comment\": \"\"\n                    },\n                    \"text\": \"63282866781c3ddaa0eb6b1c\",\n                    \"objectId\": \"c90cfadf-83ce-4fba-904a-95ea6c33e3ac\"\n                }\n            ]\n        }\n    ],\n    \"offset\": 0,\n    \"limit\": 10,\n    \"total\": 7,\n    \"sort\": \"buddy_name(asc)\",\n    \"links\": {}\n   }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/assignments.js",
+    "groupTitle": "Assignments"
+  },
+  {
+    "type": "get",
+    "url": "api/v1/assignments/launch/:assignmentId",
+    "title": "Launch an assignment",
+    "name": "LaunchAssignment",
+    "group": "Assignments",
+    "version": "1.5.0",
+    "description": "<p>Launches the assignment for the Students.</p>",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "assignmentId",
+            "description": "<p>Assignment unique id.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "count",
+            "description": "<p>Number of students to whom the assignment has been assigned.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " HTTP/1.1 200 OK\n{\n  \"count\": 3\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/assignments.js",
+    "groupTitle": "Assignments"
+  },
+  {
+    "type": "delete",
+    "url": "api/assignments/:assignmentId",
+    "title": "Remove assignment",
+    "name": "RemoveAssignment",
+    "description": "<p>Remove assignment by assignmentId.</p>",
+    "group": "Assignments",
+    "version": "1.5.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "assignmentId",
+            "description": "<p>Unique id of Assignment to be delete.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "api/controller/assignments.js",
+    "groupTitle": "Assignments"
+  },
+  {
+    "type": "PUT",
+    "url": "api/v1/assignments/deliveries/return/:assignmentId",
+    "title": "Return Assignment",
+    "name": "ReturnAssignment",
+    "description": "<p>Return Assignment</p>",
+    "group": "Assignments",
+    "version": "1.5.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "assignmentId",
+            "description": "<p>Assignment id.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "oid",
+            "description": "<p>ObjectId.</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "\"/api/v1/assignments/deliveries/return/:assignmentId?oid=5b9b1b0b0f0000b800000000\"",
+        "type": "json"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " HTTP/1.1 200 OK\n{\n\"lastErrorObject\": {\n    \"n\": 1,\n    \"updatedExisting\": true\n},\n\"value\": {\n    \"_id\": \"630b460e43225439163b8d3b\",\n    \"content\": [\n        {\n            \"metadata\": {\n                \"title\": \"Write Activity\",\n                \"title_set_by_user\": \"0\",\n                \"activity\": \"org.sugarlabs.Write\",\n                \"activity_id\": \"06dd648a-9f6a-4251-8f15-0abd6bcc3017\",\n                \"creation_time\": 1663274425907,\n                \"timestamp\": 1663576199678,\n                \"file_size\": 0,\n                \"buddy_name\": \"Nikhil\",\n                \"buddy_color\": {\n                    \"stroke\": \"#F8E800\",\n                    \"fill\": \"#008009\"\n                },\n                \"textsize\": 100553,\n                \"user_id\": \"630b460e43225439163b8d3c\",\n                \"assignmentId\": \"6327099f730d98993ee793ff\",\n                \"submissionDate\": 1663576204212,\n                \"dueDate\": 1663781400000,\n                \"instructions\": \"Write about Elon musk\",\n                \"lateTurnIn\": false,\n                \"isSubmitted\": false,\n                \"status\": \"Delivered\",\n                \"comment\": \"Nice work\"\n            },\n            \"text\": \"63282889781c3ddaa0eb6b25\",\n            \"objectId\": \"fc801777-fdb1-4ce2-8f62-561cccc0c38b\"\n        },\n        ....more objects\n        {\n            \"metadata\": {\n                \"title\": \"Write Activity\",\n                \"title_set_by_user\": \"0\",\n                \"activity\": \"org.sugarlabs.Write\",\n                \"activity_id\": \"06dd648a-9f6a-4251-8f15-0abd6bcc3017\",\n                \"creation_time\": 1663274425907,\n                \"timestamp\": 1663274434078,\n                \"file_size\": 0,\n                \"buddy_name\": \"Nikhil\",\n                \"buddy_color\": {\n                    \"stroke\": \"#00EA11\",\n                    \"fill\": \"#005FE4\"\n                },\n                \"textsize\": 100524,\n                \"user_id\": \"630b460e43225439163b8d3c\",\n                \"assignmentId\": \"63275d05bcb501f024681518\",\n                \"submissionDate\": null,\n                \"dueDate\": \"\",\n                \"instructions\": \"ins\",\n                \"lateTurnIn\": false,\n                \"isSubmitted\": false,\n                \"status\": null,\n                \"comment\": \"paint\"\n            },\n            \"text\": \"632c0475ad098c1a779b05b8\",\n            \"objectId\": \"98406ca6-861d-4e98-836d-eb819ab60e3c\"\n        }\n    ],\n    \"shared\": false\n},\n\"ok\": 1\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/assignments.js",
+    "groupTitle": "Assignments"
+  },
+  {
+    "type": "PUT",
+    "url": "api/v1/assignments/deliveries/submit/:assignmentId",
+    "title": "Submit Assignment",
+    "name": "SubmitAssignment",
+    "description": "<p>Submit Assignment.</p>",
+    "group": "Assignments",
+    "version": "1.5.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "assignmentId",
+            "description": "<p>Assignment id.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "oid",
+            "description": "<p>ObjectId.</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "\"/api/v1/assignments/deliveries/submit/:assignmentId?oid=5b9b1b0b0f0000b800000000\"",
+        "type": "json"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " HTTP/1.1 200 OK\n{\n\"lastErrorObject\": {\n    \"n\": 1,\n    \"updatedExisting\": true\n},\n\"value\": {\n    \"_id\": \"630b460e43225439163b8d3b\",\n    \"content\": [\n        {\n            \"metadata\": {\n                \"title\": \"Write Activity\",\n                \"title_set_by_user\": \"0\",\n                \"activity\": \"org.sugarlabs.Write\",\n                \"activity_id\": \"06dd648a-9f6a-4251-8f15-0abd6bcc3017\",\n                \"creation_time\": 1663274425907,\n                \"timestamp\": 1663576199678,\n                \"file_size\": 0,\n                \"buddy_name\": \"Nikhil\",\n                \"buddy_color\": {\n                    \"stroke\": \"#F8E800\",\n                    \"fill\": \"#008009\"\n                },\n                \"textsize\": 100553,\n                \"user_id\": \"630b460e43225439163b8d3c\",\n                \"assignmentId\": \"6327099f730d98993ee793ff\",\n                \"submissionDate\": 1663576204212,\n                \"dueDate\": 1663781400000,\n                \"instructions\": \"Write about Elon musk\",\n                \"lateTurnIn\": false,\n                \"isSubmitted\": false,\n                \"status\": \"Delivered\",\n                \"comment\": \"Nice work\"\n            },\n            \"text\": \"63282889781c3ddaa0eb6b25\",\n            \"objectId\": \"fc801777-fdb1-4ce2-8f62-561cccc0c38b\"\n        },\n        ....more objects\n        {\n            \"metadata\": {\n                \"title\": \"Write Activity\",\n                \"title_set_by_user\": \"0\",\n                \"activity\": \"org.sugarlabs.Write\",\n                \"activity_id\": \"06dd648a-9f6a-4251-8f15-0abd6bcc3017\",\n                \"creation_time\": 1663274425907,\n                \"timestamp\": 1663274434078,\n                \"file_size\": 0,\n                \"buddy_name\": \"Nikhil\",\n                \"buddy_color\": {\n                    \"stroke\": \"#00EA11\",\n                    \"fill\": \"#005FE4\"\n                },\n                \"textsize\": 100524,\n                \"user_id\": \"630b460e43225439163b8d3c\",\n                \"assignmentId\": \"63275d05bcb501f024681518\",\n                \"submissionDate\": null,\n                \"dueDate\": \"1663741400000\",\n                \"instructions\": \"ins\",\n                \"lateTurnIn\": false,\n                \"isSubmitted\": true,\n                \"status\": \"Delivered\",\n                \"comment\": \"paint\"\n            },\n            \"text\": \"632c0475ad098c1a779b05b8\",\n            \"objectId\": \"98406ca6-861d-4e98-836d-eb819ab60e3c\"\n        }\n    ],\n    \"shared\": false\n},\n\"ok\": 1\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/assignments.js",
+    "groupTitle": "Assignments"
+  },
+  {
+    "type": "put",
+    "url": "api/assignments/:assignmentId",
+    "title": "Update assignment",
+    "name": "UpdateAssignment",
+    "description": "<p>Update an assignment. Return the assignment updated.</p>",
+    "group": "Assignments",
+    "version": "1.5.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " HTTP/1.1 200 OK\n{\n   \"id\": \"6328c9b2831c11556edd785e\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/controller/assignments.js",
+    "groupTitle": "Assignments"
+  },
+  {
+    "type": "put",
+    "url": "api/assignments/:assignmentId/comments/:commentId",
+    "title": "Update comment",
+    "name": "UpdateComment",
+    "description": "<p>Update a comment. Return the comment updated.</p>",
+    "group": "Assignments",
+    "version": "1.5.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-key",
+            "description": "<p>User unique id.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "comment",
+            "description": "<p>Comment.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " HTTP/1.1 200 OK\n{\n   \"comment\": \"Good\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "\"/api/v1/assignments/deliveries/comment/:assignmentId?oid=5b9b1b0b0f0000b800000000\"",
+        "type": "json"
+      }
+    ],
+    "filename": "api/controller/assignments.js",
+    "groupTitle": "Assignments"
+  },
+  {
+    "type": "post",
     "url": "auth/login/",
     "title": "Login User",
     "name": "Login_User",
