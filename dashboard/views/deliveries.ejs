@@ -12,25 +12,17 @@
                             <form method="get" id="user-form">
                                 <div class="col-md-3">
                                     <div class="form-group form-black label-floating is-empty">
-                                        <input  placeholder="Search User..." class="form-control" name="user" value="<% if(query.u){ %><%= query.u %><% } %>" type="text">
+                                        <input data-l10n-id="john" placeholder="Search User..." class="form-control" name="user" value="<% if(query.u){ %><%= query.u %><% } %>" type="text">
                                         <span class="material-input"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-3"> 
                                     <div class="form-group form-black label-floating is-empty">
                                         <select class="form-control" id="select-status-select2" name="status" value="<% if(query.Delivered){ %><%= query.Delivered %><% } %>">
-                                            <option value=""></option>
+                                            <option data-l10n-id="statusAll" value="">All status</option>
+                                            <option data-l10n-id="statusExpected" value="false">Assigned</option>
+                                            <option data-l10n-id="statusDelivered" value="true">Delivered</option>
                                         </select>
-                                        <script>
-                                            $('#select-status-select2').select2({
-                                                placeholder: "All Status",
-                                                allowClear: true,
-                                                data: [
-                                                        {id: 'false', text: 'Expected'},
-                                                        {id: 'true', text: 'Delivered'},
-                                                    ]
-                                            });
-                                        </script>
                                     </div>
                                 </div>
                                 <div class="col-md-3"></div>
@@ -100,16 +92,16 @@
                                                     <% } %>
                                                     </script>
                                                 <td><%= data.deliveries[i].content[0].metadata.buddy_name %></td>
-                                                <td><% if(data.deliveries[i].content[0].metadata.isSubmitted == true ){%> Delivered <% } %> <% if(data.deliveries[i].content[0].metadata.isSubmitted == false ){%> Expected <% } %> </td>
-                                                <td><% if(data.deliveries[i].content[0].metadata.submissionDate !== null) {%> <%= moment(data.deliveries[i].content[0].metadata.submissionDate).format('DD/MM/YYYY h:mmA') %> <% } %></td>
+                                                <td><% if(data.deliveries[i].content[0].metadata.isSubmitted == true ){%><%= common.l10n.get('statusDelivered') %><% } %> <% if(data.deliveries[i].content[0].metadata.isSubmitted == false ){%><%= common.l10n.get('statusExpected') %><% } %> </td>
+                                                <td><% if(data.deliveries[i].content[0].metadata.submissionDate !== null) {%> <%= moment(data.deliveries[i].content[0].metadata.submissionDate).format(moment().creationData().locale._longDateFormat.L+' H:mm') %> <% } %></td>
                                                 <td><%= data.deliveries[i].content[0].metadata.score %></td>
                                                 <td><%= data.deliveries[i].content[0].metadata.comment %></td>
                                                 <td>
-                                                    <a id="deliveries-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= data.deliveries[i]._id %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=launch')" data-l10n-id="deliveries-launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
-                                                    <a title="Comment" href="/dashboard/assignments/deliveries/comment/<%= data.deliveries[i].content[0].metadata.assignmentId %>?oid=<%= data.deliveries[i].content[0].objectId %>"><div class="comment-icon"></div></a>
+                                                    <a id="deliveries-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= data.deliveries[i]._id %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=launch')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
+                                                    <a data-l10n-id="comment-deliveries" title="Comment" href="/dashboard/assignments/deliveries/comment/<%= data.deliveries[i].content[0].metadata.assignmentId %>?oid=<%= data.deliveries[i].content[0].objectId %>"><div class="comment-icon"></div></a>
                                                     <a id="journal-activity-download" href="javascript:download_activity('/dashboard/activities/launch/<%= data.deliveries[i]._id %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=download')" data-l10n-id="download" title="Download"><i class="material-icons text-muted">cloud_download</i></a>
                                                     <% if(data.deliveries[i].content[0].metadata.isSubmitted == true ){%> 
-                                                    <a title="Return" href="/dashboard/assignments/deliveries/return/<%= data.deliveries[i].content[0].metadata.assignmentId %>?oid=<%= data.deliveries[i].content[0].objectId %>"><div class="returnAssignment-icon"></div></a>
+                                                    <a data-l10n-id="return-deliveries" title="Return" href="/dashboard/assignments/deliveries/return/<%= data.deliveries[i].content[0].metadata.assignmentId %>?oid=<%= data.deliveries[i].content[0].objectId %>"><div class="returnAssignment-icon"></div></a>
                                                     <% } else {%>
                                                     <a title="Return" style=" cursor: not-allowed; pointer-events: none;" href="/dashboard/assignments/deliveries/return/<%= data.deliveries[i].content[0].metadata.assignmentId %>?oid=<%= data.deliveries[i].content[0].objectId %>"><div class="returnAssignment-icon-inactive"></div></a>
                                                     <% } %>

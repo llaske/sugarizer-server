@@ -12,26 +12,18 @@
                             <form method="get" id="user-form">
                                 <div class="col-md-3">
                                     <div class="form-group form-black label-floating is-empty">
-                                        <input  placeholder="Search Assignment..." class="form-control" name="assignment" value="<% if(query.q){ %><%= query.q %><% } %>" type="text">
+                                        <input data-l10n-id="searchAssign" placeholder="Search Assignment..." class="form-control" name="assignment" value="<% if(query.q){ %><%= query.q %><% } %>" type="text">
                                         <span class="material-input"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-3"> 
                                     <div class="form-group form-black label-floating is-empty">
                                         <select class="form-control" id="select-status-select2" name="status" value="<% if(query.isAssigned){ %><%= query.isAssigned %><% } %>">
-                                            <option value=""></option>
-                                        <select/>
-                                        <script>
-                                            $('#select-status-select2').select2({
-                                                placeholder: "All Status",
-                                                allowClear: true,
-                                                data: [
-                                                        {id: 'true', text: 'Assigned'},
-                                                        {id: 'false', text: 'Created'},
-                                                        {id: 'terminated', text: 'Terminated'},
-                                                    ]
-                                            });
-                                        </script>
+                                            <option data-l10n-id="statusAll" value="">All status</option>
+                                            <option data-l10n-id="statusAssigned" value="true">Assigned</option>
+                                            <option data-l10n-id="statusCreated" value="false">Created</option>
+                                            <option data-l10n-id="statusTerminated" value="terminated">Terminated</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -73,7 +65,7 @@
                                             <tr>
                                                 <th class="text-muted"><input type="checkbox" id="checkAll" onclick="checkAll()"></th>
                                                 <th>#</th>
-                                                <th data-l10n-id="Activity">Activity</th>
+                                                <th data-l10n-id="activity">Activity</th>
                                                 <th><button data-l10n-id="name" id="name-column" onclick="sortBy('name')"></button></th>
                                                 <th data-l10n-id="status">Status</th>
                                                 <th><button data-l10n-id="lastUpdated" id="last-column" onclick="sortBy('time')"></button></th>
@@ -109,9 +101,9 @@
                                                 
                                                 <td><%= data.assignments[i].name %></td>
                                                 <td>
-                                                    <% if( data.assignments[i].dueDate >= new Date().getTime() && data.assignments[i].isAssigned == false){ %> Created <% } %>  
-                                                    <% if( data.assignments[i].dueDate >= new Date().getTime() && data.assignments[i].isAssigned == true){ %> Assigned <% } %>
-                                                    <% if( data.assignments[i].dueDate < new Date().getTime() && data.assignments[i].isAssigned == true ){ %> Terminated <% } %>
+                                                    <% if( data.assignments[i].dueDate >= new Date().getTime() && data.assignments[i].isAssigned == false){ %><%= common.l10n.get('statusCreated') %><% } %>  
+                                                    <% if( data.assignments[i].dueDate >= new Date().getTime() && data.assignments[i].isAssigned == true){ %><%= common.l10n.get('statusAssigned') %><% } %>
+                                                    <% if( data.assignments[i].dueDate < new Date().getTime() && data.assignments[i].isAssigned == true ){ %><%= common.l10n.get('statusTerminated') %><% } %>
                                                 </td>
                                                 <td><%= moment(data.assignments[i].timestamp).calendar() %></td>
                                                 <td>

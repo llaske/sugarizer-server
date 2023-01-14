@@ -66,6 +66,7 @@ exports.index = function (req, res) {
                 if (response.statusCode == 200) {
                     res.render('assignments', {
                         moment: moment,
+                        common: common,
                         query: query,
                         module: 'assignments',
                         headers: common.getHeaders(req),

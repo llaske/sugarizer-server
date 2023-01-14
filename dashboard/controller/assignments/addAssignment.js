@@ -45,14 +45,15 @@ module.exports = function addAssignment(req, res) {
         if (!req.body.dueDate || !req.body.time) {
             req.assert('dueDate', common.l10n.get('InvalidDueDate')).equals(null);
         }
-        if (req.body.dueDate && req.body.time) {
-            req.body.dueDate = req.body.dueDate + " " + req.body.time;
-            req.body.dueDate = Math.floor(new Date(req.body.dueDate).getTime())
-        }
         //check if due date is in the past
-        if (req.body.dueDate && req.body.dueDate < Date.now()) {
+        let computedDate = parseInt(req.body.dueTimestamp)+parseInt(req.body.dueDatestamp);
+        if (req.body.dueDate && computedDate < Date.now()) {
             req.assert('dueDate', common.l10n.get('InvalidDueDate')).equals(req.body.dueDate);
         }
+        req.body.dueDate = computedDate;
+        delete req.body.dueTimestamp;
+        delete req.body.dueDatestamp;
+        
         //delete time
         if (req.body.time) {
             delete req.body.time;
@@ -112,6 +113,7 @@ module.exports = function addAssignment(req, res) {
                                 lateTurnIn: req.body.lateTurnIn,
                             },
                             emoji: emoji,
+                            common: common,
                             moment: moment,
                             entries: journalEntries.entries,
                             classrooms: classrooms.classrooms,
@@ -141,6 +143,7 @@ module.exports = function addAssignment(req, res) {
                         emoji: emoji,
                         entries: journalEntries.entries,
                         iconMap: iconMap,
+                        common: common,
                         moment: moment,
                         account: req.session.user,
                         server: assignment.ini().information

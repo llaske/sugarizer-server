@@ -229,10 +229,12 @@ function sugarizerTour(currentView, role, mode) {
 			tour.addStep(getStep("editClassroom", "#editClassroom-created", "right", 5));
 			tour.addStep(getStep("editClassroom", "#editClassroom-lastupdated", "right", 6));
 		} else if (currentView == "editAssignment") {
+			tour.addStep(getStep("editAssignment", "", "bottom", 1, true));
 			tour.addStep(getStep("editAssignment", "#editAssignment-name", "right", 2));
-			tour.addStep(getStep("editAssignment", "#editAssignment-instructions", "right", 2));
-			tour.addStep(getStep("editAssignment", "#searchable-select-classrooms-row", "right", 7));
-			tour.addStep(getStep("editAssignment", "#editAssignment-twoFactor", "right", 8));
+			tour.addStep(getStep("editAssignment", "#editAssignment-activity", "right", 3));
+			tour.addStep(getStep("editAssignment", "#editAssignment-instructions", "right", 4));
+			tour.addStep(getStep("editAssignment", "#editAssignment-duedate", "right", 5));
+			tour.addStep(getStep("editAssignment", "#searchable-select-classrooms-row", "right", 6));
 		} else if (currentView == "editChart") {
 			tour.addStep(getStep("editChart", "", "bottom", 1, true));
 			tour.addStep(getStep("editChart", "#editChart-title", "right", 2));

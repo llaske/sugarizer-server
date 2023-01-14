@@ -21,14 +21,18 @@ module.exports = function editAssignment(req, res) {
                 req.body.classrooms = [req.body.classrooms];
             }
             //join dueDate and time
-            if (req.body.dueDate && req.body.time) {
-                req.body.dueDate = req.body.dueDate + " " + req.body.time;
-                req.body.dueDate = Math.floor(new Date(req.body.dueDate).getTime())
+            if (!req.body.dueDate || !req.body.time) {
+                req.assert('dueDate', common.l10n.get('InvalidDueDate')).equals(null);
             }
             //check if due date is in the past
-            if (req.body.dueDate && req.body.dueDate < Date.now()) {
+            let computedDate = parseInt(req.body.dueTimestamp)+parseInt(req.body.dueDatestamp);
+            if (req.body.dueDate && computedDate < Date.now()) {
                 req.assert('dueDate', common.l10n.get('InvalidDueDate')).equals(req.body.dueDate);
             }
+            req.body.dueDate = computedDate;
+            delete req.body.dueTimestamp;
+            delete req.body.dueDatestamp;
+
             //delete req.body.time
             if (req.body.time) {
                 delete req.body.time;
@@ -96,6 +100,7 @@ module.exports = function editAssignment(req, res) {
                                     mode: "edit",
                                     assignment: response.body,
                                     classrooms: classrooms.classrooms,
+                                    common: common,
                                     moment: moment,
                                     xocolors: xocolors,
                                     emoji: emoji,

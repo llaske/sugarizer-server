@@ -54,6 +54,7 @@ module.exports = function getAllDeliveries(req, res) {
                     res.render('deliveries', {
                         moment: moment,
                         query: query,
+                        common: common,
                         module: 'assignments',
                         headers: common.getHeaders(req),
                         server: assignment.ini().information,

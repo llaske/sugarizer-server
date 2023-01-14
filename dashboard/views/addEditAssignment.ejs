@@ -24,7 +24,7 @@
                                         <div class="color" id="<%= assignment.assignedWork.objectId %>" >
                                             <div class='xo-icon'></div>
                                         </div>
-                                        <div class="form-group form-black label-floating">
+                                        <div class="form-group form-black label-floating" id="editAssignment-activity">
                                             <label class="control-label" data-l10n-id="assignedWork"></label>
                                             <select  id="select2-activity" class="form-control" disabled name="Assign work"> 
                                                 <option selected  value='<%= assignment.assignedWork.objectId %>'><%= assignment.assignedWork.metadata.title %></option>
@@ -41,7 +41,7 @@
                                     <div class="col-md-2">
                                         <div id="icon" ></div>
                                     </div>
-                                    <div class="col-md-7">
+                                    <div class="col-md-7" id="editAssignment-activity">
                                         <div class="form-group form-black label-floating">
                                             <label class="control-label" data-l10n-id="assignedWork"></label>
                                             <select id="select2-activity" name="assignedWork">
@@ -63,7 +63,7 @@
                                             $(document).ready(function() {
                                                 var entries = <%- JSON.stringify(entries) %>;
                                                 $('#select2-activity').select2({
-                                                    placeholder:"Select an activity",
+                                                    placeholder:"<%= common.l10n.get('selectActivity') %>",
                                                     allowClear:true,
                                                 });
                                             });
@@ -85,8 +85,8 @@
                                         </script>
                                     </div>
                                     <% } %>
-                                    <div class="row" id="editAssignment-instructions">
-                                        <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12" id="editAssignment-instructions">
                                             <div class="form-group form-black label-floating">
                                                 <label class="control-label" data-l10n-id="instructions"></label>
                                                 <textarea class="form-control" name="instructions" value="<% if(typeof assignment == 'object'){ %><%= assignment.instructions %><% } %>" type="text"><% if(typeof assignment == 'object'){ %><%= assignment.instructions %><% } %></textarea>
@@ -94,7 +94,7 @@
                                             </div>										
                                         </div>
                                     </div>
-                                    <div class="row" >
+                                    <div class="row" id="editAssignment-duedate">
                                         <div class="col-md-3">
                                             <div class="form-group form-black label-floating">
                                                 <label data-l10n-id="dueDate"></label>
@@ -102,15 +102,26 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group form-black label-floating">
-                                                <input id="datetimepicker1"   name="dueDate" placeholder="Date" class="form-control" value="<% if(typeof assignment == 'object' && assignment.dueDate){ %><%= new Date(assignment.dueDate).toLocaleString("en-US", {year: "numeric", month:"numeric", day:"numeric"})%><% } %>" type="text" autocomplete="off" />
+                                                <input id="datetimepicker1"   name="dueDate" placeholder="Date" class="form-control" value="<% if(typeof assignment == 'object' && assignment.dueDate){ %><%= new Date(assignment.dueDate).toLocaleString(common.l10n.getLanguage(), {year: "numeric", month:"numeric", day:"numeric"})%><% } %>" type="text" autocomplete="off" />
                                                 <span class="material-input"></span>
                                             </div>
+                                            <input id="dueDatestamp" name="dueDatestamp" style="visibility: hidden;" value="<% if(typeof assignment == 'object' && assignment.dueDate) { let ldate = new Date(assignment.dueDate); %><%= new Date(ldate.getFullYear(), ldate.getMonth(), ldate.getDate(), 0, 0, 0).getTime()%><% } %>"/>
                                         </div>
                                         <script>
                                         $(document).ready(function() {
+                                            $.datetimepicker.setLocale('<%= common.l10n.getLanguage() %>');
                                             $('#datetimepicker1').datetimepicker({
-                                            timepicker : false ,
-                                            format:'m-d-Y',					
+                                                timepicker : false,
+                                                format: '<%= (moment().creationData().locale._longDateFormat.L == "DD/MM/YYYY" ?"d-m-Y":"m-d-Y") %>',
+                                                onChangeDateTime:function(dp,$input){
+                                                    var dates = $input.val().split("-");
+                                                    <% if (moment().creationData().locale._longDateFormat.L == "DD/MM/YYYY") { %>
+                                                    var udate = new Date(dates[2], dates[1]-1, dates[0]);
+                                                    <% } else { %>
+                                                    var udate = new Date(dates[2], dates[0]-1, dates[1]);
+                                                    <% } %>
+                                                    $("#dueDatestamp").val(udate.getTime());
+                                                }
                                             });
                                         });
                                         </script>
@@ -119,13 +130,18 @@
                                                 <input class="form-control" id="timepicker" name="time"  value="<% if(typeof assignment == 'object' && assignment.dueDate){ %><%= new Date(assignment.dueDate).toLocaleString("en-US", {hour: '2-digit', minute: '2-digit', hourCycle: 'h23'}) %><% } %>" type="text" placeholder="Time" autocomplete="off" >
                                                 <span class="material-input"></span>
                                                 </div>
+                                                <input id="dueTimestamp" name="dueTimestamp" style="visibility: hidden;"  value="<% if(typeof assignment == 'object' && assignment.dueDate){ let hours = new Date(assignment.dueDate).toLocaleString("en-US", {hour: '2-digit', minute: '2-digit', hourCycle: 'h23'}); var times = hours.split(":"); %><%= times[0]*3600000+times[1]*60000 %><% } %>"/>
                                                 <script>
                                                 $(document).ready(function() {
                                                 $('#timepicker').datetimepicker({
-                                                    datepicker:false,
-                                                    format:'H:i',
+                                                        datepicker:false,
+                                                        format:'H:i',
+                                                        onChangeDateTime:function(dp,$input){
+                                                            var times = $input.val().split(":");
+                                                            $("#dueTimestamp").val(times[0]*3600000+times[1]*60000);
+                                                        }
                                                     });
-                                                });										
+                                                });
                                             </script>
                                         </div>
                                         <div class="col-md-3">
@@ -223,7 +239,7 @@
 <%- include includes/footer %>
 
 <script>
-    var currTour = sugarizerTour("editClassroom", <% if (account.user && account.user.role=="admin") { %> "admin" <% } else { %> "teacher" <% } %>, "<%= mode %>");
+    var currTour = sugarizerTour("editAssignment", <% if (account.user && account.user.role=="admin") { %> "admin" <% } else { %> "teacher" <% } %>, "<%= mode %>");
     if (!currTour.isFinished()) currTour.start();
 </script>
  
