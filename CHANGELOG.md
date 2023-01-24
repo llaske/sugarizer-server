@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - Assignments feature: API and Dashboard
+
+### Changed
+- Updated to MongoDB 5.0 in docker image
+
 ### Fixed
 - Padding from left in language selection menu list #294
 
