@@ -290,6 +290,8 @@ exports.findAll = function(req, res) {
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
+ * @apiParam {String} id Unique classroom id
+ * 
  * @apiSuccess {String} _id Unique classroom id
  * @apiSuccess {String} name classroom name
  * @apiSuccess {Object} color classroom color
@@ -392,6 +394,8 @@ exports.findById = function(req, res) {
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
+ * @apiParam {String} id Unique classroom id
+ * 
  * @apiSuccess {String} _id Unique classroom id
  * @apiSuccess {String} name classroom name
  * @apiSuccess {Object} color classroom color

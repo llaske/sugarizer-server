@@ -797,7 +797,7 @@ function updateJournal(req, res, journal, text) {
  * @apiHeader {String} x-access-token User access token.
  *
  * @apiParam {String} jid Unique id of the journal to update
- * @apiParam {String} oid Unique id of the entry to update
+ * @apiParam {String} [oid] Unique id of the entry to update
  *
  * @apiSuccess {String} objectId Unique id of the entry in the journal
  * @apiSuccess {Object} metadata Metadata of the entries, i.e. characteristics of the entry

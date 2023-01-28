@@ -104,6 +104,8 @@ exports.findAll = function(req, res) {
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
+ * @apiParam {String} id Unique chart id
+ * 
  * @apiSuccess {String} _id Unique chart id
  * @apiSuccess {String} title Chart title or name
  * @apiSuccess {String} key Key that identifies the chart features
@@ -347,6 +349,8 @@ exports.removeChart = function(req, res) {
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
+ * @apiParam {String} id Unique chart id
+ * 
  * @apiSuccess {String} _id Unique chart id
  * @apiSuccess {String} title Chart title or name
  * @apiSuccess {String} key Key that identifies the chart features
