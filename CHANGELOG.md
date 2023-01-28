@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - Assignments feature: API and Dashboard
+- Code coverage
 
 ### Changed
 - Updated to MongoDB 5.0 in docker image
