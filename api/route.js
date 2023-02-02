@@ -20,7 +20,7 @@ module.exports = function (app, ini, db) {
 	app.all('/api/v1/*', [validate(false)]);//validate(partialAccess): partialAccess is middleware boolean. See middleware/validateRequest.js for more info.
 
 	// Init modules
-	activities.load(ini);
+	activities.load(ini, db);
 	journal.init(ini, db);
 	users.init(ini, db);
 	stats.init(ini, db);
