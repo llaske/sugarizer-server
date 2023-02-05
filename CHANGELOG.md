@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Updated to MongoDB 5.0 in docker image
+- Store activities list in database
 
 ### Fixed
 - Padding from left in language selection menu list #294
