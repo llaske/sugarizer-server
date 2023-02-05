@@ -74,7 +74,8 @@ Following is the typical content of Sugarizer Server settings file:
 	stats = stats
 	classrooms = classrooms
 	charts = charts
-	assignments=assignments
+	assignments = assignments
+	activities = activities
 
 	[statistics]
 	active = true
