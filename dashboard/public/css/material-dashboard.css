@@ -67,6 +67,10 @@ ol.simple_with_animation li .card .card-content div {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  height: 47px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 
