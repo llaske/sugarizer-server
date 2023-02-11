@@ -40,7 +40,7 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
 
     sudo apt-get install nodejs
 
-**Install MongoDB**: Install MongoDB (2.6+). Don't forget to create a /data/db directory to store databases. See [here](http://www.mongodb.org/ "here") more information.
+**Install MongoDB**: Install MongoDB (3.2+). Don't forget to create a /data/db directory to store databases. See [here](http://www.mongodb.org/ "here") more information.
 
     sudo apt-get install mongodb
     sudo mkdir -p /data/db

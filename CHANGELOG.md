@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Code coverage
 
 ### Changed
+- MongoDB minimal version is now 3.2+
 - Updated to MongoDB 5.0 in docker image
 - Store activities list in database
 
