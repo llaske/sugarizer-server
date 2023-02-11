@@ -45,7 +45,6 @@
 		"grunt-contrib-jshint": "^3.2.0",
 		"grunt-contrib-nodeunit": "^4.0.0",
 		"grunt-terser": "~1.0.0",
-		"husky": "^7.0.0",
 		"mocha": "~10.2.0",
 		"nodemon": "*"
 	},
@@ -56,7 +55,6 @@
 		"start": "nodemon sugarizer.js",
 		"start:watch": "nodemon sugarizer.js",
 		"seed:users-csv": "node scripts/seed_users.js",
-		"lint": "eslint .; exit 0",
-		"prepare": "husky install"
+		"lint": "eslint .; exit 0"
 	}
 }
