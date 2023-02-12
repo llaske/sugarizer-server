@@ -846,6 +846,12 @@
   display: none !important;
 }
 
+@media (max-width: 991px) {
+  .hide-desk-el {
+    display: block !important;
+  }
+}
+
 @media (max-width: 768px) {
   .pull-right-mobinterrupt {
     float: none !important;
