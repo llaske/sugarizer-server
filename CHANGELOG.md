@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Padding from left in language selection menu list #294
+- Fix required in sidebar to achieve consistency #348
 
 
 ### Fixed
