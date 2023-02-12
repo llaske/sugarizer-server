@@ -4827,6 +4827,7 @@ footer .btn {
   }
   .sidebar .nav-mobile-menu {
     margin-top: 0;
+    display: none;
   }
   .sidebar .nav-mobile-menu .notification {
     float: left;
@@ -4939,13 +4940,17 @@ footer .btn {
     content: "";
     z-index: 1;
   }
+  .sidebar .nav, .off-canvas-sidebar .nav {
+    margin-top: 0px;
+  }
   .sidebar .logo, .off-canvas-sidebar .logo {
     position: relative;
     z-index: 4;
   }
   .sidebar .navbar-form, .off-canvas-sidebar .navbar-form {
-    margin: 10px 15px;
+    margin: 10px 15px 0px;
     float: none !important;
+    box-shadow: none;
   }
   .sidebar .navbar-form .btn, .off-canvas-sidebar .navbar-form .btn {
     position: absolute;
