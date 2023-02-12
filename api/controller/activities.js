@@ -34,6 +34,25 @@ exports.load = function(settings, database) {
 			throw err;
 		}
 		var index = 0;
+		var mergedActivitiesAtEnd = function() {
+			// Load activities
+			loadActivities(function(activitiesFromDB) {
+				// Sort activities array by index in .INI favorite property
+				if (!activitiesFromDB) {
+					activitiesFromDir.sort(function(a0, a1) {
+						if (a0.index > a1.index) return 1;
+						else if (a0.index < a1.index) return -1;
+						else return 0;
+					});
+				}
+
+				// Merge current with loaded
+				var merged = mergeActivities(activitiesFromDB, activitiesFromDir);
+
+				// Store activities
+				storeActivities(merged);
+			});
+		}
 		files.forEach(function(file) {
 			// If it's not the template directory
 			if (file != templateDirName) {
@@ -73,31 +92,26 @@ exports.load = function(settings, database) {
 								"activityId": null,
 								"index": (favorites.indexOf(info.Activity.bundle_id) == -1 ? favoritesLength++ : favorites.indexOf(info.Activity.bundle_id))
 							});
+							if (++index == files.length) {
+								mergedActivitiesAtEnd();
+							}
 						});
 						stream.on('error', function() {
 							console.log("WARNING: can't find info file for '"+activitiesDirName+path.sep + file+"'");
+							if (++index == files.length) {
+								mergedActivitiesAtEnd();
+							}
 						});
+					} else {
+						if (++index == files.length) {
+							mergedActivitiesAtEnd();
+						}
 					}
 				});
-			}
-			if (++index == files.length) {
-				// Load activities
-				loadActivities(function(activitiesFromDB) {
-					// Sort activities array by index in .INI favorite property
-					if (!activitiesFromDB) {
-						activitiesFromDir.sort(function(a0, a1) {
-							if (a0.index > a1.index) return 1;
-							else if (a0.index < a1.index) return -1;
-							else return 0;
-						});
-					}
-
-					// Merge current with loaded
-					var merged = mergeActivities(activitiesFromDB, activitiesFromDir);
-
-					// Store activities
-					storeActivities(merged);
-				});
+			} else {
+				if (++index == files.length) {
+					mergedActivitiesAtEnd();
+				}
 			}
 		});
 	});
