@@ -8,6 +8,8 @@ Recent versions of MongoDB don't support old database file format so we recommen
 
 Depending from the way you're running Sugarizer Server, follow the migration guide below.
 
+See [MongoDB documentation](https://www.mongodb.com/docs/database-tools/) for more information.
+
 ### Running Sugarizer Server on your computer
 
 If Sugarizer Server and MongoDB run from your computer.
