@@ -1,4 +1,4 @@
-# Migration process
+# Migration guide
 
 This documentation describes migration process to a recent Sugarizer Server version.
 

@@ -9,7 +9,7 @@ Sugarizer Server allows the deployment of Sugarizer on a local server, for examp
 
 ## Running Sugarizer Server
 
-The easiest way to run Sugarizer is to use Docker. To do that, type command lines:
+The easiest way to run Sugarizer Server is to use Docker. To do that, type command lines:
 
 	git clone https://github.com/llaske/sugarizer
 	git clone https://github.com/llaske/sugarizer-server
@@ -17,7 +17,9 @@ The easiest way to run Sugarizer is to use Docker. To do that, type command line
 	sh generate-docker-compose.sh
 	docker-compose up -d
 
-For other options to install Sugarizer on your computer, on the cloud or on a RaspberryPI, see [here](docs/install.md).
+For other options to install Sugarizer Server on your computer, on the cloud or on a RaspberryPI, see [here](docs/install.md).
+
+If you want to upgrade from a previous Sugarizer Server version, please have a look on the [Migration guide](docs/migrate.md).
 
 
 ## Global architecture
@@ -27,7 +29,7 @@ See [here](docs/architecture.md) for a global description of the Sugarizer Serve
 
 ## Server settings
 
-Sugarizer settings are loaded by default from file [env/sugarizer.ini](env/sugarizer.ini). You could change the name of this file by changing the value of environment variable ``NODE_ENV``. So if the ``NODE_ENV`` variable is set to ``production``, Sugarizer will try to load ``env/production.ini`` file.
+Sugarizer Server settings are loaded by default from file [env/sugarizer.ini](env/sugarizer.ini). You could change the name of this file by changing the value of environment variable ``NODE_ENV``. So if the ``NODE_ENV`` variable is set to ``production``, Sugarizer Server will try to load ``env/production.ini`` file.
 
 Following is the typical content of Sugarizer Server settings file:
 
@@ -136,7 +138,7 @@ Once the admin account is created, you could access Sugarizer Dashboard on http:
 
 ## Server API
 
-To implement the above functionalities, the sugarizer backend exposes an API. The API routes look as follows:
+To implement the above functionalities, the Sugarizer backend exposes an API. The API routes look as follows:
 
 
 #### INFORMATION ROUTE
@@ -307,7 +309,7 @@ Note that settings for unit testing are defined in [env/test.ini](env/test.ini).
 
 # Optimize performance
 
-If you want to optimize JavaScript performance, you could generate an optimized version of Sugarizer and Sugarizer-Server with [Grunt](http://gruntjs.com). This optimized version will minimize and reduce the size of the public resources.
+If you want to optimize JavaScript performance, you could generate an optimized version of Sugarizer and Sugarizer Server with [Grunt](http://gruntjs.com). This optimized version will minimize and reduce the size of the public resources.
 
 First, ensure that Node.js and npm are installed on your machine. See [here](http://nodejs.org/) for more information.
 
@@ -323,11 +325,11 @@ Then launch Grunt task to minify Sugarizer JavaScript files:
 
 	grunt -v
 
-Now navigate to Sugarizer-Server directory and install the specific component for Sugarizer-Server by running:
+Now navigate to Sugarizer-Server directory and install the specific component for Sugarizer Server by running:
 
 	npm install
 
-Then launch Grunt task to minify Sugarizer-Server CSS, Image and JavaScript files:
+Then launch Grunt task to minify Sugarizer Server CSS, Image and JavaScript files:
 
 	grunt -v
 
