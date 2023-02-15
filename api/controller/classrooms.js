@@ -242,7 +242,7 @@ exports.findAll = function(req, res) {
 				}
 			];
 	
-			if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >=2) {
+			if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >= 2) {
 				conf[1]["$project"]["insensitive"] = { "$toLower": "$" + options.sort[0][0] };
 	
 				if (options.sort[0][1] == 'desc') {
@@ -290,6 +290,8 @@ exports.findAll = function(req, res) {
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
+ * @apiParam {String} id Unique classroom id
+ * 
  * @apiSuccess {String} _id Unique classroom id
  * @apiSuccess {String} name classroom name
  * @apiSuccess {Object} color classroom color
@@ -392,6 +394,8 @@ exports.findById = function(req, res) {
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
+ * @apiParam {String} id Unique classroom id
+ * 
  * @apiSuccess {String} _id Unique classroom id
  * @apiSuccess {String} name classroom name
  * @apiSuccess {Object} color classroom color
@@ -572,7 +576,7 @@ function addQuery(filter, params, query, default_val) {
 	//validate
 	if (
 		typeof params[filter] != "undefined" &&
-    typeof params[filter] === "string"
+    	typeof params[filter] === "string"
 	) {
 		if (filter == "q") {
 			query["name"] = {

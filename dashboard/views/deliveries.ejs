@@ -1,0 +1,130 @@
+<%- include includes/header %>
+<div class="wrapper">
+    <%- include includes/sidebar %>
+    <div class="main-panel">
+        <%- include includes/navbar %>
+        <div class="content">
+            <div class="container-fluid">
+                  <%- include includes/flash-errors %>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card" id="deliveries-serach-row" >
+                            <form method="get" id="user-form">
+                                <div class="col-md-3">
+                                    <div class="form-group form-black label-floating is-empty">
+                                        <input data-l10n-id="john" placeholder="Search User..." class="form-control" name="user" value="<% if(query.u){ %><%= query.u %><% } %>" type="text">
+                                        <span class="material-input"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3"> 
+                                    <div class="form-group form-black label-floating is-empty">
+                                        <select class="form-control" id="select-status-select2" name="status" value="<% if(query.Delivered){ %><%= query.Delivered %><% } %>">
+                                            <option data-l10n-id="statusAll" value="">All status</option>
+                                            <option data-l10n-id="statusExpected" value="false">Assigned</option>
+                                            <option data-l10n-id="statusDelivered" value="true">Delivered</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3"></div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-round pull-right" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="deliveries-cards-parent">
+                        <% if(data.deliveries.length == 0){%>
+                            <div class="text-center" style="margin-top:50px;">
+                                    <i class="material-icons dp96">info_outline</i>
+                                    <p data-l10n-id="noAssignmentText"></p>
+                                </div>
+                        <% } else{%>
+                            <div class="card">
+                                <div class="card-header row" data-background-color="black">
+                                    <div class="col-md-4 col-sm-4 col-lg-4 text-left">
+                                        <% if(data.links.prev_page) { %>
+                                           <a href="<%= data.links.prev_page %>" class="page-button" data-l10n-id="prevPage">&lt;&lt; Prev Page</a>
+                                        <% } %>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-lg-4 text-center" data-l10n-id="showingResults" data-l10n-args='{ "offset": "<%= data.offset + 1 %>", "to": "<%= data.offset + data.deliveries.length %>", "total": "<%= data.total %>" }'></div>
+                                    <div class="col-md-4 col-sm-4 col-lg-4 text-right">
+                                        <% if(data.links.next_page) { %>
+                                           <a href="<%= data.links.next_page %>" class="page-button" data-l10n-id="nextPage">Next Page &gt;&gt;</a>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <div class="card-content table-responsive">
+                                    <table class="table">
+                                        <thead class="text-muted">
+                                            <tr>
+                                                <th class="text-muted"><input type="checkbox" id="checkAll" onclick="checkAll()"></th>
+                                                <th>#</th>
+                                                <th data-l10n-id="icon">Activity</th>
+                                                <th><button data-l10n-id="name" id="name-column" onclick="sortBy('name')"></button></th>
+                                                <th data-l10n-id="status">Status</th>
+                                                <th><button data-l10n-id="deliveredAt" id="last-column" onclick="sortBy('time')"></button></th>
+                                                <th data-l10n-id="score">Score</th>
+                                                <th data-l10n-id="comment">Comment</th>
+                                                <th data-l10n-id="action">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% for(var i=0; i < data.deliveries.length; i++) { %>
+                                            <tr id="deliveries-card">
+                                                <td><input type="checkbox" class="deliveries-checkbox" cid="<%= data.deliveries[i]._id %>"></td>
+                                                <td><%= data.offset + i + 1 %></td>
+                                                <td>
+                                                    <div class="color" id="<%= data.deliveries[i].content[0].objectId %>">
+                                                        <div class="xo-icon"></div>
+                                                    </div>
+                                                </td>
+                                                <script>
+                                                    <% if (data.deliveries[i].content[0].metadata.mimetype == "text/plain") { %>
+                                                        new icon().load("<%= iconMap[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-txt.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
+                                                    <% } else if (data.deliveries[i].content[0].metadata.mimetype == "application/pdf") { %>
+                                                        new icon().load("<%= iconMap[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-pdf.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
+                                                    <% } else if (data.deliveries[i].content[0].metadata.mimetype == "application/msword") { %>
+                                                        new icon().load("<%= iconMap[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-doc.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
+                                                    <% } else if (data.deliveries[i].content[0].metadata.mimetype == "application/vnd.oasis.opendocument.text") { %>
+                                                        new icon().load("<%= iconMap[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-odt.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
+                                                    <% } else {%>
+                                                        new icon().load("<%= iconMap[data.deliveries[i].content[0].metadata.activity] || '/public/img/application-x-generic.svg' %>", (<%- JSON.stringify(data.deliveries[i].content[0].metadata.buddy_color?data.deliveries[i].content[0].metadata.buddy_color:{stroke_color:"#005FE4",fill_color:"#FF2B34"}) %>), "<%= data.deliveries[i].content[0].objectId %>");
+                                                    <% } %>
+                                                    </script>
+                                                <td><%= data.deliveries[i].content[0].metadata.buddy_name %></td>
+                                                <td><% if(data.deliveries[i].content[0].metadata.isSubmitted == true ){%><%= common.l10n.get('statusDelivered') %><% } %> <% if(data.deliveries[i].content[0].metadata.isSubmitted == false ){%><%= common.l10n.get('statusExpected') %><% } %> </td>
+                                                <td><% if(data.deliveries[i].content[0].metadata.submissionDate !== null) {%> <%= moment(data.deliveries[i].content[0].metadata.submissionDate).format(moment().creationData().locale._longDateFormat.L+' H:mm') %> <% } %></td>
+                                                <td><%= data.deliveries[i].content[0].metadata.score %></td>
+                                                <td><%= data.deliveries[i].content[0].metadata.comment %></td>
+                                                <td>
+                                                    <a id="deliveries-launch" href="javascript:launch_activity('/dashboard/activities/launch/<%= data.deliveries[i]._id %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=launch')" data-l10n-id="launch" title="Launch"><i class="material-icons text-muted">launch</i></a>
+                                                    <a data-l10n-id="comment-deliveries" title="Comment" href="/dashboard/assignments/deliveries/comment/<%= data.deliveries[i].content[0].metadata.assignmentId %>?oid=<%= data.deliveries[i].content[0].objectId %>"><div class="comment-icon"></div></a>
+                                                    <a id="journal-activity-download" href="javascript:download_activity('/dashboard/activities/launch/<%= data.deliveries[i]._id %>?oid=<%= data.deliveries[i].content[0].objectId %>&source=journal&uid=<%= data.deliveries[i].content[0].metadata.user_id %>&aid=<%= data.deliveries[i].content[0].metadata.activity %>&mode=download')" data-l10n-id="download" title="Download"><i class="material-icons text-muted">cloud_download</i></a>
+                                                    <% if(data.deliveries[i].content[0].metadata.isSubmitted == true ){%> 
+                                                    <a data-l10n-id="return-deliveries" title="Return" href="/dashboard/assignments/deliveries/return/<%= data.deliveries[i].content[0].metadata.assignmentId %>?oid=<%= data.deliveries[i].content[0].objectId %>"><div class="returnAssignment-icon"></div></a>
+                                                    <% } else {%>
+                                                    <a title="Return" style=" cursor: not-allowed; pointer-events: none;" href="/dashboard/assignments/deliveries/return/<%= data.deliveries[i].content[0].metadata.assignmentId %>?oid=<%= data.deliveries[i].content[0].objectId %>"><div class="returnAssignment-icon-inactive"></div></a>
+                                                    <% } %>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        <%}%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include includes/footer %>
+<script>
+    //set headers
+    var headers = <%- JSON.stringify(headers) %>;
+
+    handleSort();
+    var currTour = sugarizerTour("deliveries", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
+    if (!currTour.isFinished()) currTour.start();
+</script>

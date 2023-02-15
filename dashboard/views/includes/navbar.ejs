@@ -16,8 +16,13 @@
             </div>
             <ul class="nav navbar-nav navbar-right">
   							<li class="dropdown hide-mob-el">
-  								<a href="/dashboard/logout" class="dropdown-toggle" data-toggle="dropdown">
-                                      <p class="custom-icon xo-icon" id="navbar-xo-icon"></p>
+  								<a href="/dashboard/logout" class="dropdown-toggle" data-toggle="dropdown" title="<%= account.user.name %>">
+                                      <div class="color" id="navbar-xo-icon">
+                                        <div class="xo-icon" id="navbar-xo-subicon"></div>
+                                    </div>
+                                      <script>
+                                        new icon().load("/public/img/owner-icon.svg", (<%- account.user.color?JSON.stringify(account.user.color):"{}" %>), "navbar-xo-icon");
+                                      </script>
                                       <p class="hidden-lg hidden-md" data-l10n-id="logout">Logout</p>
                                 </a>
   								<ul class="dropdown-menu">

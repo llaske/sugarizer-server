@@ -1,6 +1,6 @@
 {
 	"name": "Sugarizer",
-	"version": "1.2.0",
+	"version": "1.5.0",
 	"description": "Sugarizer Server API",
 	"title": "Sugarizer Server API",
 	"url" : "/",
@@ -43,6 +43,16 @@
 		"RemoveEntryJournal",
 		"GetAllStats",
 		"AddStats",
-		"RemoveStats"
+		"RemoveStats",
+		"GetAssignments",
+		"GetAssignment",
+		"AddAssignment",
+		"UpdateAssignment",
+		"UpdateComment",
+		"RemoveAssignment",
+		"LaunchAssignment",
+		"SubmitAssignment",
+		"ReturnAssignment",
+		"GetDeliveries"
 	]
 }

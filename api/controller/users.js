@@ -42,6 +42,8 @@ exports.init = function(settings, database) {
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
+ * @apiParam {String} id Unique user id
+ * 
  * @apiSuccess {String} _id Unique user id
  * @apiSuccess {String} name Unique user name
  * @apiSuccess {String} role User role (student or admin)
@@ -105,7 +107,7 @@ exports.findById = function(req, res) {
 };
 
 // function to generate OTP Token for QR code.
-function generateOTPToken (username, serviceName, secret){
+function generateOTPToken(username, serviceName, secret){
 	return otplib.authenticator.keyuri(
 		username,
 		serviceName,
@@ -494,7 +496,7 @@ exports.getAllUsers = function(query, options, callback) {
 					insensitive: { "$toLower": "$name" }
 				}
 			},
-			{ 
+			{
 				$sort: {
 					"insensitive": 1
 				}
@@ -519,7 +521,7 @@ exports.getAllUsers = function(query, options, callback) {
 			}
 		}
 
-		collection.aggregate(conf, function (err, users) {
+		collection.aggregate(conf, function(err, users) {
 			if (options.skip) users.skip(options.skip);
 			if (options.limit) users.limit(options.limit);
 			//return
@@ -762,7 +764,7 @@ exports.addUser = function(req, res) {
 };
 
 /**
- * @api {put} api/v1/users/ Update user
+ * @api {put} api/v1/users/:uid Update user
  * @apiName UpdateUser
  * @apiDescription Update an user. Return the user updated. Student or teacher can update only his/her details but admin can update anyone.
  * @apiGroup Users
@@ -770,6 +772,8 @@ exports.addUser = function(req, res) {
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
+ * @apiParam {String} uid Unique user id to update
+ * 
  * @apiSuccess {String} _id Unique user id
  * @apiSuccess {String} name Unique user name
  * @apiSuccess {String} role User role (admin, student or teacher)
@@ -1046,4 +1050,3 @@ exports.updateUserTimestamp = function(uid, callback) {
 		});
 	});
 };
-
