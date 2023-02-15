@@ -4,7 +4,7 @@
 
 [Sugarizer](https://github.com/llaske/sugarizer) is the open source learning platform based on Sugar that began in the famous One Laptop Per Child project.
 
-Sugarizer Server allows the deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 10+ and MongoDB 2.6+.
+Sugarizer Server allows the deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 10+ and MongoDB 3.2+.
 
 
 ## Running Sugarizer Server
@@ -40,20 +40,20 @@ Following is the typical content of Sugarizer Server settings file:
 	port = 8080
 
 	[security]
-    min_password_size = 4
-    max_age = 172800000
-    max_age_TFA = 180000
-    https = false
-    certificate_file = ../server.crt
-    key_file = ../server.key
-    strict_ssl = false
-    no_signup_mode = false
-    service_name = Sugarizer Server
-    secret = super.sugarizer.server.key
+	min_password_size = 4
+	max_age = 172800000
+	max_age_TFA = 180000
+	https = false
+	certificate_file = ../server.crt
+	key_file = ../server.key
+	strict_ssl = false
+	no_signup_mode = false
+	service_name = Sugarizer Server
+	secret = super.sugarizer.server.key
 
-    [privacy]
-    consent_need = false
-    policy = https://sugarizer.org/policy.html
+	[privacy]
+	consent_need = false
+	policy = https://sugarizer.org/policy.html
 
 	[client]
 	path = ../sugarizer/

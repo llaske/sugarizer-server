@@ -3,6 +3,13 @@
 This documentation describes migration process to a recent Sugarizer Server version.
 
 ## Migrate to 1.5.0
+Two new collections need to be added to the `[collections]` section of your `.ini` file:
+
+```
+assignments = assignments
+activities = activities
+```
+
 Sugarizer Server version 1.5.0 require MongoDB 3.2+.
 Recent versions of MongoDB don't support old database file format so we recommend to dump your current database before upgrading to avoid losing data.
 
