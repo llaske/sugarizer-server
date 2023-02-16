@@ -3381,6 +3381,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
   border: none;
   border-radius: 3px;
   box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.2);
+  max-width: 300px;
 }
 
 .popover {
@@ -3395,12 +3396,12 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 .popover-title {
   background-color: #FFFFFF;
   border: none;
-  padding: 15px 15px 5px;
-  font-size: 1.3em;
+  padding-left: 4px;
+  font-size: 17px;
 }
 
 .popover-content {
-  padding: 10px 15px 15px;
+  padding: 15px 15px 10px;
   line-height: 1.4;
 }
 
@@ -5171,4 +5172,31 @@ footer .btn {
     margin-left: -20px;
     margin-right: -20px;
   }
+}
+
+.title-icon-together{
+  display: flex;
+  flex-direction: row;
+  background-color: #808080;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  padding: 0px 5px;
+  font-weight: 500;
+}
+
+#ease-title-selection {
+  display : flex;
+  align-self: center;
+  padding-left: 10px;
+  font-size: 14px;
+}
+
+/* overwriting the older settings for icon button */
+.title-icon-together .icon-button {
+  margin: 0px;
+}
+
+.title-icon-together .tutorial-end-icon{
+  width: auto;
 }

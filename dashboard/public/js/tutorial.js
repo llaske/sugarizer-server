@@ -20,7 +20,16 @@ function sugarizerTour(currentView, role, mode) {
 			template: "\
 			<div class='popover tour popover-tour'>\
 				<div class='arrow'></div>\
-				<h3 class='popover-title tutorial-title'></h3>\
+				<div class='title-icon-together'>\
+					<div id='ease-title-selection'>\
+						<div class='popover-title tutorial-title'></div>\
+					</div>\
+					<div class='tutorial-end-icon icon-button' data-role='end'>\
+						<div class='tutorial-end-icon1 web-activity'>\
+							<div class='tutorial-end-icon2 web-activity-icon'></div>\
+						</div>\
+					</div>\
+				</div>\
 				<table><tr><td style='vertical-align:top;'><div id='icon-tutorial' style='visibility:hidden;display:inline-block;'></div>\
 				</td><td><div class='popover-content'></div></td></tr></table>\
 				<div class='popover-navigation' style='display: flex; flex-wrap:wrap; justify-content: center; align-items: center'>\
@@ -31,20 +40,13 @@ function sugarizerTour(currentView, role, mode) {
 						</div>\
 						<div class='icon-tutorial-text'>"+ prevString + "</div>\
 					</div>\
-					<span data-role='separator' style='margin: 4px'>|</span>\
+					<span data-role='separator' style='margin: 4px; color : white'>|</span>\
 					<div class='tutorial-next-icon icon-button' data-role='next'>\
 						<div class='tutorial-next-icon1 web-activity'>\
 							<div class='tutorial-next-icon2 web-activity-icon'></div>\
 							<div class='tutorial-next-icon3 web-activity-disable'></div>\
 						</div>\
 						<div class='icon-tutorial-text'>"+ nextString + "</div>\
-					</div>\
-					<div class='tutorial-end-icon icon-button' data-role='end'>\
-						<div class='tutorial-end-icon1 web-activity'>\
-							<div class='tutorial-end-icon2 web-activity-icon'></div>\
-							<div class='tutorial-end-icon3 web-activity-disable'></div>\
-						</div>\
-						<div class='icon-tutorial-text'>"+ endString + "</div>\
 					</div>\
 				</div>\
 			</div>",
