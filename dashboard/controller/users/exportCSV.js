@@ -7,6 +7,11 @@ module.exports = function exportCSV(req, res) {
 	var users = [];
 	var Classrooms = {};
 
+	common.reinitLocale(req);
+	var selectedUsername = req.params.username;
+	var selectedRole = req.params.role;
+	var selectedClassroom = req.params.classroom;  
+
 	function validateUser(user) {
 		var validUser = {
 			_id: "",
@@ -173,10 +178,34 @@ module.exports = function exportCSV(req, res) {
 				});
 		}
 	], function() {
-		if (users.length == 0) {
+		var filteredUsers = [];
+		var requiredIDs = new Set();
+		if(selectedClassroom !== 'undefined'){
+			selectedClassroom.split(',').forEach(id => {
+				requiredIDs.add(id);
+			});
+		}
+		users.forEach(user => {
+			let required = true;
+			if (selectedUsername !== 'undefined') {
+				if (user.name !== selectedUsername) {
+				  required = false;
+				}
+			}
+			if (required && selectedRole !== 'all' && user.type !== selectedRole) {
+				required = false;
+			}
+			if (required && selectedRole === 'student' && selectedClassroom !== 'undefined') {
+				if (!requiredIDs.has(user._id)) {
+				  required = false;
+				}
+			}
+			if(required) filteredUsers.push(user);
+		})
+		if (filteredUsers.length == 0) {
 			res.json({success: false, msg: common.l10n.get('NoUsersFound')});
 		} else {
-			res.json({success: true, msg: common.l10n.get('ExportSuccess'), data: users});
+			res.json({success: true, msg: common.l10n.get('ExportSuccess'), data: filteredUsers});
 		}
 		return;
 	});
