@@ -20,7 +20,7 @@ module.exports = function profile(req, res) {
 			// validate
 			req.body.name = req.body.name.trim();
 			req.body.password = req.body.password.trim();
-			req.body.color = JSON.parse(req.body.color);
+			req.body.color = req.body.color;
 			req.assert('name', common.l10n.get('UsernameInvalid')).matches(regexValidate("user"));
 			req.assert('password', common.l10n.get('PasswordAtLeast', {count:users.ini().security.min_password_size})).len(users.ini().security.min_password_size);
 			req.assert('password', common.l10n.get('PasswordInvalid')).matches(regexValidate("pass"));

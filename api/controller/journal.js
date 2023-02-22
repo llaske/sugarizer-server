@@ -408,7 +408,7 @@ exports.findJournalContent = function(req, res) {
 				}
 
 				//define var
-				var params = JSON.parse(JSON.stringify(req.query));
+				var params = req.query;
 				var route = req.route.path;
 				var skip = parseInt(req.query.offset || 0);
 				var limit = parseInt(req.query.limit || 10);
@@ -703,7 +703,7 @@ exports.addEntryInJournal = function(req, res) {
 		return;
 	}
 	var jid = req.params.jid;
-	var journal = JSON.parse(req.body.journal);
+	var journal = req.body.journal;
 
 	// Look for existing entry with the same objectId
 	var filter = {

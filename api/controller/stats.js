@@ -72,7 +72,7 @@ exports.addStats = function(req, res) {
 	}
 
 	//parse user details
-	var stats = JSON.parse(req.body.stats);
+	var stats = req.body.stats;
 
 	//add client IP
 	if (stats.constructor === Array) {

@@ -195,7 +195,7 @@ exports.addChart = function(req, res) {
 	}
 
 	//parse user details
-	var chart = JSON.parse(req.body.chart);
+	var chart = req.body.chart;
 
 	//add timestamp & language
 	chart.created_time = +new Date();
@@ -392,7 +392,7 @@ exports.updateChart = function(req, res) {
 	}
 
 	var chartid = req.params.chartid;
-	var chart = JSON.parse(req.body.chart);
+	var chart = req.body.chart;
 
 	//add timestamp & language
 	chart.timestamp = +new Date();
@@ -469,7 +469,7 @@ exports.reorderChart = function (req, res) {
 		return;
 	}
 
-	var chart = JSON.parse(req.body.chart);
+	var chart = req.body.chart;
 
 	var list = [];
 	if (chart.list) {

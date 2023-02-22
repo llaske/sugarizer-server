@@ -64,7 +64,7 @@ exports.init = function(settings) {
 exports.login = function(req, res) {
 
 	//parse response
-	var user = JSON.parse(req.body.user);
+	var user =req.body.user;
 	var name = user.name || '';
 	var password = user.password || '';
 	var query = {
@@ -248,7 +248,7 @@ exports.verify2FA = function(req, res) {
  **/
 exports.signup = function(req, res) {
 
-	var user = JSON.parse(req.body.user);
+	var user = req.body.user
 	if(user.beforeSignup) {
 		validateUsername(user.name, function(user) {
 			if(user == false) {
@@ -351,7 +351,7 @@ exports.allowedRoles = function (roles) {
 exports.checkAdminOrLocal = function(req, res, next) {
 	var whishedRole = 'student';
 	if (req.body && req.body.user) {
-		var user = JSON.parse(req.body.user);
+		var user = req.body.user;
 		whishedRole = user.role.toLowerCase();
 	}
 	if (whishedRole == 'student' && security.no_signup_mode) {

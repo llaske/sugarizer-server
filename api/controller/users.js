@@ -429,7 +429,7 @@ exports.findAll = function(req, res) {
 		collection.countDocuments(query, function(err, count) {
 
 			//define var
-			var params = JSON.parse(JSON.stringify(req.query));
+			var params =req.query;
 			var route = req.route.path;
 			var options = getOptions(req, count, "+name");
 			//get data
@@ -675,7 +675,7 @@ exports.addUser = function(req, res) {
 	}
 
 	//parse user details
-	var user = JSON.parse(req.body.user);
+	var user = req.body.user;
 
 	//add timestamp & language
 	user.created_time = +new Date();
@@ -838,7 +838,7 @@ exports.updateUser = function(req, res) {
 	}
 
 	var uid = req.params.uid;
-	var user = JSON.parse(req.body.user);
+	var user =req.body.user;
 	delete user.role; // Disable role change
 
 	//do not update name if already exist

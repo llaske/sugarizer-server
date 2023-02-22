@@ -20,7 +20,7 @@ module.exports = function addClassroom(req, res) {
 		if (typeof req.body.students == 'string') {
 			req.body.students = [req.body.students];
 		}
-		req.body.color = JSON.parse(req.body.color);
+		req.body.color = req.body.color;
 		req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
 		req.body.options = { sync: true, stats: true };
 

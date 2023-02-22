@@ -194,7 +194,7 @@ exports.findAll = function (req, res) {
     db.collection(assignmentCollection, function (err, collection) {
         //count
         collection.countDocuments(query, function (err, count) {
-            var params = JSON.parse(JSON.stringify(req.query));
+            var params = req.query;
             var route = req.route.path;
             var options = getOptions(req, count, "-timestamp");
             var conf = [
@@ -423,7 +423,7 @@ exports.findAllDeliveries = function (req, res) {
     db.collection(journalCollection, function (err, collection) {
         //count
         collection.countDocuments(query, function (err, count) {
-            var params = JSON.parse(JSON.stringify(req.query));
+            var params = req.query;
             var route = req.route.path;
             var options = getOptions(req, count, "+buddy_name");
             //find all entries which matches with assignment id using aggregation
@@ -974,7 +974,7 @@ exports.updateAssignment = function (req, res) {
         });
     }
     var assignmentId = req.params.assignmentId;
-    var assignment = JSON.parse(req.body.assignment);
+    var assignment =req.body.assignment;
     //add timestamp
     assignment.timestamp = +new Date();
     //find assignment by id
@@ -1140,7 +1140,7 @@ exports.updateComment = function (req, res) {
         });
     }
     var assignmentId = req.params.assignmentId;
-    var comment = JSON.parse(req.body.comment);
+    var comment = req.body.comment;
     var objectId = req.query.oid;
     db.collection(journalCollection, function (err, collection) {
         collection.findOneAndUpdate(

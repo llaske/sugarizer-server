@@ -59,7 +59,7 @@ exports.addClassroom = function(req, res) {
 	}
 
 	//parse user details
-	var classroom = JSON.parse(req.body.classroom);
+	var classroom = req.body.classroom;
 
 	//add timestamp & language
 	classroom.created_time = +new Date();
@@ -216,7 +216,7 @@ exports.findAll = function(req, res) {
 		//count data
 		collection.countDocuments(query, function(err, count) {
 			//define var
-			var params = JSON.parse(JSON.stringify(req.query));
+			var params = req.query;
 			var route = req.route.path;
 			var options = getOptions(req, count, "+name");
 
@@ -468,7 +468,7 @@ exports.updateClassroom = function(req, res) {
 	}
 
 	var classid = req.params.classid;
-	var classroom = JSON.parse(req.body.classroom);
+	var classroom = req.body.classroom;
 
 	//add timestamp & language
 	classroom.timestamp = +new Date();
