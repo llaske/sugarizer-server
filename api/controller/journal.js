@@ -103,10 +103,10 @@ exports.init = function(settings, database) {
 	// Get sugarizer version
 	var sugarizerPath = settings.client.path;
 	if (sugarizerPath[0] != '/') {
-		sugarizerPath = __dirname + '/../../' + settings.client.path;
+		sugarizerPath = path.join(__dirname + '/../../' + settings.client.path);
 	}
-	sugarizerPath += (sugarizerPath[sugarizerPath.length-1] == '/' ? '' : '/');
-
+	sugarizerPath += ((sugarizerPath[sugarizerPath.length-1] == '/' || sugarizerPath[sugarizerPath.length-1]=='\\') ? '' : '/');
+	
 	var packageName = 'package.json';
 	// Read activities directory
 

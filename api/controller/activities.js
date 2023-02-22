@@ -23,10 +23,9 @@ exports.load = function(settings, database) {
 	var favoritesLength = favorites.length;
 	var activitiesPath = settings.client.path;
 	if (activitiesPath[0] != '/') {
-		activitiesPath = __dirname + '/../../' + settings.client.path;
+		activitiesPath = path.join(__dirname , '/../../' , settings.client.path);
 	}
-	activitiesPath += (activitiesPath[activitiesPath.length-1] == '/' ? '' : '/') + activitiesDirName;
-
+	activitiesPath += ((activitiesPath[activitiesPath.length-1] == '/') || activitiesPath[activitiesPath.length-1] == '\\' ? '' : '/') + activitiesDirName;
 	// Read activities directory
 	fs.readdir(activitiesPath, function(err, files) {
 		if (err) {
