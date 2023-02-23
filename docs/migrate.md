@@ -46,7 +46,7 @@ First identify the id for the MongoDB container by running.
 docker ps
 ```
 
-The id is the one on the line named `sugarizer-server_server`.
+The id is the one on the line named `sugarizer-server_mongodb`.
 
 Now attach a bash shell on the running MongoDB instance by running:
 
