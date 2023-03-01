@@ -32,8 +32,56 @@
                                     </div>
                                     <% if (account.user && account.user.role == "teacher") { %>
                                         <a class="btn btn-round pull-right" href="/dashboard/assignments/add" data-l10n-id="addAssignment" id="assignment-addassignment"><div class="ripple-container"></div></a>
-                                    <% } %>
-                                    <button class="btn btn-round pull-right" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+                                        <% } %>
+                                        <button class="btn btn-round pull-right" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+                                        <div class="btn pull-right btn-round" onclick="downloadAssignments()" data-l10n-id="ExportAssignment" id="assignment-exportassignments">Export Assignments</div>
+                                        <script>
+                                            function downloadAssignments(event) {
+                                    $.ajax({
+                                            type: "GET",
+                                            url: "/dashboard/assignments/export",
+                                            success: function (res) {
+                                                if (res && res.success) {
+                                                    var headers = {
+                                                        _id: "_id",
+                                                        name : "name",
+                                                        type : "type",
+                                                        language : "language",
+                                                        stroke : "stroke",
+                                                        fill : "fill",
+                                                        password : "password",
+                                                        classroom : "classroom"
+                                                    };
+                                                    exportCSVFile(headers, res.data, 'AssignmentExport');
+                                                    $.notify({
+                                                        icon: "notifications",
+                                                        message: res.msg
+
+                                                    },{
+                                                        type: 'success',
+                                                        timer: 2000,
+                                                        placement: {
+                                                            from: 'top',
+                                                            align: 'right'
+                                                        }
+                                                    });
+                                                } else {
+                                                    $.notify({
+                                                        icon: "error",
+                                                        message: res.msg
+                                                    },{
+                                                        type: 'danger',
+                                                        timer: 2000,
+                                                        placement: {
+                                                            from: 'top',
+                                                            align: 'right'
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                }
+                                        </script>
                                 </div>
                             </form>
                         </div>
@@ -127,7 +175,7 @@
                                                             <a data-l10n-id="editAssignment" style=" cursor: not-allowed; pointer-events: none;" title="Edit Assignment" href="/dashboard/assignments/edit/<%= data.assignments[i]._id %>"><i style="color:#ddd" id="assignment-edit-class" class="material-icons text-muted">edit</i></a> 
                                                             <a data-l10n-id="deleteAssignment" style=" cursor: not-allowed; pointer-events: none;" title="Delete Assignment" href="/dashboard/assignments/delete/<%= data.assignments[i]._id %>?&name=<%= data.assignments[i].name %>" onclick="return confirm(document.webL10n.get('DoYouWantDeleteAssignment', {assignment:'<%= data.assignments[i].name %>'}))"><i style="color:#ddd" id="assignments-delete-class" class="material-icons text-muted">delete_forever</i></a>
                                                         <% } %> 
-                                                    <% } %>
+                                                    <% } %> 
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -148,4 +196,7 @@
     handleSort();
     var currTour = sugarizerTour("assignment", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
     if (!currTour.isFinished()) currTour.start();
+
+    //function for exporting assigment
+    
 </script>
