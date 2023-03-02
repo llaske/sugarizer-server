@@ -30,11 +30,11 @@ module.exports =  function exportCSV(req, res) {
 				});
 		}
 	], function() {
-		res.json({success: true, msg: common.l10n.get('ExportSuccess'), data: assignment});
-		// if (assignment.length == 0) {
-		// 	res.json({success: false, msg: common.l10n.get('NoAssignmentFound')});
-		// } else {
-		// }
+		if (assignment.length == 0) {
+			res.json({success: false, msg: common.l10n.get('NoAssignmentFound')});
+		} else {
+			res.json({success: true, msg: common.l10n.get('ExportSuccess'), data: assignment});
+		}
 		return;
 	});
 };
