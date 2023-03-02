@@ -44,7 +44,17 @@
                                             success: function (res) {
                                                 if (res && res.success) {
                                                     var headers = {
-                                                       
+                                                        _id:"_id",
+                                                        name:"name",
+                                                        title:"title",
+                                                        activity:"activity",
+                                                        creation_time:"",
+                                                        stroke:"stroke",
+                                                        fill:"fill",
+                                                        instruction:"instruction",
+                                                        dueDate:"dueDate",
+                                                        classroom:"classroom",
+                                                        isAssigned: "isAssigned"
                                                     };
                                                     exportCSVFile(headers, res.data, 'AssignmentExport');
                                                     $.notify({
