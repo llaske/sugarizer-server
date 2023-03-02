@@ -37,20 +37,14 @@
                                         <div class="btn pull-right btn-round" onclick="downloadAssignments()" data-l10n-id="ExportAssignment" id="assignment-exportassignments">Export Assignments</div>
                                         <script>
                                             function downloadAssignments(event) {
+                                                console.log("in download");
                                     $.ajax({
                                             type: "GET",
                                             url: "/dashboard/assignments/export",
                                             success: function (res) {
                                                 if (res && res.success) {
                                                     var headers = {
-                                                        _id: "_id",
-                                                        name : "name",
-                                                        type : "type",
-                                                        language : "language",
-                                                        stroke : "stroke",
-                                                        fill : "fill",
-                                                        password : "password",
-                                                        classroom : "classroom"
+                                                       
                                                     };
                                                     exportCSVFile(headers, res.data, 'AssignmentExport');
                                                     $.notify({
