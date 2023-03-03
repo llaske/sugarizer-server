@@ -24,7 +24,11 @@ jobs:
       - name: intalling dependencies
       - run: npm install
       - name: unit testing
-      - run: npm ci
-      - run: npm run test
+        env: ${{secrets.MONGO_URI}}
+        run: |
+          npm ci
+          npm run test
+      - name: building
+      - run: npm run build
       - name: Starting service
       - run: npm run start
