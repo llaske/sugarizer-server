@@ -26,15 +26,11 @@ jobs:
           mongodb-port: 27017
       - name: cloning repository
         run: git clone https://github.com/llaske/sugarizer.git
-      - name: checking structure
-        run: ls
       - name: copying
         run: cp -R sugarizer /home/runner/work/sugarizer-server/ 
       - name: unit testing
         run: |
           npm ci
           npm run test
-      - name: building
-        run: npm run build
       - name: Starting service
         run: npm run start
