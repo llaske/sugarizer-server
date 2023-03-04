@@ -1,0 +1,33 @@
+name: CI
+on:
+  push:
+    branches: [dev,master]
+  pull_request:
+    branches: [dev,master]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [15.x]
+        mongodb-version: ['6.0']
+    steps:
+      - name: Checking Repository
+        uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.8.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
+          mongodb-port: 27017
+      - name: Cloning Sugarizer Repository
+        run: git clone https://github.com/llaske/sugarizer.git
+      - name: Moving Sugarizer Directory
+        run: cp -R sugarizer /home/runner/work/sugarizer-server/ 
+      - name: Unit testing
+        run: |
+          npm ci
+          npm run test
