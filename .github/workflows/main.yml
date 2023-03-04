@@ -24,6 +24,8 @@ jobs:
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
           mongodb-port: 27017
+      - name: cloning repository
+        run: git clone https://github.com/llaske/sugarizer.git
       - name: unit testing
         run: |
           npm ci
