@@ -1,9 +1,9 @@
 name: CI
 on:
   push:
-    branches: [master]
+    branches: [dev,master]
   pull_request:
-    branches: [ master ]
+    branches: [dev,master]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,7 +23,7 @@ jobs:
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
           mongodb-port: 27017
-      - name: Cloning Repository
+      - name: Cloning Sugarizer Repository
         run: git clone https://github.com/llaske/sugarizer.git
       - name: Moving Sugarizer Directory
         run: cp -R sugarizer /home/runner/work/sugarizer-server/ 
@@ -31,4 +31,3 @@ jobs:
         run: |
           npm ci
           npm run test
-          
