@@ -37,15 +37,7 @@ exports.index = function(req, res) {
 	};
 
 	//get query params
-	
-	// if (req.query.username != '' || req.query.q!='') {
-	// 	query['q'] = req.query.username || req.query.q;
-	// }
-
 	if(req.query.username != '') {
-		/**
-		 * query parameter set to 'username' which is consistent with the form parameters on frontend 
-		 */
 		query['username']=req.query.username		
 	}
 	if (req.query.role != '') {
@@ -68,7 +60,6 @@ exports.index = function(req, res) {
 	if (req.query.classroom_id) {
 		classroom_id = req.query.classroom_id;
 	}
-	
 	// call
 	superagent
 		.get(common.getAPIUrl(req) + 'api/v1/users')
