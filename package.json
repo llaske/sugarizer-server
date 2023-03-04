@@ -55,6 +55,6 @@
 		"start": "nodemon sugarizer.js",
 		"start:watch": "nodemon sugarizer.js",
 		"seed:users-csv": "node scripts/seed_users.js",
-		"lint": "eslint .; exit 0"
+		"lint": "eslint ."
 	}
 }

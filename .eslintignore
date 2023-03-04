@@ -4,6 +4,7 @@ dashboard/public/js/bootstrap.min.js
 dashboard/public/js/Chart.min.js
 dashboard/public/js/jquery-3.1.0.min.js
 dashboard/public/js/jquery-ui-1-11-4.js
+dashboard/public/js/jquery.datetimepicker.full.js
 dashboard/public/js/jquery.ui.sortable-animation.js
 dashboard/public/js/jquery.multi-select.js
 dashboard/public/js/jquery.searchable.js

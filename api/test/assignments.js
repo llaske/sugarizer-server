@@ -109,7 +109,7 @@ describe('Assignments', () => {
                                 });
                         });
                 });
-        }, 300)
+        }, 300);
     });
 
     before((done) => {
@@ -190,7 +190,7 @@ describe('Assignments', () => {
                     res.body.should.have.property('instructions').eql("Draw a bulbasaur");
                     done();
                 });
-        })
+        });
     });
 
     //get assignment ---GET/:id---
@@ -478,7 +478,7 @@ describe('Assignments', () => {
                     res.body.should.have.property('comment').eql("comment_");
                     done();
                 });
-        })
+        });
     });
 
     // submit assignment ---PUT/:id/submit---

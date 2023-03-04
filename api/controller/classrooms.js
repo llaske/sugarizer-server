@@ -576,7 +576,7 @@ function addQuery(filter, params, query, default_val) {
 	//validate
 	if (
 		typeof params[filter] != "undefined" &&
-    	typeof params[filter] === "string"
+		typeof params[filter] === "string"
 	) {
 		if (filter == "q") {
 			query["name"] = {
