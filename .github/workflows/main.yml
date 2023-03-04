@@ -1,6 +1,11 @@
 name: CI
 
-on: workflow_dispatch
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [ master ]
+
 
 jobs:
   build:
@@ -13,7 +18,7 @@ jobs:
         mongodb-version: ['6.0']
 
     steps:
-      - name: checking repo
+      - name: Checking Repository
         uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -24,11 +29,11 @@ jobs:
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
           mongodb-port: 27017
-      - name: cloning repository
+      - name: Cloning Repository
         run: git clone https://github.com/llaske/sugarizer.git
-      - name: copying
+      - name: Moving Sugarizer Directory
         run: cp -R sugarizer /home/runner/work/sugarizer-server/ 
-      - name: unit testing
+      - name: Unit testing
         run: |
           npm ci
           npm run test
