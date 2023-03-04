@@ -67,7 +67,7 @@ exports.index = function(req, res) {
 		.query(query)
 		.end(function (error, response) {
 			if (response.statusCode == 200) {
-				
+
 				// get classrooms list
 				getClassrooms(req, function(classrooms){
 					
