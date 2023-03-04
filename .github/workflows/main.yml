@@ -32,5 +32,3 @@ jobs:
         run: |
           npm ci
           npm run test
-      - name: Starting service
-        run: npm run start
