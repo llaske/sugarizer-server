@@ -1,0 +1,36 @@
+name: CI
+
+on: workflow_dispatch
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 15.x]
+        mongodb-version: ['4.2', '4.4', '5.0', '6.0']
+
+    steps:
+      - name: checking repo
+        uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: intalling dependencies
+        run: npm install
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.8.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
+          mongodb-port: 27017
+      - name: unit testing
+        run: |
+          npm ci
+          npm run test
+      - name: building
+        run: npm run build
+      - name: Starting service
+        run: npm run start
