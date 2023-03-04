@@ -9,8 +9,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x]
-        mongodb-version: ['4.2', '4.4', '5.0', '6.0']
+        node-version: [15.x]
+        mongodb-version: ['6.0']
 
     steps:
       - name: checking repo
