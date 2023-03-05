@@ -71,7 +71,6 @@ exports.getSharedJournalId = function(req, res, callback) {
 			type: "shared"
 		})
 		.end(function (error, response) {
-			console.log(response.body);
 			if (response.statusCode == 200 && response.body && response.body.length > 0 && response.body[0]._id) {
 				callback(response.body[0]._id);
 			} else {
