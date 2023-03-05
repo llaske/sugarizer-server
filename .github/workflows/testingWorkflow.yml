@@ -31,5 +31,5 @@ jobs:
         run: npm ci
       - name: Running Eslint
         run: npm run lint
-      - name: Unit testing
+      - name: Unit Testing
         run: npm run test
