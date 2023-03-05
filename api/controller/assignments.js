@@ -417,9 +417,16 @@ exports.findAllDeliveries = function (req, res) {
         });
     }
     //find all deliveries with filters and pagination
-    var query = {"metadata.assignmentId": assignmentId};
+    var query={};
+    if(assignmentId){
+        query = {"metadata.assignmentId": assignmentId};
+    }
     query = addQuery("buddy_name", req.query, query);
-    query = addQuery("Delivered", req.query, query);
+    // query = addQuery("Delivered", req.query, query);
+    query = {
+        ...query,
+        'Delivered':true
+    }
     db.collection(journalCollection, function (err, collection) {
         //count
         collection.countDocuments(query, function (err, count) {
@@ -438,7 +445,6 @@ exports.findAllDeliveries = function (req, res) {
                             $filter: {
                                 input: "$content",
                                 as: "item",
-                                cond: { $eq: ["$$item.metadata.assignmentId", assignmentId] },
                             }
                         }
                     }

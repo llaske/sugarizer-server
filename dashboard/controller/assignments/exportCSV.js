@@ -13,8 +13,6 @@ module.exports =  function exportCSV(req, res) {
 			title:"",
 			activity:"",
 			creation_time:"",
-			stroke:"",
-			fill:"",
 			instruction:"",
 			dueDate:"",
 			classroom:"",
@@ -35,12 +33,6 @@ module.exports =  function exportCSV(req, res) {
 		}
 		if(assignedWork?.creation_time){
 			assign.creation_time=new Date(assignedWork.creation_time);
-		}
-		if(assignedWork?.buddy_color?.stroke){
-			assign.stroke=assignedWork.buddy_color.stroke;
-		}
-		if(assignedWork?.buddy_color?.fill){
-			assign.fill=assignedWork.buddy_color.fill;
 		}
 		if(assignment.instructions){
 			assign.instruction=assignment.instructions;
@@ -63,7 +55,7 @@ module.exports =  function exportCSV(req, res) {
 	async.series([
 		function(callback) {
 			superagent
-				.get(common.getAPIUrl(req) + 'api/v1/assignments')
+				.get(common.getAPIUrl(req) + 'api/v1/assignments/deliveries/')
 				.set(common.getHeaders(req))
 				.end(function (error, response) {
 					// console.log(response.body);
