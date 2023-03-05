@@ -10,10 +10,10 @@ var journalCollection;
 var classroomCollection;
 
 exports.init = function (settings, database) {
-    assignmentCollection = settings.collections.assignments;
-    journalCollection = settings.collections.journal;
-    classroomCollection = settings.collections.classrooms;
-    db = database;
+	assignmentCollection = settings.collections.assignments;
+	journalCollection = settings.collections.journal;
+	classroomCollection = settings.collections.classrooms;
+	db = database;
 };
 
 var CHUNKS_COLL;
@@ -69,40 +69,40 @@ CHUNKS_COLL = bucket + ".chunks";
  * 
  **/
 exports.addAssignment = function (req, res) {
-    //validate
-    if (!req.body.assignment) {
-        return res.status(400).send({
-            'error': "Assignment object is not defined",
-            'code': 38
-        });
-    }
-    //parse assignment details
-    var assignment = JSON.parse(req.body.assignment);
-    //add timestamps
-    assignment.created_time = +new Date();
-    assignment.timestamp = +new Date();
-    assignment.created_by = req.user._id;
-    assignment.journal_id = req.user.private_journal;
-    assignment.isAssigned = false;
+	//validate
+	if (!req.body.assignment) {
+		return res.status(400).send({
+			'error': "Assignment object is not defined",
+			'code': 38
+		});
+	}
+	//parse assignment details
+	var assignment = JSON.parse(req.body.assignment);
+	//add timestamps
+	assignment.created_time = +new Date();
+	assignment.timestamp = +new Date();
+	assignment.created_by = req.user._id;
+	assignment.journal_id = req.user.private_journal;
+	assignment.isAssigned = false;
 
-    //add assignment to database with unique name
-    db.collection(assignmentCollection, function (err, collection) {
-        if (err) {
-            return res.status(500).send({
-                'error': "An error has occurred",
-                'code': 10
-            });
-        }
-        collection.insertOne(assignment, { safe: true }, function (err, result) {
-            if (err) {
-                return res.status(500).send({
-                    'error': "An error has occurred",
-                    'code': 10
-                });
-            }
-            return res.status(200).send(result.ops[0]);
-        });
-    });
+	//add assignment to database with unique name
+	db.collection(assignmentCollection, function (err, collection) {
+		if (err) {
+			return res.status(500).send({
+				'error': "An error has occurred",
+				'code': 10
+			});
+		}
+		collection.insertOne(assignment, { safe: true }, function (err, result) {
+			if (err) {
+				return res.status(500).send({
+					'error': "An error has occurred",
+					'code': 10
+				});
+			}
+			return res.status(200).send(result.ops[0]);
+		});
+	});
 };
 
 /**
@@ -185,125 +185,125 @@ exports.addAssignment = function (req, res) {
  **/
 //find All assignments 
 exports.findAll = function (req, res) {
-    var query = {};
+	var query = {};
 
-    query = addQuery("name", req.query, query);
-    query = addQuery("isAssigned", req.query, query);
-    query = addQuery("terminated", req.query, query);
-    query = addQuery("created_by", req.query, query);
-    db.collection(assignmentCollection, function (err, collection) {
-        //count
-        collection.countDocuments(query, function (err, count) {
-            var params = JSON.parse(JSON.stringify(req.query));
-            var route = req.route.path;
-            var options = getOptions(req, count, "-timestamp");
-            var conf = [
-                {
-                    "$match": query
-                },
-                {
-                    $project: {
-                        _id: 1,
-                        name: 1,
-                        dueDate: 1,
-                        time: 1,
-                        assignedWork: 1,
-                        instructions: 1,
-                        lateTurnIn: 1,
-                        created_time: 1,
-                        classrooms: 1,
-                        created_by: 1,
-                        timestamp: 1,
-                        isAssigned: 1,
-                        journal_id: 1,
-                        insensitive: { $toLower: "$name" }
-                    }
-                },
-                {
-                    $sort: {
-                        "insensitive": 1
-                    }
-                }
-            ];
-            if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >= 2) {
-                conf[1]["$project"]["insensitive"] = { "$toLower": "$" + options.sort[0][0] };
-                var sortItem = {};
-                if (options.sort[0][1] == 'desc') {
-                    sortItem[options.sort[0][0]] = -1;
-                } else {
-                    sortItem[options.sort[0][0]] = 1;
-                }
-                conf[2]["$sort"] = sortItem;
-            }
-            //find
-            collection.aggregate(conf, function(err, assignments) {
-                if (err) {
-                    return res.status(500).send({
-                        'error': "An error has occurred",
-                        'code': 10
-                    });
-                }
-                if (options.skip) {
-                    assignments.skip(options.skip);
-                }
-                if (options.limit) {
-                    assignments.limit(options.limit);
-                }
-                assignments.toArray(function (err, items) {
-                    //find journal entries bt _id and objectId with aggregate
-                    db.collection(journalCollection, function (err, collection) {
-                        if (err) {
-                            return res.status(500).send({
-                                'error': "An error has occurred",
-                                'code': 10
-                            });
-                        }
-                        collection.find({
-                            '_id': {
-                                $in: items.map(function (item) {
-                                    return item.journal_id;
-                                })
-                            }
-                        }, {
-                            projection: {
-                                'content.objectId': 1,
-                                'content.metadata': 1,
-                                'content.text': 1,
-                            }
-                        }).toArray(function (err, journals) {
-                            if (err) {
-                                return res.status(500).send({
-                                    'error': "An error has occurred",
-                                    'code': 10
-                                });
-                            }
-                            var data = {
-                                'assignments': items,
-                                'offset': options.skip,
-                                'limit': options.limit,
-                                'total': options.total,
-                                'sort': options.sort[0][0] + "(" + options.sort[0][1] + ")",
-                                'links': {
-                                    prev_page: (options.skip - options.limit >= 0) ? formPaginatedUrl(route, params, options.skip - options.limit, options.limit) : undefined,
-                                    next_page: (options.skip + options.limit < options.total) ? formPaginatedUrl(route, params, options.skip + options.limit, options.limit) : undefined
-                                }
-                            };
-                            data.assignments.map(function (item) {
-                                journals.find(function (journal) {
-                                    journal.content.filter(function (entry) {
-                                        if (entry.objectId === item.assignedWork) {
-                                            item.assignedWork = entry;
-                                        }
-                                    });
-                                });
-                            });
-                            return res.status(200).send(data);
-                        });
-                    });
-                });
-            });
-        });
-    });
+	query = addQuery("name", req.query, query);
+	query = addQuery("isAssigned", req.query, query);
+	query = addQuery("terminated", req.query, query);
+	query = addQuery("created_by", req.query, query);
+	db.collection(assignmentCollection, function (err, collection) {
+		//count
+		collection.countDocuments(query, function (err, count) {
+			var params = JSON.parse(JSON.stringify(req.query));
+			var route = req.route.path;
+			var options = getOptions(req, count, "-timestamp");
+			var conf = [
+				{
+					"$match": query
+				},
+				{
+					$project: {
+						_id: 1,
+						name: 1,
+						dueDate: 1,
+						time: 1,
+						assignedWork: 1,
+						instructions: 1,
+						lateTurnIn: 1,
+						created_time: 1,
+						classrooms: 1,
+						created_by: 1,
+						timestamp: 1,
+						isAssigned: 1,
+						journal_id: 1,
+						insensitive: { $toLower: "$name" }
+					}
+				},
+				{
+					$sort: {
+						"insensitive": 1
+					}
+				}
+			];
+			if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >= 2) {
+				conf[1]["$project"]["insensitive"] = { "$toLower": "$" + options.sort[0][0] };
+				var sortItem = {};
+				if (options.sort[0][1] == 'desc') {
+					sortItem[options.sort[0][0]] = -1;
+				} else {
+					sortItem[options.sort[0][0]] = 1;
+				}
+				conf[2]["$sort"] = sortItem;
+			}
+			//find
+			collection.aggregate(conf, function(err, assignments) {
+				if (err) {
+					return res.status(500).send({
+						'error': "An error has occurred",
+						'code': 10
+					});
+				}
+				if (options.skip) {
+					assignments.skip(options.skip);
+				}
+				if (options.limit) {
+					assignments.limit(options.limit);
+				}
+				assignments.toArray(function (err, items) {
+					//find journal entries bt _id and objectId with aggregate
+					db.collection(journalCollection, function (err, collection) {
+						if (err) {
+							return res.status(500).send({
+								'error': "An error has occurred",
+								'code': 10
+							});
+						}
+						collection.find({
+							'_id': {
+								$in: items.map(function (item) {
+									return item.journal_id;
+								})
+							}
+						}, {
+							projection: {
+								'content.objectId': 1,
+								'content.metadata': 1,
+								'content.text': 1,
+							}
+						}).toArray(function (err, journals) {
+							if (err) {
+								return res.status(500).send({
+									'error': "An error has occurred",
+									'code': 10
+								});
+							}
+							var data = {
+								'assignments': items,
+								'offset': options.skip,
+								'limit': options.limit,
+								'total': options.total,
+								'sort': options.sort[0][0] + "(" + options.sort[0][1] + ")",
+								'links': {
+									prev_page: (options.skip - options.limit >= 0) ? formPaginatedUrl(route, params, options.skip - options.limit, options.limit) : undefined,
+									next_page: (options.skip + options.limit < options.total) ? formPaginatedUrl(route, params, options.skip + options.limit, options.limit) : undefined
+								}
+							};
+							data.assignments.map(function (item) {
+								journals.find(function (journal) {
+									journal.content.filter(function (entry) {
+										if (entry.objectId === item.assignedWork) {
+											item.assignedWork = entry;
+										}
+									});
+								});
+							});
+							return res.status(200).send(data);
+						});
+					});
+				});
+			});
+		});
+	});
 };
 
 /**
@@ -408,80 +408,80 @@ exports.findAll = function (req, res) {
 **/
 //find all deliveries
 exports.findAllDeliveries = function (req, res) {
-    var assignmentId = req.params.assignmentId;
-    //validate
-    if (!mongo.ObjectID.isValid(assignmentId)) {
-        return res.status(401).send({
-            'error': "Invalid assignment id",
-            'code': 35
-        });
-    }
-    //find all deliveries with filters and pagination
-    var query = {"metadata.assignmentId": assignmentId};
-    query = addQuery("buddy_name", req.query, query);
-    query = addQuery("Delivered", req.query, query);
-    db.collection(journalCollection, function (err, collection) {
-        //count
-        collection.countDocuments(query, function (err, count) {
-            var params = JSON.parse(JSON.stringify(req.query));
-            var route = req.route.path;
-            var options = getOptions(req, count, "+buddy_name");
-            //find all entries which matches with assignment id using aggregation
-            collection.aggregate([
-                {
-                    $match: {content: {$elemMatch: query}},
-                },
-                {
-                    $project: {
-                        _id: 1,
-                        content: {
-                            $filter: {
-                                input: "$content",
-                                as: "item",
-                                cond: { $eq: ["$$item.metadata.assignmentId", assignmentId] },
-                            }
-                        }
-                    }
-                },
-                {
-                    $sort: {
-                        "content.metadata.buddy_name": 1
-                    }
-                }
-            ], function(err, deliveries) {
-                if (err) {
-                    return res.status(500).send({
-                        'error': "An error has occurred",
-                        'code': 10
-                    });
-                }
-                deliveries.get(function(err, all){
-                    var length = all.length;
-                    if (options.skip) {
-                        deliveries.skip(options.skip);
-                    }
-                    if (options.limit) {
-                        deliveries.limit(options.limit);
-                    }
-                    deliveries.toArray(function (err, items) {
-                        options.total = length;
-                        var data = {
-                            'deliveries': items,
-                            'offset': options.skip,
-                            'limit': options.limit,
-                            'total': options.total,
-                            'sort': options.sort[0][0] + "(" + options.sort[0][1] + ")",
-                            'links': {
-                                prev_page: (options.skip - options.limit >= 0) ? formPaginatedUrl(route, params, options.skip - options.limit, options.limit) : undefined,
-                                next_page: (options.skip + options.limit < options.total) ? formPaginatedUrl(route, params, options.skip + options.limit, options.limit) : undefined
-                            }
-                        };
-                        return res.status(200).send(data);
-                    });
-                });
-            });
-        });
-    });
+	var assignmentId = req.params.assignmentId;
+	//validate
+	if (!mongo.ObjectID.isValid(assignmentId)) {
+		return res.status(401).send({
+			'error': "Invalid assignment id",
+			'code': 35
+		});
+	}
+	//find all deliveries with filters and pagination
+	var query = {"metadata.assignmentId": assignmentId};
+	query = addQuery("buddy_name", req.query, query);
+	query = addQuery("Delivered", req.query, query);
+	db.collection(journalCollection, function (err, collection) {
+		//count
+		collection.countDocuments(query, function (err, count) {
+			var params = JSON.parse(JSON.stringify(req.query));
+			var route = req.route.path;
+			var options = getOptions(req, count, "+buddy_name");
+			//find all entries which matches with assignment id using aggregation
+			collection.aggregate([
+				{
+					$match: {content: {$elemMatch: query}},
+				},
+				{
+					$project: {
+						_id: 1,
+						content: {
+							$filter: {
+								input: "$content",
+								as: "item",
+								cond: { $eq: ["$$item.metadata.assignmentId", assignmentId] },
+							}
+						}
+					}
+				},
+				{
+					$sort: {
+						"content.metadata.buddy_name": 1
+					}
+				}
+			], function(err, deliveries) {
+				if (err) {
+					return res.status(500).send({
+						'error': "An error has occurred",
+						'code': 10
+					});
+				}
+				deliveries.get(function(err, all){
+					var length = all.length;
+					if (options.skip) {
+						deliveries.skip(options.skip);
+					}
+					if (options.limit) {
+						deliveries.limit(options.limit);
+					}
+					deliveries.toArray(function (err, items) {
+						options.total = length;
+						var data = {
+							'deliveries': items,
+							'offset': options.skip,
+							'limit': options.limit,
+							'total': options.total,
+							'sort': options.sort[0][0] + "(" + options.sort[0][1] + ")",
+							'links': {
+								prev_page: (options.skip - options.limit >= 0) ? formPaginatedUrl(route, params, options.skip - options.limit, options.limit) : undefined,
+								next_page: (options.skip + options.limit < options.total) ? formPaginatedUrl(route, params, options.skip + options.limit, options.limit) : undefined
+							}
+						};
+						return res.status(200).send(data);
+					});
+				});
+			});
+		});
+	});
 };
 
 /**
@@ -590,97 +590,97 @@ exports.findAllDeliveries = function (req, res) {
  *  }
  **/
 exports.findById = function (req, res) {
-    var assignmentId = req.params.assignmentId;
-    //validate
-    if (!mongo.ObjectID.isValid(assignmentId)) {
-        return res.status(401).send({
-            'error': "Invalid assignment id",
-            'code': 35
-        });
-    }
-    db.collection(assignmentCollection, function (err, collection) {
-        collection.findOne({ _id: new mongo.ObjectID(assignmentId) }, function (err, assignment) {
-            if (err) {
-                return res.status(500).send({
-                    'error': "An error has occurred",
-                    'code': 10
-                });
-            }
-            if (!assignment) {
-                return res.status(401).send({
-                    'error': "Assignment not found",
-                    'code': 39
-                });
-            }
-            //find classrooms
-            db.collection(classroomCollection, function (err, collection) {
-                if (err) {
-                    return res.status(500).send({
-                        'error': "An error has occurred",
-                        'code': 10
-                    });
-                }
-                collection.find(
-                    {
-                        _id: {
-                            $in: assignment.classrooms.map(function (classroom) {
-                                return new mongo.ObjectID(classroom);
-                            })
-                        }
-                    }
-                ).toArray(function (err, classrooms) {
-                    if (err) {
-                        return res.status(500).send({
-                            'error': "An error has occurred",
-                            'code': 10
-                        });
-                    }
-                    assignment.classrooms.map(function (class_id) {
-                        classrooms.map(function (classroom) {
-                            if (classroom._id.toString() == class_id) {
-                                assignment.classrooms.splice(assignment.classrooms.indexOf(class_id), 1, classroom);
-                            }
-                        });
-                    });
-                    db.collection(journalCollection, function (err, collection) {
-                        if (err) {
-                            return res.status(500).send({
-                                'error': "An error has occurred",
-                                'code': 10
-                            });
-                        }
-                        collection.find(
-                            {
-                                _id: new mongo.ObjectID(assignment.journal_id)
-                            },
-                            {
-                                $project: {
-                                    'content.objectId': 1,
-                                    'content.metadata': 1,
-                                    'content.text': 1,
-                                }
-                            }
-                        ).toArray(function (err, journals) {
-                            if (err) {
-                                return res.status(500).send({
-                                    'error': "An error has occurred",
-                                    'code': 10
-                                });
-                            }
-                            journals.find(function (journal) {
-                                journal.content.filter(function (entry) {
-                                    if (entry.objectId === assignment.assignedWork) {
-                                        assignment.assignedWork = entry;
-                                    }
-                                });
-                            });
-                            return res.status(200).send(assignment);
-                        });
-                    });
-                });
-            });
-        });
-    });
+	var assignmentId = req.params.assignmentId;
+	//validate
+	if (!mongo.ObjectID.isValid(assignmentId)) {
+		return res.status(401).send({
+			'error': "Invalid assignment id",
+			'code': 35
+		});
+	}
+	db.collection(assignmentCollection, function (err, collection) {
+		collection.findOne({ _id: new mongo.ObjectID(assignmentId) }, function (err, assignment) {
+			if (err) {
+				return res.status(500).send({
+					'error': "An error has occurred",
+					'code': 10
+				});
+			}
+			if (!assignment) {
+				return res.status(401).send({
+					'error': "Assignment not found",
+					'code': 39
+				});
+			}
+			//find classrooms
+			db.collection(classroomCollection, function (err, collection) {
+				if (err) {
+					return res.status(500).send({
+						'error': "An error has occurred",
+						'code': 10
+					});
+				}
+				collection.find(
+					{
+						_id: {
+							$in: assignment.classrooms.map(function (classroom) {
+								return new mongo.ObjectID(classroom);
+							})
+						}
+					}
+				).toArray(function (err, classrooms) {
+					if (err) {
+						return res.status(500).send({
+							'error': "An error has occurred",
+							'code': 10
+						});
+					}
+					assignment.classrooms.map(function (class_id) {
+						classrooms.map(function (classroom) {
+							if (classroom._id.toString() == class_id) {
+								assignment.classrooms.splice(assignment.classrooms.indexOf(class_id), 1, classroom);
+							}
+						});
+					});
+					db.collection(journalCollection, function (err, collection) {
+						if (err) {
+							return res.status(500).send({
+								'error': "An error has occurred",
+								'code': 10
+							});
+						}
+						collection.find(
+							{
+								_id: new mongo.ObjectID(assignment.journal_id)
+							},
+							{
+								$project: {
+									'content.objectId': 1,
+									'content.metadata': 1,
+									'content.text': 1,
+								}
+							}
+						).toArray(function (err, journals) {
+							if (err) {
+								return res.status(500).send({
+									'error': "An error has occurred",
+									'code': 10
+								});
+							}
+							journals.find(function (journal) {
+								journal.content.filter(function (entry) {
+									if (entry.objectId === assignment.assignedWork) {
+										assignment.assignedWork = entry;
+									}
+								});
+							});
+							return res.status(200).send(assignment);
+						});
+					});
+				});
+			});
+		});
+	});
 };
 
 /** 
@@ -704,195 +704,195 @@ exports.findById = function (req, res) {
  **/
 //launch Assignment
 exports.launchAssignment = function (req, res) {
-    //validate
-    if (!mongo.ObjectID.isValid(req.params.assignmentId)) {
-        return res.status(401).send({
-            'error': "Invalid assignment id",
-            'code': 35
-        });
-    }
-    //find assignment by id
-    db.collection(assignmentCollection, function (err, collection) {
-        collection.findOne({ _id: new mongo.ObjectID(req.params.assignmentId) }, function (err, assignment) {
-            if (err) {
-                return res.status(400).send({
-                    'error': 'Inexisting assignment id',
-                    'code': 40
-                });
-            }
-            if (!assignment) {
-                return res.status(401).send({
-                    'error': "Assignment not found",
-                    'code': 39
-                });
-            }
-            else {
-                if (assignment.dueDate < Date.now()) {
-                    return res.status(400).send({
-                        'error': 'Due date already expired',
-                        'code': 41
-                    });
-                }
-                //find all students from classrooms
-                var classrooms = assignment.classrooms;
-                var launchDate = new Date().getTime();
-                //get students private_journal
-                common.fetchAllStudents(classrooms).then(function (stds) {
-                    if (stds.length <= 0) {
-                        return res.status(400).send({
-                            'error': 'No students found',
-                            'code': 37
-                        });
-                    }
-                    //getting unique values of _id and name
-                    var arr = [];
-                    var uniqueStudents = [];
-                    for (var i = 0; i < stds.length; i++) {
-                        arr.push({ _id: stds[i]._id, name: stds[i].name, journal: stds[i].private_journal.toString() });
-                    }
-                    var uniqueStudentsSet = new Set();
-                    arr.forEach(obj => (
-                        !uniqueStudentsSet.has(obj) && uniqueStudentsSet.add(JSON.stringify(obj))
-                    ))
-                    uniqueStudentsSet = new Set([...uniqueStudentsSet].map(o => JSON.parse(o)))
-                    //convert set to array
-                    uniqueStudents = Array.from(uniqueStudentsSet);
-                    db.collection(journalCollection, function (err, collection) {
-                        if (err) {
-                            return res.status(500).send({
-                                'error': "An error has occurred",
-                                'code': 10
-                            });
-                        } else {
-                            collection.aggregate([
-                                {
-                                    $match: {
-                                        '_id': new mongo.ObjectID(req.user.private_journal),
-                                        "content.objectId": assignment.assignedWork
-                                    }
-                                },
-                                {
-                                    $project: {
-                                        _id: 0,
-                                        content: {
-                                            $filter: {
-                                                input: "$content",
-                                                as: "item",
-                                                cond: { $eq: ["$$item.objectId", assignment.assignedWork] }
-                                            }
-                                        }
-                                    }
-                                },
-                            ]).toArray(function (err, entry) {
-                                if (err) {
-                                    return res.status(500).send({
-                                        'error': "An error has occurred",
-                                        'code': 10
-                                    });
-                                } else {
-                                    // adding assignment metadata to entry
-                                    if (entry.length > 0) {
-                                        entry[0].content[0].metadata.assignmentId = req.params.assignmentId;
-                                        entry[0].content[0].metadata.submissionDate = null;
-                                        entry[0].content[0].metadata.dueDate = assignment.dueDate;
-                                        entry[0].content[0].metadata.instructions = assignment.instructions;
-                                        entry[0].content[0].metadata.lateTurnIn = assignment.lateTurnIn;
-                                        entry[0].content[0].metadata.isSubmitted = false;
-                                        entry[0].content[0].metadata.status = null;
-                                        entry[0].content[0].metadata.comment = "";
-                                        entry[0].content[0].metadata.timestamp = launchDate;
-                                    } else {
-                                        return res.status(404).send({
-                                            'error': "Entry not found",
-                                            'code': 36
-                                        });
-                                    }
-                                    updateEntries(entry[0].content[0], uniqueStudents).then(function (result) {
-                                        var content = result.content;
-                                        var count = result.count;
-                                        updateStatus(req.params.assignmentId, "Assigned", content.objectId, function (err, result) {
-                                            if (err) {
-                                                return res.status(500).send({
-                                                    'error': "An error has occurred",
-                                                    'code': 10
-                                                });
-                                            } else {
-                                                return res.status(200).send(result);
-                                            }
-                                        });
-                                        return res.status(200).send({
-                                            count: count
-                                        });
-                                    }).catch(function () {
-                                        return res.status(500).send({
-                                            'error': "An error has occurred",
-                                            'code': 10
-                                        });
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }).catch(function () {
-                    return res.status(500).send({
-                        error: "An error has occurred",
-                        code: 10
-                    });
-                });
-            }
-        });
-    });
+	//validate
+	if (!mongo.ObjectID.isValid(req.params.assignmentId)) {
+		return res.status(401).send({
+			'error': "Invalid assignment id",
+			'code': 35
+		});
+	}
+	//find assignment by id
+	db.collection(assignmentCollection, function (err, collection) {
+		collection.findOne({ _id: new mongo.ObjectID(req.params.assignmentId) }, function (err, assignment) {
+			if (err) {
+				return res.status(400).send({
+					'error': 'Inexisting assignment id',
+					'code': 40
+				});
+			}
+			if (!assignment) {
+				return res.status(401).send({
+					'error': "Assignment not found",
+					'code': 39
+				});
+			}
+			else {
+				if (assignment.dueDate < Date.now()) {
+					return res.status(400).send({
+						'error': 'Due date already expired',
+						'code': 41
+					});
+				}
+				//find all students from classrooms
+				var classrooms = assignment.classrooms;
+				var launchDate = new Date().getTime();
+				//get students private_journal
+				common.fetchAllStudents(classrooms).then(function (stds) {
+					if (stds.length <= 0) {
+						return res.status(400).send({
+							'error': 'No students found',
+							'code': 37
+						});
+					}
+					//getting unique values of _id and name
+					var arr = [];
+					var uniqueStudents = [];
+					for (var i = 0; i < stds.length; i++) {
+						arr.push({ _id: stds[i]._id, name: stds[i].name, journal: stds[i].private_journal.toString() });
+					}
+					var uniqueStudentsSet = new Set();
+					arr.forEach(obj => (
+						!uniqueStudentsSet.has(obj) && uniqueStudentsSet.add(JSON.stringify(obj))
+					));
+					uniqueStudentsSet = new Set([...uniqueStudentsSet].map(o => JSON.parse(o)));
+					//convert set to array
+					uniqueStudents = Array.from(uniqueStudentsSet);
+					db.collection(journalCollection, function (err, collection) {
+						if (err) {
+							return res.status(500).send({
+								'error': "An error has occurred",
+								'code': 10
+							});
+						} else {
+							collection.aggregate([
+								{
+									$match: {
+										'_id': new mongo.ObjectID(req.user.private_journal),
+										"content.objectId": assignment.assignedWork
+									}
+								},
+								{
+									$project: {
+										_id: 0,
+										content: {
+											$filter: {
+												input: "$content",
+												as: "item",
+												cond: { $eq: ["$$item.objectId", assignment.assignedWork] }
+											}
+										}
+									}
+								},
+							]).toArray(function (err, entry) {
+								if (err) {
+									return res.status(500).send({
+										'error': "An error has occurred",
+										'code': 10
+									});
+								} else {
+									// adding assignment metadata to entry
+									if (entry.length > 0) {
+										entry[0].content[0].metadata.assignmentId = req.params.assignmentId;
+										entry[0].content[0].metadata.submissionDate = null;
+										entry[0].content[0].metadata.dueDate = assignment.dueDate;
+										entry[0].content[0].metadata.instructions = assignment.instructions;
+										entry[0].content[0].metadata.lateTurnIn = assignment.lateTurnIn;
+										entry[0].content[0].metadata.isSubmitted = false;
+										entry[0].content[0].metadata.status = null;
+										entry[0].content[0].metadata.comment = "";
+										entry[0].content[0].metadata.timestamp = launchDate;
+									} else {
+										return res.status(404).send({
+											'error': "Entry not found",
+											'code': 36
+										});
+									}
+									updateEntries(entry[0].content[0], uniqueStudents).then(function (result) {
+										var content = result.content;
+										var count = result.count;
+										updateStatus(req.params.assignmentId, "Assigned", content.objectId, function (err, result) {
+											if (err) {
+												return res.status(500).send({
+													'error': "An error has occurred",
+													'code': 10
+												});
+											} else {
+												return res.status(200).send(result);
+											}
+										});
+										return res.status(200).send({
+											count: count
+										});
+									}).catch(function () {
+										return res.status(500).send({
+											'error': "An error has occurred",
+											'code': 10
+										});
+									});
+								}
+							});
+						}
+					});
+				}).catch(function () {
+					return res.status(500).send({
+						error: "An error has occurred",
+						code: 10
+					});
+				});
+			}
+		});
+	});
 };
 
 //private function to update entries
 function updateEntries(entryDoc, uniqueStudents) {
-    return new Promise(function (resolve, reject) {
-        if (mongo.ObjectID.isValid(entryDoc.text)) {
-            db.collection(CHUNKS_COLL, function (err, collection) {
-                collection.find({
-                    files_id: new mongo.ObjectID(entryDoc.text)
-                }).toArray(function (err, chunks) {
-                    if (err) {
-                        reject(err);
-                    }
-                    else {
-                        for (var counter = 0, i = 0; i < uniqueStudents.length; i++) {
-                            // add objectid
-                            journal.copyEntry(entryDoc, chunks, uniqueStudents[i]).then(function (result) {
-                                var copy = result.copy;
-                                var student = result.student;
-                                db.collection(journalCollection, function (err, collection) {
-                                    if (err) {
-                                        reject(err);
-                                    } else {
-                                        collection.updateOne(
-                                            {
-                                                _id: new mongo.ObjectID(student.journal)
-                                            },
-                                            {
-                                                $push:
-                                                {
-                                                    "content": copy
-                                                }
-                                            }, function (err) {
-                                                counter++;
-                                                if (err) {
-                                                    reject(err);
-                                                } else {
-                                                    if (counter == uniqueStudents.length) return resolve({content: entryDoc, count: counter});
-                                                }
-                                            });
-                                    }
-                                });
-                            }).catch(function (err) {
-                                reject(err);
-                            });
-                        }
-                    }
-                });
-            });
-        }
-    });
+	return new Promise(function (resolve, reject) {
+		if (mongo.ObjectID.isValid(entryDoc.text)) {
+			db.collection(CHUNKS_COLL, function (err, collection) {
+				collection.find({
+					files_id: new mongo.ObjectID(entryDoc.text)
+				}).toArray(function (err, chunks) {
+					if (err) {
+						reject(err);
+					}
+					else {
+						for (var counter = 0, i = 0; i < uniqueStudents.length; i++) {
+							// add objectid
+							journal.copyEntry(entryDoc, chunks, uniqueStudents[i]).then(function (result) {
+								var copy = result.copy;
+								var student = result.student;
+								db.collection(journalCollection, function (err, collection) {
+									if (err) {
+										reject(err);
+									} else {
+										collection.updateOne(
+											{
+												_id: new mongo.ObjectID(student.journal)
+											},
+											{
+												$push:
+												{
+													content: copy
+												}
+											}, function (err) {
+												counter++;
+												if (err) {
+													reject(err);
+												} else {
+													if (counter == uniqueStudents.length) return resolve({content: entryDoc, count: counter});
+												}
+											});
+									}
+								});
+							}).catch(function (err) {
+								reject(err);
+							});
+						}
+					}
+				});
+			});
+		}
+	});
 }
 
 /**
@@ -912,38 +912,38 @@ function updateEntries(entryDoc, uniqueStudents) {
     }
  **/
 exports.removeAssignment = function (req, res) {
-    //validate
-    if (!mongo.ObjectID.isValid(req.params.assignmentId)) {
-        return res.status(401).send({
-            'error': "Invalid assignment id",
-            'code': 35
-        });
-    }
-    db.collection(assignmentCollection, function (err, collection) {
-        collection.deleteOne(
-            {
-                _id: new mongo.ObjectID(req.params.assignmentId)
-            },
-            function (err, result) {
-                if (err) {
-                    return res.status(500).send({
-                        error: "An error has occurred",
-                        code: 10
-                    });
-                } else {
-                    if (result && result.result && result.result.n == 1) {
-                        return res.status(200).send({
-                            id: req.params.assignmentId
-                        });
-                    } else {
-                        return res.status(401).send({
-                            error: "Inexisting assignment id",
-                            code: 40
-                        });
-                    }
-                }
-            });
-    });
+	//validate
+	if (!mongo.ObjectID.isValid(req.params.assignmentId)) {
+		return res.status(401).send({
+			'error': "Invalid assignment id",
+			'code': 35
+		});
+	}
+	db.collection(assignmentCollection, function (err, collection) {
+		collection.deleteOne(
+			{
+				_id: new mongo.ObjectID(req.params.assignmentId)
+			},
+			function (err, result) {
+				if (err) {
+					return res.status(500).send({
+						error: "An error has occurred",
+						code: 10
+					});
+				} else {
+					if (result && result.result && result.result.n == 1) {
+						return res.status(200).send({
+							id: req.params.assignmentId
+						});
+					} else {
+						return res.status(401).send({
+							error: "Inexisting assignment id",
+							code: 40
+						});
+					}
+				}
+			});
+	});
 };
 
 //api doc for update Assignment
@@ -966,145 +966,145 @@ exports.removeAssignment = function (req, res) {
  * */
 // update assignment
 exports.updateAssignment = function (req, res) {
-    //validate
-    if (!mongo.ObjectID.isValid(req.params.assignmentId)) {
-        return res.status(401).send({
-            'error': "Invalid assignment id",
-            'code': 35
-        });
-    }
-    var assignmentId = req.params.assignmentId;
-    var assignment = JSON.parse(req.body.assignment);
-    //add timestamp
-    assignment.timestamp = +new Date();
-    //find assignment by id
-    db.collection(assignmentCollection, function (err, collection) {
-        collection.updateOne(
-            {
-                _id: new mongo.ObjectID(req.params.assignmentId)
-            },
-            {
-                $set: assignment
-            },
-            {
-                safe: true,
-            },
-            function (err, result) {
-                if (err) {
-                    return res.status(500).send({
-                        'error': "An error has occurred",
-                        'code': 10
-                    });
-                } else {
-                    if (result && result.result && result.result.n == 1) {
-                        return res.send({
-                            id: assignmentId
-                        });
-                    } else {
-                        return res.status(401).send({
-                            'error': "Inexisting assignment id",
-                            'code': 40
-                        });
-                    }
-                }
-            });
-    });
+	//validate
+	if (!mongo.ObjectID.isValid(req.params.assignmentId)) {
+		return res.status(401).send({
+			'error': "Invalid assignment id",
+			'code': 35
+		});
+	}
+	var assignmentId = req.params.assignmentId;
+	var assignment = JSON.parse(req.body.assignment);
+	//add timestamp
+	assignment.timestamp = +new Date();
+	//find assignment by id
+	db.collection(assignmentCollection, function (err, collection) {
+		collection.updateOne(
+			{
+				_id: new mongo.ObjectID(req.params.assignmentId)
+			},
+			{
+				$set: assignment
+			},
+			{
+				safe: true,
+			},
+			function (err, result) {
+				if (err) {
+					return res.status(500).send({
+						'error': "An error has occurred",
+						'code': 10
+					});
+				} else {
+					if (result && result.result && result.result.n == 1) {
+						return res.send({
+							id: assignmentId
+						});
+					} else {
+						return res.status(401).send({
+							'error': "Inexisting assignment id",
+							'code': 40
+						});
+					}
+				}
+			});
+	});
 };
 
 //private function for filtering and sorting
 function getOptions(req, count, def_sort) {
-    //prepare options
-    var sort_val = typeof req.query.sort === "string" ? req.query.sort : def_sort;
-    var sort_type = sort_val.indexOf("-") == 0 ? "desc" : "asc";
-    var options = {
-        sort: [[sort_val.substring(1), sort_type]],
-        skip: req.query.offset || 0,
-        total: count,
-        limit: req.query.limit || 10
-    };
-    //cast to int
-    options.skip = parseInt(options.skip);
-    options.limit = parseInt(options.limit);
-    //return
-    return options;
+	//prepare options
+	var sort_val = typeof req.query.sort === "string" ? req.query.sort : def_sort;
+	var sort_type = sort_val.indexOf("-") == 0 ? "desc" : "asc";
+	var options = {
+		sort: [[sort_val.substring(1), sort_type]],
+		skip: req.query.offset || 0,
+		total: count,
+		limit: req.query.limit || 10
+	};
+	//cast to int
+	options.skip = parseInt(options.skip);
+	options.limit = parseInt(options.limit);
+	//return
+	return options;
 }
 
 //form query params
 function formPaginatedUrl(route, params, offset, limit) {
-    //set params
-    params.offset = offset;
-    params.limit = limit;
-    var str = [];
-    for (var p in params)
-        if (p && Object.prototype.hasOwnProperty.call(params, p)) {
-            str.push(p + "=" + params[p]);
-        }
-    return "?" + str.join("&");
+	//set params
+	params.offset = offset;
+	params.limit = limit;
+	var str = [];
+	for (var p in params)
+		if (p && Object.prototype.hasOwnProperty.call(params, p)) {
+			str.push(p + "=" + params[p]);
+		}
+	return "?" + str.join("&");
 }
 
 
 function addQuery(filter, params, query, default_val) {
-    //check default case
-    query = query || {};
-    //validate
-    if (
-        typeof params[filter] != "undefined" &&
+	//check default case
+	query = query || {};
+	//validate
+	if (
+		typeof params[filter] != "undefined" &&
         typeof params[filter] === "string"
-    ) {
-        if (filter == "name") {
-            query["name"] = {
-                $regex: new RegExp(params[filter], "i")
-            };
-        } else if (filter == "buddy_Name") {
-            query["buddy_name"] = {
-                $regex: new RegExp(params[filter], "i")
-            };
-        } else if (filter == "isAssigned") {
-            if (params[filter] == "true") {
-                query["isAssigned"] = {
-                    $eq: true
-                }
-                //also checking dueDate is greater than current date.
-                query["dueDate"] = {
-                    $gte: new Date().getTime()
-                }
-            }
-            if (params[filter] == "false") {
-                query["isAssigned"] = {
-                    $eq: false
-                }
-            }
-        } else if (filter == "terminated") {
-            query["dueDate"] = {
-                $lte: new Date().getTime()
-            };
-        } else if (filter == "Delivered") {
-            if (params[filter] == "true") {
-                query["metadata.isSubmitted"] = {
-                    $eq: true
-                }
-            } else if (params[filter] == "false") {
-                query["metadata.isSubmitted"] = {
-                    $eq: false
-                }
-            }
-        } else if (filter == "created_by") {
-            query["created_by"] = {
-                $eq: new mongo.ObjectID(params[filter])
-            }
-        } else {
-            query[filter] = {
-                $regex: new RegExp("^" + params[filter] + "$", "i")
-            };
-        }
-    } else {
-        //default case
-        if (typeof default_val != "undefined") {
-            query[filter] = default_val;
-        }
-    }
-    //return
-    return query;
+	) {
+		if (filter == "name") {
+			query["name"] = {
+				$regex: new RegExp(params[filter], "i")
+			};
+		} else if (filter == "buddy_Name") {
+			query["buddy_name"] = {
+				$regex: new RegExp(params[filter], "i")
+			};
+		} else if (filter == "isAssigned") {
+			if (params[filter] == "true") {
+				query["isAssigned"] = {
+					$eq: true
+				};
+				//also checking dueDate is greater than current date.
+				query["dueDate"] = {
+					$gte: new Date().getTime()
+				};
+			}
+			if (params[filter] == "false") {
+				query["isAssigned"] = {
+					$eq: false
+				};
+			}
+		} else if (filter == "terminated") {
+			query["dueDate"] = {
+				$lte: new Date().getTime()
+			};
+		} else if (filter == "Delivered") {
+			if (params[filter] == "true") {
+				query["metadata.isSubmitted"] = {
+					$eq: true
+				};
+			} else if (params[filter] == "false") {
+				query["metadata.isSubmitted"] = {
+					$eq: false
+				};
+			}
+		} else if (filter == "created_by") {
+			query["created_by"] = {
+				$eq: new mongo.ObjectID(params[filter])
+			};
+		} else {
+			query[filter] = {
+				$regex: new RegExp("^" + params[filter] + "$", "i")
+			};
+		}
+	} else {
+		//default case
+		if (typeof default_val != "undefined") {
+			query[filter] = default_val;
+		}
+	}
+	//return
+	return query;
 }
 
 /**
@@ -1132,106 +1132,105 @@ function addQuery(filter, params, query, default_val) {
  **/
 //update comment 
 exports.updateComment = function (req, res) {
-    //validate
-    if (!req.query.oid || !mongo.ObjectID.isValid(req.params.assignmentId)) {
-        return res.status(401).send({
-            'error': "Invalid assignment id",
-            'code': 35
-        });
-    }
-    var assignmentId = req.params.assignmentId;
-    var comment = JSON.parse(req.body.comment);
-    var objectId = req.query.oid;
-    db.collection(journalCollection, function (err, collection) {
-        collection.findOneAndUpdate(
-            {
-                'content.objectId': objectId,
-                'content.metadata.assignmentId': assignmentId,
-            },
-            {  //set comment only if it is match with objectId
-                $set: {
-                    'content.$[elem].metadata.comment': comment.comment,
-                }
-            },
-            {
-                safe: true,
-                arrayFilters: [{
-                    'elem.objectId': objectId
+	//validate
+	if (!req.query.oid || !mongo.ObjectID.isValid(req.params.assignmentId)) {
+		return res.status(401).send({
+			'error': "Invalid assignment id",
+			'code': 35
+		});
+	}
+	var assignmentId = req.params.assignmentId;
+	var comment = JSON.parse(req.body.comment);
+	var objectId = req.query.oid;
+	db.collection(journalCollection, function (err, collection) {
+		collection.findOneAndUpdate(
+			{
+				'content.objectId': objectId,
+				'content.metadata.assignmentId': assignmentId,
+			},
+			{  //set comment only if it is match with objectId
+				$set: {
+					'content.$[elem].metadata.comment': comment.comment,
+				}
+			},
+			{
+				safe: true,
+				arrayFilters: [{
+					'elem.objectId': objectId
 
-                }]
-            },
-            function (err, result) {
-                if (err) {
-                    return res.status(401).send({
-                        'error': "An error has occurred",
-                        'code': 10
-                    });
-                }
-                else {
-                    return res.status(200).send({
-                        comment: comment.comment
-                    });
-                }
-            });
-    });
+				}]
+			},
+			function (err) {
+				if (err) {
+					return res.status(401).send({
+						'error': "An error has occurred",
+						'code': 10
+					});
+				} else {
+					return res.status(200).send({
+						comment: comment.comment
+					});
+				}
+			});
+	});
 };
 
 //update status
 function updateStatus(assignmentId, status, objectId, callback) {
-    //validate
-    if (!mongo.ObjectID.isValid(assignmentId)) {
-        callback();
-    }
-    if (status == "Assigned") {
-        db.collection(assignmentCollection, function (err, collection) {
-            collection.findOneAndUpdate(
-                {
-                    '_id': new mongo.ObjectID(assignmentId)
-                },
-                {
-                    $set: {
-                        'isAssigned': true,
-                    }
-                },
-                {
-                    safe: true,
-                },
-                function (err, result) {
-                    if (err) {
-                        callback(err);
-                    } else {
-                        callback(result);
-                    }
-                });
-        });
-    }
-    if (status == "Delivered") {
-        db.collection(journalCollection, function (err, collection) {
-            collection.findOneAndUpdate(
-                {
-                    'content.objectId': objectId,
-                    'content.metadata.assignmentId': assignmentId,
-                },
-                {
-                    $set: {
-                        'content.$[elem].metadata.status': status
-                    }
-                },
-                {
-                    safe: true,
-                    arrayFilters: [{
-                        'elem.objectId': objectId
-                    }]
-                },
-                function (err, result) {
-                    if (err) {
-                        callback(err);
-                    } else {
-                        callback(result);
-                    }
-                });
-        });
-    }
+	//validate
+	if (!mongo.ObjectID.isValid(assignmentId)) {
+		callback();
+	}
+	if (status == "Assigned") {
+		db.collection(assignmentCollection, function (err, collection) {
+			collection.findOneAndUpdate(
+				{
+					'_id': new mongo.ObjectID(assignmentId)
+				},
+				{
+					$set: {
+						'isAssigned': true,
+					}
+				},
+				{
+					safe: true,
+				},
+				function (err, result) {
+					if (err) {
+						callback(err);
+					} else {
+						callback(result);
+					}
+				});
+		});
+	}
+	if (status == "Delivered") {
+		db.collection(journalCollection, function (err, collection) {
+			collection.findOneAndUpdate(
+				{
+					'content.objectId': objectId,
+					'content.metadata.assignmentId': assignmentId,
+				},
+				{
+					$set: {
+						'content.$[elem].metadata.status': status
+					}
+				},
+				{
+					safe: true,
+					arrayFilters: [{
+						'elem.objectId': objectId
+					}]
+				},
+				function (err, result) {
+					if (err) {
+						callback(err);
+					} else {
+						callback(result);
+					}
+				});
+		});
+	}
 }
 
 /** 
@@ -1322,44 +1321,44 @@ function updateStatus(assignmentId, status, objectId, callback) {
  * 
  **/
 exports.returnAssignment = function (req, res) {
-    //validate
-    if (!req.query.oid || !mongo.ObjectID.isValid(req.params.assignmentId)) {
-        return res.status(401).send({
-            'error': "Invalid assignment id",
-            'code': 35
-        });
-    }
-    var assignmentId = req.params.assignmentId;
-    var objectId = req.query.oid;
-    db.collection(journalCollection, function (err, collection) {
-        collection.findOneAndUpdate(
-            {
-                'content.objectId': objectId,
-                'content.metadata.assignmentId': assignmentId,
-            },
-            {
-                $set: {
-                    'content.$[elem].metadata.isSubmitted': false
-                }
-            },
-            {
-                safe: true,
-                arrayFilters: [{
-                    'elem.objectId': objectId
-                }]
-            },
-            function (err, result) {
-                if (err) {
-                    return res.status(500).send({
-                        error: "An error has occurred",
-                        code: 10
-                    });
-                } else {
-                    return res.send(result);
-                }
-            });
-    });
-}
+	//validate
+	if (!req.query.oid || !mongo.ObjectID.isValid(req.params.assignmentId)) {
+		return res.status(401).send({
+			'error': "Invalid assignment id",
+			'code': 35
+		});
+	}
+	var assignmentId = req.params.assignmentId;
+	var objectId = req.query.oid;
+	db.collection(journalCollection, function (err, collection) {
+		collection.findOneAndUpdate(
+			{
+				'content.objectId': objectId,
+				'content.metadata.assignmentId': assignmentId,
+			},
+			{
+				$set: {
+					'content.$[elem].metadata.isSubmitted': false
+				}
+			},
+			{
+				safe: true,
+				arrayFilters: [{
+					'elem.objectId': objectId
+				}]
+			},
+			function (err, result) {
+				if (err) {
+					return res.status(500).send({
+						error: "An error has occurred",
+						code: 10
+					});
+				} else {
+					return res.send(result);
+				}
+			});
+	});
+};
 
 /** 
  * @api {PUT} api/v1/assignments/deliveries/submit/:assignmentId Submit Assignment
@@ -1450,57 +1449,57 @@ exports.returnAssignment = function (req, res) {
  **/
 // submit assignment 
 exports.submitAssignment = function (req, res) {
-    //validate
-    if (!req.query.oid || !mongo.ObjectID.isValid(req.params.assignmentId)) {
-        return res.status(401).send({
-            'error': "Invalid assignment id",
-            'code': 35
-        });
-    }
-    var assignmentId = req.params.assignmentId;
-    var objectId = req.query.oid;
-    updateStatus(assignmentId, "Delivered", objectId, function (result) {
-        if (result) {
-            return res.status(200).send(result);
-        }
-        else {
-            return res.status(500).send({
-                error: "An error has occurred",
-                code: 10
-            });
-        }
-    });
-    db.collection(journalCollection, function (err, collection) {
-        //date in unix timestamp format
-        var date = new Date().getTime();
+	//validate
+	if (!req.query.oid || !mongo.ObjectID.isValid(req.params.assignmentId)) {
+		return res.status(401).send({
+			'error': "Invalid assignment id",
+			'code': 35
+		});
+	}
+	var assignmentId = req.params.assignmentId;
+	var objectId = req.query.oid;
+	updateStatus(assignmentId, "Delivered", objectId, function (result) {
+		if (result) {
+			return res.status(200).send(result);
+		}
+		else {
+			return res.status(500).send({
+				error: "An error has occurred",
+				code: 10
+			});
+		}
+	});
+	db.collection(journalCollection, function (err, collection) {
+		//date in unix timestamp format
+		var date = new Date().getTime();
 
-        collection.findOneAndUpdate(
-            {
-                'content.objectId': objectId,
-                'content.metadata.assignmentId': assignmentId,
-            },
-            {
-                $set: {
-                    'content.$[elem].metadata.submissionDate': date,
-                    'content.$[elem].metadata.isSubmitted': true
+		collection.findOneAndUpdate(
+			{
+				'content.objectId': objectId,
+				'content.metadata.assignmentId': assignmentId,
+			},
+			{
+				$set: {
+					'content.$[elem].metadata.submissionDate': date,
+					'content.$[elem].metadata.isSubmitted': true
 
-                }
-            },
-            {
-                safe: true,
-                arrayFilters: [{
-                    'elem.objectId': objectId
-                }]
-            },
-            function (err, result) {
-                if (err) {
-                    return res.status(500).send({
-                        error: "An error has occurred",
-                        code: 10
-                    });
-                } else {
-                    return res.send(result);
-                }
-            });
-    });
-}
+				}
+			},
+			{
+				safe: true,
+				arrayFilters: [{
+					'elem.objectId': objectId
+				}]
+			},
+			function (err, result) {
+				if (err) {
+					return res.status(500).send({
+						error: "An error has occurred",
+						code: 10
+					});
+				} else {
+					return res.send(result);
+				}
+			});
+	});
+};
