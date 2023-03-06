@@ -6,7 +6,6 @@
 
 Sugarizer Server allows the deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 10+ and MongoDB 3.2+.
 
-
 ## Running Sugarizer Server
 
 The easiest way to run Sugarizer Server is to use Docker. To do that, type command lines:
@@ -127,10 +126,13 @@ Sugarizer Server Dashboard is an admin tool for teachers and deployment administ
 * Graphic and request: display graphics and report on previous data.
 
 To login to the Dashboard the first time, you will have to create an admin account using this command:
-
+        
+        docker exec -it <id of sugarizer-server_server> bash
+	
 	sh add-admin.sh admin password http://127.0.0.1:8080/auth/signup
 
 Note: For security reasons, the script should be launched from the local machine. On Docker, attach a new shell to the container and launch the script from this shell - in that case the port to use should be 80, not 8080.
+
 
 Where **admin** is the login for the new admin account and **password** is the password.
 
