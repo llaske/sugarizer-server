@@ -24,9 +24,7 @@ jobs:
           mongodb-version: ${{ matrix.mongodb-version }}
           mongodb-port: 27017
       - name: Cloning Sugarizer Repository
-        run: git clone https://github.com/llaske/sugarizer.git
-      - name: Moving Sugarizer Directory
-        run: mv sugarizer /home/runner/work/sugarizer-server/
+        run: git clone https://github.com/llaske/sugarizer.git ../sugarizer
       - name: Running Clean Install
         run: npm ci
       - name: Running Eslint
