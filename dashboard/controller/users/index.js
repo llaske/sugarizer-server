@@ -37,8 +37,8 @@ exports.index = function(req, res) {
 	};
 
 	//get query params
-	if(req.query.username != '') {
-		query['username']=req.query.username		
+	if(req.query.q != '') {
+		query['q']=req.query.q;		
 	}
 	if (req.query.role != '') {
 		query['role'] = req.query.role;
