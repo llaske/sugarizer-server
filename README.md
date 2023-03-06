@@ -127,11 +127,16 @@ Sugarizer Server Dashboard is an admin tool for teachers and deployment administ
 
 To login to the Dashboard the first time, you will have to create an admin account using this command:
         
-        docker exec -it <id of sugarizer-server_server> bash
-	
+	sh add-admin.sh admin password http://127.0.0.1:8080/auth/signup
+
+Incase using Docker to login the Dashboard for the first time 
+
+	docker exec -it <id of sugarizer-server_server> bash
 	sh add-admin.sh admin password http://127.0.0.1:80/auth/signup
 
 Note: For security reasons, the script should be launched from the local machine. On Docker, attach a new shell to the container and launch the script from this shell - in that case the port to use should be 80, not 8080.
+
+
 
 
 Where **admin** is the login for the new admin account and **password** is the password.
