@@ -136,9 +136,6 @@ Incase using Docker to login the Dashboard for the first time
 
 Note: For security reasons, the script should be launched from the local machine. On Docker, attach a new shell to the container and launch the script from this shell - in that case the port to use should be 80, not 8080.
 
-
-
-
 Where **admin** is the login for the new admin account and **password** is the password.
 
 Once the admin account is created, you could access Sugarizer Dashboard on http://127.0.0.1:8080/dashboard.
