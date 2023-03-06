@@ -3009,7 +3009,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 .navbar .navbar-form .form-group .form-control, .navbar .navbar-form .form-control {
   border-color: inherit;
   color: inherit;
-  padding: 0;
+  padding: 5px 10px;
   margin: 0;
   height: 28px;
   font-size: 14px;
@@ -3607,7 +3607,7 @@ footer .btn {
 
 .card .card-header {
   box-shadow: 0 1px 0px -1px rgba(0, 0, 0, 0.42), 0 0px 0px 0px rgba(0, 0, 0, 0.12), 0 2px 5px 0px rgba(0, 0, 0, 0.2);
-  margin: -20px 15px 0;
+  margin: -20px 5px 0 15px;
   border-radius: 3px;
   padding: 15px;
   background-color: #999999;
@@ -5106,6 +5106,9 @@ footer .btn {
   }
   .social-line .btn {
     margin: 0 0 10px 0;
+  }
+  .sidebar .sidebar-wrapper .navbar-form .form-group .form-control {
+    padding: 5px 15px;
   }
   .subscribe-line .form-control {
     margin: 0 0 10px 0;
