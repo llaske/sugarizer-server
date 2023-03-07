@@ -13,7 +13,7 @@ module.exports = function addAssignment(req, res) {
 	// reinit l10n and momemt with locale
 	common.reinitLocale(req);
 	var query = {
-		limit: (req.query.limit ? req.query.limit : 10),
+		limit: (req.query.limit ? req.query.limit : 10000),
 		sort: (req.query.sort ? req.query.sort : '-timestamp'),
 		offset: (req.query.offset ? req.query.offset : 0)
 	};
