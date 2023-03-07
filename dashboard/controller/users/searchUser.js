@@ -14,6 +14,7 @@ module.exports = function searchUser(req, res) {
 		role: 'student'
 	};
 
+	//get query params
 	if(req.query.q != '') {
 		query['q']=req.query.q;
 	}
