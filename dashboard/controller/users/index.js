@@ -37,16 +37,8 @@ exports.index = function(req, res) {
 	};
 
 	//get query params
-	
-	// if (req.query.username != '' || req.query.q!='') {
-	// 	query['q'] = req.query.username || req.query.q;
-	// }
-
 	if(req.query.username != '') {
-		/**
-		 * query parameter set to 'username' which is consistent with the form parameters on frontend 
-		 */
-		query['username']=req.query.username		
+		query['q']=req.query.q		
 	}
 	if (req.query.role != '') {
 		query['role'] = req.query.role;
