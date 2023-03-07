@@ -11,7 +11,7 @@ function sugarizerTour(currentView, role, mode) {
 	}
 
 	// Init tutorial
-	tutorial.init = function() {
+	tutorial.init = function () {
 		var prevString = document.webL10n.get("TutoPrev");
 		var nextString = document.webL10n.get("TutoNext");
 		var endString = document.webL10n.get("TutoEnd");
@@ -29,7 +29,7 @@ function sugarizerTour(currentView, role, mode) {
 							<div class='tutorial-prev-icon2 web-activity-icon'></div>\
 							<div class='tutorial-prev-icon3 web-activity-disable'></div>\
 						</div>\
-						<div class='icon-tutorial-text'>"+prevString+"</div>\
+						<div class='icon-tutorial-text'>"+ prevString + "</div>\
 					</div>\
 					<span data-role='separator' style='margin: 4px'>|</span>\
 					<div class='tutorial-next-icon icon-button' data-role='next'>\
@@ -37,14 +37,14 @@ function sugarizerTour(currentView, role, mode) {
 							<div class='tutorial-next-icon2 web-activity-icon'></div>\
 							<div class='tutorial-next-icon3 web-activity-disable'></div>\
 						</div>\
-						<div class='icon-tutorial-text'>"+nextString+"</div>\
+						<div class='icon-tutorial-text'>"+ nextString + "</div>\
 					</div>\
 					<div class='tutorial-end-icon icon-button' data-role='end'>\
 						<div class='tutorial-end-icon1 web-activity'>\
 							<div class='tutorial-end-icon2 web-activity-icon'></div>\
 							<div class='tutorial-end-icon3 web-activity-disable'></div>\
 						</div>\
-						<div class='icon-tutorial-text'>"+endString+"</div>\
+						<div class='icon-tutorial-text'>"+ endString + "</div>\
 					</div>\
 				</div>\
 			</div>",
@@ -53,7 +53,7 @@ function sugarizerTour(currentView, role, mode) {
 			autoscroll: true,
 			steps: [],
 			keyboard: true,
-			onNext: function(tour) {
+			onNext: function (tour) {
 				if (currentView == "home") {
 					if (tour._current == "3" || tour._current == "4") {
 						$('.main-panel').animate({
@@ -78,7 +78,7 @@ function sugarizerTour(currentView, role, mode) {
 					}
 				}
 			},
-			onPrev: function(tour) {
+			onPrev: function (tour) {
 				if (currentView == "home") {
 					if (tour._current == "4") {
 						$('.main-panel').animate({
@@ -98,7 +98,7 @@ function sugarizerTour(currentView, role, mode) {
 					}
 				}
 			},
-			onEnd: function() {
+			onEnd: function () {
 				if (currentView == "home") {
 					unlockScroll();
 				} else if (currentView == "editUser") {
@@ -173,7 +173,29 @@ function sugarizerTour(currentView, role, mode) {
 			tour.addStep(getStep("classroom", "#classroom-delete-class", "left", 8));
 			tour.addStep(getStep("classroom", "#checkAll", "right", 9));
 			tour.addStep(getStep("classroom", "#classroom-deleteMultiple", "left", 10));
-		} else if (currentView == "stats") {
+		} else if (currentView == "assignment") {
+			tour.addStep(getStep("assignment", "#assignment-serach-row", "bottom", 2));
+			tour.addStep(getStep("assignment", "#assignment-deleteMultiple", "left", 10));
+			tour.addStep(getStep("assignment", "#assignment-addassignment", "left", 3));
+			tour.addStep(getStep("assignment", "#assignment-cards-parent", "top", 4));
+			tour.addStep(getStep("assignment", "#checkAll", "right", 9));
+			tour.addStep(getStep("assignment", "#assignment-card", "bottom", 5));
+			tour.addStep(getStep("assignment", "#assignment-delete-class", "left", 8));
+			tour.addStep(getStep("assignment", "#assignment-view-students", "left", 6));
+			tour.addStep(getStep("assignment", "#assignment-launch", "left", 5));
+		} else if (currentView == "deliveries") {
+			tour.addStep(getStep("deliveries", "#deliveries-serach-row", "bottom", 2));
+			tour.addStep(getStep("deliveries", "#deliveries-deleteMultiple", "left", 10));
+			tour.addStep(getStep("deliveries", "#deliveries-cards-parent", "top", 4));
+			tour.addStep(getStep("deliveries", "#checkAll", "right", 9));
+			tour.addStep(getStep("deliveries", "#deliveries-card", "bottom", 5));
+			tour.addStep(getStep("deliveries", "#deliveries-delete-delivery", "left", 8));
+			tour.addStep(getStep("deliveries", "#deliveries-comment", "left", 11));
+			tour.addStep(getStep("deliveries", "#deliveries-launch", "left", 7));
+			tour.addStep(getStep("deliveries", "#deliveries-journal-activity-download", "right", 3));
+
+		}
+		else if (currentView == "stats") {
 			tour.addStep(getStep("stats", "", "bottom", 1, true));
 			tour.addStep(getStep("stats", "#stats-addChart", "left", 2));
 			tour.addStep(getStep("stats", "#stats-listCharts", "left", 3));
@@ -206,6 +228,13 @@ function sugarizerTour(currentView, role, mode) {
 			tour.addStep(getStep("editClassroom", "#editClassroom-colors", "right", 4));
 			tour.addStep(getStep("editClassroom", "#editClassroom-created", "right", 5));
 			tour.addStep(getStep("editClassroom", "#editClassroom-lastupdated", "right", 6));
+		} else if (currentView == "editAssignment") {
+			tour.addStep(getStep("editAssignment", "", "bottom", 1, true));
+			tour.addStep(getStep("editAssignment", "#editAssignment-name", "right", 2));
+			tour.addStep(getStep("editAssignment", "#editAssignment-activity", "right", 3));
+			tour.addStep(getStep("editAssignment", "#editAssignment-instructions", "right", 4));
+			tour.addStep(getStep("editAssignment", "#editAssignment-duedate", "right", 5));
+			tour.addStep(getStep("editAssignment", "#searchable-select-classrooms-row", "right", 6));
 		} else if (currentView == "editChart") {
 			tour.addStep(getStep("editChart", "", "bottom", 1, true));
 			tour.addStep(getStep("editChart", "#editChart-title", "right", 2));
@@ -217,10 +246,10 @@ function sugarizerTour(currentView, role, mode) {
 	};
 
 	// Start tutorial
-	tutorial.start = function() {
+	tutorial.start = function () {
 		if ($(window).width() > 992) {
-			document.webL10n.ready(function() {
-				var refreshIntervalId = setInterval(function() {
+			document.webL10n.ready(function () {
+				var refreshIntervalId = setInterval(function () {
 					if (document.webL10n.getReadyState() == "complete") {
 						clearInterval(refreshIntervalId);
 						tutorial.init();
@@ -233,23 +262,23 @@ function sugarizerTour(currentView, role, mode) {
 	};
 
 	// Check if already finished
-	tutorial.isFinished = function() {
+	tutorial.isFinished = function () {
 		if (window.localStorage[tutorialName + "_end"] == "yes") return true;
 		return false;
 	};
 
-	tutorial.restart = function() {
+	tutorial.restart = function () {
 		localStorage.setItem(tutorialName + "_current_step", 0);
 		localStorage.removeItem(tutorialName + "_end");
 		tutorial.start();
 	};
 
 	// Test if launched
-	tutorial.isLaunched = function() {
+	tutorial.isLaunched = function () {
 		return launched;
 	};
 
-	function getStep(view, element, placement, step, orphan){
+	function getStep(view, element, placement, step, orphan) {
 		var step = {
 			title: document.webL10n.get(view + "Title" + step),
 			content: document.webL10n.get(view + "Content" + step),
@@ -265,7 +294,7 @@ function sugarizerTour(currentView, role, mode) {
 	function lockScroll() {
 		var scrollPosition = [
 			self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
-			self.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop
+			self.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
 		];
 		var html = jQuery('html'); // it would make more sense to apply this to body, but IE7 won't have that
 		html.data('scroll-position', scrollPosition);

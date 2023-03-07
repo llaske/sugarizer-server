@@ -123,6 +123,13 @@
   display: inline-block;
 }
 
+#navbar-xo-subicon {
+  height: 18px;
+  width: 18px;
+  margin: 0;
+  background-size: 18px !important;
+}
+
 .lang-combo{
   font-size: 11px !important;
 }
@@ -206,8 +213,96 @@
   background-image: url('/public/img/classroom-icon.svg')
 }
 
+.assignment-icon {
+  background-image: url('/public/img/assignment-icon.svg')
+}
+
+.assignment-icon2 {
+  background-image: url('/public/img/assignment.svg');
+  background-size: 26px;
+  height: 26px;
+  width: 26px;
+  display: inline-table;
+  position: relative;
+  top: 9px;
+}
+
+.assignment-icon2-inactive {
+  background-image: url('/public/img/assignment-inactive.svg');
+  background-size: 26px;
+  height: 26px;
+  width: 26px;
+  display: inline-table;
+  position: relative;
+  top: 9px;
+}
+
+.assignment-icon-tag {
+  background-image: url('/public/img/assignment-inactive.svg');
+  background-size: 20px;
+  height: 20px;
+  width: 20px;
+  display: inline-table;
+  position: relative;
+  top: 15px;
+}
+
+.launchAssignment-icon {
+  background-image: url('/public/img/play_black.svg');
+  background-size: 24px;
+  height: 24px;
+  width: 24px;
+  display: inline-table;
+  position: relative;
+  top: 7px;
+}
+
+.launchAssignment-icon-inactive {
+  background-image: url('/public/img/play_black_inactive.svg');
+  background-size: 24px;
+  height: 24px;
+  width: 24px;
+  display: inline-table;
+  position: relative;
+  top: 7px;
+}
+
+.returnAssignment-icon {
+  background-image: url('/public/img/back.svg');
+  background-size: 30px;
+  height: 30px;
+  width: 30px;
+  display: inline-table;
+  position: relative;
+  top: 10px;
+}
+
+.returnAssignment-icon-inactive {
+  background-image: url('/public/img/back-inactive.svg');
+  background-size: 30px;
+  height: 30px;
+  width: 30px;
+  display: inline-table;
+  position: relative;
+  top: 10px;
+}
+
+.comment-icon {
+  background-image: url('/public/img/comment.svg');
+  background-size: 34px;
+  height: 31px;
+  width: 31px;
+  display: inline-table;
+  position: relative;
+  top: 10px;
+}
+
 .user-icon {
   background-image: url('/public/img/user-icon.svg')
+}
+
+.remove-activity {
+  cursor: pointer;
 }
 
 .material-icons.dp24 {
@@ -240,6 +335,7 @@
   height: 30px;
   width: 120px;
   border-radius: 1000px;
+  text-align: center;
 }
 
 .pointer {
@@ -748,6 +844,12 @@
 
 .hide-desk-el {
   display: none !important;
+}
+
+@media (max-width: 991px) {
+  .hide-desk-el {
+    display: block !important;
+  }
 }
 
 @media (max-width: 768px) {

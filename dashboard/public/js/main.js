@@ -20,12 +20,12 @@ html5indexedDB.db = null;
 var filestoreName = 'sugar_filestore';
 
 // Test indexedDB support
-html5indexedDB.test = function() {
+html5indexedDB.test = function () {
 	return window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 };
 
 // Load database or create database on first launch
-html5indexedDB.load = function(then) {
+html5indexedDB.load = function (then) {
 	if (html5indexedDB.db != null) {
 		then(null);
 		return;
@@ -37,35 +37,35 @@ html5indexedDB.load = function(then) {
 		return;
 	}
 	var request = window.indexedDB.open(filestoreName, 1);
-	request.onerror = function() {
+	request.onerror = function () {
 		if (then) {
 			then(-2);
 		}
 	};
-	request.onsuccess = function() {
+	request.onsuccess = function () {
 		html5indexedDB.db = request.result;
 		if (then) {
 			then(null);
 		}
 	};
-	request.onupgradeneeded = function(event) {
+	request.onupgradeneeded = function (event) {
 		var db = event.target.result;
-		var objectStore = db.createObjectStore(filestoreName, {keyPath: "objectId"});
+		var objectStore = db.createObjectStore(filestoreName, { keyPath: "objectId" });
 		objectStore.createIndex("objectId", "objectId", { unique: true });
 	};
 };
 
 // Set a value in the database
-html5indexedDB.setValue = function(key, value, then) {
+html5indexedDB.setValue = function (key, value, then) {
 	var transaction = html5indexedDB.db.transaction([filestoreName], "readwrite");
 	var objectStore = transaction.objectStore(filestoreName);
-	var request = objectStore.put({objectId: key, text: value});
-	request.onerror = function() {
+	var request = objectStore.put({ objectId: key, text: value });
+	request.onerror = function () {
 		if (then) {
 			then(request.errorCode);
 		}
 	};
-	request.onsuccess = function() {
+	request.onsuccess = function () {
 		if (then) {
 			then(null);
 		}
@@ -73,16 +73,16 @@ html5indexedDB.setValue = function(key, value, then) {
 };
 
 // Remove a value from the database
-html5indexedDB.removeValue = function(key, then) {
+html5indexedDB.removeValue = function (key, then) {
 	var transaction = html5indexedDB.db.transaction([filestoreName], "readwrite");
 	var objectStore = transaction.objectStore(filestoreName);
 	var request = objectStore.delete(key);
-	request.onerror = function() {
+	request.onerror = function () {
 		if (then) {
 			then(request.errorCode);
 		}
 	};
-	request.onsuccess = function() {
+	request.onsuccess = function () {
 		if (then) {
 			then(null);
 		}
@@ -91,7 +91,7 @@ html5indexedDB.removeValue = function(key, then) {
 
 function base64toBlob(mimetype, base64) {
 	var contentType = mimetype;
-	var byteCharacters = atob(base64.substr(base64.indexOf(';base64,')+8));
+	var byteCharacters = atob(base64.substr(base64.indexOf(';base64,') + 8));
 	var byteArrays = [];
 	for (var offset = 0; offset < byteCharacters.length; offset += 1024) {
 		var slice = byteCharacters.slice(offset, offset + 1024);
@@ -102,7 +102,7 @@ function base64toBlob(mimetype, base64) {
 		var byteArray = new Uint8Array(byteNumbers);
 		byteArrays.push(byteArray);
 	}
-	var blob = new Blob(byteArrays, {type: contentType});
+	var blob = new Blob(byteArrays, { type: contentType });
 	return blob;
 }
 
@@ -113,7 +113,7 @@ function launch_activity(callurl) {
 			var encodedValue = response.lsObj[index];
 			var rawValue = JSON.parse(encodedValue);
 			if (rawValue && rawValue.server) {
-				rawValue.server.url = window.location.protocol+"//"+window.location.hostname+":"+rawValue.server.web;
+				rawValue.server.url = window.location.protocol + "//" + window.location.hostname + ":" + rawValue.server.web;
 				encodedValue = JSON.stringify(rawValue);
 			}
 			localStorage.setItem(index, encodedValue);
@@ -125,7 +125,7 @@ function launch_activity(callurl) {
 		for (var index in response.lsObj) {
 			len++;
 		}
-		var lastCall = function() {
+		var lastCall = function () {
 			if (--len == 0) {
 				callback();
 			}
@@ -138,7 +138,7 @@ function launch_activity(callurl) {
 				var encodedValue = response.lsObj[index];
 				var rawValue = JSON.parse(encodedValue);
 				if (rawValue && rawValue.server) {
-					rawValue.server.url = window.location.protocol+"//"+window.location.hostname+":"+rawValue.server.web;
+					rawValue.server.url = window.location.protocol + "//" + window.location.hostname + ":" + rawValue.server.web;
 					encodedValue = JSON.stringify(rawValue);
 				}
 				localStorage.setItem(index, encodedValue);
@@ -147,12 +147,12 @@ function launch_activity(callurl) {
 		}
 	}
 
-	$.get((callurl), function(response) {
+	$.get((callurl), function (response) {
 		if (response.error) {
 			$.notify({
 				icon: "error",
 				message: response.error
-			},{
+			}, {
 				type: 'danger'
 			});
 		}
@@ -178,7 +178,7 @@ function launch_activity(callurl) {
 		// backup current storage and create a virtual context in local storage
 		var keyHistory = [];
 		var datastorePrefix = 'sugar_datastore';
-		for (var i = 0 ; i < localStorage.length ; i++) {
+		for (var i = 0; i < localStorage.length; i++) {
 			var key = localStorage.key(i);
 			if (key.indexOf(datastorePrefix) == 0) {
 				keyHistory.push(key);
@@ -186,12 +186,12 @@ function launch_activity(callurl) {
 		}
 
 		// open window
-		var openInWindow = function() {
+		var openInWindow = function () {
 			if (response.url) {
-				var win = window.open(response.url+"&sa=1", '_blank');
+				var win = window.open(response.url + "&sa=1", '_blank');
 				if (win) {
 					win.focus();
-					win.onbeforeunload = function(){
+					win.onbeforeunload = function () {
 						// restore old context
 						for (var index in lsBackup) {
 							if (lsBackup[index] == null) {
@@ -202,13 +202,13 @@ function launch_activity(callurl) {
 						}
 
 						// remove created storage
-						for (var i = 0 ; i < localStorage.length ; i++) {
+						for (var i = 0; i < localStorage.length; i++) {
 							var key = localStorage.key(i);
 							if (key.indexOf(datastorePrefix) == -1) {
 								continue;
 							}
 							var found = false;
-							for (var j = 0 ; !found && j < keyHistory.length ; j++) {
+							for (var j = 0; !found && j < keyHistory.length; j++) {
 								if (keyHistory[j] == key) {
 									found = true;
 								}
@@ -220,7 +220,7 @@ function launch_activity(callurl) {
 
 						// Remove IndexDB storage if was not already there
 						if (response.version > 1.1 && html5indexedDB.db != null) {
-							if (!lsBackup["sugar_datastore_"+response.objectId]) {
+							if (!lsBackup["sugar_datastore_" + response.objectId]) {
 								html5indexedDB.removeValue(response.objectId);
 							}
 						}
@@ -229,7 +229,7 @@ function launch_activity(callurl) {
 					$.notify({
 						icon: "error",
 						message: document.webL10n.get('CantOpenWindow')
-					},{
+					}, {
 						type: 'danger'
 					});
 				}
@@ -240,17 +240,17 @@ function launch_activity(callurl) {
 		var lsBackup = [];
 		if (response.version > 1.1) {
 			if (html5indexedDB.db == null) {
-				html5indexedDB.load(function(err) {
+				html5indexedDB.load(function (err) {
 					if (err) {
 						console.log("FATAL ERROR: indexedDB not supported, could be related to use of private mode");
 					} else {
-						loadData(response, lsBackup, function() {
+						loadData(response, lsBackup, function () {
 							openInWindow();
 						});
 					}
 				});
 			} else {
-				loadData(response, lsBackup, function() {
+				loadData(response, lsBackup, function () {
 					openInWindow();
 				});
 			}
@@ -265,7 +265,7 @@ function updateActivities() {
 
 	//get favorites
 	var list = [];
-	$.each($('[name="favoriteActivities"]:checked'), function(index, value) {
+	$.each($('[name="favoriteActivities"]:checked'), function (index, value) {
 		list.push($(this).parent().data('id'));
 	});
 	var data = {
@@ -275,7 +275,7 @@ function updateActivities() {
 	$.post((url + 'api/v1/activities?' + decodeURIComponent($.param({
 		x_key: headers['x-key'],
 		access_token: headers['x-access-token']
-	}))), data, function(response) {
+	}))), data, function (response) {
 		$.notify({
 			icon: "notifications",
 			message: document.webL10n.get('successActivityUpdate')
@@ -307,7 +307,7 @@ function initChartDragDrop() {
 
 function updateChartOrder() {
 	var list = [];
-	$.each($('[name="hiddenCharts"]'), function(index, value) {
+	$.each($('[name="hiddenCharts"]'), function (index, value) {
 		list.push($(this).parent().data('id'));
 	});
 	var data = {
@@ -323,7 +323,7 @@ function updateChartOrder() {
 		}))),
 		type: 'PUT',
 		data: data,
-		success: function(result) {
+		success: function (result) {
 			$.notify({
 				icon: "notifications",
 				message: document.webL10n.get('successChartUpdate')
@@ -358,7 +358,7 @@ function updateChart(chartid) {
 		}))),
 		type: 'PUT',
 		data: data,
-		success: function(result) {
+		success: function (result) {
 			$.notify({
 				icon: "notifications",
 				message: document.webL10n.get('successChartUpdate')
@@ -383,7 +383,7 @@ function formatUserField(state) {
 		'<div class="student" id="' + state._id + '">\
 			<div class="xo-icon"></div>\
 			<div class="name">' + state.name + '</div>\
-			<div class="timestamp">' + d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear() + '</div>\
+			<div class="timestamp">' + d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + '</div>\
 		</div>\
 		<script>\
 			new icon().load("/public/img/owner-icon.svg", ' + JSON.stringify(state.color) + ', "' + state._id + '");\
@@ -405,7 +405,7 @@ function formatColorField(state) {
 		</div>'
 	);
 	if ($(state.element).data('icon')) {
-		new icon().load("/public/img/"+$(state.element).data('icon')+".svg", JSON.parse($(state.element).val()), id);
+		new icon().load("/public/img/" + $(state.element).data('icon') + ".svg", JSON.parse($(state.element).val()), id);
 	} else {
 		new icon().load("/public/img/owner-icon.svg", JSON.parse($(state.element).val()), id);
 	}
@@ -431,9 +431,9 @@ function matchColorField(params, data) {
 	return null;
 }
 
-$(document).ready(function() {
-	document.webL10n.ready(function() {
-		var refreshIntervalId = setInterval(function() {
+$(document).ready(function () {
+	document.webL10n.ready(function () {
+		var refreshIntervalId = setInterval(function () {
 			if (document.webL10n.getReadyState() == "complete") {
 				clearInterval(refreshIntervalId);
 				if ($("#users-select2").length > 0) {
@@ -450,7 +450,7 @@ $(document).ready(function() {
 							},
 							processResults: function (data) {
 								if (data && data.data && data.data.users && data.data.users.length > 0) {
-									for (var i=0; i<data.data.users.length; i++) {
+									for (var i = 0; i < data.data.users.length; i++) {
 										data.data.users[i].id = data.data.users[i]._id;
 										data.data.users[i].text = data.data.users[i].name;
 									}
@@ -473,7 +473,7 @@ $(document).ready(function() {
 							document.sj_global = e.params.data.shared_journal;
 							$('#getJournalEntries').attr('action', '/dashboard/journal/' + document.pj_global);
 						}
-					}).on("change", function(e) {
+					}).on("change", function (e) {
 						if ($("#users-select2 option:selected").data('private_journal') || $("#users-select2 option:selected").data('shared_journal')) {
 							document.pj_global = $("#users-select2 option:selected").data('private_journal');
 							document.sj_global = $("#users-select2 option:selected").data('shared_journal');
@@ -503,7 +503,7 @@ function highlight(text) {
 	var text = text.toLowerCase().trim();
 
 	//search elemetns for text
-	$('.search_textbox').each(function() {
+	$('.search_textbox').each(function () {
 
 		//get data
 		var inputText = $(this).text();
@@ -567,13 +567,13 @@ function onLocalized() {
 			l10n.setLanguage(localStorage.getItem("languageSelection"));
 			lang.value = localStorage.getItem("languageSelection");
 		}
-		lang.onchange = function() {
+		lang.onchange = function () {
 			localStorage.setItem("languageSelection", this.value);
 			var searchQuery = location.search;
-			if(searchQuery.length == 0) {
+			if (searchQuery.length == 0) {
 				//query empty
 				searchQuery = '?lang=' + lang.value;
-			} else if(searchQuery.indexOf('lang=') != -1) {
+			} else if (searchQuery.indexOf('lang=') != -1) {
 				// query contains the 'lang=' parameter
 				searchQuery = searchQuery.replace(/lang=[a-z][a-z]/, 'lang=' + lang.value);
 			} else {
@@ -587,11 +587,11 @@ function onLocalized() {
 document.webL10n.ready(onLocalized);
 
 // Initiate localization in mobile view
-$(document).ready(function() {
+$(document).ready(function () {
 	var toggle = document.getElementById('navbar-toggle');
 
 	if (toggle != null) {
-		toggle.addEventListener("click", function(){
+		toggle.addEventListener("click", function () {
 			document.webL10n.ready(onLocalized);
 		});
 	}
@@ -599,11 +599,11 @@ $(document).ready(function() {
 
 // graph create
 function createGraph(type, element, route) {
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$.get(('/dashboard/' + (route ? route : 'graph')), {
 			type: type,
 			element: element
-		}, function(response) {
+		}, function (response) {
 
 			//check for data
 			if (response.data.datasets[0].data.length == 0) {
@@ -620,7 +620,7 @@ function createGraph(type, element, route) {
 					options: (response.options ? response.options : {})
 				});
 				if (type == 'top-contributor') {
-					myChart.options.onClick = function(e) {
+					myChart.options.onClick = function (e) {
 						var activePoints = myChart.getElementsAtEvent(e);
 						// Avoid console erros when clicking on any white space in the chart
 						var index = activePoints.length ? activePoints[0]._index : -1;
@@ -629,12 +629,12 @@ function createGraph(type, element, route) {
 						}
 					};
 				} else if (type == 'top-activities') {
-					myChart.options.onClick = function(e) {
+					myChart.options.onClick = function (e) {
 						var activePoints = myChart.getElementsAtEvent(e);
 						// Avoid console erros when clicking on any white space in the chart
 						var index = activePoints.length ? activePoints[0]._index : -1;
 						if (index > -1) {
-							window.location.href = "javascript:launch_activity('/dashboard/activities/launch?aid="+response.activityIDs[index]+"')";
+							window.location.href = "javascript:launch_activity('/dashboard/activities/launch?aid=" + response.activityIDs[index] + "')";
 						}
 					};
 				}
@@ -644,11 +644,11 @@ function createGraph(type, element, route) {
 }
 
 function createTable(type, element, route) {
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$.get(('/dashboard/' + (route ? route : 'graph')), {
 			type: type,
 			element: element
-		}, function(response) {
+		}, function (response) {
 			$('#' + response.element + ' tbody').html(response.data);
 		});
 	});
@@ -710,10 +710,10 @@ function exportCSVFile(headers, items, fileTitle) {
 }
 
 function getJsonFromUrl(url) {
-	if(!url) url = location.search;
+	if (!url) url = location.search;
 	var query = url.substr(1);
 	var result = {};
-	query.split("&").forEach(function(part) {
+	query.split("&").forEach(function (part) {
 		var item = part.split("=");
 		result[item[0]] = decodeURIComponent(item[1]);
 	});
@@ -735,7 +735,7 @@ function handleSort() {
 			document.getElementById("journal-size").innerHTML += '<i class="arrow up"></i>';
 		} else if (query.sort == "-textsize") {
 			document.getElementById("journal-size").innerHTML += '<i class="arrow down"></i>';
-		}  else if (query.sort == "+title" || query.sort == " title") {
+		} else if (query.sort == "+title" || query.sort == " title") {
 			document.getElementById("journal-title").innerHTML += '<i class="arrow up"></i>';
 		} else if (query.sort == "-title") {
 			document.getElementById("journal-title").innerHTML += '<i class="arrow down"></i>';
@@ -795,7 +795,7 @@ function sortBy(params) {
 
 function launchTutorial() {
 	if (window.currTour && typeof window.currTour.restart == "function") {
-		if (window.location.pathname.substr(0,19) == "/dashboard/journal/") {
+		if (window.location.pathname.substr(0, 19) == "/dashboard/journal/") {
 			localStorage.removeItem('journal1_end');
 			localStorage.removeItem('journal1_current_step');
 		}
@@ -806,11 +806,11 @@ function launchTutorial() {
 function generateQRCode() {
 	var placeholder = document.getElementById("qrplaceholder");
 	placeholder.innerHTML = "";
-	var qrCode = new QRCode("qrplaceholder", {width: 300, height: 300, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H});
+	var qrCode = new QRCode("qrplaceholder", { width: 300, height: 300, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
 	qrCode.clear();
-	qrCode.makeCode(window.location.protocol+"//"+window.location.host);
+	qrCode.makeCode(window.location.protocol + "//" + window.location.host);
 	$('#qrpopup').on('show.bs.modal', function () {
-		$(this).find('.modal-dialog').css({width:'350px',height:'350px'});
+		$(this).find('.modal-dialog').css({ width: '350px', height: '350px' });
 	});
 	$("#qrpopup").modal();
 }
@@ -866,7 +866,7 @@ function writeFile(metadata, content, callback) {
 			extension = "wav";
 		} else if (mimetype == "video/webm") {
 			extension = "webm";
-		} else if (mimetype == "audio/mp3"||mimetype == "audio/mpeg") {
+		} else if (mimetype == "audio/mp3" || mimetype == "audio/mpeg") {
 			extension = "mp3";
 		} else if (mimetype == "video/mp4") {
 			extension = "mp4";
@@ -882,38 +882,38 @@ function writeFile(metadata, content, callback) {
 		} else {
 			extension = "bin";
 		}
-		binary = base64DecToArr(content.substr(content.indexOf('base64,')+7)).buffer;
+		binary = base64DecToArr(content.substr(content.indexOf('base64,') + 7)).buffer;
 	} else {
-		text = JSON.stringify({metadata: metadata, text: content});
+		text = JSON.stringify({ metadata: metadata, text: content });
 	}
 	var filename = title;
-	if (filename.indexOf("."+extension)==-1) {
-		filename += "."+extension;
+	if (filename.indexOf("." + extension) == -1) {
+		filename += "." + extension;
 	}
-	var blob = new Blob((text?[text]:[binary]), {type:mimetype});
+	var blob = new Blob((text ? [text] : [binary]), { type: mimetype });
 	callback(blob, filename);
 }
 
 function download_activity(callurl) {
-	$.get((callurl), function(response) {
+	$.get((callurl), function (response) {
 		if (response.error) {
 			$.notify({
 				icon: "error",
 				message: response.error
-			},{
+			}, {
 				type: 'danger'
 			});
 		}
 
 		var metadata = {};
-		
+
 		if (response && response.lsObj) {
 			try {
 				metadata = JSON.parse(response.lsObj["sugar_datastore_" + response.objectId]);
 			} catch (e) {
 				metadata = response.lsObj["sugar_datastore_" + response.objectId];
 			}
-			writeFile(metadata.metadata, response.lsObj["sugar_datastoretext_" + response.objectId], function(blob, filename) {
+			writeFile(metadata.metadata, response.lsObj["sugar_datastoretext_" + response.objectId], function (blob, filename) {
 				saveAs(blob, filename);
 			});
 		}
@@ -931,7 +931,7 @@ function writeFileToStore(file, text, callback) {
 				callback(file.name, -1);
 				return;
 			}
-		} catch(e) {
+		} catch (e) {
 			callback(file.name, -1);
 			return;
 		}
@@ -968,14 +968,22 @@ function createUUID() {
 function upload_journal(files, journalId, name, user_id, color) {
 	var file = files[0];
 	var reader = new FileReader();
-	reader.onload = function() {
-		writeFileToStore(file, reader.result, function(filename, err, metadata, text) {
+	reader.onload = function () {
+		writeFileToStore(file, reader.result, function (filename, err, metadata, text) {
 			if (err) {
+				return;
+			}
+			if(metadata.assignmentId){
+				$.notify({
+					icon: "error",
+					message: "Error"
+				}, {
+					type: 'danger'
+				});
 				return;
 			}
 			metadata["timestamp"] = new Date().getTime();
 			metadata["creation_time"] = new Date().getTime();
-
 			if (text) {
 				metadata["textsize"] = text.length;
 			}
@@ -1000,19 +1008,19 @@ function upload_journal(files, journalId, name, user_id, color) {
 				"metadata": metadata
 			});
 
-			$.post(('/api/v1/journal/' + journalId + '/?'+ decodeURIComponent($.param({
+			$.post(('/api/v1/journal/' + journalId + '/?' + decodeURIComponent($.param({
 				x_key: headers['x-key'],
 				access_token: headers['x-access-token']
 			}))), {
 				"journal": entry
-			}, function(res) {
+			}, function (res) {
 				var timer = 2000;
 				if (res && res.objectId) {
 					$.notify({
 						icon: "notifications",
-						message: document.webL10n.get('journalUploaded', {title: metadata.title})
+						message: document.webL10n.get('journalUploaded', { title: metadata.title })
 
-					},{
+					}, {
 						type: 'success',
 						timer: timer,
 						placement: {
@@ -1024,7 +1032,7 @@ function upload_journal(files, journalId, name, user_id, color) {
 					$.notify({
 						icon: "error",
 						message: document.webL10n.get('journalUploadError')
-					},{
+					}, {
 						type: 'danger',
 						timer: timer,
 						placement: {
@@ -1038,7 +1046,7 @@ function upload_journal(files, journalId, name, user_id, color) {
 				}, timer);
 			});
 		});
-		
+
 	};
 
 	if (file) {
@@ -1059,8 +1067,10 @@ function checkAll() {
 		check = document.getElementsByClassName("users-checkbox");
 	} else if (document.getElementsByClassName("classrooms-checkbox").length > 0) {
 		check = document.getElementsByClassName("classrooms-checkbox");
+	} else if (document.getElementsByClassName("assignment-checkbox").length > 0) {
+		check = document.getElementsByClassName("assignment-checkbox");
 	}
-	for (var i=0; i<check.length; i++) {
+	for (var i = 0; i < check.length; i++) {
 		check[i].checked = state;
 	}
 }
@@ -1071,8 +1081,8 @@ function deleteMultipleEntries() {
 		if (success > 0 && failed > 0) {
 			$.notify({
 				icon: "notifications",
-				message: document.webL10n.get('deleteSuccessFailEntry', {success:success, failed:failed})
-			},{
+				message: document.webL10n.get('deleteSuccessFailEntry', { success: success, failed: failed })
+			}, {
 				type: 'success',
 				timer: timer,
 				placement: {
@@ -1083,8 +1093,8 @@ function deleteMultipleEntries() {
 		} else if (failed == 0) {
 			$.notify({
 				icon: "notifications",
-				message: document.webL10n.get('deleteEntrySuccess', {success:success})
-			},{
+				message: document.webL10n.get('deleteEntrySuccess', { success: success })
+			}, {
 				type: 'success',
 				timer: timer,
 				placement: {
@@ -1096,7 +1106,7 @@ function deleteMultipleEntries() {
 			$.notify({
 				icon: "error",
 				message: document.webL10n.get('deleteEntryFailed')
-			},{
+			}, {
 				type: 'danger',
 				timer: timer,
 				placement: {
@@ -1115,7 +1125,7 @@ function deleteMultipleEntries() {
 		var totalSelected = 0;
 		var totalDeleted = 0;
 		var totalFailed = 0;
-		for (var i=0; i<check.length; i++) {
+		for (var i = 0; i < check.length; i++) {
 			if (check[i].checked) {
 				totalSelected++;
 				var el = {};
@@ -1138,7 +1148,7 @@ function deleteMultipleEntries() {
 			$.notify({
 				icon: "error",
 				message: document.webL10n.get('noEntriesSelectedDelete')
-			},{
+			}, {
 				type: 'danger',
 				placement: {
 					from: 'top',
@@ -1146,10 +1156,10 @@ function deleteMultipleEntries() {
 				}
 			});
 		} else {
-			var confirmation = confirm(document.webL10n.get('deleteEntryConfirmation', {selected:totalSelected}));
+			var confirmation = confirm(document.webL10n.get('deleteEntryConfirmation', { selected: totalSelected }));
 			if (confirmation) {
 				if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
-				for (var i=0; i<toBeDeleted.length; i++) {
+				for (var i = 0; i < toBeDeleted.length; i++) {
 					$.ajax({
 						url: ('/api/v1/journal/' + toBeDeleted[i].jid + '?' + decodeURIComponent($.param({
 							x_key: headers['x-key'],
@@ -1158,7 +1168,7 @@ function deleteMultipleEntries() {
 							type: 'partial'
 						}))),
 						type: 'DELETE',
-						success: function(response) {
+						success: function (response) {
 							if (response && response.objectId) {
 								totalDeleted++;
 								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
@@ -1167,7 +1177,7 @@ function deleteMultipleEntries() {
 								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
 							}
 						},
-						fail: function(){
+						fail: function () {
 							totalFailed++;
 							if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
 						}
@@ -1183,8 +1193,8 @@ function downloadMultipleEntries() {
 		if (success > 0 && failed > 0) {
 			$.notify({
 				icon: "notifications",
-				message: document.webL10n.get('downloadSuccessFail', {success:success, failed:failed})
-			},{
+				message: document.webL10n.get('downloadSuccessFail', { success: success, failed: failed })
+			}, {
 				type: 'success',
 				placement: {
 					from: 'top',
@@ -1194,8 +1204,8 @@ function downloadMultipleEntries() {
 		} else if (failed == 0) {
 			$.notify({
 				icon: "notifications",
-				message: document.webL10n.get('downloadSuccess', {success:success})
-			},{
+				message: document.webL10n.get('downloadSuccess', { success: success })
+			}, {
 				type: 'success',
 				placement: {
 					from: 'top',
@@ -1206,7 +1216,7 @@ function downloadMultipleEntries() {
 			$.notify({
 				icon: "error",
 				message: document.webL10n.get('downloadFailed')
-			},{
+			}, {
 				type: 'danger',
 				placement: {
 					from: 'top',
@@ -1221,7 +1231,7 @@ function downloadMultipleEntries() {
 		var totalSelected = 0;
 		var totalDownloaded = 0;
 		var totalFailed = 0;
-		for (var i=0; i<check.length; i++) {
+		for (var i = 0; i < check.length; i++) {
 			if (check[i].checked) {
 				totalSelected++;
 				var el = {};
@@ -1257,7 +1267,7 @@ function downloadMultipleEntries() {
 			$.notify({
 				icon: "error",
 				message: document.webL10n.get('noEntriesSelectedDownload')
-			},{
+			}, {
 				type: 'danger',
 				placement: {
 					from: 'top',
@@ -1265,11 +1275,11 @@ function downloadMultipleEntries() {
 				}
 			});
 		} else {
-			var confirmation = confirm(document.webL10n.get('downloadEntryConfirmation', {selected:totalSelected}));
+			var confirmation = confirm(document.webL10n.get('downloadEntryConfirmation', { selected: totalSelected }));
 			if (confirmation) {
 				if (totalDownloaded + totalFailed == totalSelected) displayNotification(totalDownloaded, totalFailed);
-				for (var i=0; i<toBeDownloaded.length; i++) {
-					$.get((toBeDownloaded[i]), function(response) {
+				for (var i = 0; i < toBeDownloaded.length; i++) {
+					$.get((toBeDownloaded[i]), function (response) {
 						if (response.error) {
 							totalFailed++;
 						}
@@ -1282,7 +1292,7 @@ function downloadMultipleEntries() {
 							} catch (e) {
 								metadata = response.lsObj["sugar_datastore_" + response.objectId];
 							}
-							writeFile(metadata.metadata, response.lsObj["sugar_datastoretext_" + response.objectId], function(blob, filename) {
+							writeFile(metadata.metadata, response.lsObj["sugar_datastoretext_" + response.objectId], function (blob, filename) {
 								saveAs(blob, filename);
 								totalDownloaded++;
 								if (totalDownloaded + totalFailed == totalSelected) displayNotification(totalDownloaded, totalFailed);
@@ -1301,8 +1311,8 @@ function deleteMultipleUsers() {
 		if (success > 0 && failed > 0) {
 			$.notify({
 				icon: "notifications",
-				message: document.webL10n.get('deleteSuccessFailUser', {success:success, failed:failed})
-			},{
+				message: document.webL10n.get('deleteSuccessFailUser', { success: success, failed: failed })
+			}, {
 				type: 'success',
 				timer: timer,
 				placement: {
@@ -1313,8 +1323,8 @@ function deleteMultipleUsers() {
 		} else if (failed == 0) {
 			$.notify({
 				icon: "notifications",
-				message: document.webL10n.get('DeleteSuccess', {count:success})
-			},{
+				message: document.webL10n.get('DeleteSuccess', { count: success })
+			}, {
 				type: 'success',
 				timer: timer,
 				placement: {
@@ -1326,7 +1336,7 @@ function deleteMultipleUsers() {
 			$.notify({
 				icon: "error",
 				message: document.webL10n.get('deleteUserFailed')
-			},{
+			}, {
 				type: 'danger',
 				timer: timer,
 				placement: {
@@ -1345,7 +1355,7 @@ function deleteMultipleUsers() {
 		var totalSelected = 0;
 		var totalDeleted = 0;
 		var totalFailed = 0;
-		for (var i=0; i<check.length; i++) {
+		for (var i = 0; i < check.length; i++) {
 			if (check[i].checked) {
 				totalSelected++;
 				if (check[i].getAttribute("uid")) toBeDeleted.push(check[i].getAttribute("uid"));
@@ -1360,7 +1370,7 @@ function deleteMultipleUsers() {
 			$.notify({
 				icon: "error",
 				message: document.webL10n.get('noUsersSelectedDelete')
-			},{
+			}, {
 				type: 'danger',
 				placement: {
 					from: 'top',
@@ -1368,17 +1378,17 @@ function deleteMultipleUsers() {
 				}
 			});
 		} else {
-			var confirmation = confirm(document.webL10n.get('deleteUserConfirmation', {selected:totalSelected}));
+			var confirmation = confirm(document.webL10n.get('deleteUserConfirmation', { selected: totalSelected }));
 			if (confirmation) {
 				if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
-				for (var i=0; i<toBeDeleted.length; i++) {
+				for (var i = 0; i < toBeDeleted.length; i++) {
 					$.ajax({
 						url: ('/api/v1/users/' + toBeDeleted[i] + '?' + decodeURIComponent($.param({
 							x_key: headers['x-key'],
 							access_token: headers['x-access-token']
 						}))),
 						type: 'DELETE',
-						success: function(response) {
+						success: function (response) {
 							if (response && response.user_id) {
 								totalDeleted++;
 								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
@@ -1387,7 +1397,7 @@ function deleteMultipleUsers() {
 								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
 							}
 						},
-						fail: function(){
+						fail: function () {
 							totalFailed++;
 							if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
 						}
@@ -1404,8 +1414,8 @@ function deleteMultipleClassrooms() {
 		if (success > 0 && failed > 0) {
 			$.notify({
 				icon: "notifications",
-				message: document.webL10n.get('deleteSuccessFailClassroom', {success:success, failed:failed})
-			},{
+				message: document.webL10n.get('deleteSuccessFailClassroom', { success: success, failed: failed })
+			}, {
 				type: 'success',
 				timer: timer,
 				placement: {
@@ -1416,8 +1426,8 @@ function deleteMultipleClassrooms() {
 		} else if (failed == 0) {
 			$.notify({
 				icon: "notifications",
-				message: document.webL10n.get('deleteClassroomSuccess', {success:success})
-			},{
+				message: document.webL10n.get('deleteClassroomSuccess', { success: success })
+			}, {
 				type: 'success',
 				timer: timer,
 				placement: {
@@ -1429,7 +1439,7 @@ function deleteMultipleClassrooms() {
 			$.notify({
 				icon: "error",
 				message: document.webL10n.get('deleteClassroomFailed')
-			},{
+			}, {
 				type: 'danger',
 				timer: timer,
 				placement: {
@@ -1448,7 +1458,7 @@ function deleteMultipleClassrooms() {
 		var totalSelected = 0;
 		var totalDeleted = 0;
 		var totalFailed = 0;
-		for (var i=0; i<check.length; i++) {
+		for (var i = 0; i < check.length; i++) {
 			if (check[i].checked) {
 				totalSelected++;
 				if (check[i].getAttribute("cid")) toBeDeleted.push(check[i].getAttribute("cid"));
@@ -1463,7 +1473,7 @@ function deleteMultipleClassrooms() {
 			$.notify({
 				icon: "error",
 				message: document.webL10n.get('noClassroomSelectedDelete')
-			},{
+			}, {
 				type: 'danger',
 				placement: {
 					from: 'top',
@@ -1471,17 +1481,17 @@ function deleteMultipleClassrooms() {
 				}
 			});
 		} else {
-			var confirmation = confirm(document.webL10n.get('deleteClassroomConfirmation', {selected:totalSelected}));
+			var confirmation = confirm(document.webL10n.get('deleteClassroomConfirmation', { selected: totalSelected }));
 			if (confirmation) {
 				if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
-				for (var i=0; i<toBeDeleted.length; i++) {
+				for (var i = 0; i < toBeDeleted.length; i++) {
 					$.ajax({
 						url: ('/api/v1/classrooms/' + toBeDeleted[i] + '?' + decodeURIComponent($.param({
 							x_key: headers['x-key'],
 							access_token: headers['x-access-token']
 						}))),
 						type: 'DELETE',
-						success: function(response) {
+						success: function (response) {
 							if (response && response.id) {
 								totalDeleted++;
 								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
@@ -1490,7 +1500,111 @@ function deleteMultipleClassrooms() {
 								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
 							}
 						},
-						fail: function(){
+						fail: function () {
+							totalFailed++;
+							if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+						}
+					});
+				}
+			}
+		}
+	}
+}
+
+function deleteMultipleAssignments() {
+	function displayNotification(success, failed) {
+		var timer = 2000;
+		if (success > 0 && failed > 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('deleteSuccessFailAssignment', { success: success, failed: failed })
+			}, {
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else if (failed == 0) {
+			$.notify({
+				icon: "notifications",
+				message: document.webL10n.get('deleteAssignmentSuccess', { success: success })
+			}, {
+				type: 'success',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		} else {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('deleteAssignmentFailed')
+			}, {
+				type: 'danger',
+				timer: timer,
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+		setTimeout(function () {
+			location.reload();
+		}, timer);
+	}
+	if (document.getElementsByClassName("assignments-checkbox").length > 0) {
+		var check = document.getElementsByClassName("assignments-checkbox");
+		var toBeDeleted = [];
+		var totalSelected = 0;
+		var totalDeleted = 0;
+		var totalFailed = 0;
+		for (var i = 0; i < check.length; i++) {
+			if (check[i].checked) {
+				totalSelected++;
+				if (check[i].getAttribute("aid")) toBeDeleted.push(check[i].getAttribute("aid"));
+				else {
+					totalFailed++;
+					continue;
+				}
+			}
+		}
+
+		if (totalSelected == 0) {
+			$.notify({
+				icon: "error",
+				message: document.webL10n.get('noAssignmentSelectedDelete')
+			}, {
+				type: 'danger',
+				placement: {
+					from: 'top',
+					align: 'right'
+				}
+			});
+		}
+		else {
+			var confirmation = confirm(document.webL10n.get('deleteAssignmentConfirmation', { selected: totalSelected }));
+			if (confirmation) {
+				if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+				for (var i = 0; i < toBeDeleted.length; i++) {
+					$.ajax({
+						url: ('/api/v1/assignments/' + toBeDeleted[i] + '?' + decodeURIComponent($.param({
+							x_key: headers['x-key'],
+							access_token: headers['x-access-token']
+						}))),
+						type: 'DELETE',
+						success: function (response) {
+							if (response && response.id) {
+								totalDeleted++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							} else {
+								totalFailed++;
+								if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
+							}
+						},
+						fail: function () {
 							totalFailed++;
 							if (totalDeleted + totalFailed == totalSelected) displayNotification(totalDeleted, totalFailed);
 						}

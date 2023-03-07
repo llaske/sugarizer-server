@@ -15,8 +15,8 @@ module.exports = function searchUser(req, res) {
 	};
 
 	//get query params
-	if (req.query.q != '') {
-		query['q'] = req.query.q;
+	if(req.query.q != '') {
+		query['q']=req.query.q;
 	}
 	if (req.query.role != '') {
 		query['role'] = req.query.role;
@@ -33,7 +33,7 @@ module.exports = function searchUser(req, res) {
 	if(req.query.sort !=''){
 		query['sort'] = req.query.sort;
 	}
-
+	
 	// call
 	superagent
 		.get(common.getAPIUrl(req) + 'api/v1/users')

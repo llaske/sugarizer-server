@@ -42,9 +42,10 @@ exports.init = function(settings, database) {
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
+ * @apiParam {String} id Unique user id
+ * 
  * @apiSuccess {String} _id Unique user id
- * @apiSuccess {String} name Unique user name
- * @apiSuccess {String} role User role (student or admin)
+ * @apiSuccessearchs {String} role User role (student or admin)
  * @apiSuccess {Object} color Buddy color
  * @apiSuccess {String} color.stroke Buddy strike color
  * @apiSuccess {String} color.fill Buddy fill color
@@ -105,7 +106,7 @@ exports.findById = function(req, res) {
 };
 
 // function to generate OTP Token for QR code.
-function generateOTPToken (username, serviceName, secret){
+function generateOTPToken(username, serviceName, secret){
 	return otplib.authenticator.keyuri(
 		username,
 		serviceName,
@@ -390,7 +391,7 @@ exports.findAll = function(req, res) {
 	query = addQuery('name', req.query, query);
 	query = addQuery('language', req.query, query);
 	query = addQuery('role', req.query, query, 'student');
-	query = addQuery('q', req.query, query);
+	query=addQuery('q',req.query,query)
 	if (req.query.stime) {
 		query['timestamp'] = {
 			'$gte': parseInt(req.query.stime)
@@ -468,7 +469,6 @@ function formPaginatedUrl(route, params, offset, limit) {
 
 //get all users
 exports.getAllUsers = function(query, options, callback) {
-
 	//get data
 	db.collection(usersCollection, function(err, collection) {
 		var conf = [
@@ -494,17 +494,15 @@ exports.getAllUsers = function(query, options, callback) {
 					insensitive: { "$toLower": "$name" }
 				}
 			},
-			{ 
+			{
 				$sort: {
 					"insensitive": 1
 				}
 			}
 		];
-
 		if (options.enableSecret == true) {
 			conf[1]["$project"]["uniqueSecret"] = 1;
 		}
-
 		if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >=2) {
 			conf[1]["$project"]["insensitive"] = { "$toLower": "$" + options.sort[0][0] };
 
@@ -518,8 +516,7 @@ exports.getAllUsers = function(query, options, callback) {
 				};
 			}
 		}
-
-		collection.aggregate(conf, function (err, users) {
+		collection.aggregate(conf, async function(err, users) {
 			if (options.skip) users.skip(options.skip);
 			if (options.limit) users.limit(options.limit);
 			//return
@@ -557,11 +554,10 @@ function addQuery(filter, params, query, default_val) {
 
 	//check default case
 	query = query || {};
-
 	//validate
 	if (typeof params[filter] != "undefined" && typeof params[filter] === "string") {
-
-		if (filter == 'q') {
+		
+		if(filter=='q'){
 			query['name'] = {
 				$regex: new RegExp(params[filter], "i")
 			};
@@ -762,7 +758,7 @@ exports.addUser = function(req, res) {
 };
 
 /**
- * @api {put} api/v1/users/ Update user
+ * @api {put} api/v1/users/:uid Update user
  * @apiName UpdateUser
  * @apiDescription Update an user. Return the user updated. Student or teacher can update only his/her details but admin can update anyone.
  * @apiGroup Users
@@ -770,6 +766,8 @@ exports.addUser = function(req, res) {
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
+ * @apiParam {String} uid Unique user id to update
+ * 
  * @apiSuccess {String} _id Unique user id
  * @apiSuccess {String} name Unique user name
  * @apiSuccess {String} role User role (admin, student or teacher)
@@ -1046,4 +1044,3 @@ exports.updateUserTimestamp = function(uid, callback) {
 		});
 	});
 };
-
