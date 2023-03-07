@@ -391,8 +391,7 @@ exports.findAll = function(req, res) {
 	query = addQuery('name', req.query, query);
 	query = addQuery('language', req.query, query);
 	query = addQuery('role', req.query, query, 'student');
-	// query = addQuery('q', req.query, query);
-	query=addQuery('username',req.query,query)
+	query = addQuery('q', req.query, query);
 	if (req.query.stime) {
 		query['timestamp'] = {
 			'$gte': parseInt(req.query.stime)
@@ -564,7 +563,7 @@ function addQuery(filter, params, query, default_val) {
 	if (typeof params[filter] != "undefined" && typeof params[filter] === "string") {
 
 		// if (filter == 'q') {
-		if(filter=='username'){
+		if(filter=='q'){
 			query['name'] = {
 				$regex: new RegExp(params[filter], "i")
 			};
