@@ -30,6 +30,7 @@
 		"nyc": "^15.1.0",
 		"otplib": "^12.0.1",
 		"qrcode": "^1.4.4",
+		"selenium-webdriver": "^4.8.1",
 		"streamifier": "^0.1.1",
 		"superagent": "^5.2.2",
 		"ws": "~7.4.0"
@@ -50,6 +51,7 @@
 	},
 	"scripts": {
 		"test": "mocha api/test/ --timeout 20000 --exit",
+		"test:frontend": "mocha dashboard/test --no-timeouts",
 		"coverage": "nyc --exclude 'dashboard/**' mocha api/test/ --timeout 20000 --exit",
 		"docs": "apidoc -i api/controller -i dashboard/helper -o docs/www/",
 		"start": "nodemon sugarizer.js",
