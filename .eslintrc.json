@@ -98,6 +98,12 @@
                 "node": true,
                 "es6": true
             }
+        },
+        {
+            "files":["dashboard/test/*.js"],
+            "parserOptions": {
+                "ecmaVersion": 2017
+            }
         }
     ]
 }
