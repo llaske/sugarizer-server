@@ -46,10 +46,12 @@
 		"grunt-contrib-nodeunit": "^4.0.0",
 		"grunt-terser": "~1.0.0",
 		"mocha": "~10.2.0",
+		"mochawesome": "^7.1.3",
 		"nodemon": "*"
 	},
 	"scripts": {
 		"test": "mocha api/test/ --timeout 20000 --exit",
+		"test:coverage": "mocha api/test/ --reporter mochawesome --timeout 20000 --exit",
 		"coverage": "nyc --exclude 'dashboard/**' mocha api/test/ --timeout 20000 --exit",
 		"docs": "apidoc -i api/controller -i dashboard/helper -o docs/www/",
 		"start": "nodemon sugarizer.js",
