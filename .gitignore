@@ -14,3 +14,5 @@ build/
 tmp/
 
 .nyc_output/
+
+mochawesome-report/
