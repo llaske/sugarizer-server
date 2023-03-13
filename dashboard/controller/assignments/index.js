@@ -9,6 +9,7 @@ var superagent = require('superagent'),
 	launchAssignment = require('./launchAssignment'),
 	addComment = require('./addComment'),
 	returnAssignment = require('./returnAssignment');
+	exportCSV = require('./exportCSV');
 
 var _util = require('../journal/util'),
 	getActivities = _util.getActivities;
@@ -91,3 +92,4 @@ exports.getAllDeliveries = getAllDeliveries;
 exports.launchAssignment = launchAssignment;
 exports.addComment = addComment;
 exports.returnAssignment = returnAssignment;
+exports.exportCSV = exportCSV;
