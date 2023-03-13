@@ -100,7 +100,7 @@
             }
         },
         {
-            "files":["dashboard/test/*.js"],
+            "files":["dashboard/test/**/*.js"],
             "parserOptions": {
                 "ecmaVersion": 2017
             }

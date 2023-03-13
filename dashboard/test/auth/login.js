@@ -1,7 +1,7 @@
 //During the test the env variable is set to test
 process.env.NODE_ENV = 'test';
 
-var server = require('../../sugarizer.js');
+var server = require('../../../sugarizer.js');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var timestamp = +new Date();
