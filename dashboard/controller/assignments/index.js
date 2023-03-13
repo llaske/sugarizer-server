@@ -8,7 +8,7 @@ var superagent = require('superagent'),
 	getAllDeliveries = require('./getAllDeliveries'),
 	launchAssignment = require('./launchAssignment'),
 	addComment = require('./addComment'),
-	returnAssignment = require('./returnAssignment');
+	returnAssignment = require('./returnAssignment'),
 	exportCSV = require('./exportCSV');
 
 var _util = require('../journal/util'),
