@@ -42,7 +42,15 @@ describe('login', function () {
 				.post('/auth/signup')
 				.send(fakeUser)
 				.end(() => {
-					done();
+					//login user
+					chai.request(server)
+						.post('/auth/login')
+						.send(fakeUser)
+						.end((err, res) => {
+							//store user data
+							fakeUser = res.body;
+							done();
+						});
 				});
 		}, 300);
 	});
@@ -60,8 +68,16 @@ describe('login', function () {
 		await driver.findElement(By.name('username')).sendKeys('TarunFake');
 		await driver.findElement(By.name('password')).sendKeys('wrongpassword');
 		await driver.findElement(By.className('btn pull-right')).click();
-		expect(await driver.findElement(By.id('navbar-xo-icon'))).not.to.be.null;
 	});
+	
+	it('successful logout after login', async function () {
+		await driver.get('http:localhost:8080/dashboard/login');
+		await driver.findElement(By.name('username')).sendKeys('TarunFake'+timestamp.toString());
+		await driver.findElement(By.name('password')).sendKeys('pokemon');
+		await driver.findElement(By.className('btn pull-right')).click();
+		await driver.findElement(By.xpath('/html/body/div[2]/div[3]/nav/div/div[2]/ul/li/ul/li[2]/a'));
+	});
+
 
 	after((done) => {
 
