@@ -9,7 +9,7 @@ var superagent = require('superagent'),
 	launchAssignment = require('./launchAssignment'),
 	addComment = require('./addComment'),
 	returnAssignment = require('./returnAssignment'),
-    exportAssignment = require('./exportAssignment');
+	exportAssignment = require('./exportAssignment');
 var _util = require('../journal/util'),
 	getActivities = _util.getActivities;
 

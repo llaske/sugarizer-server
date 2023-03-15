@@ -4,41 +4,39 @@ var superagent = require('superagent'),
 	common = require('../../helper/common');
 
 module.exports = function exportAssignment(req, res) {
-	let resultAssignment = [];
-	const { status, user } = req.query;
-	let q = {};
-	if (status) q = { Delivered: status === 'true' ? true : false };
+	var resultAssignment = [];
+	var status = req.query.status;
+	var user = req.query.user;
+	var q = {};
+	if (status) q['Delivered'] = status === 'true' ? true : false ;
 	if (user) {
-		q= {
-			...q,
-			buddy_name: user,
-		};
+		q['buddy_name'] = user;
 	}
 	function validateDelivery(assignmentCheck) {
-		const assign = {
+		var assign = {
 			_id: '',
 			title: '',     //metadata.title
 			status: '',    //metadata.status
 			comment: '',   //metadata.comment
-			activity:'',  //metadata.activity    //metadata.timestamp
+			activity:'',  //metadata.activity
 			isSubmitted:'',  //metadata.isSubmitted
-		}
+		};
 		if (assignmentCheck._id) {
 			assign._id = assignmentCheck._id;
 		}
-		if (assignmentCheck.content[0]?.metadata?.title) {
+		if (assignmentCheck.content[0].metadata.title) {
 			assign.title = assignmentCheck.content[0].metadata.title;
 		}
-		if (assignmentCheck.content[0]?.metadata?.status) {
+		if (assignmentCheck.content[0].metadata.status) {
 			assign.status = assignmentCheck.content[0].metadata.status;
 		}
-		if (assignmentCheck.content[0]?.metadata?.comment) {
+		if (assignmentCheck.content[0].metadata.comment) {
 			assign.comment = assignmentCheck.content[0].metadata.comment;
 		}
-		if (assignmentCheck.content[0]?.metadata?.activity) {
+		if (assignmentCheck.content[0].metadata.activity) {
 			assign.activity = assignmentCheck.content[0].metadata.activity;
 		}
-		if (assignmentCheck.content[0]?.metadata?.isSubmitted) {
+		if (assignmentCheck.content[0].metadata.isSubmitted) {
 			assign.isSubmitted = assignmentCheck.content[0].metadata.isSubmitted;
 		}
 		return assign;
@@ -51,12 +49,10 @@ module.exports = function exportAssignment(req, res) {
 				.set(common.getHeaders(req))
 				.query(q)
 				.end(function (error, response) {
-					console.log('export');
-					console.log(response.body);
 					if (response.statusCode == 200) {
-						response.body.deliveries.map((delivery) => {
-							resultAssignment.push(validateDelivery(delivery));
-						});
+						for(var i=0;i<response.body.deliveries.length;i++){
+							resultAssignment.push(validateDelivery(response.body.deliveries[i]));
+						}
 						callback(resultAssignment);
 					} else {
 						callback(null);
@@ -67,7 +63,7 @@ module.exports = function exportAssignment(req, res) {
 		if (resultAssignment.length == 0) {
 			res.json({ success: false, msg: common.l10n.get('NoAssignmentFound') });
 		} else {
-			res.json({ success: true, msg: common.l10n.get('ExportSuccess'), data: resultAssignment });
+			res.json({ success: true, msg: common.l10n.get('ExportSuccessDeliveries'), data: resultAssignment });
 		}
 		return;
 	});

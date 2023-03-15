@@ -34,7 +34,7 @@
                                             let query= $('#user-form').serialize();
                                             $.ajax({
                                                     type: "GET",
-                                                    url: `/dashboard/assignments/deliveries/export/${window.location.href.split('/').pop()}?`+query,
+                                                    url: `/dashboard/assignments/deliveries/export/${window.location.href.split('/').pop().split('?')[0]}?`+query,
                                                     success: function (res) {
                                                         if (res && res.success) {
                                                             var headers = {

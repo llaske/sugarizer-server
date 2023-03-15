@@ -176,7 +176,7 @@ module.exports = function exportCSV(req, res) {
 		if (users.length == 0) {
 			res.json({success: false, msg: common.l10n.get('NoUsersFound')});
 		} else {
-			res.json({success: true, msg: common.l10n.get('ExportSuccess'), data: users});
+			res.json({success: true, msg: common.l10n.get('ExportSuccessUsers'), data: users});
 		}
 		return;
 	});
