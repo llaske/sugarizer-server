@@ -1,10 +1,9 @@
 // include libraries
 var superagent = require('superagent'),
-	async = require('async'),
 	common = require('../../helper/common');
 
 module.exports = function exportAssignment(req, res) {
-	var resultAssignment = [];
+	var resultAssignments = [];
 	var status = req.query.status;
 	var user = req.query.user;
 	var q = {};
@@ -41,30 +40,23 @@ module.exports = function exportAssignment(req, res) {
 		}
 		return assign;
 	}
-	
-	async.series([
-		function (callback) {
-			superagent
-				.get(common.getAPIUrl(req) + 'api/v1/assignments/deliveries/' + req.params.assignmentId)
-				.set(common.getHeaders(req))
-				.query(q)
-				.end(function (error, response) {
-					if (response.statusCode == 200) {
-						for(var i=0;i<response.body.deliveries.length;i++){
-							resultAssignment.push(validateDelivery(response.body.deliveries[i]));
-						}
-						callback(resultAssignment);
-					} else {
-						callback(null);
-					}
-				});
-		}
-	], function () {
-		if (resultAssignment.length == 0) {
-			res.json({ success: false, msg: common.l10n.get('NoAssignmentFound') });
-		} else {
-			res.json({ success: true, msg: common.l10n.get('ExportSuccessDeliveries'), data: resultAssignment });
-		}
-		return;
-	});
+	superagent
+		.get(common.getAPIUrl(req) + 'api/v1/assignments/deliveries/' + req.params.assignmentId)
+		.set(common.getHeaders(req))
+		.query(q)
+		.end(function (error, response) {
+			if (response.statusCode == 200) {
+				for(var i=0;i<response.body.deliveries.length;i++){
+					resultAssignments.push(validateDelivery(response.body.deliveries[i]));
+				}
+
+				if (resultAssignments.length == 0) {
+					res.json({ success: false, msg: common.l10n.get('NoDeliveriesFound') });
+				} else {
+					res.json({ success: true, msg: common.l10n.get('ExportSuccessDeliveries'), data: resultAssignments });
+				}
+			} else {
+				res.json({ success: false, msg: common.l10n.get('ErrorCode10') });
+			}
+		});
 };
