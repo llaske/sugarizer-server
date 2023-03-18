@@ -29,6 +29,7 @@
 		"multer": "~1.4.1",
 		"nyc": "^15.1.0",
 		"otplib": "^12.0.1",
+		"pre-commit": "^1.2.2",
 		"qrcode": "^1.4.4",
 		"streamifier": "^0.1.1",
 		"superagent": "^5.2.2",
@@ -56,5 +57,8 @@
 		"start:watch": "nodemon sugarizer.js",
 		"seed:users-csv": "node scripts/seed_users.js",
 		"lint": "eslint ."
-	}
+	},
+	"pre-commit": [
+		"lint"
+	]
 }
