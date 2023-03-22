@@ -14,15 +14,9 @@ var fakeUser = {
 //init server
 chai.use(chaiHttp);
 chai.should();
-const expect = require('chai').expect;
-var seleniumDriver = require('selenium-webdriver'),
-	mocha = require('mocha');
-var Builder = seleniumDriver.Builder,
-	By = seleniumDriver.By,
-	Browser = seleniumDriver.Browser;
-var beforeEach = mocha.beforeEach,
-	afterEach = mocha.afterEach;
-
+const {expect} = require('chai');
+const { By, Builder, Browser } = require('selenium-webdriver');
+const { beforeEach, afterEach } = require('mocha');
 var driver;
 chai.request(server)
 	.post('/auth/signup')
