@@ -582,6 +582,58 @@ describe('Assignments', () => {
         });
     });
 
+    // get Assignment Deliveries ---GET---
+
+    describe('/GET/deliveries assignments', () => {
+        it('it should do nothing on invalid assignment', (done) => {
+            chai.request(server)
+                .get('/api/v1/assignments/deliveries')
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .query({
+                    assignmentId:'invalid'
+                })
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    res.body.code.should.be.eql(35);
+                    done();
+                });
+        });
+
+        it('it should return the deliveries of valid assignment', (done) => {
+            chai.request(server)
+                .get('/api/v1/assignments/deliveries')
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .query({
+                    assignmentId: fake.assignment1._id
+                })
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.have.property('deliveries');
+                    res.body.should.have.property('offset');
+                    res.body.should.have.property('limit');
+                    res.body.should.have.property('sort');
+                    res.body.should.have.property('links');
+                    res.body.deliveries.should.be.a("array");
+                    res.body.offset.should.be.a("number");
+                    res.body.limit.should.be.a("number");
+                    res.body.total.should.be.a("number");
+                    res.body.sort.should.be.eql("buddy_name(asc)");
+                    res.body.links.should.be.a("object");
+                    res.body.deliveries.should.be.a("array");
+                    res.body.deliveries.should.have.length.above(0);
+                    for(var i=0;i<res.body.deliveries.length;i++){
+                        var delivery = res.body.deliveries[i];
+                        delivery.should.not.be.null;
+                        delivery.should.have.property("_id");
+                        delivery.should.have.property("content");
+                    }
+                    done();
+                });
+        });
+    });
+
     //delete assignment ---DELETE/:id---
     describe('/DELETE/:id assignments', () => {
         it('it should do nothing on invalid assignment', (done) => {
