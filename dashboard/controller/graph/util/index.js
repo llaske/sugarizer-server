@@ -388,7 +388,7 @@ exports.getRecentAssignmentsDeliveries = function (req,res){
 		var data = '';
 		for (var i = 0; i < allAssignmentsDeliveries.length; i++) {
 			var content = allAssignmentsDeliveries[i].metadata;
-			var url = '';
+			var url = '/dashboard/journal/' + content.user_id+ '?uid=' + content.user_id;
 			data += '<tr onclick="window.document.location=\'' + url + '\'">\
 								<td>' + (i + 1) + '</td>\
 								<td><div class="color" id="' + content.user_id + i.toString() + '"><div class="xo-icon"></div></div></td>\
