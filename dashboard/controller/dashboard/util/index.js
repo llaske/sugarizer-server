@@ -82,3 +82,21 @@ exports.getAllClassrooms = function(req, res, callback) {
 			}
 		});
 };
+
+exports.getAllAssignments = function(req,res,callback){
+	//call
+	superagent
+		.get(common.getAPIUrl(req)+'api/v1/assignments/deliveries')
+		.set(common.getHeaders(req))
+		.query(req.query)
+		.end(function (error,response){
+			if(response.statusCode == 200) {
+			//callback
+				callback(response.body);
+			} else {
+				req.flash('errors',{
+					msg: common.l10n.get('ErrorCode'+response.body.code)
+				});
+			}
+		});
+};

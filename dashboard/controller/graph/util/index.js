@@ -359,3 +359,50 @@ function getActivities(req, res, callback) {
 			}
 		});
 }
+function extractContent(allAssignmentsDeliveries){
+	var allContent = [];
+
+	for(var i=0;i < allAssignmentsDeliveries.length ; i++ ) {
+
+		for(var j=0;j< allAssignmentsDeliveries[i].content.length ; j++){
+			allContent.push(allAssignmentsDeliveries[i].content[j]);
+		}
+	}
+	return allContent;
+}
+exports.getRecentAssignmentsDeliveries = function (req,res){
+	req.query["Delivered"] = "true";
+	dashboard_utils.getAllAssignments(req,res,function(allAssignmentsObject){
+		var allAssignmentsDeliveries = extractContent(allAssignmentsObject.deliveries);
+		//sort entries
+		allAssignmentsDeliveries.sort(function(a, b) {
+			if (a.metadata.timestamp > b.metadata.timestamp)
+				return -1;
+			if (a.metadata.timestamp < b.metadata.timestamp)
+				return 1;
+			return 0;
+		});
+
+		//limit 5
+		allAssignmentsDeliveries = allAssignmentsDeliveries.splice(0, 5);
+		var data = '';
+		for (var i = 0; i < allAssignmentsDeliveries.length; i++) {
+			var content = allAssignmentsDeliveries[i].metadata;
+			var url = '';
+			data += '<tr onclick="window.document.location=\'' + url + '\'">\
+								<td>' + (i + 1) + '</td>\
+								<td><div class="color" id="' + content.user_id + i.toString() + '"><div class="xo-icon"></div></div></td>\
+								<script>new icon().load("/public/img/owner-icon.svg", ' + JSON.stringify(content.buddy_color) + ', "' + content.user_id + i.toString() + '")</script>\
+								<td title="' + content.title + '">' + content.title + '</td>\
+								<td title="' + content.buddy_name + '">' + content.buddy_name + '</td>\
+								<td class="text-muted">' + moment(content.timestamp).calendar(); + '</td>\
+						</tr>';
+		}
+		return res.json({
+			data: data,
+			element: req.query.element,
+			graph: 'table'
+		});
+	});
+
+};
