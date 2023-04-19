@@ -376,9 +376,9 @@ exports.getRecentAssignmentsDeliveries = function (req,res){
 		var allAssignmentsDeliveries = extractContent(allAssignmentsObject.deliveries);
 		//sort entries
 		allAssignmentsDeliveries.sort(function(a, b) {
-			if (a.metadata.timestamp > b.metadata.timestamp)
+			if (a.metadata.submissionDate > b.metadata.submissionDate)
 				return -1;
-			if (a.metadata.timestamp < b.metadata.timestamp)
+			if (a.metadata.submissionDate < b.metadata.submissionDate)
 				return 1;
 			return 0;
 		});
@@ -395,7 +395,7 @@ exports.getRecentAssignmentsDeliveries = function (req,res){
 								<script>new icon().load("/public/img/owner-icon.svg", ' + JSON.stringify(content.buddy_color) + ', "' + content.user_id + i.toString() + '")</script>\
 								<td title="' + content.title + '">' + content.title + '</td>\
 								<td title="' + content.buddy_name + '">' + content.buddy_name + '</td>\
-								<td class="text-muted">' + moment(content.timestamp).calendar(); + '</td>\
+								<td class="text-muted">' + moment(content.submissionDate).calendar(); + '</td>\
 						</tr>';
 		}
 		return res.json({
