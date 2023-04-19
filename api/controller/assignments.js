@@ -435,9 +435,11 @@ exports.findAllDeliveries = function (req, res) {
 				as: "item",
 				cond:{}
 			};
+			if (query["metadata.isSubmitted"]) {
+				filters["cond"] = {$eq:["$$item.metadata.isSubmitted", query["metadata.isSubmitted"]['$eq']]};
+			}
 			if (assignmentId) {
-				filters["cond"] = { $eq: ["$$item.metadata.assignmentId", assignmentId] };
-			
+				filters["cond"] = {$eq:["$$item.metadata.assignmentId", assignmentId]};
 			}
 			collection.aggregate([
 				{
