@@ -857,4 +857,18 @@ describe('Assignments', () => {
             }
         });
     }
+
+    after((done) =>{
+        chai.request(server)
+        .delete('/api/v1/journal/' + fake.teacher1.user.private_journal)
+        .set('x-access-token', fake.teacher1.token)
+        .set('x-key', fake.teacher1.user._id)
+        .query({
+            oid:"ffffffff-ffff-ffff-ffff-fffffffffff1"
+        })
+        .end((err, res) => {
+            res.should.have.status(200);
+            done();
+        });
+    });
 });
