@@ -16,13 +16,20 @@ chai.use(chaiHttp);
 chai.should();
 const {expect} = require('chai');
 const { By, Builder, Browser } = require('selenium-webdriver');
+const Chrome = require('selenium-webdriver/chrome');
 const { beforeEach, afterEach } = require('mocha');
 var driver;
 chai.request(server)
 	.post('/auth/signup')
 	.send(fakeUser);
 beforeEach(function () {
-	driver = new Builder().forBrowser(Browser.CHROME).build();
+	if (process.platform === "linux") {
+		const service = new Chrome.ServiceBuilder('/snap/bin/chromium.chromedriver'); 
+		driver = new Builder().forBrowser('chrome').setChromeService(service).setChromeOptions(new Chrome.Options().addArguments( ['--headless','--no-sandbox'])).build();
+	} else {
+		driver = new Builder().forBrowser(Browser.CHROME).build();
+	}
+
 });
 afterEach(function () {
 	driver.quit();
