@@ -1,14 +1,14 @@
-<%- include ../includes/header %>
+<%- include ('../includes/header') %>
   <div class="wrapper">
-  	<%- include ../includes/sidebar %>
+  	<%- include ('../includes/sidebar') %>
     	<div class="main-panel">
-    	<%- include ../includes/navbar %>
+    	<%- include ('../includes/navbar') %>
     		<div class="content">
     			<div class="container-fluid">
             <div class="col-md-8 col-lg-8 col-sm-12">
               <div class="card">
                 <div class="card-content">
-                    <%- include ../includes/flash-errors %>
+                    <%- include ('../includes/flash-errors') %>
                     <form id="classroom-add-edit-form" method="post" <% if(typeof classroom == 'object'){ %> action="<%= classroom._id %>" <% } %>>
                         <div class="row" id="editClassroom-name">
                             <div class="col-md-12">
@@ -126,7 +126,7 @@
       </div>
     </div>
   </div>
-<%- include ../includes/footer %>
+<%- include ('../includes/footer') %>
 
 <script>
     var currTour = sugarizerTour("editClassroom", <% if (account.user && account.user.role=="admin") { %> "admin" <% } else { %> "teacher" <% } %>, "<%= mode %>");
