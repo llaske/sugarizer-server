@@ -87,6 +87,7 @@ module.exports = function (app, ini) {
 	app.get('/dashboard/assignments/edit/:assignmentId', authController.validateSession, assignmentsController.editAssignment);
 	app.get('/dashboard/assignments/edit/:assignmentId', authController.validateSession, assignmentsController.editAssignment);
 	app.post('/dashboard/assignments/edit/:assignmentId', authController.validateSession, assignmentsController.editAssignment);
+	app.post('/dashboard/assignments/edit/:assignmentId', authController.validateSession, assignmentsController.editAssignment);
 
 
 	// If no route is matched by now, it must be a 404
