@@ -23,6 +23,7 @@
                                 <% if (account.user && account.user.role=="admin") { %>
                                 <option data-l10n-id="teacher" value="teacher" <% if(query.role=='teacher'){ %>selected="selected"<% } %> >Teacher</option>
                                 <option data-l10n-id="admin" value="admin" <% if(query.role=='admin'){ %>selected="selected"<% } %> >Admin</option>
+                                <option data-l10n-id="all" value="all" <% if(query.role=='all'){ %>selected="selected"<% } %> >All</option>
                                 <% } %>
                               </select>
 							  <script>$('#user-form [name="role"]').select2().on("change", () => show_class_fields())</script>
@@ -71,11 +72,16 @@
                                 <a href="#" onclick="deleteMultipleUsers(); return false;" class="btn btn-round" data-l10n-id="multidelete" title="Delete Multiple"><i class="material-icons text-muted">delete_forever</i></a>
                             </div>
                             <div class="btn pull-right btn-round" onclick="downloadUsers()" data-l10n-id="ExportUsers" id="users-exportusers">Export Users</div>
-                            <script>
+                            <script>                        
+                                var roleValue = document.getElementById('user-type-select2').value;
+                                var usernameValue = document.getElementById('username').value;
+                                var classroomValue = document.getElementById('classroom_select').value; 
+                                classroomValue = classroomValue == '' ? 'undefined' : classroomValue;                          
+                                usernameValue = usernameValue == '' ? 'undefined' : usernameValue;                            
                                 function downloadUsers(event) {
                                     $.ajax({
                                             type: "GET",
-                                            url: "/dashboard/users/export",
+                                            url: `/dashboard/users/export/${roleValue}/${usernameValue}/${classroomValue}`,
                                             success: function (res) {
                                                 if (res && res.success) {
                                                     var headers = {
