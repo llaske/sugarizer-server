@@ -28,6 +28,53 @@
                                 <div class="col-md-3"></div>
                                 <div class="col-md-6">
                                     <button class="btn btn-round pull-right" type="submit" data-l10n-id="showResults"><div class="ripple-container"></div></button>
+                                    <div class="btn pull-right btn-round" onclick="downloadAssignmentDeliveries()" data-l10n-id="ExportAssignemnts" id="users-exportassignment"></div>
+                                    <script>
+                                        function downloadAssignmentDeliveries(event) {
+                                            let query= $('#user-form').serialize();
+                                            $.ajax({
+                                                    type: "GET",
+                                                    url: `/dashboard/assignments/deliveries/export/${window.location.href.split('/').pop().split('?')[0]}?`+query,
+                                                    success: function (res) {
+                                                        if (res && res.success) {
+                                                            var headers = {
+                                                                _id: 'id',
+                                                                title: 'title',
+                                                                status: 'status',
+                                                                comment: 'comment',
+                                                                activity:'activity',
+                                                                isSubmitted:'isSubmitted',
+                                                            };
+                                                            exportCSVFile(headers, res.data, 'AssignmentExport');
+                                                            $.notify({
+                                                                icon: "notifications",
+                                                                message: res.msg
+        
+                                                            },{
+                                                                type: 'success',
+                                                                timer: 2000,
+                                                                placement: {
+                                                                    from: 'top',
+                                                                    align: 'right'
+                                                                }
+                                                            });
+                                                        } else {
+                                                            $.notify({
+                                                                icon: "error",
+                                                                message: res.msg
+                                                            },{
+                                                                type: 'danger',
+                                                                timer: 2000,
+                                                                placement: {
+                                                                    from: 'top',
+                                                                    align: 'right'
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                });
+                                        }
+                                    </script>
                                 </div>
                             </form>
                         </div>
