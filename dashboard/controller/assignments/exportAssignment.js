@@ -14,11 +14,14 @@ module.exports = function exportAssignment(req, res) {
 	function validateDelivery(assignmentCheck) {
 		var assign = {
 			_id: '',
-			title: '',     //metadata.title
-			status: '',    //metadata.status
-			comment: '',   //metadata.comment
-			activity:'',  //metadata.activity
-			isSubmitted:'',  //metadata.isSubmitted
+			title: '',             //metadata.title
+			name: '',              //metadata.buddy_name
+			status: 'Expected',    //metadata.status
+			deliveryDate: '',      //metadata.submissionDate
+			score: '',	           //metadata.score
+			comment: '',           //metadata.comment
+			activity:'',           //metadata.activity
+			isSubmitted:'',        //metadata.isSubmitted
 		};
 		if (assignmentCheck._id) {
 			assign._id = assignmentCheck._id;
@@ -26,8 +29,17 @@ module.exports = function exportAssignment(req, res) {
 		if (assignmentCheck.content[0].metadata.title) {
 			assign.title = assignmentCheck.content[0].metadata.title;
 		}
+		if (assignmentCheck.content[0].metadata.buddy_name) {
+			assign.name = assignmentCheck.content[0].metadata.buddy_name;
+		}
 		if (assignmentCheck.content[0].metadata.status) {
 			assign.status = assignmentCheck.content[0].metadata.status;
+		}
+		if (assignmentCheck.content[0].metadata.submissionDate) {
+			assign.deliveryDate = new Date(assignmentCheck.content[0].metadata.submissionDate).toLocaleString();
+		}
+		if (assignmentCheck.content[0].metadata.score) {
+			assign.score = assignmentCheck.content[0].metadata.score;
 		}
 		if (assignmentCheck.content[0].metadata.comment) {
 			assign.comment = assignmentCheck.content[0].metadata.comment;
@@ -46,6 +58,10 @@ module.exports = function exportAssignment(req, res) {
 		.query(q)
 		.end(function (error, response) {
 			if (response.statusCode == 200) {
+				// console.log(response.body.deliveries[0]);
+				// console.log(response.body.deliveries[0].content);
+				// console.log(response.body.deliveries[0].content[0]);
+				// console.log(response.body.deliveries[0].content[0].metadata);
 				for(var i=0;i<response.body.deliveries.length;i++){
 					resultAssignments.push(validateDelivery(response.body.deliveries[i]));
 				}
