@@ -58,10 +58,6 @@ module.exports = function exportAssignment(req, res) {
 		.query(q)
 		.end(function (error, response) {
 			if (response.statusCode == 200) {
-				// console.log(response.body.deliveries[0]);
-				// console.log(response.body.deliveries[0].content);
-				// console.log(response.body.deliveries[0].content[0]);
-				// console.log(response.body.deliveries[0].content[0].metadata);
 				for(var i=0;i<response.body.deliveries.length;i++){
 					resultAssignments.push(validateDelivery(response.body.deliveries[i]));
 				}
