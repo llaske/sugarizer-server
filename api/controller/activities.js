@@ -4,14 +4,16 @@ var fs = require('fs'),
 	path = require('path'),
 	ini = require('ini');
 
+var db;
+var activitiesCollection;
+
 // Load into memory the content of activities directory
-var activities;
-var settingsData;
-exports.load = function(settings, callback) {
+exports.load = function(settings, database) {
 
 	// Get settings
-	activities = [];
-	settingsData = settings;
+	var activitiesFromDir = [];
+	db = database;
+	activitiesCollection = settings.collections.activities;
 	var activitiesDirName = settings.activities.activities_directory_name;
 	var templateDirName = settings.activities.template_directory_name;
 	var activityInfoPath = settings.activities.activity_info_path;
@@ -29,6 +31,26 @@ exports.load = function(settings, callback) {
 			console.log("ERROR: can't find activity path '"+activitiesPath+"'");
 			throw err;
 		}
+		var index = 0;
+		var mergedActivitiesAtEnd = function() {
+			// Load activities
+			loadActivities(function(activitiesFromDB) {
+				// Sort activities array by index in .INI favorite property
+				if (!activitiesFromDB) {
+					activitiesFromDir.sort(function(a0, a1) {
+						if (a0.index > a1.index) return 1;
+						else if (a0.index < a1.index) return -1;
+						else return 0;
+					});
+				}
+
+				// Merge current with loaded
+				var merged = mergeActivities(activitiesFromDB, activitiesFromDir);
+
+				// Store activities
+				storeActivities(merged);
+			});
+		};
 		files.forEach(function(file) {
 			// If it's not the template directory
 			if (file != templateDirName) {
@@ -58,7 +80,7 @@ exports.load = function(settings, callback) {
 							}
 
 							// Return the activity
-							activities.push({
+							activitiesFromDir.push({
 								"id": info.Activity.bundle_id,
 								"name": info.Activity.name,
 								"version": info.Activity.activity_version,
@@ -68,24 +90,26 @@ exports.load = function(settings, callback) {
 								"activityId": null,
 								"index": (favorites.indexOf(info.Activity.bundle_id) == -1 ? favoritesLength++ : favorites.indexOf(info.Activity.bundle_id))
 							});
-						});
-						stream.on('end', function() {
-							// Sort activities array by index in .INI favorite property
-							activities.sort(function(a0, a1) {
-								if (a0.index > a1.index) return 1;
-								else if (a0.index < a1.index) return -1;
-								else return 0;
-							});
-							if (callback) {
-								callback();
-								callback = null;
+							if (++index == files.length) {
+								mergedActivitiesAtEnd();
 							}
 						});
 						stream.on('error', function() {
 							console.log("WARNING: can't find info file for '"+activitiesDirName+path.sep + file+"'");
+							if (++index == files.length) {
+								mergedActivitiesAtEnd();
+							}
 						});
+					} else {
+						if (++index == files.length) {
+							mergedActivitiesAtEnd();
+						}
 					}
 				});
+			} else {
+				if (++index == files.length) {
+					mergedActivitiesAtEnd();
+				}
 			}
 		});
 	});
@@ -138,10 +162,11 @@ exports.load = function(settings, callback) {
  *     ]
  **/
 exports.findAll = function(req, res) {
-
-	//process results based on filters and fields
-	var data = process_results(req, activities);
-	res.send(data);
+	loadActivities(function(activities) {
+		//process results based on filters and fields
+		var data = process_results(req, activities);
+		res.send(data);
+	});
 };
 
 /**
@@ -191,21 +216,95 @@ exports.findAll = function(req, res) {
  *     }
  **/
 exports.findById = function(req, res) {
+	loadActivities(function(activities) {
+		//process results based on filters and fields
+		var data = process_results(req, activities);
 
-	//process results based on filters and fields
-	var data = process_results(req, activities);
+		//find by id
+		var id = req.params.id;
+		for (var i = 0; i < data.length; i++) {
+			var activity = data[i];
+			if (activity.id == id) {
+				res.send(activity);
+				return;
+			}
+		}
+		res.send();
+	});
+};
 
-	//find by id
-	var id = req.params.id;
-	for (var i = 0; i < data.length; i++) {
-		var activity = data[i];
-		if (activity.id == id) {
-			res.send(activity);
-			return;
+// Store activities in database
+function storeActivities(activitiesList) {
+	db.collection(activitiesCollection, function(err, collection) {
+		collection.replaceOne(
+			{},
+			{
+				activities: activitiesList
+			},
+			{
+				upsert: true
+			},
+			function(err) {
+				if (err) {
+					console.log(err);
+					return;
+				}
+			}
+		);
+	});
+}
+
+// Load activities in database
+function loadActivities(callback) {
+	db.collection(activitiesCollection, function(err, collection) {
+		collection.findOne(
+			{},
+			function(err, activities) {
+				if (err) {
+					console.log(err);
+					callback(null);
+					return;
+				}
+				callback(activities?activities.activities:null);
+			}
+		);
+	});
+}
+
+// Merge activities list
+function mergeActivities(list1, list2) {
+	// No merge
+	if (!list1) {
+		return list2;
+	}
+
+	// Keep only in list 1 elements in list 2
+	let merged = [];
+	for (let i = 0 ; i < list1.length ; i++) {
+		let activity = list1[i];
+		let found = false;
+		for (let j = 0 ; !found && j < list2.length ; j++) {
+			found = (activity.id == list2[j].id);
+		}
+		if (found) {
+			merged.push(list1[i]);
 		}
 	}
-	res.send();
-};
+
+	// Add in list 1 new elements in list 2
+	for (let i = 0 ; i < list2.length ; i++) {
+		let activity = list2[i];
+		let found = false;
+		for (let j = 0 ; !found && j < list1.length ; j++) {
+			found = (activity.id == list1[j].id);
+		}
+		if (!found) {
+			merged.push(activity);
+		}
+	}
+
+	return merged;
+}
 
 //private function for filtering and sorting
 function addOptions(field, params, options, default_val) {
@@ -294,9 +393,9 @@ function process_results(req, activities) {
 
 
 /**
- * @api {post} api/v1/activities Update details of activities
+ * @api {post} api/v1/activities Update favorites activities
  * @apiName UpdateActivities
- * @apiDescription Update about details of the activities. Only admin can perform this action.
+ * @apiDescription Update list of favorites activities. Only admin can perform this action.
  * @apiGroup Activities
  * @apiVersion 1.0.0
  *
@@ -331,26 +430,35 @@ function process_results(req, activities) {
  *     ]
  **/
 exports.updateActivities = function(req, res) {
-
-	//do changes
-	var locales = settingsData.locales;
-	if (req.body.favorites) {
-		settingsData.activities.favorites = req.body.favorites;
-		settingsData.locales = {};
-	} else {
+	// No favorite provided
+	if (!req.body.favorites) {
 		return res.status(401).send({
 			'error': 'Invalid favorites variable',
 			'code': 9
 		});
 	}
+	var favorites = req.body.favorites.split(',');
+	var favoritesLength = favorites.length;
 
-	// write it back to ini
-	var file = "./env/" + (process.env.NODE_ENV ? process.env.NODE_ENV : 'sugarizer') + ".ini";
-	fs.writeFileSync(file, ini.stringify(settingsData));
-	settingsData.locales = locales;
+	// Load activities
+	loadActivities(function(activities) {
+		// Compute new index depending of position in favorite string
+		for (var i = 0 ; i < activities.length ; i++) {
+			var activity = activities[i];
+			var isFavorite = (favorites.indexOf(activity.id) != -1);
+			activity.index = (!isFavorite ? favoritesLength++ : favorites.indexOf(activity.id));
+			activity.favorite = isFavorite;
+		}
 
-	//update activities list and return
-	exports.load(settingsData, function() {
+		// Sort by index
+		activities.sort(function(a0, a1) {
+			if (a0.index > a1.index) return 1;
+			else if (a0.index < a1.index) return -1;
+			else return 0;
+		});
+
+		// Store activities
+		storeActivities(activities);
 		res.send(activities);
 	});
 };

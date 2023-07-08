@@ -8,7 +8,9 @@ var superagent = require('superagent'),
 	deleteUser = require('./deleteUser'),
 	profile = require('./profile'),
 	importCSV = require('./importCSV'),
-	exportCSV = require('./exportCSV');
+	exportCSV = require('./exportCSV'),
+	enable2FA = require('./enable2FA'),
+	disable2FA = require('./disable2FA');
 
 var _util = require('./util'),
 	getClassrooms = _util.getClassrooms;
@@ -104,3 +106,7 @@ exports.profile = profile;
 exports.importCSV = importCSV;
 
 exports.exportCSV = exportCSV;
+
+exports.enable2FA = enable2FA;
+
+exports.disable2FA = disable2FA;

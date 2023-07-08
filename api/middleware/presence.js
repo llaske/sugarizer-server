@@ -4,7 +4,7 @@ var http = require('http');
 var https = require('https');
 var common = require('../../dashboard/helper/common');
 
-exports.init = function(settings, httpserver, app) {
+exports.init = function(settings, httpserver) {
 	/**
 	 * Global variables
 	 */

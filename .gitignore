@@ -12,3 +12,5 @@ build/
 
 *.csv
 tmp/
+
+.nyc_output/

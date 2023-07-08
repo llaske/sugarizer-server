@@ -1,11 +1,13 @@
 // User handling
 
 var mongo = require('mongodb'),
-	journal = require('./journal');
+	journal = require('./journal'),
+	otplib = require('otplib');
 
 var db;
 
 var usersCollection;
+var serviceName;
 var classroomsCollection;
 var journalCollection;
 var chartsCollection;
@@ -19,6 +21,7 @@ exports.init = function(settings, database) {
 	classroomsCollection = settings.collections.classrooms;
 	journalCollection = settings.collections.journal;
 	chartsCollection = settings.collections.charts;
+	serviceName = settings.security.service_name;
 	db = database;
 
 	var bucket = 'textBucket';
@@ -39,6 +42,8 @@ exports.init = function(settings, database) {
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
+ * @apiParam {String} id Unique user id
+ * 
  * @apiSuccess {String} _id Unique user id
  * @apiSuccess {String} name Unique user name
  * @apiSuccess {String} role User role (student or admin)
@@ -97,6 +102,218 @@ exports.findById = function(req, res) {
 			'_id': new mongo.ObjectID(req.params.uid)
 		}, function(err, item) {
 			res.send(item);
+		});
+	});
+};
+
+// function to generate OTP Token for QR code.
+function generateOTPToken(username, serviceName, secret){
+	return otplib.authenticator.keyuri(
+		username,
+		serviceName,
+		secret
+	);
+}
+
+exports.updateSecret = function(req, res){
+	if (!mongo.ObjectID.isValid(req.user._id)) {
+		res.status(401).send({
+			'error': 'Invalid user id',
+			'code': 8
+		});
+		return;
+	}
+
+	var uid = req.user._id;
+
+	// Save unique secret in database.
+	db.collection(usersCollection, function(err, collection) {
+		collection.findOne({
+			_id: new mongo.ObjectID(uid),
+		}, function(err, user) {
+			// only update database with unique secret if tfa is false or not defined -- for existing users in databse.
+			if (user.tfa === false || typeof user.tfa === "undefined") {
+				var uniqueSecret = otplib.authenticator.generateSecret();
+				db.collection(usersCollection, function(err, collection) {
+					collection.findOneAndUpdate({
+						'_id': new mongo.ObjectID(uid)
+					}, {
+						$set:
+						{
+							uniqueSecret: uniqueSecret
+						}
+					}, {
+						safe: true,
+						returnOriginal: false
+					}, function(err, result) {
+						if (err) {
+							res.status(500).send({
+								'error': 'An error has occurred',
+								'code': 7
+							});
+						} else if (result) {
+							var updatedUser = result.value;
+							var name = updatedUser.name;
+							var manualKey = updatedUser.uniqueSecret;
+							var otpAuth = generateOTPToken(name, serviceName, manualKey);
+
+							delete updatedUser.password;
+							//send user, manualKey and otpAuth for QRCode async function.
+							res.send({
+								user: updatedUser,
+								uniqueSecret: manualKey,
+								otpAuth: otpAuth
+							});
+						} else {
+							res.status(401).send({
+								'error': 'Inexisting user id',
+								'code': 8
+							});
+						}
+					});
+				});
+			} else if (user.tfa === true) {
+				res.status(500).send({
+					'error': 'An error has occurred',
+					'code': 7
+				});
+			}
+		});
+	});
+
+};
+
+exports.verifyTOTP = function(req, res) {
+	//validate
+	if (!mongo.ObjectID.isValid(req.user._id)) {
+		res.status(401).send({
+			'error': 'Invalid user id',
+			'code': 8
+		});
+		return;
+	}
+
+	var uid = req.user._id;
+
+	if (!req.body.userToken) {
+		res.status(401).send({
+			'error': 'User Token not defined',
+			'code': 31
+		});
+		return;
+	}
+
+	var uniqueToken = req.body.userToken;
+
+	db.collection(usersCollection, function(err, collection) {
+		collection.findOne({
+			_id: new mongo.ObjectID(uid),
+		}, function(err, user) {
+			var uniqueSecret = user.uniqueSecret;
+			if (!err) {
+				try {
+					var isValid = otplib.authenticator.check(uniqueToken, uniqueSecret);
+				} catch (err) {
+					res.status(401).send({
+						'error': 'Could not verify OTP error in otplib',
+						'code': 32
+					});
+				}
+				if(isValid === true) {
+					db.collection(usersCollection, function(err, collection) {
+						collection.findOneAndUpdate({
+							'_id': new mongo.ObjectID(uid)
+						}, {
+							$set:
+							{
+								tfa: isValid
+							}
+						}, {
+							safe: true,
+							returnOriginal: false
+						}, function(err, result) {
+							if (err) {
+								res.status(500).send({
+									'error': 'An error has occurred',
+									'code': 7
+								});
+							} else {
+								if (result && result.ok && result.value) {
+									var user = result.value;
+									delete user.password;
+									delete user.uniqueSecret;
+									res.send(user);
+								} else {
+									res.status(401).send({
+										'error': 'Inexisting user id',
+										'code': 8
+									});
+								}
+							}
+						});
+					});
+				} else {
+					res.status(401).send({
+						'error': 'Wrong TOTP!!',
+						'code': 33
+					});
+					return;
+				}
+			} else {
+				res.status(500).send({
+					'error': 'An error has occurred',
+					'code': 7
+				});
+			}
+		});
+	});
+
+};
+
+exports.disable2FA = function(req, res) {
+	//validate
+	if (!mongo.ObjectID.isValid(req.user._id)) {
+		res.status(401).send({
+			'error': 'Invalid user id',
+			'code': 8
+		});
+		return;
+	}
+
+	var uid = req.user._id;
+
+	//disable TOTP
+	db.collection(usersCollection, function(err, collection) {
+		collection.findOneAndUpdate({
+			'_id': new mongo.ObjectID(uid)
+		}, {
+			$set:
+				{
+					tfa: false,
+					uniqueSecret: undefined
+				}
+		}, {
+			safe: true,
+			returnOriginal: false
+		}, function(err, result) {
+			if (err) {
+				res.status(500).send({
+					'error': 'An error has occurred',
+					'code': 7
+				});
+			} else {
+				if (result && result.ok && result.value) {
+					var user = result.value;
+					delete user.password;
+					delete user.uniqueSecret;
+					res.send(result.value);
+				} else {
+					res.status(401).send({
+						'error': 'Inexisting user id',
+						'code': 8
+					});
+				}
+			}
 		});
 	});
 };
@@ -270,6 +487,7 @@ exports.getAllUsers = function(query, options, callback) {
 					options: 1,
 					created_time: 1,
 					timestamp: 1,
+					tfa: 1,
 					private_journal: 1,
 					shared_journal: 1,
 					favorites: 1,
@@ -278,12 +496,16 @@ exports.getAllUsers = function(query, options, callback) {
 					insensitive: { "$toLower": "$name" }
 				}
 			},
-			{ 
+			{
 				$sort: {
 					"insensitive": 1
 				}
 			}
 		];
+
+		if (options.enableSecret == true) {
+			conf[1]["$project"]["uniqueSecret"] = 1;
+		}
 
 		if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >=2) {
 			conf[1]["$project"]["insensitive"] = { "$toLower": "$" + options.sort[0][0] };
@@ -299,7 +521,7 @@ exports.getAllUsers = function(query, options, callback) {
 			}
 		}
 
-		collection.aggregate(conf, function (err, users) {
+		collection.aggregate(conf, function(err, users) {
 			if (options.skip) users.skip(options.skip);
 			if (options.limit) users.limit(options.limit);
 			//return
@@ -459,6 +681,10 @@ exports.addUser = function(req, res) {
 	user.created_time = +new Date();
 	user.timestamp = +new Date();
 	user.role = (user.role ? user.role.toLowerCase() : 'student');
+	// api test condition
+	if (!user.tfa) {
+		user.tfa = false;
+	}
 
 	if ((req.user && req.user.role=="teacher") && (user.role=="admin" || user.role=="teacher")) {
 		res.status(401).send({
@@ -538,7 +764,7 @@ exports.addUser = function(req, res) {
 };
 
 /**
- * @api {put} api/v1/users/ Update user
+ * @api {put} api/v1/users/:uid Update user
  * @apiName UpdateUser
  * @apiDescription Update an user. Return the user updated. Student or teacher can update only his/her details but admin can update anyone.
  * @apiGroup Users
@@ -546,6 +772,8 @@ exports.addUser = function(req, res) {
  * @apiHeader {String} x-key User unique id.
  * @apiHeader {String} x-access-token User access token.
  *
+ * @apiParam {String} uid Unique user id to update
+ * 
  * @apiSuccess {String} _id Unique user id
  * @apiSuccess {String} name Unique user name
  * @apiSuccess {String} role User role (admin, student or teacher)
@@ -822,4 +1050,3 @@ exports.updateUserTimestamp = function(uid, callback) {
 		});
 	});
 };
-

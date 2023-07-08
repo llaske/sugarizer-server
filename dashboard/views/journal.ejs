@@ -1,11 +1,11 @@
-<%- include includes/header %>
+<%- include ('includes/header') %>
 <div class="wrapper">
-	<%- include includes/sidebar %>
+	<%- include ('includes/sidebar') %>
 	<div class="main-panel">
-	<%- include includes/navbar %>
+	<%- include ('includes/navbar') %>
 		<div class="content">
 			<div class="container-fluid">
-				<%- include includes/flash-errors %>
+				<%- include ('includes/flash-errors') %>
 				<div class="row">
 					<div class="card" id="journal-search-card">
 							<form method="get" action="" id="getJournalEntries">
@@ -116,6 +116,7 @@
 																	<td>
 																		<div class="color" id="<%= entries.entries[i].objectId %>">
 																			<div class="xo-icon"></div>
+																			<div class="assignment-icon-tag" style="visibility: <%= entries.entries[i].metadata.assignmentId ? 'visible' : 'hidden' %>"></div>
 																		</div>
 																	</td>
 																	<script>
@@ -174,7 +175,7 @@
 		</div>
 	</div>
 </div>
-<%- include includes/footer %>
+<%- include ('includes/footer') %>
 <script>
 	//set headers
 	var headers = <%- JSON.stringify(headers) %>;

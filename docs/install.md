@@ -14,7 +14,7 @@ To run Sugarizer Server using Docker and Docker Compose:
 
 Install Docker Compose
 
-	curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" > /usr/local/bin/docker-compose
+	curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 	chmod +x /usr/local/bin/docker-compose
 
 To install Docker Compose on ARM architectures (e.g. for the Raspberry Pi 3), the link above will not work.  You need to use [arm-compose](https://github.com/hypriot/arm-compose) instead.
@@ -40,7 +40,7 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
 
     sudo apt-get install nodejs
 
-**Install MongoDB**: Install MongoDB (2.6+). Don't forget to create a /data/db directory to store databases. See [here](http://www.mongodb.org/ "here") more information.
+**Install MongoDB**: Install MongoDB (3.2+). Don't forget to create a /data/db directory to store databases. See [here](http://www.mongodb.org/ "here") more information.
 
     sudo apt-get install mongodb
     sudo mkdir -p /data/db
@@ -66,40 +66,66 @@ To run Sugarizer Server **without Docker**, follow the step behind. Commands are
 
 ## Run Sugarizer on MacOS
 
-**Install homebrew**:Run this command on terminal
+**Install Xcode Command-Line Tools:** Install the Xcode command-line tools by running the following command in your macOS Terminal.   
 
-        /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+        xcode-select --install
+  
+**Install homebrew:** Run this command on terminal.
+
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 *To check the version type the following command.*
-        
+
         brew -v
 
-**Installing Node.js**:In the terminal type the following command to install Node.
-        
+**Installing NodeJS:** In the terminal type the following command to install Node.
+  
         brew install node
 
 *If everything installed successfully then you can type in the following command in the terminal to check the Node and NPM version.*
-        
+
         node -v
         npm -v
 
+  
 **Install and Run MongoDB with Homebrew**
 
-*Open the Terminal and type*
+*Tap the MongoDB Homebrew Tap to download the official Homebrew formula for MongoDB and the Database Tools, by running the following command in your macOS Terminal.*
 
-        brew install mongodb
+        brew tap mongodb/brew
 
-*After downloading Mongo, create the “db” directory. This is where the Mongo data files will live. You can create the directory in the default location by running*
-        
-        mkdir -p /data/db
+*To install MongoDB, run the following command in your macOS Terminal application.*
 
-*Make sure that the /data/db directory has the right permissions by running*
-        
-        sudo chown -R `id -un` /data/db
+        brew install mongodb-community@6.0
 
-Run the Mongo daemon, in one of your terminal windows run " mongod ". This should start the Mongo server. 
+*After downloading Mongo, data directory is where the Mongo data files will live. You can visit the default directory using the below commands in your terminal.*
 
-To stop the Mongo daemon hit ctrl-c
+- Apple M1 processors 
+
+        /opt/homebrew/var/mongodb  
+
+- Intel processors
+
+        /usr/local/var/mongodb 
+
+If incase you want to check where does the data directory lives in finder, you can take the help from this [link](https://macpaw.com/how-to/access-opt-folder-on-mac#:~:text=Whatever%20the%20format%20you%20find,one%20in%20its%20own%20subdirectory.%E2%80%9D
+).
+
+*To **run** MongoDB (i.e. the  mongod) **manually as a background process**, run:*
+
+- For macOS running Intel processors:  
+
+        mongod --config /usr/local/etc/mongod.conf --fork
+
+- For macOS running on Apple M1 processors:
+
+        mongod --config /opt/homebrew/etc/mongod.conf --fork
+  
+*To **stop** the MongoDB  process running in background, run:*
+
+        mongosh
+        use admin
+        db.shutdownServer()
 
 
 **Install Sugarizer Client and Server**

@@ -4,7 +4,7 @@ var mongo = require('mongodb'),
 	streamifier = require('streamifier'),
 	fs = require('fs'),
 	path = require('path');
-
+var common = require('../controller/utils/common');
 
 var db;
 
@@ -18,6 +18,46 @@ var sugarizerVersion = null;
 var gridfsbucket, CHUNKS_COLL, FILES_COLL;
 
 //- Utility functions
+// Extract from https://gist.github.com/kongchen/941a652882d89bb96f87
+function _toUTF8(str) {
+	var utf8 = [];
+	for (var i=0; i < str.length; i++) {
+		var charcode = str.charCodeAt(i);
+		if (charcode < 0x80) utf8.push(charcode);
+		else if (charcode < 0x800) {
+			utf8.push(0xc0 | (charcode >> 6),
+				0x80 | (charcode & 0x3f));
+		}
+		else if (charcode < 0xd800 || charcode >= 0xe000) {
+			utf8.push(0xe0 | (charcode >> 12),
+				0x80 | ((charcode>>6) & 0x3f),
+				0x80 | (charcode & 0x3f));
+		}
+		// surrogate pair
+		else {
+			i++;
+			// UTF-16 encodes 0x10000-0x10FFFF by
+			// subtracting 0x10000 and splitting the
+			// 20 bits of 0x0-0xFFFFF into two halves
+			charcode = 0x10000 + (((charcode & 0x3ff)<<10)
+				| (str.charCodeAt(i) & 0x3ff));
+			utf8.push(0xf0 | (charcode >>18),
+				0x80 | ((charcode>>12) & 0x3f),
+				0x80 | ((charcode>>6) & 0x3f),
+				0x80 | (charcode & 0x3f));
+		}
+	}
+	return utf8;
+}
+function _toUTF16(input) {
+	var i, str = '';
+
+	for (i = 0; i < input.length; i++) {
+		str += '%' + ('0' + input[i].toString(16)).slice(-2);
+	}
+	str = decodeURIComponent(str);
+	return str;
+}
 
 // Init database
 exports.init = function(settings, database) {
@@ -271,10 +311,11 @@ exports.addJournal = function(req, res) {
  * @apiParam {Boolean} [oid] filter on object id of the activity <code>e.g. oid=4837240f-bf78-4d22-b936-3db96880f0a0</code>
  * @apiParam {String} [uid] filter on user id <code>e.g. uid=5569f4b019e0b4c9525b3c97</code>
  * @apiParam {String} [fields=metadata] field limiting <code>e.g. fields=text,metadata </code>
- * @apiParam {String} [sort=+timestamp] Order of results <code>e.g. sort=-timestamp or sort=-creation_time</code>
+ * @apiParam {String} [sort=+timestamp] Order of results <code>e.g. sort=-timestamp or sort=-creation_time or sort=-dueDate or sort=-textsize</code>
  * @apiParam {String} [title] entry title contains the text (case insensitive) <code>e.g. title=cTIviTy</code>
  * @apiParam {Number} [stime] results starting from stime in ms <code>e.g. stime=712786812367</code>
  * @apiParam {Boolean} [favorite] filter on favorite field <code>e.g. favorite=true or favorite=false</code>
+ * @apiParam {Boolean} [assignment] filter on assignment items <code>e.g. assignment=true or assignment=false</code>
  * @apiParam {String} [offset=0] Offset in results <code>e.g. offset=15</code>
  * @apiParam {String} [limit=10] Limit results <code>e.g. limit=5</code>*
  *
@@ -395,7 +436,7 @@ exports.findJournalContent = function(req, res) {
 											if (resCount == reqCount) {
 												try {
 													var textObject = JSON.parse(items[ind].text);
-													items[ind].text = textObject.text;
+													items[ind].text = textObject.encoding ? _toUTF16(textObject.text) : textObject.text;
 												} catch (e) {
 													return res.status(500).send({'error': 'Invalid text value', 'code': 12});
 												}
@@ -559,6 +600,19 @@ function getOptions(req) {
 		}
 	}
 
+	// check for assignment filter
+	if (req.query.assignment) {
+		if (req.query.assignment == 'true') {
+			options.push({
+				$match: {
+					'metadata.assignmentId': {
+						$ne: null
+					}
+				}
+			});
+		}
+	}
+
 	// check for title
 	if (req.query.title) {
 		options.push({
@@ -662,10 +716,13 @@ exports.addEntryInJournal = function(req, res) {
 				// Add a new entry
 				if (journal.text) {
 					var text = journal.text;
+					var utftext = _toUTF8(journal.text);
+					var isUtf16 = (journal.text.length != utftext.length);
 					var filename = mongo.ObjectId();
 					var textContent = JSON.stringify({
 						text_type: typeof journal.text,
-						text: journal.text
+						text: isUtf16 ? utftext : journal.text,
+						encoding: isUtf16
 					});
 
 					streamifier.createReadStream(textContent)
@@ -740,7 +797,7 @@ function updateJournal(req, res, journal, text) {
  * @apiHeader {String} x-access-token User access token.
  *
  * @apiParam {String} jid Unique id of the journal to update
- * @apiParam {String} oid Unique id of the entry to update
+ * @apiParam {String} [oid] Unique id of the entry to update
  *
  * @apiSuccess {String} objectId Unique id of the entry in the journal
  * @apiSuccess {Object} metadata Metadata of the entries, i.e. characteristics of the entry
@@ -1177,4 +1234,46 @@ exports.findAllEntries = function(req, res) {
 			});
 		});
 	}
+};
+
+exports.copyEntry = function (initialDoc, chunks, uniqueStudents) {
+	return new Promise(function (resolve, reject) {
+		var error = new Error("Entry not found");
+		if (typeof initialDoc == "undefined") {
+			reject(error);
+		}
+		var entryDoc = JSON.parse(JSON.stringify(initialDoc));
+		var text = "";
+		for (var i = 0; i < chunks.length; i++) {
+			text += chunks[i].data ? chunks[i].data.toString("utf8") : "";
+		}
+		entryDoc.text = text;
+		var textObject = JSON.parse(entryDoc.text);
+		entryDoc.text = textObject.encoding ? _toUTF16(textObject.text) : textObject.text;
+
+		var utftext = _toUTF8(entryDoc.text);
+		var isUtf16 = (entryDoc.text.length != utftext.length);
+		var filename = mongo.ObjectId();
+		var textContent = JSON.stringify({
+			text_type: typeof entryDoc.text,
+			text: isUtf16 ? utftext : entryDoc.text,
+			encoding: isUtf16
+		});
+
+		streamifier.createReadStream(textContent)
+			.pipe(gridfsbucket.openUploadStreamWithId(filename, filename.toString()))
+			.on('error', function () {
+				reject(new Error("Failed to write journal entry"));
+			}).on('finish', function (uploadStr) {
+				entryDoc.text = uploadStr._id;
+				entryDoc.metadata.user_id = uniqueStudents._id;
+				entryDoc.metadata.buddy_name = uniqueStudents.name;
+				var objectId = common.createUUID();
+				if (typeof entryDoc == "object") {
+					entryDoc.objectId = objectId;
+				}
+				resolve({copy: entryDoc, student: uniqueStudents});
+			});
+
+	});
 };

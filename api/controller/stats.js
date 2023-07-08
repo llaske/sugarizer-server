@@ -100,7 +100,7 @@ exports.addStats = function(req, res) {
 
 
 /**
- * @api {delete} api/v1/stats Remove stats
+ * @api {delete} api/v1/stats/:uid Remove stats
  * @apiName RemoveStats
  * @apiDescription Remove all the stats for a particular user.
  * @apiGroup Stats

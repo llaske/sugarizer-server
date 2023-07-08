@@ -4,12 +4,12 @@
 
 [Sugarizer](https://github.com/llaske/sugarizer) is the open source learning platform based on Sugar that began in the famous One Laptop Per Child project.
 
-Sugarizer Server allows the deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 10+ and MongoDB 2.6+.
+Sugarizer Server allows the deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 10+ and MongoDB 3.2+.
 
 
 ## Running Sugarizer Server
 
-The easiest way to run Sugarizer is to use Docker. To do that, type command lines:
+The easiest way to run Sugarizer Server is to use Docker. To do that, type command lines:
 
 	git clone https://github.com/llaske/sugarizer
 	git clone https://github.com/llaske/sugarizer-server
@@ -17,7 +17,9 @@ The easiest way to run Sugarizer is to use Docker. To do that, type command line
 	sh generate-docker-compose.sh
 	docker-compose up -d
 
-For other options to install Sugarizer on your computer, to install it on the cloud or on a RaspberryPI, see [here](docs/install.md).
+For other options to install Sugarizer Server on your computer, on the cloud or on a RaspberryPI, see [here](docs/install.md).
+
+If you want to upgrade from a previous Sugarizer Server version, please have a look on the [Migration guide](docs/migrate.md).
 
 
 ## Global architecture
@@ -27,7 +29,7 @@ See [here](docs/architecture.md) for a global description of the Sugarizer Serve
 
 ## Server settings
 
-Sugarizer settings are load by default from file [env/sugarizer.ini](env/sugarizer.ini). You could change the name of this file by changing the value of environment variable ``NODE_ENV``. So if the ``NODE_ENV`` variable is set to ``production``, Sugarizer will try to load ``env/production.ini`` file.
+Sugarizer Server settings are loaded by default from file [env/sugarizer.ini](env/sugarizer.ini). You could change the name of this file by changing the value of environment variable ``NODE_ENV``. So if the ``NODE_ENV`` variable is set to ``production``, Sugarizer Server will try to load ``env/production.ini`` file.
 
 Following is the typical content of Sugarizer Server settings file:
 
@@ -42,11 +44,18 @@ Following is the typical content of Sugarizer Server settings file:
 	[security]
 	min_password_size = 4
 	max_age = 172800000
+	max_age_TFA = 180000
 	https = false
 	certificate_file = ../server.crt
 	key_file = ../server.key
 	strict_ssl = false
 	no_signup_mode = false
+	service_name = Sugarizer Server
+	secret = super.sugarizer.server.key
+
+	[privacy]
+	consent_need = false
+	policy = https://sugarizer.org/policy.html
 
 	[client]
 	path = ../sugarizer/
@@ -67,6 +76,8 @@ Following is the typical content of Sugarizer Server settings file:
 	stats = stats
 	classrooms = classrooms
 	charts = charts
+	assignments = assignments
+	activities = activities
 
 	[statistics]
 	active = true
@@ -84,8 +95,12 @@ The **[information]** section is for describing your server. It could be useful 
 
 The **[web]** section describes the settings of the node.js process. By default, the web server is on the port 8080.
 
-The **[security]** section regroup security settings. `min_password_size` is the minimum number of characters for the password. `max_age` is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should reenter its password. Default time is 172800000 (48 hours). Parameters `https`, `certificate_file`, `key_file` and `strict_ssl` are explain above.
+The **[security]** section regroup security settings. `min_password_size` is the minimum number of characters for the password. `max_age` is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should re-enter its password. Default time is 172800000 (48 hours). Similarly, `max_age_TFA` is is the expiration time in milliseconds of a session with the client. At the expiration of the session, the client should re-enter its password. The default time is 180000 (30 mins).Parameters `https`, `certificate_file`, `key_file` and `strict_ssl` are explain above.
 It `no_signup_mode` is true, account creation is allowed only by an administrator or a teacher (no direct sign-up allowed by a student).
+The `service_name` is the issuer parameter, a string value indicating the provider or service this account is associated with, URL-encoded according to [RFC 3986](http://tools.ietf.org/html/rfc3986).
+The `secret` is the JWT Secret which is used to encrypt JSON Web Token. It should be replaced with a unique value to keep the SSP Server secure.
+
+The **[privacy]** section describe privacy settings. When `consent_need` is set to true, the Sugarizer client will ask a consent to user before they will be allowed to do their first connection to the server. `policy` is the URL that Sugarizer client shown in consent pop-up displayed to user.
 
 The **[client]** indicate the place where is located Sugarizer Client. Sugarizer Client is need by the server.
 
@@ -102,12 +117,13 @@ The **[activities]** section describes information on where to find embedded act
 
 ## Dashboard
 
-Sugarizer Server Dashboard is an admin tool for teachers and deployment administrator. This dashboard can be used to control and manage the work of learners and manage and analyze all activities on a Sugarizer Server. The Dashboard has following features:
+Sugarizer Server Dashboard is an admin tool for teachers and deployment administrator. This dashboard can be used to control and manage the work of learners as well as manage and analyze all activities on a Sugarizer Server. The Dashboard has following features:
 
 * Users: how many users have been registered on the server, recent users, top users on the server, create/edit/remove a user.
 * Journal: how many Journals and how many entries in Journal on the server, last Journal, and last entries, edit a journal (see/update/remove) entries.
 * Activities: how many activities are available on the server, change activities visibility from Client, update order and way to appear in the favorite view.
 * Classrooms: a way to organize users on the server side to handle them more easily.
+* Assignments: to give assignments to students and follow deliveries
 * Graphic and request: display graphics and report on previous data.
 
 To login to the Dashboard the first time, you will have to create an admin account using this command:
@@ -122,7 +138,7 @@ Once the admin account is created, you could access Sugarizer Dashboard on http:
 
 ## Server API
 
-To implement the above functionalities, the sugarizer backend exposes an API. The API routes look as follows:
+To implement the above functionalities, the Sugarizer backend exposes an API. The API routes look as follows:
 
 
 #### INFORMATION ROUTE
@@ -142,6 +158,7 @@ To implement the above functionalities, the sugarizer backend exposes an API. Th
 #### USERS ROUTES
 
         [POST]   /auth/login
+        [POST]   /auth/verify2FA
         [POST]   /auth/signup
         [GET]    /api/v1/users
         [GET]    /api/v1/users?name=tarun
@@ -197,6 +214,24 @@ To implement the above functionalities, the sugarizer backend exposes an API. Th
         [GET]    /api/v1/stats?user_id=:uid&sort=-timestamp
         [POST]   /api/v1/stats
         [DELETE] /api/v1/stats
+	
+#### ASSIGNMENT ROUTES
+
+        [GET]    /api/v1/assignments/
+        [GET]    /api/v1/assignments/deliveries/:assignmentId
+        [GET]    /api/v1/assignments/:assignmentId
+        [GET]    /api/v1/assignments/launch/:assignmentId
+        [PUT]    /api/v1/assignments/:assignmentId
+        [PUT]    /api/v1/assignments/deliveries/comment/:assignmentId
+        [PUT]    /api/v1/assignments/deliveries/submit/:assignmentId
+        [PUT]    /api/v1/assignments/deliveries/return/:assignmentId
+        [DELETE] /api/v1/assignments/:assignmentId
+
+#### TWO FACTOR AUTHENTICATION ROUTES
+
+        [GET]    /api/v1/dashboard/profile/enable2FA
+        [PUT]    /api/v1/dashboard/profile/enable2FA
+        [PUT]    /api/v1/dashboard/profile/disable2FA
 
 
 A full documentation of the API is available in http://127.0.0.1:8080/docs.
@@ -274,7 +309,7 @@ Note that settings for unit testing are defined in [env/test.ini](env/test.ini).
 
 # Optimize performance
 
-If you want to optimize JavaScript performance, you could generate an optimized version of Sugarizer and Sugarizer-Server with [Grunt](http://gruntjs.com). This optimized version will minimize and reduce the size of the public resources.
+If you want to optimize JavaScript performance, you could generate an optimized version of Sugarizer and Sugarizer Server with [Grunt](http://gruntjs.com). This optimized version will minimize and reduce the size of the public resources.
 
 First, ensure that Node.js and npm are installed on your machine. See [here](http://nodejs.org/) for more information.
 
@@ -290,11 +325,11 @@ Then launch Grunt task to minify Sugarizer JavaScript files:
 
 	grunt -v
 
-Now navigate to Sugarizer-Server directory install the specific component for Sugarizer-Server by running:
+Now navigate to Sugarizer-Server directory and install the specific component for Sugarizer Server by running:
 
 	npm install
 
-Then launch Grunt task to minify Sugarizer-Server CSS, Image and JavaScript files:
+Then launch Grunt task to minify Sugarizer Server CSS, Image and JavaScript files:
 
 	grunt -v
 

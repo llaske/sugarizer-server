@@ -6,7 +6,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- Add an export button to assignment deliveries #366
+
+## [1.5.0] - 2023-02-15
+### Added
+- Assignments feature: API and Dashboard
+- Code coverage
+
+### Changed
+- MongoDB minimal version is now 3.2+
+- Updated to MongoDB 5.0 in docker image
+- Store activities list in database
+
+### Fixed
+- Padding from left in language selection menu list #294
+- Fix required in sidebar to achieve consistency #348
+
+
+## [1.4.0] - 2021-11-21
+### Added
+- Two factor authentication
 - Expose presence and server on the same port #232
+- Add privacy settings
 
 ### Changed
 - node.js minimal version is now 10+
@@ -14,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Unit tests are broken for activities #273
 - Warning: Accessing non-existent property with node.js #272
+- Error retrieving content when stored in UTF-16 #286
 
 
 ## [1.3.0] - 2020-10-11
