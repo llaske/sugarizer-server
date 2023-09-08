@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Add an export button to assignment deliveries #366
 
+### Fixed
+- Next page button in users/assignment view don't take into account search criteria #364
+
 ## [1.5.0] - 2023-02-15
 ### Added
 - Assignments feature: API and Dashboard
