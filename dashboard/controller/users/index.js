@@ -71,7 +71,7 @@ exports.index = function(req, res) {
 
 				// get classrooms list
 				getClassrooms(req, function(classrooms){
-
+	
 					// send to activities page
 					res.render('users', {
 						module: 'users',
