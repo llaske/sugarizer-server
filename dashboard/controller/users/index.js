@@ -37,8 +37,8 @@ exports.index = function(req, res) {
 	};
 
 	//get query params
-	if(req.query.q != '') {
-		query['q']=req.query.q;
+	if (req.query.q != '') {
+		query['q'] = req.query.q;
 	}
 	if (req.query.role != '') {
 		query['role'] = req.query.role;
@@ -60,7 +60,7 @@ exports.index = function(req, res) {
 	if (req.query.classroom_id) {
 		classroom_id = req.query.classroom_id;
 	}
-	
+
 	// call
 	superagent
 		.get(common.getAPIUrl(req) + 'api/v1/users')
