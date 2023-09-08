@@ -520,6 +520,7 @@ exports.getAllUsers = function(query, options, callback) {
 				};
 			}
 		}
+
 		collection.aggregate(conf, function(err, users) {
 			if (options.skip) users.skip(options.skip);
 			if (options.limit) users.limit(options.limit);
@@ -562,7 +563,7 @@ function addQuery(filter, params, query, default_val) {
 	//validate
 	if (typeof params[filter] != "undefined" && typeof params[filter] === "string") {
 
-		if(filter=='q'){
+		if (filter == 'q') {
 			query['name'] = {
 				$regex: new RegExp(params[filter], "i")
 			};
