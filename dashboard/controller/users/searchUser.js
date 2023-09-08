@@ -30,7 +30,7 @@ module.exports = function searchUser(req, res) {
 	if (req.query.classid != '') {
 		query['classid'] = req.query.classid;
 	}
-	if (req.query.sort != '') {
+	if(req.query.sort !=''){
 		query['sort'] = req.query.sort;
 	}
 
