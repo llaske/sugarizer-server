@@ -47,7 +47,7 @@ module.exports = function searchUser(req, res) {
 					query: query
 				});
 			} else {
-				res.json({ success: false, msg: common.l10n.get('ErrorCode' + response.body.code) });
+				res.json({success: false, msg: common.l10n.get('ErrorCode'+response.body.code)});
 			}
 		});
 };

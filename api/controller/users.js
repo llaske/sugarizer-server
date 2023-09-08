@@ -392,7 +392,7 @@ exports.findAll = function(req, res) {
 	query = addQuery('name', req.query, query);
 	query = addQuery('language', req.query, query);
 	query = addQuery('role', req.query, query, 'student');
-	query = addQuery('q', req.query, query)
+	query = addQuery('q', req.query, query);
 	if (req.query.stime) {
 		query['timestamp'] = {
 			'$gte': parseInt(req.query.stime)
@@ -506,6 +506,7 @@ exports.getAllUsers = function(query, options, callback) {
 		if (options.enableSecret == true) {
 			conf[1]["$project"]["uniqueSecret"] = 1;
 		}
+
 		if (typeof options.sort == 'object' && options.sort.length > 0 && options.sort[0] && options.sort[0].length >=2) {
 			conf[1]["$project"]["insensitive"] = { "$toLower": "$" + options.sort[0][0] };
 
@@ -560,7 +561,7 @@ function addQuery(filter, params, query, default_val) {
 
 	//validate
 	if (typeof params[filter] != "undefined" && typeof params[filter] === "string") {
-		
+
 		if(filter=='q'){
 			query['name'] = {
 				$regex: new RegExp(params[filter], "i")
@@ -605,7 +606,6 @@ function addQuery(filter, params, query, default_val) {
 	//return
 	return query;
 }
-
 
 
 /**
