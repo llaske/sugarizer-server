@@ -15,8 +15,8 @@ module.exports = function searchUser(req, res) {
 	};
 
 	//get query params
-	if(req.query.q != '') {
-		query['q']=req.query.q;
+	if (req.query.q != '') {
+		query['q'] = req.query.q;
 	}
 	if (req.query.role != '') {
 		query['role'] = req.query.role;
@@ -30,10 +30,10 @@ module.exports = function searchUser(req, res) {
 	if (req.query.classid != '') {
 		query['classid'] = req.query.classid;
 	}
-	if(req.query.sort !=''){
+	if (req.query.sort != '') {
 		query['sort'] = req.query.sort;
 	}
-	
+
 	// call
 	superagent
 		.get(common.getAPIUrl(req) + 'api/v1/users')
@@ -47,7 +47,7 @@ module.exports = function searchUser(req, res) {
 					query: query
 				});
 			} else {
-				res.json({success: false, msg: common.l10n.get('ErrorCode'+response.body.code)});
+				res.json({ success: false, msg: common.l10n.get('ErrorCode' + response.body.code) });
 			}
 		});
 };

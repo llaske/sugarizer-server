@@ -45,7 +45,8 @@ exports.init = function(settings, database) {
  * @apiParam {String} id Unique user id
  * 
  * @apiSuccess {String} _id Unique user id
- * @apiSuccessearchs {String} role User role (student or admin)
+ * @apiSuccess {String} name Unique user name
+ * @apiSuccess {String} role User role (student or admin)
  * @apiSuccess {Object} color Buddy color
  * @apiSuccess {String} color.stroke Buddy strike color
  * @apiSuccess {String} color.fill Buddy fill color
@@ -391,7 +392,7 @@ exports.findAll = function(req, res) {
 	query = addQuery('name', req.query, query);
 	query = addQuery('language', req.query, query);
 	query = addQuery('role', req.query, query, 'student');
-	query=addQuery('q',req.query,query)
+	query = addQuery('q', req.query, query)
 	if (req.query.stime) {
 		query['timestamp'] = {
 			'$gte': parseInt(req.query.stime)
@@ -469,6 +470,7 @@ function formPaginatedUrl(route, params, offset, limit) {
 
 //get all users
 exports.getAllUsers = function(query, options, callback) {
+
 	//get data
 	db.collection(usersCollection, function(err, collection) {
 		var conf = [
@@ -500,6 +502,7 @@ exports.getAllUsers = function(query, options, callback) {
 				}
 			}
 		];
+
 		if (options.enableSecret == true) {
 			conf[1]["$project"]["uniqueSecret"] = 1;
 		}
@@ -554,6 +557,7 @@ function addQuery(filter, params, query, default_val) {
 
 	//check default case
 	query = query || {};
+
 	//validate
 	if (typeof params[filter] != "undefined" && typeof params[filter] === "string") {
 		
