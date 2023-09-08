@@ -519,7 +519,7 @@ exports.getAllUsers = function(query, options, callback) {
 				};
 			}
 		}
-		collection.aggregate(conf, async function(err, users) {
+		collection.aggregate(conf, function(err, users) {
 			if (options.skip) users.skip(options.skip);
 			if (options.limit) users.limit(options.limit);
 			//return
