@@ -523,6 +523,16 @@ describe('Assignments', () => {
 
     // submit assignment ---PUT/:id/submit---
     describe('/PUT/:id/submit assignments', () => {
+        before((done) => {
+            chai.request(server)
+            .get('/api/v1/journal/'+fake.student1.private_journal)
+            .set('x-access-token', fake.teacher1.token)
+            .set('x-key', fake.teacher1.user._id)
+            .end((err,res) => {
+                fake.delivery1=res.body.entries[0];
+                done();
+            });
+        });
         it('it should do nothing on invalid assignment', (done) => {
             chai.request(server)
                 .put('/api/v1/assignments/deliveries/submit/' + 'invalid?oid=' + fake.delivery1.objectId)
@@ -569,6 +579,211 @@ describe('Assignments', () => {
                     done();
                 });
         });
+    });
+
+    // get Assignment Deliveries ---GET---
+
+    describe('/GET/deliveries assignments', () => {
+        it('it should do nothing on invalid assignment', (done) => {
+            chai.request(server)
+                .get('/api/v1/assignments/deliveries')
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .query({
+                    assignmentId: 'invalid'
+                })
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    res.body.code.should.be.eql(35);
+                    done();
+                });
+        });
+
+        it('it should return the deliveries of valid assignment', (done) => {
+            chai.request(server)
+                .get('/api/v1/assignments/deliveries')
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .query({
+                    assignmentId: fake.assignment1._id
+                })
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.have.property('deliveries');
+                    res.body.should.have.property('offset');
+                    res.body.should.have.property('limit');
+                    res.body.should.have.property('sort');
+                    res.body.should.have.property('links');
+                    res.body.deliveries.should.be.a("array");
+                    res.body.offset.should.be.a("number");
+                    res.body.limit.should.be.a("number");
+                    res.body.total.should.be.a("number");
+                    res.body.sort.should.be.eql("buddy_name(asc)");
+                    res.body.links.should.be.a("object");
+                    res.body.deliveries.should.be.a("array");
+                    res.body.deliveries.should.have.length.above(0);
+                    for(var i=0;i<res.body.deliveries.length;i++){
+                        var delivery = res.body.deliveries[i];
+                        delivery.should.not.be.null;
+                        delivery.should.have.property("_id");
+                        delivery.content.should.not.be.null;
+                    }
+                    done();
+                });
+        });
+
+        it('it should return the deliveries of valid assignment which are not delivered', (done) => {
+            chai.request(server)
+                .get('/api/v1/assignments/deliveries')
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .query({
+                    assignmentId: fake.assignment1._id,
+                    Delivered: 'false'
+                })
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.have.property('deliveries');
+                    res.body.should.have.property('offset');
+                    res.body.should.have.property('limit');
+                    res.body.should.have.property('sort');
+                    res.body.should.have.property('links');
+                    res.body.deliveries.should.be.a("array");
+                    res.body.offset.should.be.a("number");
+                    res.body.limit.should.be.a("number");
+                    res.body.total.should.be.a("number");
+                    res.body.sort.should.be.eql("buddy_name(asc)");
+                    res.body.links.should.be.a("object");
+                    res.body.deliveries.should.be.a("array");
+                    res.body.deliveries.should.have.length.above(0);
+                    for(var i=0;i<res.body.deliveries.length;i++){
+                        var delivery = res.body.deliveries[i];
+                        delivery.should.not.be.null;
+                        delivery.should.have.property("_id");
+                        delivery.content.should.not.be.null;
+                        for(var j=0;j<delivery.content.length;j++){
+                            var content = delivery.content[j];
+                            content.should.have.property("metadata");
+                            content.metadata.isSubmitted.should.be.eql(false);
+                        }
+                    }
+                    done();
+                });
+        });
+
+        it('it should return the deliveries of valid assignment which are delivered', (done) => {
+            chai.request(server)
+                .get('/api/v1/assignments/deliveries')
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .query({
+                    assignmentId: fake.assignment1._id,
+                    Delivered: 'true'
+                })
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.have.property('deliveries');
+                    res.body.should.have.property('offset');
+                    res.body.should.have.property('limit');
+                    res.body.should.have.property('sort');
+                    res.body.should.have.property('links');
+                    res.body.deliveries.should.be.a("array");
+                    res.body.offset.should.be.a("number");
+                    res.body.limit.should.be.a("number");
+                    res.body.total.should.be.a("number");
+                    res.body.sort.should.be.eql("buddy_name(asc)");
+                    res.body.links.should.be.a("object");
+                    res.body.deliveries.should.be.a("array");
+                    res.body.deliveries.should.have.length.above(0);
+                    for(var i=0;i<res.body.deliveries.length;i++){
+                        var delivery = res.body.deliveries[i];
+                        delivery.should.not.be.null;
+                        delivery.should.have.property("_id");
+                        delivery.content.should.not.be.null;
+                        for(var j=0;j<delivery.content.length;j++){
+                            var content = delivery.content[j];
+                            content.should.have.property("metadata");
+                            content.metadata.status.should.be.eql("Delivered");
+                            content.metadata.isSubmitted.should.be.eql(true);
+                        }
+                    }
+                    done();
+                });
+        });
+
+        it('it should return the deliveries of all assignments which are delivered', (done) => {
+            chai.request(server)
+                .get('/api/v1/assignments/deliveries')
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .query({
+                    Delivered: "true"
+                })
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.have.property('deliveries');
+                    res.body.should.have.property('offset');
+                    res.body.should.have.property('limit');
+                    res.body.should.have.property('sort');
+                    res.body.should.have.property('links');
+                    res.body.deliveries.should.be.a("array");
+                    res.body.offset.should.be.a("number");
+                    res.body.limit.should.be.a("number");
+                    res.body.total.should.be.a("number");
+                    res.body.sort.should.be.eql("buddy_name(asc)");
+                    res.body.links.should.be.a("object");
+                    res.body.deliveries.should.be.a("array");
+                    res.body.deliveries.should.have.length.above(0);
+                    for(var i=0;i<res.body.deliveries.length;i++){
+                        var delivery = res.body.deliveries[i];
+                        delivery.should.not.be.null;
+                        delivery.should.have.property("_id");
+                        delivery.content.should.not.be.null;
+                        for(var j=0;j<delivery.content.length;j++){
+                            var content = delivery.content[j];
+                            content.should.have.property("metadata");
+                            content.metadata.status.should.be.eql("Delivered");
+                            content.metadata.isSubmitted.should.be.eql(true);
+                        }
+                    }
+                    done();
+                });
+        });
+
+        it('it should return one deliveries after skipping first', (done) => {
+            chai.request(server)
+                .get('/api/v1/assignments/deliveries')
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .query({
+                    assignmentId: fake.assignment1._id,
+                    offset: 1
+                })
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.have.property('deliveries');
+                    res.body.should.have.property('offset');
+                    res.body.should.have.property('limit');
+                    res.body.should.have.property('sort');
+                    res.body.should.have.property('links');
+                    res.body.deliveries.should.be.a("array");
+                    res.body.offset.should.be.a("number");
+                    res.body.limit.should.be.a("number");
+                    res.body.total.should.be.a("number");
+                    res.body.sort.should.be.eql("buddy_name(asc)");
+                    res.body.links.should.be.a("object");
+                    res.body.deliveries.should.be.a("array");
+                    res.body.deliveries.should.have.length(1);
+
+                    for (var i = 0; i < res.body.deliveries.length; i++) {
+                        var delivery = res.body.deliveries[i];
+                        delivery.should.not.be.null;
+                        delivery.should.have.property("_id");
+                        delivery.should.have.property("content");
+                    }
+                    done();
+                });
+        });  
     });
 
     // return assignment ---GET/:id/return---
@@ -682,4 +897,18 @@ describe('Assignments', () => {
             }
         });
     }
+
+    after((done) =>{
+        chai.request(server)
+        .delete('/api/v1/journal/' + fake.teacher1.user.private_journal)
+        .set('x-access-token', fake.teacher1.token)
+        .set('x-key', fake.teacher1.user._id)
+        .query({
+            oid:"ffffffff-ffff-ffff-ffff-fffffffffff1"
+        })
+        .end((err, res) => {
+            res.should.have.status(200);
+            done();
+        });
+    });
 });

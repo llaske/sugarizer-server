@@ -6,7 +6,8 @@ var _util = require('./util'),
 	getRecentTeachers = _util.getRecentTeachers,
 	getRecentAdmins = _util.getRecentAdmins,
 	getRecentActivities = _util.getRecentActivities,
-	averageEntries = _util.averageEntries;
+	averageEntries = _util.averageEntries,
+	getRecentAssignmentsDeliveries = _util.getRecentAssignmentsDeliveries;
 
 exports.getGraph = function(req, res) {
 
@@ -27,6 +28,9 @@ exports.getGraph = function(req, res) {
 	}
 	if (req.query.type == 'recent-activities') {
 		getRecentActivities(req, res);
+	}
+	if (req.query.type == 'recent-deliveries') {
+		getRecentAssignmentsDeliveries(req, res);
 	}
 };
 
