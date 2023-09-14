@@ -15,184 +15,92 @@ function sugarizerTour(currentView, role, mode) {
 		var prevString = document.webL10n.get("TutoPrev");
 		var nextString = document.webL10n.get("TutoNext");
 		var endString = document.webL10n.get("TutoEnd");
-		tour = new window.Tour({
-			name: tutorialName,
-			template: "\
-			<div class='popover tour popover-tour'>\
-				<div class='arrow'></div>\
-				<h3 class='popover-title tutorial-title'></h3>\
-				<table><tr><td style='vertical-align:top;'><div id='icon-tutorial' style='visibility:hidden;display:inline-block;'></div>\
-				</td><td><div class='popover-content'></div></td></tr></table>\
-				<div class='popover-navigation' style='display: flex; flex-wrap:wrap; justify-content: center; align-items: center'>\
-					<div class='tutorial-prev-icon icon-button' data-role='prev'>\
-						<div class='tutorial-prev-icon1 web-activity'>\
-							<div class='tutorial-prev-icon2 web-activity-icon'></div>\
-							<div class='tutorial-prev-icon3 web-activity-disable'></div>\
-						</div>\
-						<div class='icon-tutorial-text'>"+ prevString + "</div>\
-					</div>\
-					<span data-role='separator' style='margin: 4px'>|</span>\
-					<div class='tutorial-next-icon icon-button' data-role='next'>\
-						<div class='tutorial-next-icon1 web-activity'>\
-							<div class='tutorial-next-icon2 web-activity-icon'></div>\
-							<div class='tutorial-next-icon3 web-activity-disable'></div>\
-						</div>\
-						<div class='icon-tutorial-text'>"+ nextString + "</div>\
-					</div>\
-					<div class='tutorial-end-icon icon-button' data-role='end'>\
-						<div class='tutorial-end-icon1 web-activity'>\
-							<div class='tutorial-end-icon2 web-activity-icon'></div>\
-							<div class='tutorial-end-icon3 web-activity-disable'></div>\
-						</div>\
-						<div class='icon-tutorial-text'>"+ endString + "</div>\
-					</div>\
-				</div>\
-			</div>",
-			storage: window.localStorage,
-			backdrop: true,
-			autoscroll: true,
-			steps: [],
-			keyboard: true,
-			onNext: function (tour) {
-				if (currentView == "home") {
-					if (tour._current == "3" || tour._current == "4") {
-						$('.main-panel').animate({
-							scrollTop: (document.getElementsByClassName('main-panel')[0].scrollHeight)
-						}, 500);
-					}
-					if (tour._current == "5") {
-						$('.main-panel').animate({
-							scrollTop: 0
-						}, 500);
-					}
-				} else if (currentView == "editUser") {
-					if (tour._current == "5") {
-						$('.main-panel').animate({
-							scrollTop: (document.getElementsByClassName('main-panel')[0].scrollHeight)
-						}, 500);
-					}
-					if (tour._current == "8") {
-						$('.main-panel').animate({
-							scrollTop: 0
-						}, 500);
-					}
-				}
-			},
-			onPrev: function (tour) {
-				if (currentView == "home") {
-					if (tour._current == "4") {
-						$('.main-panel').animate({
-							scrollTop: 0
-						}, 500);
-					}
-					if (tour._current == "5" || tour._current == "6") {
-						$('.main-panel').animate({
-							scrollTop: (document.getElementsByClassName('main-panel')[0].scrollHeight)
-						}, 500);
-					}
-				} else if (currentView == "editUser") {
-					if (tour._current == "6") {
-						$('.main-panel').animate({
-							scrollTop: 0
-						}, 500);
-					}
-				}
-			},
-			onEnd: function () {
-				if (currentView == "home") {
-					unlockScroll();
-				} else if (currentView == "editUser") {
-					$('.main-panel').animate({
-						scrollTop: 0
-					}, 500);
-				}
-			}
-		});
+		var steps=[]
 		if (currentView == "home") {
 			lockScroll();
-			tour.addStep(getStep("home", "", "bottom", 1, true));
-			tour.addStep(getStep("home", "#dashboard-home-cards", "bottom", 2));
-			tour.addStep(getStep("home", "#top-contributor-chart-parent", "right", 3));
-			tour.addStep(getStep("home", "#top-activities-chart-parent", "left", 4));
-			tour.addStep(getStep("home", "#recent-users-table-parent", "top", 5));
-			tour.addStep(getStep("home", "#recent-activities-table-parent", "top", 6));
-			tour.addStep(getStep("home", "#sugarizer-sidebar", "right", 7));
-			tour.addStep(getStep("home", "#languageSelection", "bottom", 8));
-			tour.addStep(getStep("home", "#navbar-xo-icon", "left", 9));
-			tour.addStep(getStep("home", "#navbar-help", "left", 10));
-		} else if (currentView == "users") {
-			tour.addStep(getStep("users", "", "bottom", 1, true));
-			tour.addStep(getStep("users", "#user-serach-row", "bottom", 2));
-			tour.addStep(getStep("users", "#username", "bottom", 3));
-			tour.addStep(getStep("users", "#select2-user-type-select2-container", "bottom", 4));
-			tour.addStep(getStep("users", "#select2-classroom_select-container", "bottom", 5));
-			tour.addStep(getStep("users", "#show-result", "bottom", 6));
-			tour.addStep(getStep("users", "#users-adduser", "left", 7));
-			tour.addStep(getStep("users", "#users-addfromcsv", "bottom", 8));
-			tour.addStep(getStep("users", "#users-exportusers", "bottom", 9));
-			tour.addStep(getStep("users", "#seeJournalEntries", "left", 10));
-			tour.addStep(getStep("users", "#editUser", "left", 11));
-			tour.addStep(getStep("users", "#deleteUser", "left", 12));
-			tour.addStep(getStep("users", "#checkAll", "right", 13));
-			tour.addStep(getStep("users", "#users-deleteMultiple", "left", 14));
-		} else if (currentView == "activities") {
-			tour.addStep(getStep("activities", "", "bottom", 1, true));
-			tour.addStep(getStep("activities", "#activities-list-parent", "left", 2));
-			tour.addStep(getStep("activities", "#activities-searchbox", "left", 3));
-			tour.addStep(getStep("activities", "#activities-card", "bottom", 4));
-			tour.addStep(getStep("activities", "#activities-draggable", "right", 5));
-			tour.addStep(getStep("activities", "#activities-favoriteBox", "left", 6));
-			tour.addStep(getStep("activities", "#activity-launch", "left", 7));
-		} else if (currentView == "journal1") {
-			tour.addStep(getStep("journal", "", "bottom", 1, true));
-			tour.addStep(getStep("journal", "#journal-search-card", "bottom", 2));
-		} else if (currentView == "journal2") {
+			steps.push(getStep("home","", "bottom", 1, true));
+			steps.push(getStep("home", "#dashboard-home-cards", "bottom", 2));
+			steps.push(getStep("home", "#top-contributor-chart-parent", "right", 3));
+			steps.push(getStep("home", "#top-activities-chart-parent", "left", 4));
+			steps.push(getStep("home", "#recent-users-table-parent", "top", 5));
+			steps.push(getStep("home", "#recent-activities-table-parent", "top", 6));
+			steps.push(getStep("home", "#sugarizer-sidebar", "right", 7));
+			steps.push(getStep("home", "#languageSelection", "bottom", 8));
+			steps.push(getStep("home", "#navbar-xo-icon", "left", 9));
+			steps.push(getStep("home", "#navbar-help", "left", 10));
+		}else if (currentView == "users") {
+			steps.push(getStep("users", "", "bottom", 1, true));
+			steps.push(getStep("users", "#user-serach-row", "bottom", 2));
+			steps.push(getStep("users", "#username", "bottom", 3));
+			steps.push(getStep("users", "#select2-user-type-select2-container", "bottom", 4));
+			steps.push(getStep("users", "#select2-classroom_select-container", "bottom", 5));
+			steps.push(getStep("users", "#show-result", "bottom", 6));
+			steps.push(getStep("users", "#users-adduser", "left", 7));
+			steps.push(getStep("users", "#users-addfromcsv", "bottom", 8));
+			steps.push(getStep("users", "#users-exportusers", "bottom", 9));
+			steps.push(getStep("users", "#seeJournalEntries", "left", 10));
+			steps.push(getStep("users", "#editUser", "left", 11));
+			steps.push(getStep("users", "#deleteUser", "left", 12));
+			steps.push(getStep("users", "#checkAll", "right", 13));
+			steps.push(getStep("users", "#users-deleteMultiple", "left", 14));
+		}else if (currentView == "activities") {
+			steps.push(getStep("activities", "", "bottom", 1, true));
+			steps.push(getStep("activities", "#activities-list-parent", "left", 2));
+			steps.push(getStep("activities", "#activities-searchbox", "left", 3));
+			steps.push(getStep("activities", "#activities-card", "bottom", 4));
+			steps.push(getStep("activities", "#activities-draggable", "right", 5));
+			steps.push(getStep("activities", "#activities-favoriteBox", "left", 6));
+			steps.push(getStep("activities", "#activity-launch", "left", 7));
+		}else if (currentView == "journal1") {
+			steps.push(getStep("journal", "", "bottom", 1, true));
+			steps.push(getStep("journal", "#journal-search-card", "bottom", 2));
+		}else if (currentView == "journal2") {
 			if (!(window.localStorage.journal1_end == "yes" || window.localStorage.journal1_current_step == "1")) {
 				localStorage.setItem('journal1_end', 'yes');
 				localStorage.setItem('journal1_current_step', 1);
-				tour.addStep(getStep("journal", "", "bottom", 1, true));
-				tour.addStep(getStep("journal", "#journal-search-card", "bottom", 2));
+				steps.push(getStep("journal", "", "bottom", 1, true));
+				steps.push(getStep("journal", "#journal-search-card", "bottom", 2));
 			}
-			tour.addStep(getStep("journal", "#journal-cards-parent", "top", 3));
-			tour.addStep(getStep("journal", "#journal-entry-card", "bottom", 4));
-			tour.addStep(getStep("journal", "#journal-activity-launch", "left", 5));
-			tour.addStep(getStep("journal", "#journal-activity-download", "left", 6));
-			tour.addStep(getStep("journal", "#journal-activity-delete", "left", 7));
-			tour.addStep(getStep("journal", "#journal-uploadJournal", "left", 8));
-			tour.addStep(getStep("journal", "#checkAll", "right", 9));
-			tour.addStep(getStep("journal", "#journal-downloadMultiple", "left", 10));
-			tour.addStep(getStep("journal", "#journal-deleteMultiple", "left", 11));
+			steps.push(getStep("journal", "#journal-cards-parent", "top", 3));
+			steps.push(getStep("journal", "#journal-entry-card", "bottom", 4));
+			steps.push(getStep("journal", "#journal-activity-launch", "left", 5));
+			steps.push(getStep("journal", "#journal-activity-download", "left", 6));
+			steps.push(getStep("journal", "#journal-activity-delete", "left", 7));
+			steps.push(getStep("journal", "#journal-uploadJournal", "left", 8));
+			steps.push(getStep("journal", "#checkAll", "right", 9));
+			steps.push(getStep("journal", "#journal-downloadMultiple", "left", 10));
+			steps.push(getStep("journal", "#journal-deleteMultiple", "left", 11));
 		} else if (currentView == "classroom") {
-			tour.addStep(getStep("classroom", "", "bottom", 1, true));
-			tour.addStep(getStep("classroom", "#classroom-serach-row", "bottom", 2));
-			tour.addStep(getStep("classroom", "#classroom-addclassroom", "left", 3));
-			tour.addStep(getStep("classroom", "#classroom-cards-parent", "top", 4));
-			tour.addStep(getStep("classroom", "#classroom-card", "bottom", 5));
-			tour.addStep(getStep("classroom", "#classroom-view-students", "left", 6));
-			tour.addStep(getStep("classroom", "#classroom-edit-class", "left", 7));
-			tour.addStep(getStep("classroom", "#classroom-delete-class", "left", 8));
-			tour.addStep(getStep("classroom", "#checkAll", "right", 9));
-			tour.addStep(getStep("classroom", "#classroom-deleteMultiple", "left", 10));
+			steps.push(getStep("classroom", "", "bottom", 1, true));
+			steps.push(getStep("classroom", "#classroom-serach-row", "bottom", 2));
+			steps.push(getStep("classroom", "#classroom-addclassroom", "left", 3));
+			steps.push(getStep("classroom", "#classroom-cards-parent", "top", 4));
+			steps.push(getStep("classroom", "#classroom-card", "bottom", 5));
+			steps.push(getStep("classroom", "#classroom-view-students", "left", 6));
+			steps.push(getStep("classroom", "#classroom-edit-class", "left", 7));
+			steps.push(getStep("classroom", "#classroom-delete-class", "left", 8));
+			steps.push(getStep("classroom", "#checkAll", "right", 9));
+			steps.push(getStep("classroom", "#classroom-deleteMultiple", "left", 10));
 		} else if (currentView == "assignment") {
-			tour.addStep(getStep("assignment", "#assignment-serach-row", "bottom", 2));
-			tour.addStep(getStep("assignment", "#assignment-deleteMultiple", "left", 10));
-			tour.addStep(getStep("assignment", "#assignment-addassignment", "left", 3));
-			tour.addStep(getStep("assignment", "#assignment-cards-parent", "top", 4));
-			tour.addStep(getStep("assignment", "#checkAll", "right", 9));
-			tour.addStep(getStep("assignment", "#assignment-card", "bottom", 5));
-			tour.addStep(getStep("assignment", "#assignment-delete-class", "left", 8));
-			tour.addStep(getStep("assignment", "#assignment-view-students", "left", 6));
-			tour.addStep(getStep("assignment", "#assignment-launch", "left", 5));
+			steps.push(getStep("assignment", "#assignment-serach-row", "bottom", 2));
+			steps.push(getStep("assignment", "#assignment-deleteMultiple", "left", 10));
+			steps.push(getStep("assignment", "#assignment-addassignment", "left", 3));
+			steps.push(getStep("assignment", "#assignment-cards-parent", "top", 4));
+			steps.push(getStep("assignment", "#checkAll", "right", 9));
+			steps.push(getStep("assignment", "#assignment-card", "bottom", 5));
+			steps.push(getStep("assignment", "#assignment-delete-class", "left", 8));
+			steps.push(getStep("assignment", "#assignment-view-students", "left", 6));
+			steps.push(getStep("assignment", "#assignment-launch", "left", 5));
 		} else if (currentView == "deliveries") {
-			tour.addStep(getStep("deliveries", "#deliveries-serach-row", "bottom", 2));
-			tour.addStep(getStep("deliveries", "#deliveries-deleteMultiple", "left", 10));
-			tour.addStep(getStep("deliveries", "#deliveries-cards-parent", "top", 4));
-			tour.addStep(getStep("deliveries", "#checkAll", "right", 9));
-			tour.addStep(getStep("deliveries", "#deliveries-card", "bottom", 5));
-			tour.addStep(getStep("deliveries", "#deliveries-delete-delivery", "left", 8));
-			tour.addStep(getStep("deliveries", "#deliveries-comment", "left", 11));
-			tour.addStep(getStep("deliveries", "#deliveries-launch", "left", 7));
-			tour.addStep(getStep("deliveries", "#deliveries-journal-activity-download", "right", 3));
+			steps.push(getStep("deliveries", "#deliveries-serach-row", "bottom", 2));
+			steps.push(getStep("deliveries", "#deliveries-deleteMultiple", "left", 10));
+			steps.push(getStep("deliveries", "#deliveries-cards-parent", "top", 4));
+			steps.push(getStep("deliveries", "#checkAll", "right", 9));
+			steps.push(getStep("deliveries", "#deliveries-card", "bottom", 5));
+			steps.push(getStep("deliveries", "#deliveries-delete-delivery", "left", 8));
+			steps.push(getStep("deliveries", "#deliveries-comment", "left", 11));
+			steps.push(getStep("deliveries", "#deliveries-launch", "left", 7));
+			steps.push(getStep("deliveries", "#deliveries-journal-activity-download", "right", 3));
 
 		}
 		else if (currentView == "stats") {
@@ -241,8 +149,29 @@ function sugarizerTour(currentView, role, mode) {
 			tour.addStep(getStep("editChart", "#editChart-type", "right", 3));
 			tour.addStep(getStep("editChart", "#editChart-selectchart", "right", 4));
 			tour.addStep(getStep("editChart", "#editChart-display", "right", 5));
-		}
-		tour.init();
+		}				
+		
+
+		steps = steps.filter(
+			(step) =>
+			  !("element" in step) ||
+			  (step.element.length &&
+				document.querySelector(step.element) &&
+				document.querySelector(step.element).style.display != "none" &&
+				document.querySelector(step.element).getBoundingClientRect().y != 0)
+		  );
+
+		  introJs()
+		  .setOptions({
+			tooltipClass: "customTooltip",
+			steps: steps,
+			prevLabel: document.webL10n.get("TutoPrev"),
+			nextLabel: document.webL10n.get("TutoNext"),
+			exitOnOverlayClick: false,
+			nextToDone: false,
+			showBullets: false,
+		  })
+		  .start();
 	};
 
 	// Start tutorial
@@ -253,7 +182,7 @@ function sugarizerTour(currentView, role, mode) {
 					if (document.webL10n.getReadyState() == "complete") {
 						clearInterval(refreshIntervalId);
 						tutorial.init();
-						tour.start(true);
+						// tour.start(true);
 						launched = true;
 					}
 				}, 100);
@@ -281,13 +210,14 @@ function sugarizerTour(currentView, role, mode) {
 	function getStep(view, element, placement, step, orphan) {
 		var step = {
 			title: document.webL10n.get(view + "Title" + step),
-			content: document.webL10n.get(view + "Content" + step),
-			element: element,
+			intro: document.webL10n.get(view + "Content" + step),
 			placement: placement
 		};
 		if (orphan == true) {
 			step['orphan'] = true;
 		}
+		if(element!="")
+			step['element']=element
 		return step;
 	}
 
