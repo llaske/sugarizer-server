@@ -521,16 +521,16 @@ h2.title {
   overflow-y: auto;
 }
 
-/* Default styles for the sidebar */
+
 .sidebar .sidebar-wrapper,
 .off-canvas-sidebar .sidebar-wrapper {
   position: relative;
   top: 0;
   bottom: 0;
   left: 0;
-  width: 260px; /* Initial width of the sidebar */
+  width: 260px; 
   z-index: 4;
-   /* Enable vertical scrolling if content overflows */
+   
 }
 
 
