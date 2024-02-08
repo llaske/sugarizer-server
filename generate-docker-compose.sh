@@ -1,6 +1,8 @@
 ARCH=`uname -m`
 
 case "$ARCH" in
+    "arm64") TAG="arm64"
+	;;
     "x86_64") TAG="amd64"
 	;;
     "armv6l") TAG="armv6l"
