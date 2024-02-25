@@ -36,6 +36,9 @@
 	},
 	"devDependencies": {
 		"apidoc": "^0.51.1",
+		"@babel/traverse": ">=7.23.2",
+		"decompress": ">=4.2.1",
+		"async": "^3.2.3",
 		"chai": "*",
 		"chai-http": "*",
 		"eslint": "~6.6.0",
