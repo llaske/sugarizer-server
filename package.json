@@ -44,7 +44,6 @@
 		"eslint": "~6.6.0",
 		"grunt": "^1.6.1",
 		"grunt-contrib-cssmin": "^5.0.0",
-		"grunt-contrib-imagemin": "^4.0.0",
 		"grunt-contrib-jshint": "^3.2.0",
 		"grunt-contrib-nodeunit": "^5.0.0",
 		"grunt-terser": "^2.0.0",
