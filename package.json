@@ -35,7 +35,7 @@
 		"ws": "~7.4.0"
 	},
 	"devDependencies": {
-		"apidoc": "^0.51.1",
+		"apidoc": "^1.2.0",
 		"@babel/traverse": ">=7.23.2",
 		"decompress": ">=4.2.1",
 		"async": "^3.2.3",

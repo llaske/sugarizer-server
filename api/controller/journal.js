@@ -1065,10 +1065,10 @@ exports.removeInJournal = function(req, res) {
  *
  * @apiSuccess {String} _id Unique id of the journal
  * @apiSuccess {Object} content Array containing data of the entries
- * @apiSuccess {Object} content[i].metadata Metadata of the entries, i.e. characteristics of the entry
- * @apiSuccess {String} content[i].objectId Unique id of the entry in the journal
- * @apiSuccess {String} content[i].objectId Unique id of the entry in the journal
- * @apiSuccess {String} content[i].text Text of the entries, i.e. storage value of the entry. It depends of the entry type
+ * @apiSuccess {Object} content.metadata Metadata of the entries, i.e. characteristics of the entry
+ * @apiSuccess {String} content.objectId Unique id of the entry in the journal
+ * @apiSuccess {String} content.objectId Unique id of the entry in the journal
+ * @apiSuccess {String} content.text Text of the entries, i.e. storage value of the entry. It depends of the entry type
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
