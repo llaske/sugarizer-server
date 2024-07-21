@@ -32,7 +32,7 @@
 		"qrcode": "^1.4.4",
 		"streamifier": "^0.1.1",
 		"superagent": "^5.2.2",
-		"ws": "~7.4.0"
+		"ws": ">=7.5.10"
 	},
 	"devDependencies": {
 		"apidoc": "^1.2.0",
