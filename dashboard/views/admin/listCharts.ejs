@@ -13,7 +13,7 @@
                                 <div>
                                     <div id="listCharts-searchbox" class="form-group form-black is-empty" style="float:left; margin:15px 0px 0px 0px; padding:0px;">
                                         <label data-l10n-id="chartNotFound" class="control-label hidden">Chart not found</label>
-                                        <input class="form-control search_query" style="width: 200px;" oninput="hideLabel(this.value)" onchange="highlight(this.value.trim())"  value="" data-l10n-id="searchChart" placeholder="" type="text">
+                                        <input class="form-control search_query" style="width: 200px;" oninput="hideLabel(this.value)" onchange="highlight(this.value.trim())"  value="" data-l10n-id="searchChart" placeholder="Search Chart..." type="text">
                                     </div>
                                     <button class="btn btn-white btn-round btn-just-icon" style="float:left;color:#ffffff; background:#999999; margin:8px 15px 0px 10px;" onclick="highlight($('.search_query').val().trim())">
                                         <i class="material-icons">search</i>
@@ -95,6 +95,6 @@ if ($(window).width() > 992) {
 }
 
 var currTour = sugarizerTour("listCharts", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
-if (!currTour.isFinished()) currTour.start();
+if (currTour.isFinished()) currTour.start();
 
 </script>

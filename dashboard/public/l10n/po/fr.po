@@ -1600,3 +1600,7 @@ msgctxt "scanqrcode"
 msgid "Scan this QR Code with your device to set automatically the server URL"
 msgstr "Scannez ce QR Code avec votre appareil pour renseigner automatiquement l'URL du serveur"
 
+#: searchChart
+msgctxt "searchChart"
+msgid "search Chart"
+msgstr "search Chart..."
