@@ -1603,4 +1603,4 @@ msgstr "Scan this QR Code with your device to set automatically the server URL"
 #: searchChart
 msgctxt "searchChart"
 msgid "search Chart"
-msgstr "search Chart..."
+msgstr "buscar tabla"
