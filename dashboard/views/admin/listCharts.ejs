@@ -95,6 +95,6 @@ if ($(window).width() > 992) {
 }
 
 var currTour = sugarizerTour("listCharts", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
-if (!currTour.isFinished()) currTour.start();
+if (currTour.isFinished()) currTour.start();
 
 </script>

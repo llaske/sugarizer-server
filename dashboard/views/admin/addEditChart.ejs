@@ -113,5 +113,5 @@
 
 <script>
     var currTour = sugarizerTour("editChart", <% if (account.user && account.user.role=="admin") { %> "admin" <% } else { %> "teacher" <% } %>, "<%= mode %>");
-    if (!currTour.isFinished()) currTour.start();
+    if (currTour.isFinished()) currTour.start();
 </script>
