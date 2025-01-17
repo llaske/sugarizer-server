@@ -166,5 +166,12 @@
 <% } %>
 <script>
 	var currTour = sugarizerTour("stats", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
-	if (currTour.isFinished()) currTour.start();
+	let value = sessionStorage.getItem("session_stats");
+    if (value === null) {
+        // This is the first time the page is loaded in this session, so start the tutorial
+        if (!currTour.isFinished()) { 
+            currTour.start();
+        }
+        sessionStorage.setItem("session_stats", "true"); // Mark the session as started
+    }
 </script>

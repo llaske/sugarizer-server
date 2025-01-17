@@ -147,5 +147,12 @@
     var headers = <%- JSON.stringify(headers) %>;
     handleSort();
     var currTour = sugarizerTour("assignment", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
-    if (currTour.isFinished()) currTour.start();
+    let value = sessionStorage.getItem("session_assignments");
+    if (value === null) {
+        // This is the first time the page is loaded in this session, so start the tutorial
+        if (!currTour.isFinished()) { 
+            currTour.start();
+        }
+        sessionStorage.setItem("session_assignments", "true"); // Mark the session as started
+    }
 </script>
