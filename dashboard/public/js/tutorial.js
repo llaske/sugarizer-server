@@ -196,6 +196,8 @@ function sugarizerTour(currentView, role, mode) {
 						showBullets: false,
 					  })
 					  .start();
+
+					  localStorage.setItem(tutorialName,currentView);
 				};
 			
 				// Start tutorial
@@ -214,12 +216,12 @@ function sugarizerTour(currentView, role, mode) {
 				};
 				// Check if already finished
 				tutorial.isFinished = function () {
-					if (window.localStorage[tutorialName + "_end"] == "yes") return true;
+					if (window.localStorage[tutorialName] == "yes") return true;
 					return false;
 				};
 				tutorial.restart = function () {
-					localStorage.setItem(tutorialName + "_current_step", 0);
-					localStorage.removeItem(tutorialName + "_end");
+					localStorage.setItem(tutorialName, 0);
+					localStorage.removeItem(tutorialName);
 					tutorial.start();
 				};
 				// Test if launched
@@ -416,6 +418,8 @@ function sugarizerTour(currentView, role, mode) {
 			showBullets: false,
 		  })
 		  .start();
+		  
+		   localStorage.setItem(tutorialName,currentView);
 	};
 
 	// Start tutorial
@@ -435,13 +439,13 @@ function sugarizerTour(currentView, role, mode) {
 
 	// Check if already finished
 	tutorial.isFinished = function () {
-		if (window.localStorage[tutorialName + "_end"] == "yes") return true;
+		if (window.localStorage[tutorialName]) return true;
 		return false;
 	};
 
 	tutorial.restart = function () {
-		localStorage.setItem(tutorialName + "_current_step", 0);
-		localStorage.removeItem(tutorialName + "_end");
+		localStorage.setItem(tutorialName, 0);
+		localStorage.removeItem(tutorialName);
 		tutorial.start();
 	};
 

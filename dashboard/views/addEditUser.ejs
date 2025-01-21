@@ -273,12 +273,5 @@ function show_user_fields(val) {
 show_user_fields('<% if(typeof user == "object"){ %><%= user.role %><% } %>')
 
 var currTour = sugarizerTour("editUser", <% if (account.user && account.user.role=="admin") { %> "admin" <% } else { %> "teacher" <% } %>, "<%= mode %>");
-let value = sessionStorage.getItem("session_addEditUser");
-    if (value === null) {
-        // This is the first time the page is loaded in this session, so start the tutorial
-        if (!currTour.isFinished()) { 
-            currTour.start();
-        }
-        sessionStorage.setItem("sessionStart_addEditUser", "true"); // Mark the session as started
-    }
+if (!currTour.isFinished()) currTour.start();
 </script>

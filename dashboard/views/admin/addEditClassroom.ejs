@@ -130,12 +130,5 @@
 
 <script>
     var currTour = sugarizerTour("editClassroom", <% if (account.user && account.user.role=="admin") { %> "admin" <% } else { %> "teacher" <% } %>, "<%= mode %>");
-    let value = sessionStorage.getItem("session_addEditClassroom");
-    if (value === null) {
-        // This is the first time the page is loaded in this session, so start the tutorial
-        if (!currTour.isFinished()) { 
-            currTour.start();
-        }
-        sessionStorage.setItem("session_addEditClassroom", "true"); // Mark the session as started
-    }
+    if (!currTour.isFinished()) currTour.start();
 </script>
