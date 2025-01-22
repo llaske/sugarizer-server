@@ -85,6 +85,5 @@ var url = '<%= url %>';
 	}
 <% } %>
 var currTour = sugarizerTour("activities", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
-        if (!currTour.isFinished()) currTour.start();
-
+if (!currTour.isFinished()) currTour.start();
 </script>
