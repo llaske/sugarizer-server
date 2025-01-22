@@ -66,8 +66,6 @@ function sugarizerTour(currentView, role, mode) {
 						steps.push(getStep("users", "#checkAll", "right", 13));
 						steps.push(getStep("users", "#users-deleteMultiple", "left", 14));
 					}else if (currentView == "activities") {
-						console.log(steps);
-						console.log(document.querySelector("#activities-list-parent"));
 						steps.push(getStep("activities", "", "bottom", 1, true));
 						steps.push(getStep("activities", "#activities-list-parent", "auto", 2));
 						steps.push(getStep("activities", "#activities-searchbox", "left", 3));
@@ -289,8 +287,6 @@ function sugarizerTour(currentView, role, mode) {
 			steps.push(getStep("users", "#checkAll", "right", 13));
 			steps.push(getStep("users", "#users-deleteMultiple", "left", 14));
 		}else if (currentView == "activities") {
-			console.log(steps);
-            console.log(document.querySelector("#activities-list-parent"));
 			steps.push(getStep("activities", "", "bottom", 1, true));
 			steps.push(getStep("activities", "#activities-list-parent", "auto", 2));
 			steps.push(getStep("activities", "#activities-searchbox", "left", 3));
