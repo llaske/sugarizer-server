@@ -185,8 +185,7 @@
 	if (!journalList) {
 		var currTour = sugarizerTour("journal1", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
 		if (!currTour.isFinished()) currTour.start();
-    }
-	else {
+        } else {
 		var currTour = sugarizerTour("journal2", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
 		if (!currTour.isFinished()) currTour.start();
 	}
