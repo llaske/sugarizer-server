@@ -154,5 +154,5 @@
 <script>createTable('recent-students', 'recent-students-table');</script>
 <script>
 	var currTour = sugarizerTour("home", <% if (account.user && account.user.role=="admin") {"admin"} else {"teacher"} %>);
-        if (!currTour.isFinished()) currTour.start();
+	if (!currTour.isFinished()) currTour.start();
 </script>
