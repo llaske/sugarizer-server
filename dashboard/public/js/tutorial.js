@@ -174,17 +174,16 @@ function sugarizerTour(currentView, role, mode) {
 					}				
 			
 			
-					steps = steps.filter(
-						(step) =>
-						  !("element" in step) ||
+					steps = steps.filter(function(step) {
+						return !("element" in step) ||
 						  (step.element.length &&
 							document.querySelector(step.element) &&
 							document.querySelector(step.element).style.display != "none" &&
-							document.querySelector(step.element).getBoundingClientRect().y != 0)
-					  );
+							document.querySelector(step.element).getBoundingClientRect().y != 0);
+					});
 			
-					  introJs()
-					  .setOptions({
+					introJs()
+					.setOptions({
 						tooltipClass: "customTooltip",
 						steps: steps,
 						prevLabel: document.webL10n.get("TutoPrev"),
@@ -192,10 +191,10 @@ function sugarizerTour(currentView, role, mode) {
 						exitOnOverlayClick: false,
 						nextToDone: false,
 						showBullets: false,
-					  })
-					  .start();
+					})
+					.start();
 
-					  localStorage.setItem(tutorialName,currentView);
+					localStorage.setItem(tutorialName,currentView);
 				};
 			
 				// Start tutorial
