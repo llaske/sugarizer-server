@@ -12,7 +12,7 @@ function sugarizerTour(currentView, role, mode) {
 
 	// Init tutorial
 	tutorial.init = function () {
-		var steps=[]
+		var steps=[];
 		if (currentView == "home") {
 			lockScroll();
 			steps.push(getStep("home","", "bottom", 1, true));
@@ -28,6 +28,7 @@ function sugarizerTour(currentView, role, mode) {
 		}else if (currentView == "users") {
 			steps.push(getStep("users", "", "bottom", 1, true));
 			steps.push(getStep("users", "#user-serach-row", "bottom", 2));// Tutorial handling
+			/* eslint-disable no-inner-declarations */
 			function sugarizerTour(currentView, role, mode) {
 				var tutorial = {};
 				var tour;
@@ -176,23 +177,24 @@ function sugarizerTour(currentView, role, mode) {
 			
 					steps = steps.filter(function(step) {
 						return !("element" in step) ||
-						  (step.element.length &&
+							(step.element.length &&
 							document.querySelector(step.element) &&
 							document.querySelector(step.element).style.display != "none" &&
 							document.querySelector(step.element).getBoundingClientRect().y != 0);
 					});
 			
+					/* eslint-disable no-undef */
 					introJs()
-					.setOptions({
-						tooltipClass: "customTooltip",
-						steps: steps,
-						prevLabel: document.webL10n.get("TutoPrev"),
-						nextLabel: document.webL10n.get("TutoNext"),
-						exitOnOverlayClick: false,
-						nextToDone: false,
-						showBullets: false,
-					})
-					.start();
+						.setOptions({
+							tooltipClass: "customTooltip",
+							steps: steps,
+							prevLabel: document.webL10n.get("TutoPrev"),
+							nextLabel: document.webL10n.get("TutoNext"),
+							exitOnOverlayClick: false,
+							nextToDone: false,
+							showBullets: false,
+						})
+						.start();
 
 					localStorage.setItem(tutorialName,currentView);
 				};
@@ -238,7 +240,8 @@ function sugarizerTour(currentView, role, mode) {
 									el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
 									// Adjust tooltip position if necessary
-									setTimeout(() => {
+									setTimeout(function() {
+										/* eslint-disable no-undef */
 										introJs().refresh();
 									}, 500);
 								}
@@ -260,8 +263,8 @@ function sugarizerTour(currentView, role, mode) {
 						self.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
 					];
 					var html = jQuery('html'); // it would make more sense to apply this to body, but IE7 won't have that
-			html.data('scroll-position', scrollPosition);
-			html.data('previous-overflow', html.css('overflow'));
+					html.data('scroll-position', scrollPosition);
+					html.data('previous-overflow', html.css('overflow'));
 					html.css('overflow', 'hidden');
 					window.scrollTo(scrollPosition[0], scrollPosition[1]);
 				}
@@ -393,28 +396,28 @@ function sugarizerTour(currentView, role, mode) {
 			steps.push(getStep("editChart", "#editChart-display", "right", 5));
 		}				
 
- 		steps = steps.filter(
-			(step) =>
-			  !("element" in step) ||
-			  (step.element.length &&
+		steps = steps.filter(function(step) {
+			return !("element" in step) ||
+			(step.element.length &&
 				document.querySelector(step.element) &&
 				document.querySelector(step.element).style.display != "none" &&
-				document.querySelector(step.element).getBoundingClientRect().y != 0)
-		  );
+				document.querySelector(step.element).getBoundingClientRect().y != 0);
+		});
 
-		  introJs()
-		  .setOptions({
-			tooltipClass: "customTooltip",
-			steps: steps,
-			prevLabel: document.webL10n.get("TutoPrev"),
-			nextLabel: document.webL10n.get("TutoNext"),
-			exitOnOverlayClick: false,
-			nextToDone: false,
-			showBullets: false,
-		  })
-		  .start();
-		  
-		   localStorage.setItem(tutorialName,currentView);
+		/* eslint-disable no-undef */
+		introJs()
+			.setOptions({
+				tooltipClass: "customTooltip",
+				steps: steps,
+				prevLabel: document.webL10n.get("TutoPrev"),
+				nextLabel: document.webL10n.get("TutoNext"),
+				exitOnOverlayClick: false,
+				nextToDone: false,
+				showBullets: false,
+			})
+			.start();
+		
+		localStorage.setItem(tutorialName,currentView);
 	};
 
 	// Start tutorial
@@ -462,7 +465,8 @@ function sugarizerTour(currentView, role, mode) {
 						el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
 						// Adjust tooltip position if necessary
-						setTimeout(() => {
+						setTimeout(function() {
+							/* eslint-disable no-undef */
 							introJs().refresh();
 						}, 500);
 					}
