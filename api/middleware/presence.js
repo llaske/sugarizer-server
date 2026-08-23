@@ -92,13 +92,22 @@ exports.init = function(settings, httpserver) {
 				// Forbid user arlready connected on another device
 				if ((userIndex = findClient(rjson.networkId)) != -1) {
 					// Disconnect user on other device
+					logmessage('User ' + rjson.networkId + ' already connected, closed previous connection and reconnect it');
 					clients[userIndex].connection.close(closedBecauseDuplicate);
 
+					// Remove user from shared activities
+					for (var i = 0; i < sharedActivities.length; i++) {
+						if (sharedActivities[i] == null)
+							continue;
+
+						// Remove user from group
+						removeUserFromGroup(sharedActivities[i].id, rjson.networkId);
+					}
+					
 					// Reset user
 					clients[userIndex].settings = rjson;
 					clients[userIndex].connection = connection;
 					userId = rjson.networkId;
-					logmessage('User ' + userId + ' already connected, closed previous connection and reconnect it');
 				} else {
 					// Add client
 					userIndex = addClient(connection);
