@@ -46,7 +46,7 @@ module.exports = function getAllDeliveries(req, res) {
 			iconMap[activities[i].id] = '/' + activities[i].directory + '/' + activities[i].icon;
 		}
 		superagent
-			.get(common.getAPIUrl(req) + 'api/v1/assignments/deliveries/' + req.params.assignmentId)
+			.get(common.getAPIUrl(req) + 'api/v1/assignments/deliveries?assignmentId=' + req.params.assignmentId)
 			.set(common.getHeaders(req))
 			.query(query)
 			.end(function (error, response) {

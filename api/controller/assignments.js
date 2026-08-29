@@ -408,16 +408,19 @@ exports.findAll = function (req, res) {
 **/
 //find all deliveries
 exports.findAllDeliveries = function (req, res) {
-	var assignmentId = req.params.assignmentId;
+	var assignmentId = req.query.assignmentId;
 	//validate
-	if (!mongo.ObjectID.isValid(assignmentId)) {
+	if (assignmentId && !mongo.ObjectID.isValid(assignmentId)) {
 		return res.status(401).send({
 			'error': "Invalid assignment id",
 			'code': 35
 		});
 	}
 	//find all deliveries with filters and pagination
-	var query = {"metadata.assignmentId": assignmentId};
+	var query = {};
+	if (assignmentId) {
+		query = {"metadata.assignmentId": assignmentId};
+	}
 	query = addQuery("buddy_name", req.query, query);
 	query = addQuery("Delivered", req.query, query);
 	db.collection(journalCollection, function (err, collection) {
@@ -427,6 +430,17 @@ exports.findAllDeliveries = function (req, res) {
 			var route = req.route.path;
 			var options = getOptions(req, count, "+buddy_name");
 			//find all entries which matches with assignment id using aggregation
+			var filters = {
+				input: "$content",
+				as: "item",
+				cond:{}
+			};
+			if (query["metadata.isSubmitted"]) {
+				filters["cond"] = {$eq:["$$item.metadata.isSubmitted", query["metadata.isSubmitted"]['$eq']]};
+			}
+			if (assignmentId) {
+				filters["cond"] = {$eq:["$$item.metadata.assignmentId", assignmentId]};
+			}
 			collection.aggregate([
 				{
 					$match: {content: {$elemMatch: query}},
@@ -435,11 +449,7 @@ exports.findAllDeliveries = function (req, res) {
 					$project: {
 						_id: 1,
 						content: {
-							$filter: {
-								input: "$content",
-								as: "item",
-								cond: { $eq: ["$$item.metadata.assignmentId", assignmentId] },
-							}
+							$filter: filters
 						}
 					}
 				},
