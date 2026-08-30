@@ -35,20 +35,22 @@
 		"ws": "^8.21.3"
 	},
 	"devDependencies": {
-		"apidoc": "^1.2.0",
 		"@babel/traverse": ">=7.23.2",
-		"decompress": ">=4.2.1",
+		"@eslint/js": "^9.39.5",
 		"async": "^3.2.3",
 		"chai": "*",
 		"chai-http": "*",
-		"eslint": "~6.6.0",
+		"eslint": "^9.35.0",
+		"globals": "^16.4.0",
 		"grunt": "^1.6.1",
 		"grunt-contrib-cssmin": "^5.0.0",
-		"grunt-contrib-jshint": "^3.2.0",
-		"grunt-contrib-nodeunit": "^5.0.0",
 		"grunt-terser": "^2.0.0",
-		"mocha": "~10.2.0",
-		"nodemon": "*"
+		"mocha": "^10.8.2",
+		"nodemon": "^3.1.14"
+	},
+	"overrides": {
+		"js-yaml": "4.3.2",
+		"serialize-javascript": "7.1.1"
 	},
 	"scripts": {
 		"test": "mocha api/test/ --timeout 20000 --exit",
