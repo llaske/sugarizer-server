@@ -1,6 +1,7 @@
 // include libraries
 var superagent = require('superagent'),
-	common = require('../../helper/common');
+	common = require('../../helper/common'),
+	validator = require('../../helper/validator');
 
 /**
  * POST /login
@@ -9,7 +10,7 @@ var superagent = require('superagent'),
  * @param password
 */
 
-module.exports = function postLogin(req, res) {
+module.exports = async function postLogin(req, res) {
 
 	// reinit l10n with locale
 	if (req.body && req.body.lang) {
@@ -17,11 +18,13 @@ module.exports = function postLogin(req, res) {
 	}
 
 	// validate
-	req.assert('username', common.l10n.get('UsernameInvalid')).notEmpty();
-	req.assert('password', common.l10n.get('PasswordBlank')).notEmpty();
+	await validator.run(req, [
+		validator.check('username', common.l10n.get('UsernameInvalid')).notEmpty(),
+		validator.check('password', common.l10n.get('PasswordBlank')).notEmpty()
+	]);
 
 	// get errors
-	var errors = req.validationErrors();
+	var errors = validator.errors(req);
 
 	var role = ["admin", "teacher"];
 	if (req.body.role == "teacher") {

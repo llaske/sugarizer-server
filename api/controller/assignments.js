@@ -70,7 +70,7 @@ CHUNKS_COLL = bucket + ".chunks";
  **/
 exports.addAssignment = function (req, res) {
 	//validate
-	if (!req.body.assignment) {
+	if (!req.body || !req.body.assignment) {
 		return res.status(400).send({
 			'error': "Assignment object is not defined",
 			'code': 38

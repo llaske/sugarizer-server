@@ -4,17 +4,19 @@ var superagent = require('superagent'),
 	common = require('../../helper/common'),
 	xocolors = require('../../helper/xocolors')(),
 	emoji = require('../../public/js/emoji'),
+	validator = require('../../helper/validator'),
 	dashboard_utils = require('../dashboard/util'),
 	journal_utils = require('../journal/util/index');
 
 var assignments = require('./index');
 
-module.exports = function editAssignment(req, res) {
+module.exports = async function editAssignment(req, res) {
 	// reinit l10n and momemt with locale
 	common.reinitLocale(req);
 	if (req.params.assignmentId) {
 		if (req.method == 'POST') {
 			// validate
+			var errors = [];
 			req.body.name = req.body.name.trim();
 			req.body.classrooms = req.body.classrooms || [];
 			if (typeof req.body.classrooms == 'string') {
@@ -22,12 +24,20 @@ module.exports = function editAssignment(req, res) {
 			}
 			//join dueDate and time
 			if (!req.body.dueDate || !req.body.time) {
-				req.assert('dueDate', common.l10n.get('InvalidDueDate')).equals(null);
+				errors.push({
+					param: 'dueDate',
+					msg: common.l10n.get('InvalidDueDate'),
+					value: req.body.dueDate
+				});
 			}
 			//check if due date is in the past
 			var computedDate = parseInt(req.body.dueTimestamp)+parseInt(req.body.dueDatestamp);
 			if (req.body.dueDate && computedDate < Date.now()) {
-				req.assert('dueDate', common.l10n.get('InvalidDueDate')).equals(req.body.dueDate);
+				errors.push({
+					param: 'dueDate',
+					msg: common.l10n.get('InvalidDueDate'),
+					value: req.body.dueDate
+				});
 			}
 			req.body.dueDate = computedDate;
 			delete req.body.dueTimestamp;
@@ -37,13 +47,18 @@ module.exports = function editAssignment(req, res) {
 			if (req.body.time) {
 				delete req.body.time;
 			}
-			req.assert('name', common.l10n.get('AssignmentNameInvalid')).matches(/^[a-z0-9 ]+$/i);
-			req.assert('instructions', common.l10n.get('AssignmentInstructionsInvalid')).matches(/^[\s\S]*$/i);
+			await validator.run(req, [
+				validator.check('name', common.l10n.get('AssignmentNameInvalid')).matches(/^[a-z0-9 ]+$/i),
+				validator.check('instructions', common.l10n.get('AssignmentInstructionsInvalid')).matches(/^[\s\S]*$/i)
+			]);
 
 			// get errors
-			var errors = req.validationErrors();
+			var validationErrors = validator.errors(req);
+			if (validationErrors) {
+				errors = errors.concat(validationErrors);
+			}
 			//call
-			if (!errors) {
+			if (errors.length === 0) {
 				superagent
 					.put(common.getAPIUrl(req) + 'api/v1/assignments/' + req.params.assignmentId)
 					.set(common.getHeaders(req))

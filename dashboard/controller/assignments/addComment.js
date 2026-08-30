@@ -17,8 +17,7 @@ module.exports = function addComment(req, res) {
 	if (req.method == 'POST') {
 		// validate 
 		req.body.comment = req.body.comment.trim();
-		// get errors
-		var errors = req.validationErrors();
+		var errors = false;
 
 		if (!errors) {
 			superagent
