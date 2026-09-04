@@ -15,7 +15,7 @@ The easiest way to run Sugarizer Server is to use Docker. To do that, type comma
 	git clone https://github.com/llaske/sugarizer-server
 	cd sugarizer-server
 	sh generate-docker-compose.sh
-	docker-compose up -d
+	docker compose up -d
 
 For other options to install Sugarizer Server on your computer, on the cloud or on a RaspberryPI, see [here](docs/install.md).
 
