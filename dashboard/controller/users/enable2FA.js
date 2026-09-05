@@ -2,25 +2,28 @@
 var superagent = require('superagent'),
 	common = require('../../helper/common'),
 	regexValidate = require('../../helper/regexValidate'),
+	validator = require('../../helper/validator'),
 	qrCodeUtil = require('../../../api/controller/utils/qrCodeUtil');
 
 var users = require('./index');
 var min_token_size = 6;
 
 
-module.exports = function enable2FA(req, res) {
+module.exports = async function enable2FA(req, res) {
 	// reinit l10n and momemt with locale
 	common.reinitLocale(req);
 
 	if (req.method == 'POST') {
 
-		req.assert('tokenentry', common.l10n.get('TokenAtLeast', {min_token_size: min_token_size})).len(min_token_size);
-		req.assert('tokenentry', common.l10n.get('TokenInvalid')).matches(regexValidate("tokenentry"));
+		await validator.run(req, [
+			validator.check('tokenentry', common.l10n.get('TokenAtLeast', {min_token_size: min_token_size})).isLength({ min: min_token_size }),
+			validator.check('tokenentry', common.l10n.get('TokenInvalid')).matches(regexValidate("tokenentry"))
+		]);
 
 		var otpToken = req.body.tokenentry;
 
 		// get errors
-		var errors = req.validationErrors();
+		var errors = validator.errors(req);
 
 		if (!errors){
 			superagent

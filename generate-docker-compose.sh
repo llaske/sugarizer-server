@@ -1,27 +1,19 @@
 ARCH=`uname -m`
 
 case "$ARCH" in
-    "arm64") TAG="arm64"
+    "amd64"|"x86_64") TAG="amd64"
 	;;
-    "x86_64") TAG="amd64"
+    "arm64"|"aarch64") TAG="arm64"
 	;;
-    "armv6l") TAG="armv6l"
-    echo "Platform no longer supported"
-    exit 1
+    "armv7l"|"armv7") TAG="arm/v7"
 	;;
-    "i386") TAG="i386"
-    echo "Platform no longer supported"
-    exit 1
+    "armv6l") TAG="arm/v6"
 	;;
-    "i686") TAG="i386"
-    echo "Platform no longer supported"
-    exit 1
+    "i386"|"i686") TAG="386"
 	;;
-    "armv7l") TAG="armhf"
-    echo "Platform no longer supported"
-    exit 1
-	;;
-    "aarch64") TAG="arm64"
+    *)
+        echo "Unsupported architecture: $ARCH"
+        exit 1
 	;;
 esac
 

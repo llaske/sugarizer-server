@@ -16,8 +16,8 @@ var Admin = "admin", Teacher = "teacher", Student = "student";
 
 module.exports = function (app, ini, db) {
 
-	//Only the requests that start with /api/v1/* will be checked for the token.
-	app.all('/api/v1/*', [validate(false)]);//validate(partialAccess): partialAccess is middleware boolean. See middleware/validateRequest.js for more info.
+	// Only requests starting with /api/v1/ will be checked for the token.
+	app.all(/^\/api\/v1\/.*/, [validate(false)]);//validate(partialAccess): partialAccess is middleware boolean. See middleware/validateRequest.js for more info.
 
 	// Init modules
 	activities.load(ini, db);
@@ -92,7 +92,7 @@ module.exports = function (app, ini, db) {
 	app.delete("/api/v1/charts/:chartid", auth.allowedRoles([Admin]), charts.removeChart);
 
 	// If no route is matched by now, it must be a 404
-	app.use('/api/v1/*', function (req, res) {
+	app.use(/^\/api\/v1\/.*/, function (req, res) {
 		return res.status(404).json({
 			'status': 404,
 			'error': "Route Not Found!",

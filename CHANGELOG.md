@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Replace Bootstrap Tour by IntroJS in dashboard #363
+- Node.js minimal version is now 18+
 
 ### Fixed
 - Next page button in users/assignment view don't take into account search criteria #364
+- Shared activities stay active when an user is reconnected #420
 
 ## [1.5.0] - 2023-02-15
 ### Added
