@@ -2,7 +2,6 @@ version: "2"
 
 services:
   mongodb:
-    platform: linux/{ARCH}
     build:
       context: ./docker
       dockerfile: Dockerfile-mongodb
@@ -13,7 +12,6 @@ services:
       - AUTH=no
 
   server:
-    platform: linux/{ARCH}
     build:
       context: ./docker
       dockerfile: Dockerfile-server
