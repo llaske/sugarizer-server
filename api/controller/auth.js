@@ -2,7 +2,8 @@ var jwt = require('jwt-simple'),
 	users = require('./users.js'),
 	mongo = require('mongodb'),
 	otplib = require('otplib'),
-	common = require('../../dashboard/helper/common');
+	common = require('../../dashboard/helper/common'),
+	regexValidate = require('../../dashboard/helper/regexValidate');
 
 var security;
 var secret;
@@ -249,6 +250,16 @@ exports.verify2FA = function(req, res) {
 exports.signup = function(req, res) {
 
 	var user = JSON.parse(req.body.user);
+
+	//validate username - only alphanumeric characters and spaces allowed
+	if (user.name && !regexValidate("user").test(user.name)) {
+		res.status(401).send({
+			'error': 'Invalid Username',
+			'code': 34
+		});
+		return;
+	}
+
 	if(user.beforeSignup) {
 		validateUsername(user.name, function(user) {
 			if(user == false) {
