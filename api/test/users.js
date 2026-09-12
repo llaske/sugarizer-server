@@ -223,6 +223,26 @@ describe('Users', function() {
 					done();
 				});
 		});
+
+		it('it should reject signup with a malicious username', (done) => {
+			chai.request(server)
+				.post('/api/v1/users/')
+				.set('x-access-token', fakeUser.admin1.token)
+				.set('x-key', fakeUser.admin1.user._id)
+				.send({
+					"user": JSON.stringify({
+						name: "<script>alert('XSS')</script>",
+						password: "malicious",
+						role: "student",
+						language: "en"
+					})
+				})
+				.end((err, res) => {
+					res.should.have.status(401);
+					res.body.should.have.property('code').eql(34);
+					done();
+				});
+		});
 	});
 
 	describe('/GET users', () => {
@@ -530,6 +550,22 @@ describe('Users', function() {
 				.end((err, res) => {
 					res.should.have.status(401);
 					res.body.code.should.be.eql(23);
+					done();
+				});
+		});
+
+		it('it should reject updating a user with a malicious username', (done) => {
+
+			chai.request(server)
+				.put('/api/v1/users/' + fakeUser.student1._id)
+				.set('x-access-token', fakeUser.admin1.token)
+				.set('x-key', fakeUser.admin1.user._id)
+				.send({
+					user: JSON.stringify({ name: "<script>alert('XSS')</script>" })
+				})
+				.end((err, res) => {
+					res.should.have.status(401);
+					res.body.should.have.property('code').eql(34);
 					done();
 				});
 		});
