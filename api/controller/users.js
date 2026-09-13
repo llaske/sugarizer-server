@@ -745,20 +745,38 @@ exports.addUser = function(req, res) {
 				db.collection(usersCollection, function(err, collection) {
 					// Create a new journal
 					journal.createJournal(function(err, result) {
-						// add journal to the new user
-						user.private_journal = result.ops[0]._id;
-						user.shared_journal = journal.getShared()._id;
-						collection.insertOne(user, {
-							safe: true
-						}, function(err, result) {
+						if (err) {
+							res.status(500).send({
+								'error': 'An error has occurred',
+								'code': 10
+							});
+							return;
+						}
+
+						journal.ensureSharedJournal(function(err, sharedJournal) {
 							if (err) {
 								res.status(500).send({
 									'error': 'An error has occurred',
 									'code': 10
 								});
-							} else {
-								res.send(result.ops[0]);
+								return;
 							}
+
+							// add journal to the new user
+							user.private_journal = result.ops[0]._id;
+							user.shared_journal = sharedJournal._id;
+							collection.insertOne(user, {
+								safe: true
+							}, function(err, result) {
+								if (err) {
+									res.status(500).send({
+										'error': 'An error has occurred',
+										'code': 10
+									});
+								} else {
+									res.send(result.ops[0]);
+								}
+							});
 						});
 					});
 				});

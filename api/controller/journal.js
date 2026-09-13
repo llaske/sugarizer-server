@@ -59,6 +59,41 @@ function _toUTF16(input) {
 	return str;
 }
 
+function ensureSharedJournal(callback) {
+	db.collection(journalCollection, function(err, collection) {
+		if (err) {
+			callback(err);
+			return;
+		}
+
+		collection.findOne({
+			'shared': true
+		}, function(err, item) {
+			if (!err && item != null) {
+				shared = item;
+				callback(null, shared);
+				return;
+			}
+
+			collection.insertOne({
+				content: [],
+				shared: true
+			}, {
+				safe: true
+			}, function(err, result) {
+				if (err) {
+					callback(err);
+					return;
+				}
+				shared = result.ops[0];
+				callback(null, shared);
+			});
+		});
+	});
+}
+
+exports.ensureSharedJournal = ensureSharedJournal;
+
 // Init database
 exports.init = function(settings, database) {
 
@@ -66,28 +101,10 @@ exports.init = function(settings, database) {
 	journalCollection = settings.collections.journal;
 
 	db = database;
-	db.collection(journalCollection, function(err, collection) {
-		// Get the shared journal collection
-		collection.findOne({
-			'shared': true
-		}, function(err, item) {
-			// Not found, create one
-			if (!err && item == null) {
-				collection.insertOne({
-					content: [],
-					shared: true
-				}, {
-					safe: true
-				}, function(err, result) {
-					shared = result.ops[0];
-				});
-			}
-
-			// Already exist, save it
-			else if (item != null) {
-				shared = item;
-			}
-		});
+	ensureSharedJournal(function(err) {
+		if (err) {
+			console.error('Unable to initialize shared journal:', err);
+		}
 	});
 
 	var bucket = 'textBucket';
