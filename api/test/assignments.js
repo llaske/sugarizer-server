@@ -18,9 +18,10 @@ var fake = {
     'classroom3': '{"name":"group_a_' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"students":[]}',
     'teacher1': '{"name":"SugarizerTeach_1' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"teacher","password":"bulbasaur","language":"fr"}',
     'teacher2': '{"name":"SugarizerTeach_2' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"teacher","password":"bulbasaur","language":"fr"}',
-    'assignment1': '{"name":"assignment_1' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a bulbasaur","lateTurnIn":"false","classrooms":[], "dueDate":"' + ((timestamp+10000).toString()) + '"}',
-    'assignment2': '{"name":"assignment_2' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a pikachu","lateTurnIn":"true","classrooms":[], "dueDate":"' + ((timestamp+10000).toString()) + '"}',
-    'assignment3': '{"name":"assignment_1' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a bulbasaur","lateTurnIn":"false","classrooms":[], "dueDate":"' + ((timestamp+10000).toString()) + '"}',
+    // Keep due dates comfortably in the future so the launch flow still succeeds on slow CI runners.
+    'assignment1': '{"name":"assignment_1' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a bulbasaur","lateTurnIn":"false","classrooms":[], "dueDate":"' + ((timestamp + 86400000).toString()) + '"}',
+    'assignment2': '{"name":"assignment_2' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a pikachu","lateTurnIn":"true","classrooms":[], "dueDate":"' + ((timestamp + 86400000).toString()) + '"}',
+    'assignment3': '{"name":"assignment_1' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a bulbasaur","lateTurnIn":"false","classrooms":[], "dueDate":"' + ((timestamp + 86400000).toString()) + '"}',
     'delivery1': '{}',
 };
 
