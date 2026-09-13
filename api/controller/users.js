@@ -2,7 +2,8 @@
 
 var mongo = require('mongodb'),
 	journal = require('./journal'),
-	otplib = require('otplib');
+	otplib = require('otplib'),
+	regexValidate = require('../../dashboard/helper/regexValidate');
 
 var db;
 
@@ -677,6 +678,15 @@ exports.addUser = function(req, res) {
 	//parse user details
 	var user = JSON.parse(req.body.user);
 
+	//validate username - only alphanumeric characters and spaces allowed
+	if (user.name && !regexValidate("user").test(user.name)) {
+		res.status(401).send({
+			'error': 'Invalid Username',
+			'code': 34
+		});
+		return;
+	}
+
 	//add timestamp & language
 	user.created_time = +new Date();
 	user.timestamp = +new Date();
@@ -840,6 +850,15 @@ exports.updateUser = function(req, res) {
 	var uid = req.params.uid;
 	var user = JSON.parse(req.body.user);
 	delete user.role; // Disable role change
+
+	//validate username - only alphanumeric characters and spaces allowed
+	if (user.name && !regexValidate("user").test(user.name)) {
+		res.status(401).send({
+			'error': 'Invalid Username',
+			'code': 34
+		});
+		return;
+	}
 
 	//do not update name if already exist
 	if (typeof user.name !== 'undefined') {
