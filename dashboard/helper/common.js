@@ -89,18 +89,54 @@ exports.getServerIP = function() {
 	for (var i in interfaces) {
 		for (var j in interfaces[i]) {
 			var address = interfaces[i][j];
-			if (address.family === 'IPv6' && !address.internal) {
-				addresses.push(address.address);
+			if (!address.internal) {
+				if (address.family === 'IPv4' || address.family === 4) {
+					addresses.push(address.address);
+				} else if (address.family === 'IPv6' || address.family === 6) {
+					addresses.push(address.address);
+				}
 			}
 		}
 	}
+	addresses.push("127.0.0.1");
 	addresses.push("::1");
 	addresses.push("::ffff:127.0.0.1");
 	return addresses;
 };
 
-exports.getAPIUrl = function() {
-	return (ini.security.https ? 'https' : 'http' ) + "://localhost:" + ini.web.port + '/';
+exports.getAPIUrl = function(req) {
+	var protocol = (ini.security.https ? 'https' : 'http');
+	var host = (ini.web && ini.web.hostname) ? ini.web.hostname : 'localhost';
+	var port = ini.web.port;
+
+	if (req) {
+		if (req.headers) {
+			var forwardedProto = req.headers['x-forwarded-proto'];
+			if (forwardedProto) {
+				protocol = forwardedProto.split(',')[0].trim();
+			} else if (req.protocol) {
+				protocol = req.protocol;
+			}
+			var requestHost = req.headers['x-forwarded-host'] || req.headers.host;
+			if (requestHost) {
+				host = requestHost.split(',')[0].trim();
+			}
+		} else if (req.protocol) {
+			protocol = req.protocol;
+		}
+		if (req.get) {
+			var requestHost = req.get('host');
+			if (requestHost) {
+				host = requestHost.split(',')[0].trim();
+			}
+		}
+	}
+
+	if (host.indexOf(':') === -1) {
+		host += ':' + port;
+	}
+
+	return protocol + '://' + host + '/';
 };
 
 

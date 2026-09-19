@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Next page button in users/assignment view don't take into account search criteria #364
 - Shared activities stay active when an user is reconnected #420
 - Stored XSS via User Name in Dashboard #418
+- 401 unauthorized error with activity reorder by drag and drop feature #323
 
 ## [1.5.0] - 2023-02-15
 ### Added
