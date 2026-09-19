@@ -52,6 +52,13 @@ module.exports = async function postLogin(req, res) {
 			})
 			.send(form)
 			.end(function (error, response) {
+				if (error || !response) {
+					req.flash('errors', {
+						msg: common.l10n.get('ErrorCode5')
+					});
+					return res.redirect('/dashboard/login');
+				}
+
 				if (response.statusCode == 200) {
 					//store user and key in session
 					req.session.user = response.body;
@@ -70,7 +77,7 @@ module.exports = async function postLogin(req, res) {
 					}
 				} else {
 					req.flash('errors', {
-						msg: common.l10n.get('ErrorCode'+response.body.code)
+						msg: common.l10n.get('ErrorCode'+(response.body && response.body.code ? response.body.code : 5))
 					});
 					return res.redirect('/dashboard/login');
 				}
