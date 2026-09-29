@@ -104,39 +104,8 @@ exports.getServerIP = function() {
 	return addresses;
 };
 
-exports.getAPIUrl = function(req) {
-	var protocol = (ini.security.https ? 'https' : 'http');
-	var host = (ini.web && ini.web.hostname) ? ini.web.hostname : 'localhost';
-	var port = ini.web.port;
-
-	if (req) {
-		if (req.headers) {
-			var forwardedProto = req.headers['x-forwarded-proto'];
-			if (forwardedProto) {
-				protocol = forwardedProto.split(',')[0].trim();
-			} else if (req.protocol) {
-				protocol = req.protocol;
-			}
-			var requestHost = req.headers['x-forwarded-host'] || req.headers.host;
-			if (requestHost) {
-				host = requestHost.split(',')[0].trim();
-			}
-		} else if (req.protocol) {
-			protocol = req.protocol;
-		}
-		if (req.get) {
-			var requestHost = req.get('host');
-			if (requestHost) {
-				host = requestHost.split(',')[0].trim();
-			}
-		}
-	}
-
-	if (host.indexOf(':') === -1) {
-		host += ':' + port;
-	}
-
-	return protocol + '://' + host + '/';
+exports.getAPIUrl = function() {
+	return (ini.security.https ? 'https' : 'http' ) + "://localhost:" + ini.web.port + '/';
 };
 
 

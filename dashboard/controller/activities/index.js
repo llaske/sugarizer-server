@@ -40,7 +40,6 @@ exports.index = function(req, res) {
 					activities: response.body,
 					headers: common.getHeaders(req),
 					account: req.session.user,
-					url: common.getAPIUrl(req),
 					search: (req.query.search ? req.query.search.trim() : ''),
 					server: ini.information
 				});
