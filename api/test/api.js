@@ -6,7 +6,6 @@ var server = require('../../sugarizer.js');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var fs = require('fs');
-var timestamp = +new Date();
 
 //init server
 chai.use(chaiHttp);

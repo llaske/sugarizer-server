@@ -18,9 +18,10 @@ var fake = {
     'classroom3': '{"name":"group_a_' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"students":[]}',
     'teacher1': '{"name":"SugarizerTeach_1' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"teacher","password":"bulbasaur","language":"fr"}',
     'teacher2': '{"name":"SugarizerTeach_2' + (timestamp.toString()) + '","color":{"stroke":"#FF0000","fill":"#0000FF"},"role":"teacher","password":"bulbasaur","language":"fr"}',
-    'assignment1': '{"name":"assignment_1' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a bulbasaur","lateTurnIn":"false","classrooms":[], "dueDate":"' + ((timestamp+10000).toString()) + '"}',
-    'assignment2': '{"name":"assignment_2' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a pikachu","lateTurnIn":"true","classrooms":[], "dueDate":"' + ((timestamp+10000).toString()) + '"}',
-    'assignment3': '{"name":"assignment_1' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a bulbasaur","lateTurnIn":"false","classrooms":[], "dueDate":"' + ((timestamp+10000).toString()) + '"}',
+    // Keep due dates comfortably in the future so the launch flow still succeeds on slow CI runners.
+    'assignment1': '{"name":"assignment_1' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a bulbasaur","lateTurnIn":"false","classrooms":[], "dueDate":"' + ((timestamp + 86400000).toString()) + '"}',
+    'assignment2': '{"name":"assignment_2' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a pikachu","lateTurnIn":"true","classrooms":[], "dueDate":"' + ((timestamp + 86400000).toString()) + '"}',
+    'assignment3': '{"name":"assignment_1' + (timestamp.toString()) + '", "assignedWork":"ffffffff-ffff-ffff-ffff-fffffffffff1", "color":{"stroke":"#FF0000","fill":"#0000FF"},"instructions":"Draw a bulbasaur","lateTurnIn":"false","classrooms":[], "dueDate":"' + ((timestamp + 86400000).toString()) + '"}',
     'delivery1': '{}',
 };
 
@@ -109,7 +110,7 @@ describe('Assignments', () => {
                                 });
                         });
                 });
-        }, 300)
+        }, 300);
     });
 
     before((done) => {
@@ -190,7 +191,23 @@ describe('Assignments', () => {
                     res.body.should.have.property('instructions').eql("Draw a bulbasaur");
                     done();
                 });
-        })
+        });
+
+
+        it('it should return an error if not send assignment', (done) => {
+            chai.request(server)
+                .post('/api/v1/assignments/')
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .end((err, res) => {
+                    res.should.have.status(400);
+                    res.body.should.be.an('object');
+                    res.body.should.have.property('error').eql("Assignment object is not defined");
+                    res.body.should.have.property('code').eql(38);
+                    done();
+                });
+        });
+
     });
 
     //get assignment ---GET/:id---
@@ -316,6 +333,30 @@ describe('Assignments', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.assignments.length.should.be.eql(0);
+                    done();
+                });
+        });
+
+        it('it should return assignments sorted by timestamp', (done) => {
+            chai.request(server)
+                .get('/api/v1/assignments?sort=' + '+timestamp')
+                .set('x-access-token', fake.teacher1.token)
+                .set('x-key', fake.teacher1.user._id)
+                .end((err, res) => {
+                    res.should.not.be.null;
+                    res.body.assignments.length.should.be.above(0);
+                    let timestamp = 0;
+                    for (var i = 0; i < res.body.assignments.length; i++) {
+                        res.body.assignments[i].should.be.an('object');
+                        res.body.assignments[i].should.have.property('_id').not.eql(undefined);
+                        res.body.assignments[i].should.have.property('name').not.eql(undefined);
+                        res.body.assignments[i].should.have.property('instructions').not.eql(undefined);
+                        res.body.assignments[i].should.have.property('lateTurnIn').not.eql(undefined);
+                        res.body.assignments[i].should.have.property('dueDate').not.eql(undefined);
+                        res.body.assignments[i].should.have.property('classrooms').be.an('array');
+                        res.body.assignments[i].timestamp.should.be.gt(timestamp);
+                        timestamp = res.body.assignments[i].timestamp;
+                    }
                     done();
                 });
         });
@@ -478,7 +519,7 @@ describe('Assignments', () => {
                     res.body.should.have.property('comment').eql("comment_");
                     done();
                 });
-        })
+        });
     });
 
     // submit assignment ---PUT/:id/submit---

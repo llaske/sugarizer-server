@@ -89,11 +89,16 @@ exports.getServerIP = function() {
 	for (var i in interfaces) {
 		for (var j in interfaces[i]) {
 			var address = interfaces[i][j];
-			if (address.family === 'IPv6' && !address.internal) {
-				addresses.push(address.address);
+			if (!address.internal) {
+				if (address.family === 'IPv4' || address.family === 4) {
+					addresses.push(address.address);
+				} else if (address.family === 'IPv6' || address.family === 6) {
+					addresses.push(address.address);
+				}
 			}
 		}
 	}
+	addresses.push("127.0.0.1");
 	addresses.push("::1");
 	addresses.push("::ffff:127.0.0.1");
 	return addresses;

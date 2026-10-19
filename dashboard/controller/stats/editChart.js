@@ -2,11 +2,12 @@
 var superagent = require('superagent'),
 	moment = require('moment'),
 	common = require('../../helper/common'),
+	validator = require('../../helper/validator'),
 	chartList = require('./util/chartList')();
 
 var stats = require('./index');
 
-module.exports = function editChart(req, res) {
+module.exports = async function editChart(req, res) {
 
 	// reinit l10n and momemt with locale
 	common.reinitLocale(req);
@@ -17,7 +18,9 @@ module.exports = function editChart(req, res) {
 			// validate
 			req.body.title = req.body.title.trim();
 			if (req.body.title) {
-				req.assert('title', common.l10n.get('TitleInvalid')).matches(/^[a-z0-9 ]+$/i);
+				await validator.run(req, [
+					validator.check('title', common.l10n.get('TitleInvalid')).matches(/^[a-z0-9 ]+$/i)
+				]);
 			} else {
 				req.body.title = "";
 			}
@@ -37,7 +40,7 @@ module.exports = function editChart(req, res) {
 			}
 
 			// get errors
-			var errors = req.validationErrors();
+			var errors = validator.errors(req);
 
 			if (!errors) {
 				superagent

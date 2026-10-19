@@ -1,16 +1,19 @@
 // include libraries
 var superagent = require('superagent'),
 	common = require('../../helper/common'),
+	validator = require('../../helper/validator'),
 	auth = require('./index');
 
-module.exports = function verify2FA(req, res) {
+module.exports = async function verify2FA(req, res) {
 	if (req.method == 'POST') {
 		// validate
-		req.assert('tokenentry', {text: 'token-invalid'}).notEmpty();
+		await validator.run(req, [
+			validator.check('tokenentry', {text: 'token-invalid'}).notEmpty()
+		]);
     
 		var otpToken = req.body.tokenentry;
 		// get errors
-		var errors = req.validationErrors();
+		var errors = validator.errors(req);
     
 		//to-do post request logic.
 		if (!errors){

@@ -4,7 +4,7 @@
 
 [Sugarizer](https://github.com/llaske/sugarizer) is the open source learning platform based on Sugar that began in the famous One Laptop Per Child project.
 
-Sugarizer Server allows the deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 10+ and MongoDB 3.2+.
+Sugarizer Server allows the deployment of Sugarizer on a local server, for example on a school server, so expose locally Sugarizer as a Web Application. Sugarizer Server can also be used to provide collaboration features for Sugarizer Application on the network. Sugarizer Server could be deployed in a Docker container or on any computer with Node.js 18+ and MongoDB 3.5+.
 
 
 ## Running Sugarizer Server
@@ -15,7 +15,7 @@ The easiest way to run Sugarizer Server is to use Docker. To do that, type comma
 	git clone https://github.com/llaske/sugarizer-server
 	cd sugarizer-server
 	sh generate-docker-compose.sh
-	docker-compose up -d
+	docker compose up -d
 
 For other options to install Sugarizer Server on your computer, on the cloud or on a RaspberryPI, see [here](docs/install.md).
 

@@ -5,11 +5,12 @@ var superagent = require('superagent'),
 	xocolors = require('../../helper/xocolors')(),
 	emoji = require('../../public/js/emoji'),
 	regexValidate = require('../../helper/regexValidate'),
+	validator = require('../../helper/validator'),
 	dashboard_utils = require('../dashboard/util');
 
 var users = require('./index');
 
-module.exports = function profile(req, res) {
+module.exports = async function profile(req, res) {
 
 	// reinit l10n and momemt with locale
 	common.reinitLocale(req);
@@ -21,15 +22,17 @@ module.exports = function profile(req, res) {
 			req.body.name = req.body.name.trim();
 			req.body.password = req.body.password.trim();
 			req.body.color = JSON.parse(req.body.color);
-			req.assert('name', common.l10n.get('UsernameInvalid')).matches(regexValidate("user"));
-			req.assert('password', common.l10n.get('PasswordAtLeast', {count:users.ini().security.min_password_size})).len(users.ini().security.min_password_size);
-			req.assert('password', common.l10n.get('PasswordInvalid')).matches(regexValidate("pass"));
+			await validator.run(req, [
+				validator.check('name', common.l10n.get('UsernameInvalid')).matches(regexValidate("user")),
+				validator.check('password', common.l10n.get('PasswordAtLeast', {count:users.ini().security.min_password_size})).isLength({ min: users.ini().security.min_password_size }),
+				validator.check('password', common.l10n.get('PasswordInvalid')).matches(regexValidate("pass"))
+			]);
 			if (typeof req.body.classrooms == 'string') {
 				req.body.classrooms = [req.body.classrooms];
 			}
 
 			// get errors
-			var errors = req.validationErrors();
+			var errors = validator.errors(req);
 
 			if (!errors) {
 				superagent

@@ -1,6 +1,6 @@
 {
   "name": "Sugarizer",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Sugarizer Server API",
   "title": "Sugarizer Server API",
   "url": "/",
@@ -10,7 +10,7 @@
   },
   "footer": {
     "title": "License",
-    "content": "<p>Sugarizer is an open source software under <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache 2 licence</a>, source code is available on <a href=\"https://github.com/llaske/sugarizer-server\">Github</a>.</p>\n<p>© 2013-2019, Lionel Laské, Sugar Labs Inc and Contributors.</p>\n"
+    "content": "<p>Sugarizer is an open source software under <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache 2 licence</a>, source code is available on <a href=\"https://github.com/llaske/sugarizer-server\">Github</a>.</p>\n<p>© 2013-2026, Lionel Laské, Sugar Labs Inc and Contributors.</p>\n"
   },
   "order": [
     "Information",
@@ -43,14 +43,24 @@
     "RemoveEntryJournal",
     "GetAllStats",
     "AddStats",
-    "RemoveStats"
+    "RemoveStats",
+    "GetAssignments",
+    "GetAssignment",
+    "AddAssignment",
+    "UpdateAssignment",
+    "UpdateComment",
+    "RemoveAssignment",
+    "LaunchAssignment",
+    "SubmitAssignment",
+    "ReturnAssignment",
+    "GetDeliveries"
   ],
   "sampleUrl": false,
   "defaultVersion": "0.0.0",
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2022-12-23T10:44:04.236Z",
+    "time": "2026-08-30T20:15:44.250Z",
     "url": "http://apidocjs.com",
     "version": "0.17.7"
   }

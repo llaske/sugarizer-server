@@ -4,7 +4,6 @@ var express = require('express'),
 	cookieParser = require('cookie-parser'),
 	logger = require('morgan'),
 	flash = require('express-flash'),
-	expressValidator = require('express-validator'),
 	cors = require('cors');
 var artificialDelay = 0;
 
@@ -38,9 +37,6 @@ module.exports = function(app, ini) {
 		limit: '256mb',
 		type: 'application/json'
 	}));
-
-	//include expressValidator
-	app.use(expressValidator());
 
 	// include flash notification
 	app.use(flash());

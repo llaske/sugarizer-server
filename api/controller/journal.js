@@ -59,6 +59,41 @@ function _toUTF16(input) {
 	return str;
 }
 
+function ensureSharedJournal(callback) {
+	db.collection(journalCollection, function(err, collection) {
+		if (err) {
+			callback(err);
+			return;
+		}
+
+		collection.findOne({
+			'shared': true
+		}, function(err, item) {
+			if (!err && item != null) {
+				shared = item;
+				callback(null, shared);
+				return;
+			}
+
+			collection.insertOne({
+				content: [],
+				shared: true
+			}, {
+				safe: true
+			}, function(err, result) {
+				if (err) {
+					callback(err);
+					return;
+				}
+				shared = result.ops[0];
+				callback(null, shared);
+			});
+		});
+	});
+}
+
+exports.ensureSharedJournal = ensureSharedJournal;
+
 // Init database
 exports.init = function(settings, database) {
 
@@ -66,28 +101,10 @@ exports.init = function(settings, database) {
 	journalCollection = settings.collections.journal;
 
 	db = database;
-	db.collection(journalCollection, function(err, collection) {
-		// Get the shared journal collection
-		collection.findOne({
-			'shared': true
-		}, function(err, item) {
-			// Not found, create one
-			if (!err && item == null) {
-				collection.insertOne({
-					content: [],
-					shared: true
-				}, {
-					safe: true
-				}, function(err, result) {
-					shared = result.ops[0];
-				});
-			}
-
-			// Already exist, save it
-			else if (item != null) {
-				shared = item;
-			}
-		});
+	ensureSharedJournal(function(err) {
+		if (err) {
+			console.error('Unable to initialize shared journal:', err);
+		}
 	});
 
 	var bucket = 'textBucket';
@@ -1065,10 +1082,10 @@ exports.removeInJournal = function(req, res) {
  *
  * @apiSuccess {String} _id Unique id of the journal
  * @apiSuccess {Object} content Array containing data of the entries
- * @apiSuccess {Object} content[i].metadata Metadata of the entries, i.e. characteristics of the entry
- * @apiSuccess {String} content[i].objectId Unique id of the entry in the journal
- * @apiSuccess {String} content[i].objectId Unique id of the entry in the journal
- * @apiSuccess {String} content[i].text Text of the entries, i.e. storage value of the entry. It depends of the entry type
+ * @apiSuccess {Object} content.metadata Metadata of the entries, i.e. characteristics of the entry
+ * @apiSuccess {String} content.objectId Unique id of the entry in the journal
+ * @apiSuccess {String} content.objectId Unique id of the entry in the journal
+ * @apiSuccess {String} content.text Text of the entries, i.e. storage value of the entry. It depends of the entry type
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK

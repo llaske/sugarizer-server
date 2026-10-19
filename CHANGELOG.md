@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-10-19
+### Added
+- Add an export button to assignment deliveries #366
+
+### Changed
+- Replace Bootstrap Tour by IntroJS in dashboard #363
+- Node.js minimal version is now 18+
+
+### Fixed
+- Next page button in users/assignment view don't take into account search criteria #364
+- Shared activities stay active when an user is reconnected #420
+- Stored XSS via User Name in Dashboard #418
+- 401 unauthorized error with activity reorder by drag and drop feature #323
+
 ## [1.5.0] - 2023-02-15
 ### Added
 - Assignments feature: API and Dashboard
@@ -19,7 +33,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix required in sidebar to achieve consistency #348
 
 
-### Fixed
 ## [1.4.0] - 2021-11-21
 ### Added
 - Two factor authentication

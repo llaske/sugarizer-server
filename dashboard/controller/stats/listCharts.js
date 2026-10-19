@@ -31,7 +31,6 @@ module.exports = function listCharts(req, res) {
 					headers: common.getHeaders(req),
 					chartList: chartDic,
 					account: req.session.user,
-					url: common.getAPIUrl(req),
 					server: stats.ini().information
 				});
 	

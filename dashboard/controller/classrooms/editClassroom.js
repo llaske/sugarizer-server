@@ -3,11 +3,12 @@ var superagent = require('superagent'),
 	moment = require('moment'),
 	common = require('../../helper/common'),
 	xocolors = require('../../helper/xocolors')(),
-	emoji = require('../../public/js/emoji');
+	emoji = require('../../public/js/emoji'),
+	validator = require('../../helper/validator');
 
 var classroom = require('./index');
 
-module.exports = function editClassroom(req, res) {
+module.exports = async function editClassroom(req, res) {
 
 	// reinit l10n and momemt with locale
 	common.reinitLocale(req);
@@ -24,10 +25,12 @@ module.exports = function editClassroom(req, res) {
 			}
 
 			req.body.color = JSON.parse(req.body.color);
-			req.assert('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i);
+			await validator.run(req, [
+				validator.check('name', common.l10n.get('UsernameInvalid')).matches(/^[a-z0-9 ]+$/i)
+			]);
 
 			// get errors
-			var errors = req.validationErrors();
+			var errors = validator.errors(req);
 
 			if (!errors) {
 				superagent

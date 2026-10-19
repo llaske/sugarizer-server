@@ -272,10 +272,10 @@ function updateActivities() {
 		favorites: list.join()
 	};
 
-	$.post((url + 'api/v1/activities?' + decodeURIComponent($.param({
+	$.post('/api/v1/activities?' + decodeURIComponent($.param({
 		x_key: headers['x-key'],
 		access_token: headers['x-access-token']
-	}))), data, function (response) {
+	})), data, function (response) {
 		$.notify({
 			icon: "notifications",
 			message: document.webL10n.get('successActivityUpdate')
@@ -317,10 +317,10 @@ function updateChartOrder() {
 	};
 
 	$.ajax({
-		url: (url + 'api/v1/charts/reorder' + '?' + decodeURIComponent($.param({
+		url: '/api/v1/charts/reorder?' + decodeURIComponent($.param({
 			x_key: headers['x-key'],
 			access_token: headers['x-access-token']
-		}))),
+		})),
 		type: 'PUT',
 		data: data,
 		success: function (result) {
@@ -352,10 +352,10 @@ function updateChart(chartid) {
 	};
 
 	$.ajax({
-		url: (url + 'api/v1/charts/' + chartid + '?' + decodeURIComponent($.param({
+		url: '/api/v1/charts/' + chartid + '?' + decodeURIComponent($.param({
 			x_key: headers['x-key'],
 			access_token: headers['x-access-token']
-		}))),
+		})),
 		type: 'PUT',
 		data: data,
 		success: function (result) {

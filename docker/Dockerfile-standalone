@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:20
 
 WORKDIR /opt
 RUN git clone https://github.com/llaske/sugarizer

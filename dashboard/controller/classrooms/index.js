@@ -29,8 +29,8 @@ exports.index = function(req, res) {
 	};
 
 	//get query params
-	if (req.query.classroom != '') {
-		query['q'] = req.query.classroom;
+	if (req.query.q != '') {
+		query['q'] = req.query.q;
 	}
 	if (req.query.limit != '') {
 		query['limit'] = req.query.limit;

@@ -1,5 +1,5 @@
-<%- include includes/header %>
-<%- include('includes/navbar') %>
+<%- include ('includes/header') %>
+<%- include ('includes/navbar') %>
 <div class="main-content">
   <div class="container-fluid">
     <div class="row" style="margin-top:100px;">
@@ -9,7 +9,7 @@
         <h5 class="text-center" data-l10n-id="2FA-message"></h5>
         <div class="card card-nav-tabs">
             <div class="card-content">
-              <% include includes/flash-errors %>
+              <% include ('includes/flash-errors') %>
               <form method="post" action="/dashboard/verify2FA">
                 <div class="form-group form-black label-floating is-empty">
                     <label class="control-label" data-l10n-id="2FA">Username</label>
@@ -33,4 +33,4 @@ function updateLanguage() {
 }
 </script>
 
-<%- include includes/footer %>
+<%- include ('includes/footer') %>

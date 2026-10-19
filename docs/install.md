@@ -27,7 +27,7 @@ After that, go to the Sugarizer Server folder and launch
 
 	cd sugarizer-server
 	sh generate-docker-compose.sh
-	docker-compose up -d
+	docker compose up -d
 
 Your Sugarizer server will start automatically and will be accessible on http://127.0.0.1:8080 and your public IP. The database will be persisted inside the folder docker/db.
 
